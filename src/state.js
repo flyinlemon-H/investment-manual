@@ -617,6 +617,84 @@ function normalizeAnalysisFramework(v,stock={}){
     conclusion:normalizeConclusionModule(src.conclusion,stock)
   };
 }
+const ALLOCATION_DIMENSIONS=['macro','industry','company','financials','valuation','sentiment','technical'];
+function defaultAllocationDimension(){
+  return {conclusion:'',keyPoints:[],risks:[],score:null};
+}
+function normalizeAllocationScore(v){
+  if(v===null||v===undefined||v==='')return null;
+  const n=Number(v);
+  return isFinite(n)?Math.max(0,Math.min(10,n)):null;
+}
+function normalizeAllocationWeight(v){
+  if(v===null||v===undefined||v==='')return null;
+  const n=Number(v);
+  return isFinite(n)?Math.max(0,Math.min(100,n)):null;
+}
+function normalizeAllocationDimension(v){
+  const src=(v&&typeof v==='object')?v:{};
+  return {
+    conclusion:String(src.conclusion||''),
+    keyPoints:normalizeStringArray(src.keyPoints),
+    risks:normalizeStringArray(src.risks),
+    score:normalizeAllocationScore(src.score)
+  };
+}
+function defaultAllocationDecision(stock={}){
+  const code=String(stock.code||stock.symbol||'');
+  return {
+    symbol:code,
+    updatedAt:'',
+    conclusion:'',
+    recommendedWeightRange:'',
+    recommendedTargetWeight:null,
+    recommendedMaxWeight:null,
+    recommendedRole:'',
+    targetAdjustment:'unknown',
+    capitalAllocationView:'unknown',
+    confidence:'low',
+    dimensions:{
+      macro:defaultAllocationDimension(),
+      industry:defaultAllocationDimension(),
+      company:defaultAllocationDimension(),
+      financials:defaultAllocationDimension(),
+      valuation:defaultAllocationDimension(),
+      sentiment:defaultAllocationDimension(),
+      technical:defaultAllocationDimension()
+    },
+    allocationReasons:[],
+    keyRisks:[],
+    suggestedActions:[],
+    notes:''
+  };
+}
+function normalizeAllocationChoice(value,allowed,fallback){
+  return allowed.includes(value)?value:fallback;
+}
+function normalizeAllocationDecision(v,stock={}){
+  const d=defaultAllocationDecision(stock);
+  const src=(v&&typeof v==='object')?v:{};
+  const dims=(src.dimensions&&typeof src.dimensions==='object')?src.dimensions:{};
+  const out={
+    symbol:String(src.symbol||d.symbol),
+    updatedAt:String(src.updatedAt||''),
+    conclusion:String(src.conclusion||''),
+    recommendedWeightRange:String(src.recommendedWeightRange||''),
+    recommendedTargetWeight:normalizeAllocationWeight(src.recommendedTargetWeight),
+    recommendedMaxWeight:normalizeAllocationWeight(src.recommendedMaxWeight),
+    recommendedRole:String(src.recommendedRole||''),
+    targetAdjustment:normalizeAllocationChoice(src.targetAdjustment,['raise','maintain','lower','watch','reduce','unknown'],'unknown'),
+    capitalAllocationView:normalizeAllocationChoice(src.capitalAllocationView,['suitable','conditional','unsuitable','watch','unknown'],'unknown'),
+    confidence:normalizeAllocationChoice(src.confidence,['low','medium','high'],'low'),
+    dimensions:{},
+    allocationReasons:normalizeStringArray(src.allocationReasons),
+    keyRisks:normalizeStringArray(src.keyRisks),
+    suggestedActions:normalizeStringArray(src.suggestedActions),
+    notes:String(src.notes||'')
+  };
+  ALLOCATION_DIMENSIONS.forEach(k=>out.dimensions[k]=normalizeAllocationDimension(dims[k]));
+  return out;
+}
 function calculateAnalysisScore(framework){
   const fw=normalizeAnalysisFramework(framework);
   const total=ANALYSIS_MODULES.reduce((sum,key)=>sum+normalizeAnalysisScoreValue(fw[key]&&fw[key].score)*(ANALYSIS_WEIGHTS[key]||0),0);
@@ -763,6 +841,7 @@ function normalizeStockAnalysis(stock){
   stock.technicalData=normalizeTechnicalData(stock.technicalData);
   if(!stock.technicalData.symbol)stock.technicalData.symbol=String(stock.code||stock.symbol||'');
   stock.analysisFramework=normalizeAnalysisFramework(stock.analysisFramework,stock);
+  stock.allocationDecision=normalizeAllocationDecision(stock.allocationDecision,stock);
   stock.analysisScore=calculateAnalysisScore(stock.analysisFramework);
   return stock;
 }
