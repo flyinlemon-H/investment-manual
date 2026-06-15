@@ -1,6 +1,9 @@
-config/remote_secret.txt
+logs/
+output/
+backups/
 __pycache__/
 *.pyc
+config/remote_secret.txt
 .env
 .DS_Store
 Thumbs.db
