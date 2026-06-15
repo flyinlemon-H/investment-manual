@@ -91,7 +91,91 @@ label{font-size:13px;line-height:1.45;letter-spacing:.9px;margin-bottom:7px}
 .table-wrap table{min-width:860px}
 th,td{font-size:14px;line-height:1.5}
 }
-@media(max-width:520px){.dash{grid-template-columns:1fr}.tab{padding-left:13px;padding-right:13px}.social-grid{grid-template-columns:1fr}.actions{flex-direction:column}.actions .btn{width:100%}.modal-actions{flex-direction:column;align-items:stretch}.modal-actions .btn{width:100%}.card-num{font-size:26px}}
+@media(max-width:768px){
+.hint,.alert,.alert-trig,.text,.trig-row .trig-desc,.trig-suggest,.social-post,.social-review-block li,.social-empty{font-size:16.5px;line-height:1.72}
+.card{padding:18px 16px 19px;margin-bottom:18px}
+.card-title{font-size:15.5px;line-height:1.5;margin-bottom:12px;letter-spacing:.7px}
+.card-note,.sync,.modal-sub,.social-post-head,.social-tag,.social-review-note,.stale-meta{font-size:14px;line-height:1.62}
+.card-num{font-size:26px;line-height:1.18}
+.name,.detail-name{font-size:20px;line-height:1.38;margin-bottom:2px}
+.num,.price,.shares{font-size:17.5px;line-height:1.36}
+.cell-target .target-line{font-size:17px}
+.chips{gap:9px;margin-top:5px}
+.chip{font-size:15px;line-height:1.48;padding:8px 11px;border-radius:17px}
+.chip .gap{font-size:13.5px}
+td[data-label]::before,label{font-size:14px;line-height:1.45}
+.stale-row{gap:6px;padding:12px 0}
+.stale-name{font-size:16.5px;line-height:1.45}
+.trig-row{padding:15px 14px;gap:8px}
+.trig-row .trig-name{font-size:18px;line-height:1.4}
+.trig-row .trig-dist{font-size:15px}
+.social-panel{padding:15px 14px}
+.social-panel summary{font-size:16px;line-height:1.5}
+.social-label{font-size:14px}
+.social-value{font-size:16.5px}
+.modal{padding:21px 17px}
+.modal h2{font-size:23px}
+.form-row{margin-bottom:17px}
+input,textarea,select{font-size:16px;line-height:1.55;padding:13px 13px}
+textarea{min-height:128px}
+.modal-actions{margin-top:20px}
+.btn,.btn.small,.link-btn,.trig-action button{font-size:15.5px}
+.table-wrap table{min-width:880px}
+th,td{font-size:14.5px;line-height:1.56}
+}
+@media(max-width:768px){
+button,.btn,.btn.small,.link-btn,.trig-action button,.type-toggle button{min-height:44px;font-size:16px;line-height:1.35;padding:11px 15px;border-radius:4px}
+.btn.small,.btn.ghost.small,.trig-action button,.link-btn{font-size:15px}
+.btn{box-shadow:0 1px 0 rgba(27,27,27,.08)}
+.btn.ghost,.link-btn{background:rgba(255,255,255,.18)}
+.btn.ghost:hover,.link-btn:hover{background:rgba(255,255,255,.30)}
+.danger,.link-btn.danger,#resetBtn{color:var(--seal);border-color:rgba(184,58,43,.35);background:rgba(184,58,43,.06)}
+.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%}
+.actions .btn{width:100%;justify-content:center;text-align:center}
+.modal-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch;justify-content:stretch}
+.modal-actions .btn,.modal-actions .link-btn,.modal-actions button{width:100%;justify-content:center;text-align:center}
+.row-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;width:100%}
+.row-actions .btn,.row-actions .link-btn,.row-actions button{width:100%;justify-content:center;text-align:center}
+.card .modal-actions[style],.card .actions[style],.modal-actions[style]{gap:10px!important;justify-content:stretch!important}
+.form-row .modal-actions{margin-top:10px}
+.type-toggle{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+.type-toggle button{padding:12px 10px}
+.plan-editor .link-btn{margin-top:10px;width:100%;justify-content:center;border:1px solid var(--lines)}
+.social-panel summary{border-radius:4px;padding:2px 4px}
+}
+@media(max-width:768px){
+.card,.hint,.table-wrap,tbody tr,.social-panel,.social-review,.plan-editor{border-radius:6px}
+.card{background:rgba(245,241,232,.92);border-color:rgba(27,27,27,.16);box-shadow:0 1px 0 rgba(27,27,27,.05)}
+.dash{gap:16px}
+.dash>.card{margin-bottom:0}
+tbody tr{background:rgba(245,241,232,.96);border-left-width:4px;box-shadow:0 1px 0 rgba(27,27,27,.05)}
+td{padding-top:3px}
+td+td{padding-top:9px;border-top:1px dashed rgba(27,27,27,.10)}
+.cell-name{padding-bottom:8px;margin-bottom:2px}
+.cell-role,.cell-target,.cell-cost,.cell-current,.cell-shares{background:rgba(255,255,255,.20);border:1px solid rgba(27,27,27,.08);border-radius:6px;padding:10px}
+.cell-buy,.cell-sell,.cell-thesis{padding-top:12px}
+.cell-actions{padding-top:12px}
+.text+.chips,.chips+.text{margin-top:8px}
+.chips{row-gap:9px;column-gap:9px}
+.chip{border:1px solid rgba(27,27,27,.08);background-color:rgba(255,255,255,.20)}
+.chip.buy{background:rgba(184,58,43,.075)}
+.chip.sell{background:rgba(47,93,110,.08)}
+.chip.tag{background:rgba(106,76,147,.09)}
+.chip.role{background:rgba(154,107,36,.10)}
+.card .text{margin-top:8px}
+.card .dash{margin-top:4px;margin-bottom:4px}
+.card .modal-actions{padding-top:4px}
+.social-review-grid,.social-grid{gap:12px}
+.social-review-block,.social-metric{border-radius:6px}
+.social-review-block{padding:10px;border:1px solid rgba(27,27,27,.08);background:rgba(255,255,255,.18)}
+.trig-row,.stale-row{border-radius:6px}
+.trig-row{box-shadow:0 1px 0 rgba(27,27,27,.04)}
+.stale-row{padding:12px 10px;margin:3px 0;background:rgba(255,255,255,.14);border:1px solid rgba(27,27,27,.06)}
+.table-wrap{position:relative;border:1px solid rgba(27,27,27,.14);background:rgba(245,241,232,.92);padding-top:22px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.table-wrap::before{content:'横向滑动查看完整表格';position:absolute;top:5px;left:12px;color:var(--ink3);font-size:13px;line-height:1}
+.plan-editor .table-wrap::before{content:''}
+}
+@media(max-width:520px){.dash{grid-template-columns:1fr}.tab{padding-left:13px;padding-right:13px}.social-grid{grid-template-columns:1fr}.actions{display:grid;grid-template-columns:1fr}.actions .btn{width:100%}.modal-actions{display:grid;grid-template-columns:1fr;align-items:stretch}.modal-actions .btn,.modal-actions .link-btn,.modal-actions button{width:100%}.row-actions{grid-template-columns:1fr}.card-num{font-size:26px}.type-toggle{grid-template-columns:1fr}}
 </style>
 </head>
 <body><div class="wrap">

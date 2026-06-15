@@ -17,13 +17,25 @@
     input,textarea{width:100%;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:11px 12px;border-radius:2px;font-size:15px}
     textarea{min-height:230px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.5}
     .actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
-    button{border:1px solid var(--ink);background:var(--ink);color:var(--paper);padding:12px 14px;border-radius:2px;font-weight:800;font-size:15px;letter-spacing:.5px}
+    button{border:1px solid var(--ink);background:var(--ink);color:var(--paper);padding:12px 14px;border-radius:4px;font-weight:800;font-size:15px;letter-spacing:.5px;min-height:46px}
     button.secondary{background:transparent;color:var(--ink);border-color:var(--line)}
     button.copy{background:var(--ok);border-color:var(--ok)}
     .hint{font-size:12px;line-height:1.6;color:var(--muted);margin-top:8px}
     .status{min-height:20px;font-size:13px;color:var(--ok);font-weight:700;margin-top:8px}
     code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-    @media(min-width:640px){.actions{grid-template-columns:1fr 1fr 1fr}.copy-row{display:flex;gap:10px}.copy-row button{min-width:150px}}
+    @media(min-width:640px){.actions{grid-template-columns:1fr 1fr}.copy-row{display:flex;gap:10px}.copy-row button{min-width:150px}}
+    @media(max-width:640px){
+      .wrap{padding:22px 14px 44px}
+      .card{padding:16px 14px;margin-bottom:16px}
+      input,textarea{font-size:16px;padding:13px 12px}
+      textarea{font-size:14px;line-height:1.55}
+      .actions{gap:11px}
+      button{width:100%;min-height:48px;font-size:16px;line-height:1.35;padding:13px 14px}
+      button small{font-size:12px;opacity:.82}
+      button.copy{min-height:50px;font-size:17px}
+      .copy-row{display:grid;grid-template-columns:1fr;gap:10px}
+      .hint{font-size:13px;line-height:1.65}
+    }
   </style>
 </head>
 <body>
@@ -41,6 +53,7 @@
         <button type="button" data-command="update-news">更新新闻<br><small>update-news</small></button>
         <button type="button" data-command="update-all">全量更新<br><small>update-all</small></button>
         <button type="button" data-command="build-html">重新生成 HTML<br><small>build-html</small></button>
+        <button type="button" data-command="update-technical">更新技术面<br><small>update-technical</small></button>
       </div>
     </section>
 
