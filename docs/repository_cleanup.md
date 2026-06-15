@@ -35,7 +35,7 @@ backups/dist_history_V10_cleanup/
 
 `dist/` 只保留日常运行和发布需要的文件，例如：
 
-- `dist/投资作战手册_V10.3.1.html`
+- `dist/投资作战手册_V10.3.2.html`
 - `dist/social_posts.json`
 - `dist/social_summary.json`
 
