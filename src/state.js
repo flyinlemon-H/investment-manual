@@ -127,6 +127,15 @@ function defaultTechnicalData(stock={}){
     lastUpdated:''
   };
 }
+function normalizeTechnicalLevelArray(x){
+  const raw=Array.isArray(x)?x:String(x||'').split(/\n|,|，/);
+  return raw.map(i=>{
+    const t=String(i??'').trim();
+    if(!t)return null;
+    const n=Number(t.replace(/,/g,''));
+    return isFinite(n)?n:t;
+  }).filter(i=>i!==null&&i!==undefined&&i!=='');
+}
 function normalizeTechnicalData(v){
   const src=(v&&typeof v==='object')?v:{};
   const arr=x=>Array.isArray(x)?x.map(i=>String(i??'').trim()).filter(Boolean):String(x||'').split(/\n|,|，/).map(i=>String(i||'').trim()).filter(Boolean);
@@ -146,8 +155,8 @@ function normalizeTechnicalData(v){
     volume:nullableNumber(src.volume),
     volumeAvg20:nullableNumber(src.volumeAvg20),
     trendStatus:String(src.trendStatus||''),
-    supportLevels:arr(src.supportLevels),
-    resistanceLevels:arr(src.resistanceLevels),
+    supportLevels:normalizeTechnicalLevelArray(src.supportLevels),
+    resistanceLevels:normalizeTechnicalLevelArray(src.resistanceLevels),
     technicalSummary:String(src.technicalSummary||''),
     riskFlags:arr(src.riskFlags),
     actionHint:String(src.actionHint||''),

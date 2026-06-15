@@ -263,8 +263,16 @@ function stripJsonFence(text){
   const m=s.match(/```(?:json)?\s*([\s\S]*?)```/i);
   return m?m[1].trim():s;
 }
+function normalizeJsonLikeText(text){
+  return String(text||'')
+    .replace(/[\u201C\u201D\u201E\u201F]/g,'"')
+    .replace(/[\u2018\u2019\u201A\u201B]/g,"'")
+    .replace(/\u00A0/g,' ')
+    .replace(/，(?=\s*[\}\]])/g,',')
+    .replace(/,\s*([\}\]])/g,'$1');
+}
 function extractFirstJsonObject(text){
-  const s=stripJsonFence(text);
+  const s=normalizeJsonLikeText(stripJsonFence(text));
   try{return JSON.parse(s)}catch(e){}
   let start=-1,depth=0,inString=false,escape=false;
   for(let i=0;i<s.length;i++){
