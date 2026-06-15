@@ -103,16 +103,56 @@ function normalizeAnalysisInputs(v){
   };
 }
 function defaultTechnicalData(stock={}){
-  return {ma20:0,ma60:0,ma120:0,supportPrice:0,resistancePrice:0,trendNote:'',lastUpdated:''};
+  return {
+    symbol:String(stock.code||stock.symbol||''),
+    price:null,
+    priceUpdatedAt:'',
+    timeframe:'daily',
+    ma5:null,
+    ma10:null,
+    ma20:0,
+    ma60:0,
+    ma120:0,
+    volume:null,
+    volumeAvg20:null,
+    trendStatus:'',
+    supportLevels:[],
+    resistanceLevels:[],
+    technicalSummary:'',
+    riskFlags:[],
+    actionHint:'',
+    supportPrice:0,
+    resistancePrice:0,
+    trendNote:'',
+    lastUpdated:''
+  };
 }
 function normalizeTechnicalData(v){
   const src=(v&&typeof v==='object')?v:{};
+  const arr=x=>Array.isArray(x)?x.map(i=>String(i??'').trim()).filter(Boolean):String(x||'').split(/\n|,|，/).map(i=>String(i||'').trim()).filter(Boolean);
+  const nullableNumber=x=>{const n=Number(x);return isFinite(n)&&n>=0?n:null};
+  const fallbackSupport=clampNumber(src.supportPrice,0,Number.MAX_SAFE_INTEGER,0);
+  const fallbackResistance=clampNumber(src.resistancePrice,0,Number.MAX_SAFE_INTEGER,0);
   return {
+    symbol:String(src.symbol||''),
+    price:nullableNumber(src.price),
+    priceUpdatedAt:normalizeDateOnly(src.priceUpdatedAt)||'',
+    timeframe:String(src.timeframe||'daily'),
+    ma5:nullableNumber(src.ma5),
+    ma10:nullableNumber(src.ma10),
     ma20:clampNumber(src.ma20,0,Number.MAX_SAFE_INTEGER,0),
     ma60:clampNumber(src.ma60,0,Number.MAX_SAFE_INTEGER,0),
     ma120:clampNumber(src.ma120,0,Number.MAX_SAFE_INTEGER,0),
-    supportPrice:clampNumber(src.supportPrice,0,Number.MAX_SAFE_INTEGER,0),
-    resistancePrice:clampNumber(src.resistancePrice,0,Number.MAX_SAFE_INTEGER,0),
+    volume:nullableNumber(src.volume),
+    volumeAvg20:nullableNumber(src.volumeAvg20),
+    trendStatus:String(src.trendStatus||''),
+    supportLevels:arr(src.supportLevels),
+    resistanceLevels:arr(src.resistanceLevels),
+    technicalSummary:String(src.technicalSummary||''),
+    riskFlags:arr(src.riskFlags),
+    actionHint:String(src.actionHint||''),
+    supportPrice:fallbackSupport,
+    resistancePrice:fallbackResistance,
     trendNote:String(src.trendNote||''),
     lastUpdated:String(src.lastUpdated||'')
   };
@@ -712,6 +752,7 @@ function normalizeStockAnalysis(stock){
   stock.financialData=normalizeFinancialData(stock.financialData);
   stock.priceHistory=normalizePriceHistory(stock);
   stock.technicalData=normalizeTechnicalData(stock.technicalData);
+  if(!stock.technicalData.symbol)stock.technicalData.symbol=String(stock.code||stock.symbol||'');
   stock.analysisFramework=normalizeAnalysisFramework(stock.analysisFramework,stock);
   stock.analysisScore=calculateAnalysisScore(stock.analysisFramework);
   return stock;

@@ -17,8 +17,19 @@ function ensureAnalysisOverviewTab(){
   tabs.appendChild(btn);
 }
 
+function ensureToolsTab(){
+  const tabs=document.querySelector('.tabs');
+  if(!tabs||tabs.querySelector('[data-tab="tools"]'))return;
+  const btn=document.createElement('button');
+  btn.className='tab';
+  btn.dataset.tab='tools';
+  btn.textContent='工具';
+  tabs.appendChild(btn);
+}
+
 ensureAnalysisOverviewTab();
 ensureExecutionLogTab();
+ensureToolsTab();
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{detailStockId=null;currentTab=t.dataset.tab;render()}));
 document.getElementById('addBtn').addEventListener('click',()=>openModal(null));
 document.getElementById('importBtn').addEventListener('click',importData);

@@ -46,6 +46,10 @@ function dataFreshnessItem(label,dateStr){
   const meta=st.days===null?'—':`${esc(normalizeDateOnly(dateStr))} · ${st.days}天`;
   return `<div class="stale-row"><div class="stale-name">${esc(label)}</div><div class="stale-meta ${st.cls==='urgent'?'urgent':''}">${meta} · ${esc(st.label)}</div></div>`;
 }
+function isOverdue(dateStr,limitDays){
+  const d=freshnessDays(dateStr);
+  return d===null||d>limitDays;
+}
 function dataFreshnessPanel(stock){
   const f=normalizeDataFreshness(stock.dataFreshness);
   return `<div class="card" style="margin-bottom:14px"><div class="card-title">数据更新时间</div><div class="stale-list">${dataFreshnessItem('价格',f.priceUpdatedAt)}${dataFreshnessItem('估值',f.valuationUpdatedAt)}${dataFreshnessItem('新闻',f.newsUpdatedAt)}${dataFreshnessItem('社媒',f.socialUpdatedAt)}${dataFreshnessItem('财报',f.financialUpdatedAt)}${dataFreshnessItem('技术',f.technicalUpdatedAt)}${dataFreshnessItem('个人观点',f.personalViewUpdatedAt)}${dataFreshnessItem('综合复核',f.comprehensiveReviewUpdatedAt)}</div></div>`;
@@ -78,7 +82,7 @@ function updateChecklistRows(){
     }else if(s.type==='watching'){
       if(viewDays===null||viewDays>30)add('个人观点',f.personalViewUpdatedAt);
     }
-    if(!isCashRow(s)&&isOverdue(f.technicalUpdatedAt,30))add('技术资料需更新：可进入详情页查看“技术面分析流程”',f.technicalUpdatedAt);
+    if(!isCashRow(s)&&isOverdue(f.technicalUpdatedAt,3))add('技术面待更新：可进入详情页查看“技术面分析流程”',f.technicalUpdatedAt);
     const ci=normalizeCollectionInputs(s.collectionInputs);
     const reviews=normalizeAiReviews(s.aiReviews);
     if(String(ci.newsRawText||'').trim()&&!reviews.newsReview)add('新闻资料待复核','');
@@ -842,8 +846,95 @@ function clearReviewPackage(){
   updateReviewPackageCount();
 }
 
-function render(){const d=new Date();document.getElementById('dateStamp').textContent=d.toISOString().slice(0,10).replace(/-/g,'.')+' · '+d.toLocaleDateString('zh-CN',{weekday:'long'});document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===currentTab));document.getElementById('countHolding').textContent=state.stocks.filter(s=>s.type==='holding').length;document.getElementById('countEtf').textContent=state.stocks.filter(s=>s.type==='etf').length;document.getElementById('countWatching').textContent=state.stocks.filter(s=>s.type==='watching').length;document.getElementById('syncHint').textContent=(state.updatedAt?'最后修改 · '+new Date(state.updatedAt).toLocaleString('zh-CN'):'')+backupReminderText();const fxBtn=document.getElementById('fxBtn');if(fxBtn)fxBtn.textContent=fxLabel();if(detailStockId)renderStockDetail();else if(currentTab==='dashboard')renderDashboard();else if(currentTab==='logs')renderExecutionLog();else if(currentTab==='analysis')renderAnalysisOverview();else renderTable()}
-function renderDashboard(){if(!state.stocks.length){document.getElementById('summary').innerHTML='暂无数据 · 请先导入 JSON';document.getElementById('main').innerHTML='<div class="hint"><b>尚未导入组合数据。</b> 点击右上角「导入JSON」选择之前导出的投资作战手册 JSON；程序不会再内置或自动恢复默认组合。</div><div class="empty">导入后这里会显示总览、触发计划和再平衡提示。</div>';return}const themeOrder=['宽基指数','黄金资源','AI科技','消费','防御','其他'];const themes=[...new Set([...themeOrder,...state.stocks.filter(s=>!isCashRow(s)).map(s=>s.theme||'其他')])];const roleOrder=['核心仓','成长仓','卫星仓','观察仓','防御核心仓'];const roles=[...new Set([...roleOrder,...state.stocks.filter(s=>!isCashRow(s)).map(s=>s.role||'其他')])];const themeRows=themes.map(name=>({name,p:targetSum(s=>s.theme===name)}));const roleRows=roles.map(name=>({name,p:targetSum(s=>s.role===name)}));const total=targetSum(s=>!isCashRow(s));const reserve=100-total;const ai=themeRows.find(x=>x.name==='AI科技').p,res=themeRows.find(x=>x.name==='黄金资源').p;const totalMv=getTotalInvested();const estAssets=getEstimatedTotalAssets();const allTrig=state.stocks.map(s=>({s,u:stockUrgency(s)})).filter(x=>x.u.triggered>0);const totalTrig=allTrig.reduce((a,b)=>a+b.u.triggered,0);const trigBadge=totalTrig>0?` · <strong style="color:var(--seal)">⚠ 已触发 ${totalTrig} 条</strong>`:'';const allInfo=state.stocks.map(s=>({s,info:getPositionInfo(s,estAssets)})).filter(x=>x.info&&x.info.deviation!==null);const rebalList=allInfo.filter(x=>Math.abs(x.info.deviation)>5).sort((a,b)=>Math.abs(b.info.deviation)-Math.abs(a.info.deviation));const noPriceCount=state.stocks.filter(s=>{const t=Number(s.targetPct);if(isNaN(t)||t<=0)return false;return getMarketValue(s)===null}).length;const rebalBadge=rebalList.length>0?` · <strong style="color:var(--gold)">⚖ 需再平衡 ${rebalList.length} 只</strong>`:'';document.getElementById('summary').innerHTML=`总市值 <strong>${fmtMoney(totalMv)}</strong> · 标的 <strong>${state.stocks.length}</strong> 只 · 资产目标 <strong>${fmt(total,1)}%</strong> · ${reserve>=0?'现金/机动 <strong>'+fmt(reserve,1)+'%</strong>':'超配 <strong>'+fmt(Math.abs(reserve),1)+'%</strong>'}${hasCashRow()?' · 实际现金 <strong>'+fmt(getCashMv()/(estAssets||1)*100,1)+'%</strong>':''}${trigBadge}${rebalBadge}`;const trigPanel=allTrig.length?`<div class="card" style="border-left:3px solid var(--seal);margin-bottom:14px"><div class="card-title" style="color:var(--seal);margin-bottom:10px">⚠ 已触发的价位计划（${totalTrig} 条）</div><div class="trig-list">${allTrig.map(x=>{const cp=getComparablePrice(x.s);const triggeredPlans=(x.s.plans||[]).filter(p=>{const g=planGap(cp,p.price,p.action,p.triggerOn);return g&&g.triggered});return triggeredPlans.map(p=>{const isBuy=(p.action||'buy')==='buy';const g=planGap(cp,p.price,p.action,p.triggerOn);const cls=isBuy?'buy':'sell';const dir=g.direction==='below'?'低于目标':'高于目标';return `<div class="trig-row ${cls}"><div class="trig-name">${esc(x.s.name)}</div><div class="trig-dist">${dir} ${g.absPct.toFixed(1)}%</div><div class="trig-desc"><span class="trig-tag">${isBuy?'▲ 加仓':'▼ 减仓'}</span>目标 ${fmtMaybe(p.price)} · ${fmtInt(p.shares)} 股${p.note?' · '+esc(p.note):''}</div><div class="trig-action"><button data-execute-stock="${x.s.id}" data-execute-plan="${p.id}">✓ 已执行 / 移除提示</button></div></div>`}).join('')}).join('')}</div><div class="alert" style="margin-top:10px">这些价位计划已经满足条件。点击「已执行」会从计划中删除这条；若只是先观望，可忽略不动。</div></div>`:'';const rebalPanel=rebalList.length?`<div class="card" style="border-left:3px solid var(--gold);margin-bottom:14px"><div class="card-title" style="color:var(--gold);margin-bottom:10px">⚖ 需要再平衡（偏差 > 5 个百分点 · ${rebalList.length} 只）</div><div class="trig-list">${rebalList.map(x=>{const over=x.info.status==='overweight';const cls=over?'sell':'buy';const sign=x.info.deviation>=0?'+':'';const act=getRebalanceAction(x.s,x.info,estAssets);const suggest=act?`<div class="trig-suggest"><span class="trig-tag">${act.direction==='sell'?'▼ 建议卖':'▲ 建议买'}</span>≈${fmtInt(act.shares)} 股 · 约 ${fmtMoney(act.money)}（按 ${fmtMaybe(act.unitPrice)}${act.currency==='HKD'?' HKD':''} 算）</div>`:'';return `<div class="trig-row ${cls}"><div class="trig-name">${esc(x.s.name)}</div><div class="trig-dist">${over?'超配':'低配'} ${sign}${x.info.deviation.toFixed(1)}%</div><div class="trig-desc"><span class="trig-tag">${over?(isCashRow(x.s)?'▼ 按优先级部署':'▼ 减仓'):'▲ 补仓'}</span>目标 ${x.info.target.toFixed(1)}% · 实际 ${x.info.actualPct.toFixed(1)}% · 市值 ${fmtMoney(x.info.mv)}</div>${suggest}</div>`}).join('')}</div><div class="alert" style="margin-top:10px">建议股数按 100 股粒度取整，实际下单请遵守港股/A股最小手数规则。</div></div>`:'';const trimAlerts=state.stocks.map(s=>({s,info:getPositionInfo(s,estAssets)})).map(x=>({s:x.s,info:x.info,act:getTrimAction(x.s,x.info,estAssets)})).filter(x=>x.act);const capAlerts=state.stocks.map(s=>({s,info:getPositionInfo(s,estAssets)})).filter(x=>{const cap=Number(x.s.capPct);return cap>0&&x.info&&x.info.actualPct!==null&&x.info.actualPct>=cap});const tb=themeBreaches(estAssets);const minCash=Number(((state.portfolioStrategy||{}).minimumCashPct)||(((state.portfolioStrategy||{}).cashRule||{}).minimumCashPct)||0);const cashPctNow=hasCashRow()?getCashMv()/(estAssets||1)*100:null;const discRows=[...capAlerts.map(x=>`<div class="trig-row sell"><div class="trig-name">${esc(x.s.name)}</div><div class="trig-dist">占比 ${x.info.actualPct.toFixed(1)}%</div><div class="trig-desc"><span class="trig-tag">✖ 冻结线</span>已≥冻结线 ${Number(x.s.capPct)}% —— 该标的一切买入计划暂停执行</div></div>`),...trimAlerts.map(x=>`<div class="trig-row sell"><div class="trig-name">${esc(x.s.name)}</div><div class="trig-dist">占比 ${x.info.actualPct.toFixed(1)}%</div><div class="trig-desc"><span class="trig-tag">▼ 削减线</span>已≥${x.act.trim}% → 按规则削回 ${x.act.toPct}%${x.act.sharesTxt?'（'+x.act.sharesTxt+'）':''}</div></div>`),...tb.map(t=>`<div class="trig-row ${t.level==='hard'?'sell':''}"><div class="trig-name">主题·${esc(t.name)}</div><div class="trig-dist">实际 ${t.a.toFixed(1)}%</div><div class="trig-desc"><span class="trig-tag">${t.level==='hard'?'✖ 超硬上限':'⚠ 超软上限'}</span>软 ${t.soft}% / 硬 ${t.hard}% —— 该主题新买入需过手册检查清单</div></div>`),...((cashPctNow!==null&&minCash>0&&cashPctNow<minCash)?[`<div class="trig-row sell"><div class="trig-name">现金底线</div><div class="trig-dist">实际 ${cashPctNow.toFixed(1)}%</div><div class="trig-desc"><span class="trig-tag">⚠ 低于底线</span>手册要求 ≥${minCash}%（仅多标的同时进入战略买点可短期至10%）</div></div>`]:[])];const discPanel=discRows.length?`<div class="card" style="border-left:3px solid var(--seal);margin-bottom:14px"><div class="card-title" style="color:var(--seal);margin-bottom:10px">🛑 纪律警报（${discRows.length} 条 · 依据手册规则实时计算）</div><div class="trig-list">${discRows.join('')}</div></div>`:'';const fxRiskHint=(state.stocks.some(s=>getCurrency(s)==='HKD')&&isDefaultFx())?`<div class="hint" style="border-left:3px solid var(--gold)"><b>汇率使用默认值</b>，港股市值和仓位占比可能有偏差。建议点击顶部「汇率」刷新或手动设置。</div>`:'';const noPriceHint=noPriceCount>0?`<div class="hint" style="border-left:3px solid var(--gold)"><b>⚑ ${noPriceCount} 只标的未填当前${noPriceCount===1?'价格/市值':'价格或市值'}</b>，这些标的的实际仓位和偏差无法计算，仪表盘数据可能不准确。建议进入对应分页补充。</div>`:'';document.getElementById('main').innerHTML=`${updateChecklistPanel()}${trigPanel}${discPanel}${rebalPanel}${stalePanel()}${noPriceHint}${fxRiskHint}<div class="hint"><b>定位：</b>这里不是第二个交易软件，不计算实时盈亏。它只记录"为什么买、什么情况下卖、到什么价位做什么"，用于减少关键位置的犹豫。${hasCashRow()?'总资产 = 全部持仓与「现金」行市值的真实合计（旧版按目标比例反推的口径已修正）。':'实际占比按「持有现金=目标现金比例」估算总资产；建议新增一行主题为「现金」的虚拟持仓以启用真实口径。'}港股(HKD)的市值已按 HKD→CNY 汇率折算为人民币后参与总市值与仓位偏差计算，点击顶部「汇率」按钮可联网刷新或手动设置。</div><div class="dash"><div class="card"><div class="card-title">资产目标合计</div><div class="card-num">${fmt(total,1)}%</div><div class="card-note">不含现金/机动资金。</div></div><div class="card"><div class="card-title">现金/机动</div><div class="card-num">${reserve>=0?fmt(reserve,1):'超'+fmt(Math.abs(reserve),1)}%</div><div class="card-note">${hasCashRow()?('实际现金 '+fmt(getCashMv()/(estAssets||1)*100,1)+'%（手册底线见纪律警报）'):'用于等待回调、补核心仓或风险缓冲。'}</div></div><div class="card"><div class="card-title">AI科技目标</div><div class="card-num">${fmt(ai,1)}%</div><div class="card-note">${(()=>{const l=((state.portfolioStrategy||{}).themeLimits||{})['AI科技'];return l?('软上限 '+l.softLimitPct+'% / 硬上限 '+l.hardLimitPct+'%（实际敞口见纪律警报）'):'建议总量约20%-30%，超出后少追。'})()}</div></div><div class="card"><div class="card-title">黄金资源目标</div><div class="card-num">${fmt(res,1)}%</div><div class="card-note">紫金+黄金ETF+有色需合并看。</div></div></div><div class="dash"><div class="card" style="grid-column:span 2"><div class="card-title">主题目标仓位</div><div class="bar-list">${bars(themeRows.concat([{name:'现金/机动',p:Math.max(reserve,0)}]))}</div>${reserve<0?'<div class="alert">目标仓位合计超过100%，需要降低部分标的目标仓位。</div>':(ai>30?'<div class="alert">AI科技目标仓位约30%，新增资金不宜继续集中追科技方向。</div>':'')}</div><div class="card" style="grid-column:span 2"><div class="card-title">角色目标仓位</div><div class="bar-list">${bars(roleRows)}</div>${res>25?'<div class="alert">黄金资源目标仓位超过25%，上涨阶段应以再平衡和止盈纪律为主。</div>':''}</div></div>`;document.querySelectorAll('[data-execute-stock]').forEach(b=>b.addEventListener('click',()=>executePlan(b.dataset.executeStock,b.dataset.executePlan)));document.querySelectorAll('[data-update-stock]').forEach(b=>b.addEventListener('click',()=>openStockDetail(b.dataset.updateStock)));const copyCodes=document.getElementById('copyUpdateCodesBtn');if(copyCodes)copyCodes.addEventListener('click',copyUpdateCodes);const copyPrompt=document.getElementById('copyUpdatePromptBtn');if(copyPrompt)copyPrompt.addEventListener('click',copyUpdatePrompt)}
+function render(){
+  const d=new Date();
+  document.getElementById('dateStamp').textContent=d.toISOString().slice(0,10).replace(/-/g,'.')+' · '+d.toLocaleDateString('zh-CN',{weekday:'long'});
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===currentTab));
+  document.getElementById('countHolding').textContent=state.stocks.filter(s=>s.type==='holding').length;
+  document.getElementById('countEtf').textContent=state.stocks.filter(s=>s.type==='etf').length;
+  document.getElementById('countWatching').textContent=state.stocks.filter(s=>s.type==='watching').length;
+  document.getElementById('syncHint').textContent=(state.updatedAt?'最后修改 · '+new Date(state.updatedAt).toLocaleString('zh-CN'):'')+backupReminderText();
+  const fxBtn=document.getElementById('fxBtn');
+  if(fxBtn)fxBtn.textContent=fxLabel();
+  const actions=document.getElementById('globalActions');
+  if(actions)actions.style.display=currentTab==='tools'&&!detailStockId?'':'none';
+  const socialStatus=document.getElementById('socialDataStatus');
+  if(socialStatus)socialStatus.style.display=currentTab==='tools'&&!detailStockId?'':'none';
+  if(detailStockId)renderStockDetail();
+  else if(currentTab==='dashboard')renderDashboard();
+  else if(currentTab==='logs')renderExecutionLog();
+  else if(currentTab==='analysis')renderAnalysisOverview();
+  else if(currentTab==='tools')renderTools();
+  else renderTable();
+}
+function renderDashboard(){
+  const summary=document.getElementById('summary');
+  const main=document.getElementById('main');
+  if(!state.stocks.length){
+    summary.innerHTML='暂无数据 · 请到「工具」页导入 JSON';
+    main.innerHTML='<div class="hint"><b>尚未导入组合数据。</b> 请进入「工具」页点击「导入JSON」选择之前导出的投资作战手册 JSON；程序不会再内置或自动恢复默认组合。</div><div class="empty">导入后这里会显示总览、触发计划、再平衡提示和待更新清单。</div>';
+    return;
+  }
+  const themeOrder=['宽基指数','黄金资源','AI科技','消费','防御','其他'];
+  const themes={};
+  state.stocks.forEach(s=>{
+    if(isCashRow(s))return;
+    const k=s.theme||'其他';
+    themes[k]=(themes[k]||0)+(getMarketValue(s)||0);
+  });
+  const totalMv=getTotalInvested();
+  const estAssets=getEstimatedTotalAssets();
+  const denominator=estAssets||totalMv||1;
+  const reserve=Math.max(0,100-state.stocks.reduce((a,b)=>a+(Number(b.targetPct)||0),0));
+  const themeRows=themeOrder
+    .filter(k=>themes[k]!==undefined||k==='其他')
+    .map(k=>({name:k,p:(themes[k]||0)/denominator*100}))
+    .filter(x=>x.p>0||x.name==='其他');
+  const roleMap={};
+  state.stocks.forEach(s=>{
+    if(isCashRow(s))return;
+    const k=s.role||'未分类';
+    roleMap[k]=(roleMap[k]||0)+(getMarketValue(s)||0);
+  });
+  const roleRows=Object.keys(roleMap).sort((a,b)=>String(a).localeCompare(String(b),'zh-CN')).map(k=>({name:k,p:roleMap[k]/denominator*100}));
+  const planRows=state.stocks.map(s=>({s,u:stockUrgency(s)})).filter(x=>x.u.triggered>0).sort((a,b)=>a.u.score-b.u.score);
+  const triggeredCount=planRows.reduce((sum,x)=>sum+x.u.triggered,0);
+  const positionRows=state.stocks.map(s=>({s,info:getPositionInfo(s,denominator)}));
+  const rebalRows=positionRows.map(x=>({s:x.s,info:x.info,action:getRebalanceAction(x.s,x.info,denominator)})).filter(x=>x.action).sort((a,b)=>Math.abs(b.info.deviation||0)-Math.abs(a.info.deviation||0));
+  const noPriceRows=positionRows.filter(x=>x.info&&x.info.status==='no-price');
+  const aiPct=(themeRows.find(x=>x.name==='AI科技')||{p:0}).p;
+  const resPct=(themeRows.find(x=>x.name==='黄金资源')||{p:0}).p;
+  summary.innerHTML=`总资产 <strong>${fmtMoney(estAssets||totalMv)}</strong> · 已投资 <strong>${fmtMoney(totalMv)}</strong> · 现金/预留 <strong>${fmt(reserve,1)}%</strong> · AI <strong>${fmt(aiPct,1)}%</strong> · 黄金资源 <strong>${fmt(resPct,1)}%</strong>`;
+
+  const triggeredPanel=planRows.length?`<div class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><div class="card-title">已触发价位计划（${triggeredCount} 条）</div><div class="trig-list">${planRows.map(({s})=>{const cp=getComparablePrice(s);const rows=(s.plans||[]).map(p=>({p,g:planGap(cp,p.price,p.action,p.triggerOn)})).filter(x=>x.g&&x.g.triggered);return rows.map(({p,g})=>`<div class="trig-row ${p.action==='sell'?'sell':'buy'}"><div class="trig-name">${esc(s.name)} <span class="muted">· ${p.action==='sell'?'减仓':'加仓'} · 触发价 ${fmtMaybe(p.price)}</span></div><div class="trig-dist">${fmtMaybe(cp)} / ${fmt(g.absPct,1)}%</div><div class="trig-desc">${esc(p.note||'已到达计划价位')} <button class="link-btn" data-execute-stock="${esc(s.id)}" data-execute-plan="${esc(p.id)}">记录执行</button></div></div>`).join('')}).join('')}</div></div>`:'<div class="card" style="margin-bottom:14px"><div class="card-title">触发提醒</div><div class="card-note">当前没有已触发的价位计划。</div></div>';
+
+  const rebalPanel=rebalRows.length?`<div class="card" style="margin-bottom:14px"><div class="card-title">再平衡提示（${rebalRows.length} 只）</div><div class="trig-list">${rebalRows.slice(0,8).map(x=>{const cls=x.info.status==='overweight'?'sell':'buy';const word=x.info.status==='overweight'?'超配':'低配';return `<div class="trig-row ${cls}"><div class="trig-name">${esc(x.s.name)} <span class="muted">· ${word} ${x.info.deviation>0?'+':''}${fmt(x.info.deviation,1)}%</span></div><div class="trig-dist">${fmtMoney(Math.abs(x.action.amount||0))}</div><div class="trig-desc">${esc(x.action.text||x.action.desc||'按目标仓位复核')}</div></div>`}).join('')}</div></div>`:'<div class="card" style="margin-bottom:14px"><div class="card-title">再平衡提示</div><div class="card-note">当前没有明显偏离目标仓位的标的。</div></div>';
+
+  const trimAlerts=positionRows.map(x=>({s:x.s,info:x.info,trim:getTrimAction(x.s,x.info,denominator)})).filter(x=>x.trim);
+  const capAlerts=positionRows.filter(x=>x.info&&x.info.actualPct!==null&&Number(x.s.capPct)>0&&x.info.actualPct>=Number(x.s.capPct));
+  const themeAlerts=themeBreaches(denominator);
+  const disciplineRows=[
+    ...capAlerts.map(x=>`<div class="trig-row sell"><div class="trig-name">${esc(x.s.name)} <span class="muted">· 冻结线</span></div><div class="trig-dist">${fmt(x.info.actualPct,1)}%</div><div class="trig-desc">已达到或超过 ${fmt(Number(x.s.capPct),1)}%，按纪律不应继续加仓。</div></div>`),
+    ...trimAlerts.map(x=>`<div class="trig-row sell"><div class="trig-name">${esc(x.s.name)} <span class="muted">· 削减线</span></div><div class="trig-dist">${fmt(x.info.actualPct,1)}%</div><div class="trig-desc">建议复核削减到 ${fmt(x.trim.toPct,1)}%。${x.trim.sharesTxt?esc(x.trim.sharesTxt):''}</div></div>`),
+    ...themeAlerts.map(x=>`<div class="trig-row sell"><div class="trig-name">${esc(x.name)} <span class="muted">· 主题上限</span></div><div class="trig-dist">${fmt(x.a,1)}%</div><div class="trig-desc">${x.level==='hard'?'已达硬上限':'已达软上限'}，需控制新增仓位。</div></div>`)
+  ];
+  const disciplinePanel=disciplineRows.length?`<div class="card" style="margin-bottom:14px;border-left:3px solid var(--gold)"><div class="card-title">纪律规则提醒（${disciplineRows.length} 项）</div><div class="trig-list">${disciplineRows.join('')}</div></div>`:'';
+  const noPriceHint=noPriceRows.length?`<div class="alert" style="margin-bottom:14px">有 ${noPriceRows.length} 只标的缺少有效价格/市值，仓位和再平衡计算可能不完整。</div>`:'';
+  const fxRiskHint=isDefaultFx()?'<div class="alert" style="margin-bottom:14px">汇率使用默认值，港股市值和仓位占比可能有偏差。可到「工具」页更新 HKD→CNY 汇率。</div>':'';
+  main.innerHTML=`${updateChecklistPanel()}${triggeredPanel}${disciplinePanel}${rebalPanel}${stalePanel()}${noPriceHint}${fxRiskHint}<div class="hint"><b>关键摘要：</b>系统工具已迁移到「工具」页；总览页只保留资产结构、触发提醒、再平衡提示和待更新清单。</div><div class="dash"><div class="card"><div class="card-title">按主题分布</div>${bars(themeRows)}</div><div class="card"><div class="card-title">按仓位角色分布</div>${bars(roleRows)}</div></div>`;
+  document.querySelectorAll('[data-execute-stock]').forEach(b=>b.addEventListener('click',()=>executePlan(b.dataset.executeStock,b.dataset.executePlan)));
+  document.querySelectorAll('[data-update-stock]').forEach(el=>el.addEventListener('click',()=>openStockDetail(el.dataset.updateStock)));
+  const copyCodes=document.getElementById('copyUpdateCodesBtn');
+  if(copyCodes)copyCodes.addEventListener('click',copyUpdateCodes);
+  const copyPrompt=document.getElementById('copyUpdatePromptBtn');
+  if(copyPrompt)copyPrompt.addEventListener('click',copyUpdatePrompt);
+}
+function renderTools(){
+  const last=state.updatedAt?new Date(state.updatedAt).toLocaleString('zh-CN'):'—';
+  const count=state.stocks.length;
+  document.getElementById('summary').innerHTML=`工具 · 标的 <strong>${count}</strong> 只 · 本地最后修改 <strong>${esc(last)}</strong>`;
+  document.getElementById('main').innerHTML=`<div class="hint"><b>系统工具集中区：</b>导入、导出、汇率、价格刷新、新增标的和清空本地数据已集中到这里。总览、个股、ETF、观察和分析总览页面只保留分析内容。</div><div class="dash"><div class="card"><div class="card-title">数据导入 / 备份</div><div class="text" style="max-width:none">使用上方按钮导入旧版 JSON、导出当前完整数据，或导入同目录社媒数据。导入前程序仍会按原逻辑提示备份。</div></div><div class="card"><div class="card-title">行情 / 汇率</div><div class="text" style="max-width:none">使用上方「汇率」设置 HKD→CNY，或「刷新全部价格」更新价格。刷新失败时仍保留旧价格。</div></div><div class="card"><div class="card-title">标的维护</div><div class="text" style="max-width:none">新增标的、清空本地数据等低频管理操作统一放在工具页，避免干扰个股分析。</div></div><div class="card"><div class="card-title">远程控制预留</div><div class="text" style="max-width:none">手机远程触发仍使用 <code>docs/remote_control.html</code> 和 <code>remote_commands/command.json</code>。未来云端/远程入口也建议集中放在本页。</div></div></div>`;
+}
 function bars(rows){return rows.map(r=>`<div class="bar-row"><div>${esc(r.name)}</div><div class="bar-bg"><div class="bar ${r.name.includes('AI')?'ai':r.name.includes('黄金')?'res':r.name.includes('核心')||r.name.includes('宽基')?'core':r.name.includes('卫星')?'sat':''}" style="width:${Math.min(100,r.p)}%"></div></div><div class="num">${fmt(r.p,1)}%</div></div>`).join('')}
 function filtered(){return state.stocks.filter(s=>s.type===currentTab)}
 function renderTable(){const raw=filtered();const total=getEstimatedTotalAssets();const withU=raw.map(s=>({s,u:stockUrgency(s),info:getPositionInfo(s,total)}));withU.sort((a,b)=>a.u.score-b.u.score);const arr=withU.map(x=>x.s);const totalTrig=withU.reduce((a,b)=>a+b.u.triggered,0);const tabMv=raw.reduce((a,s)=>a+(getMarketValue(s)||0),0);const overweights=withU.filter(x=>x.info&&x.info.status==='overweight').length;const underweights=withU.filter(x=>x.info&&x.info.status==='underweight').length;const typeName=currentTab==='holding'?'个股':currentTab==='etf'?'ETF':'观察';const trigBadge=totalTrig>0?` · <strong style="color:var(--seal)">⚠ 已触发 ${totalTrig} 条</strong>`:'';const rebalBadge=(overweights+underweights)>0?` · <strong style="color:var(--gold)">⚖ 偏差>5% ${overweights+underweights} 只</strong>`:'';document.getElementById('summary').innerHTML=`${typeName} <strong>${arr.length}</strong> 只 · 目标 <strong>${fmt(arr.reduce((a,b)=>a+(Number(b.targetPct)||0),0),1)}%</strong> · 市值 <strong>${fmtMoney(tabMv)}</strong>${trigBadge}${rebalBadge}`;const main=document.getElementById('main');if(!arr.length){main.innerHTML='<div class="empty">暂无标的</div>';return}const trigAlert=totalTrig>0?`<div class="alert-trig">⚠ 当前有 ${totalTrig} 条价位计划已触发，已置顶显示。</div>`:'';main.innerHTML=`${trigAlert}<div class="table-wrap"><table><colgroup><col style="width:7%"><col style="width:6.5%"><col style="width:9.5%"><col style="width:16%"><col style="width:19%"><col style="width:14.5%"><col style="width:5.5%"><col style="width:9.5%"><col style="width:6%"><col style="width:6.5%"></colgroup><thead><tr><th>名称</th><th>定位/主题</th><th>目标/实际</th><th>为什么持有</th><th>加仓/建仓动作</th><th>卖出/降仓条件</th><th>成本</th><th>${currentTab==='etf'?'当前市值':'当前价格'}</th><th>数量</th><th>操作</th></tr></thead><tbody>${arr.map(s=>row(s,total)+(typeof socialPanel==='function'?socialPanel(s):'')).join('')}</tbody></table></div>`;main.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.action==='detail')openStockDetail(b.dataset.id);if(b.dataset.action==='refresh')refreshOnePrice(b.dataset.id);if(b.dataset.action==='edit')openModal(b.dataset.id);if(b.dataset.action==='delete')del(b.dataset.id)}))}
@@ -974,6 +1065,74 @@ function technicalSignalPanel(stock){
   const history=normalizePriceHistory(stock);
   const last=history.length?history[history.length-1].date:'—';
   return `<div class="card" style="margin-bottom:14px"><div class="card-title">技术面自动评分 <button class="link-btn" data-detail-action="edit-technical" style="float:right">编辑技术数据</button></div><div class="dash" style="margin:0"><div><div class="card-num">${fmtMaybe(sig.technicalScore,1)}<span style="font-size:13px;color:var(--ink3)"> / 10</span></div><div class="card-note">状态 ${esc(technicalStatusLabel(sig.technicalStatus))}</div></div><div><div class="card-title">历史价格</div><div class="card-note">${history.length} 条 · 最近 ${esc(last)}</div></div><div><div class="card-title">均线</div><div class="card-note">MA20 ${fmtMaybe(td.ma20,2)} · MA60 ${fmtMaybe(td.ma60,2)} · MA120 ${fmtMaybe(td.ma120,2)}</div></div><div><div class="card-title">支撑 / 压力</div><div class="card-note">${fmtMaybe(td.supportPrice,2)} / ${fmtMaybe(td.resistancePrice,2)} · ${esc(td.lastUpdated||'—')}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>摘要：</b>${esc(sig.technicalSummary)}<br><b>信号：</b><br>${(sig.signals||[]).slice(0,3).map(esc).join('<br>')||'—'}<br><b>提醒：</b><br>${(sig.warnings||[]).slice(0,3).map(esc).join('<br>')||'—'}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="import-history">导入历史价格CSV</button><button class="btn ghost small" data-detail-action="update-technical-history">从历史价格更新技术数据</button><button class="btn ghost small" data-detail-action="apply-technical">应用到九模块技术评分</button></div></div>`;
+}
+function technicalLevelList(items){
+  const arr=Array.isArray(items)?items:[];
+  return arr.length?arr.map(x=>`<span class="pill">${esc(x)}</span>`).join(' '):'—';
+}
+function technicalVolumeStatus(td){
+  if(!(td.volume>0))return '—';
+  if(td.volumeAvg20>0){
+    const ratio=td.volume/td.volumeAvg20;
+    if(ratio>=1.5)return `放量 · 当前/20日均量 ${ratio.toFixed(2)}x`;
+    if(ratio<=.7)return `缩量 · 当前/20日均量 ${ratio.toFixed(2)}x`;
+    return `量能接近均量 · ${ratio.toFixed(2)}x`;
+  }
+  return fmtInt(td.volume);
+}
+function technicalAnalysisPromptText(stock){
+  normalizeStockAnalysis(stock);
+  const td=normalizeTechnicalData(stock.technicalData);
+  const strategy=normalizeStrategy(stock.strategy,stock);
+  const schema={symbol:'',timeframe:'daily',price:null,priceUpdatedAt:'',ma5:null,ma10:null,ma20:null,ma60:null,volume:null,volumeAvg20:null,trendStatus:'',supportLevels:[],resistanceLevels:[],technicalSummary:'',riskFlags:[],actionHint:''};
+  const ctx={
+    stockName:stock.name||'',
+    symbol:stock.code||td.symbol||'',
+    shares:Number(stock.shares)||0,
+    avgCost:stock.avgCost||'',
+    currentPrice:stock.currentPrice||td.price||'',
+    strategy,
+    existingTechnicalData:td
+  };
+  return [
+    '你是一名严谨的技术面分析助手。',
+    '',
+    '请根据我提供的 K 线截图、行情数据或文字资料，整理当前股票的技术面结构化 JSON。',
+    '不要联网，不要编造截图里看不见的数据；看不清或无法判断的字段请填 null、空字符串或空数组。',
+    '不要给确定性买卖指令，只输出技术面辅助判断。',
+    '只输出严格 JSON，不要 Markdown，不要解释，不要代码块。',
+    '',
+    '当前股票上下文：',
+    JSON.stringify(ctx,null,2),
+    '',
+    '输出字段要求：',
+    '- symbol：股票代码。',
+    '- timeframe：daily / weekly / monthly / intraday。',
+    '- price：当前截图或行情中的价格，无法判断填 null。',
+    '- priceUpdatedAt：行情日期，格式 YYYY-MM-DD。',
+    '- ma5 / ma10 / ma20 / ma60：均线数值，无法判断填 null。',
+    '- volume / volumeAvg20：成交量和20日均量，无法判断填 null。',
+    '- trendStatus：趋势判断，例如 uptrend / sideways / downtrend / rebound / breakdown。',
+    '- supportLevels：支撑位数组。',
+    '- resistanceLevels：压力位数组。',
+    '- technicalSummary：一句话技术面摘要。',
+    '- riskFlags：技术面风险数组。',
+    '- actionHint：操作提示，例如“等待突破确认”“接近支撑位观察”“跌破均线需谨慎”。',
+    '',
+    '请严格按以下 JSON 结构输出：',
+    JSON.stringify(schema,null,2)
+  ].join('\n');
+}
+function copyTechnicalAnalysisPrompt(){
+  const stock=state.stocks.find(x=>x.id===detailStockId);
+  if(!stock)return;
+  copyText(technicalAnalysisPromptText(stock),'技术面分析 Prompt 已复制。');
+}
+function technicalAnalysisPanel(stock){
+  const td=normalizeTechnicalData(stock.technicalData);
+  const maText=`MA5 ${fmtMaybe(td.ma5,2)} · MA10 ${fmtMaybe(td.ma10,2)} · MA20 ${fmtMaybe(td.ma20,2)} · MA60 ${fmtMaybe(td.ma60,2)}`;
+  const updated=td.priceUpdatedAt||td.lastUpdated||'—';
+  return `<div class="card" style="margin-bottom:14px"><div class="card-title">技术面分析</div><div class="dash" style="margin:0"><div><div class="card-title">当前价格</div><div class="card-num">${fmtMaybe(td.price!==null?td.price:stockCurrentPrice(stock),2)}</div><div class="card-note">${esc(td.timeframe||'daily')} · ${esc(updated)}</div></div><div><div class="card-title">均线状态</div><div class="card-note">${maText}</div></div><div><div class="card-title">成交量状态</div><div class="card-note">${esc(technicalVolumeStatus(td))}</div></div><div><div class="card-title">趋势判断</div><div class="card-note">${esc(td.trendStatus||'—')}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>支撑位：</b>${technicalLevelList(td.supportLevels)}<br><b>压力位：</b>${technicalLevelList(td.resistanceLevels)}<br><b>技术面风险：</b>${td.riskFlags.length?td.riskFlags.map(esc).join('；'):'—'}<br><b>操作提示：</b>${esc(td.actionHint||'—')}<br><b>摘要：</b>${esc(td.technicalSummary||td.trendNote||'—')}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-technical-prompt">复制技术面分析 Prompt</button><button class="btn ghost small" data-detail-action="import-technical-json">导入技术面 JSON</button></div></div>`;
 }
 function valuationSignalPanel(stock){
   const vd=normalizeValuationData(stock.valuationData);
@@ -1694,7 +1853,9 @@ function closeTechnicalDataModal(){
 function saveTechnicalData(){
   const stock=state.stocks.find(x=>x.id===detailStockId);
   if(!stock)return;
+  const current=normalizeTechnicalData(stock.technicalData);
   stock.technicalData=normalizeTechnicalData({
+    ...current,
     ma20:document.getElementById('tdMa20').value,
     ma60:document.getElementById('tdMa60').value,
     ma120:document.getElementById('tdMa120').value,
@@ -1707,6 +1868,56 @@ function saveTechnicalData(){
   saveState();
   closeTechnicalDataModal();
   render();
+}
+function ensureTechnicalJsonImportModal(){
+  let el=document.getElementById('technicalJsonImportModal');
+  if(el)return el;
+  el=document.createElement('div');
+  el.className='modal-bg';
+  el.id='technicalJsonImportModal';
+  el.innerHTML=`<div class="modal"><h2>导入技术面 JSON</h2><div class="modal-sub">仅写入当前股票 technicalData，不覆盖九模块评分、价格刷新结果或操作建议。</div><div class="form-row"><label>粘贴 JSON</label><textarea id="technicalJsonImportText" style="min-height:280px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"symbol\":\"1810.HK\",\"timeframe\":\"daily\",\"price\":26,\"ma5\":25.8,\"supportLevels\":[25],\"resistanceLevels\":[28],\"technicalSummary\":\"...\"}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="technicalJsonImportCancelBtn" type="button">取消</button><button class="btn" id="technicalJsonImportSaveBtn" type="button">导入技术面数据</button></div></div>`;
+  document.body.appendChild(el);
+  el.addEventListener('click',e=>{if(e.target.id==='technicalJsonImportModal')closeTechnicalJsonImportModal()});
+  document.getElementById('technicalJsonImportCancelBtn').addEventListener('click',closeTechnicalJsonImportModal);
+  document.getElementById('technicalJsonImportSaveBtn').addEventListener('click',importTechnicalJson);
+  return el;
+}
+function openTechnicalJsonImportModal(){
+  const stock=state.stocks.find(x=>x.id===detailStockId);
+  if(!stock)return;
+  const modal=ensureTechnicalJsonImportModal();
+  document.getElementById('technicalJsonImportText').value='';
+  modal.classList.add('show');
+  setTimeout(()=>document.getElementById('technicalJsonImportText').focus(),50);
+}
+function closeTechnicalJsonImportModal(){
+  const modal=document.getElementById('technicalJsonImportModal');
+  if(modal)modal.classList.remove('show');
+}
+function importTechnicalJson(){
+  const stock=state.stocks.find(x=>x.id===detailStockId);
+  if(!stock)return;
+  const original={technicalData:JSON.parse(JSON.stringify(stock.technicalData||{})),dataFreshness:JSON.parse(JSON.stringify(stock.dataFreshness||{}))};
+  let parsed;
+  try{parsed=extractFirstJsonObject(document.getElementById('technicalJsonImportText').value)}catch(e){alert('导入失败：JSON 无法解析。');return}
+  try{
+    const payload=(parsed&&typeof parsed==='object'&&parsed.technicalData&&typeof parsed.technicalData==='object')?parsed.technicalData:parsed;
+    if(!payload||typeof payload!=='object'||Array.isArray(payload))throw new Error('JSON 必须是技术面对象，或顶层包含 technicalData 对象。');
+    const merged={...normalizeTechnicalData(stock.technicalData),...payload};
+    if(!merged.symbol)merged.symbol=stock.code||stock.symbol||'';
+    if(!merged.priceUpdatedAt)merged.priceUpdatedAt=todayDate();
+    if(!merged.lastUpdated)merged.lastUpdated=new Date().toISOString();
+    stock.technicalData=normalizeTechnicalData(merged);
+    touchDataFreshness(stock,'technicalUpdatedAt',stock.technicalData.priceUpdatedAt||todayDate());
+    saveState();
+    closeTechnicalJsonImportModal();
+    render();
+    alert('技术面 JSON 已导入。九模块技术评分和操作建议未自动修改。');
+  }catch(err){
+    stock.technicalData=original.technicalData;
+    stock.dataFreshness=original.dataFreshness;
+    alert('导入失败：'+(err&&err.message?err.message:String(err)));
+  }
 }
 function csvRows(text){
   const rows=[];
@@ -2174,9 +2385,9 @@ function renderStockDetail(){
   const actual=info&&info.actualPct!==null?info.actualPct:null;
   const deviation=info&&info.deviation!==null?`${info.deviation>=0?'+':''}${info.deviation.toFixed(1)}%`:'—';
   document.getElementById('summary').innerHTML=`标的详情 · <strong>${esc(s.name)}</strong> · ${esc(s.role||'—')} · ${esc(s.theme||'—')}`;
-  document.getElementById('main').innerHTML=`<div class="toolbar"><button class="btn ghost small" id="backToListBtn">返回列表</button><div class="actions"><button class="btn small" data-detail-action="ai-assistant">AI助手</button><button class="btn ghost small" data-detail-action="financial-source">财报助手</button><button class="btn ghost small" data-detail-action="valuation-source">估值助手</button><button class="btn ghost small" data-detail-action="template">套用分析模板</button><button class="btn ghost small" data-detail-action="ai-prompt">生成分析提示词</button><button class="btn ghost small" data-detail-action="ai-import">导入AI分析JSON</button><button class="btn ghost small" data-detail-action="ai-strategy-import">导入AI策略JSON</button><button class="btn ghost small" data-detail-action="refresh">${s.type==='etf'?'刷新市值':'刷新价格'}</button><button class="btn ghost small" data-detail-action="edit">编辑</button></div></div><div class="dash"><div class="card"><div class="card-title">持仓</div><div class="card-num">${fmtInt(s.shares)}</div><div class="card-note">市值 ${fmtMoney(mv)}</div></div><div class="card"><div class="card-title">成本 / 当前价</div><div class="card-num">${fmtMaybe(s.avgCost)} / ${s.type==='etf'?fmtMaybe(s.currentValue,0):fmtMaybe(s.currentPrice)}</div><div class="card-note">${currentDisplay(s)}</div></div><div class="card"><div class="card-title">目标 / 实际仓位</div><div class="card-num">${fmtMaybe(s.targetPct,1)}% / ${actual===null?'—':actual.toFixed(1)+'%'}</div><div class="card-note">偏差 ${deviation}</div></div><div class="card"><div class="card-title">纪律状态 / 分析评分</div><div class="card-num">${info?info.status:'—'}</div><div class="card-note">分析评分 ${fmtMaybe(s.analysisScore,1)}/10 · 削减线 ${fmtMaybe(s.trimPct,1)}% · 冻结线 ${fmtMaybe(s.capPct,1)}%</div></div></div>${decisionPanel(s)}${freshnessPanel(s)}${dataFreshnessPanel(s)}${collectionPanel(s)}${technicalAnalysisFlowPanel()}${financialAnalysisFlowPanel()}${unifiedPromptPanel(s)}${comprehensivePackagePanel(s)}${aiReviewImportPanel(s)}${aiReviewSummaryPanel(s)}${technicalSignalPanel(s)}${valuationSignalPanel(s)}${financialSignalPanel(s)}<div class="dash"><div class="card" style="grid-column:span 2"><div class="card-title">纪律规则</div><div class="text" style="max-width:none"><b>持有逻辑：</b>${esc(s.thesis||s.notes||'—')}<br><br><b>卖出/降仓：</b>${esc(s.sellRule||'—')}<br><br><b>加仓规则：</b>${esc(s.buyRule||'—')}</div></div><div class="card" style="grid-column:span 2"><div class="card-title">社媒舆情</div>${stockSocialSummary(s)}</div></div>${analysisInputsPanel(s)}${analysisFrameworkPanel(s)}<div class="dash"><div class="card" style="grid-column:span 2"><div class="card-title">加仓计划</div>${planListHtml(s.plans,'buy',cp)}</div><div class="card" style="grid-column:span 2"><div class="card-title">减仓计划</div>${planListHtml(s.plans,'sell',cp)}</div></div><div class="card"><div class="card-title">操作记录</div>${stockExecutionRows(s.name)}</div>`;
+  document.getElementById('main').innerHTML=`<div class="toolbar"><button class="btn ghost small" id="backToListBtn">返回列表</button><div class="actions"><button class="btn small" data-detail-action="ai-assistant">AI助手</button><button class="btn ghost small" data-detail-action="financial-source">财报助手</button><button class="btn ghost small" data-detail-action="valuation-source">估值助手</button><button class="btn ghost small" data-detail-action="template">套用分析模板</button><button class="btn ghost small" data-detail-action="ai-prompt">生成分析提示词</button><button class="btn ghost small" data-detail-action="ai-import">导入AI分析JSON</button><button class="btn ghost small" data-detail-action="ai-strategy-import">导入AI策略JSON</button><button class="btn ghost small" data-detail-action="refresh">${s.type==='etf'?'刷新市值':'刷新价格'}</button><button class="btn ghost small" data-detail-action="edit">编辑</button></div></div><div class="dash"><div class="card"><div class="card-title">持仓</div><div class="card-num">${fmtInt(s.shares)}</div><div class="card-note">市值 ${fmtMoney(mv)}</div></div><div class="card"><div class="card-title">成本 / 当前价</div><div class="card-num">${fmtMaybe(s.avgCost)} / ${s.type==='etf'?fmtMaybe(s.currentValue,0):fmtMaybe(s.currentPrice)}</div><div class="card-note">${currentDisplay(s)}</div></div><div class="card"><div class="card-title">目标 / 实际仓位</div><div class="card-num">${fmtMaybe(s.targetPct,1)}% / ${actual===null?'—':actual.toFixed(1)+'%'}</div><div class="card-note">偏差 ${deviation}</div></div><div class="card"><div class="card-title">纪律状态 / 分析评分</div><div class="card-num">${info?info.status:'—'}</div><div class="card-note">分析评分 ${fmtMaybe(s.analysisScore,1)}/10 · 削减线 ${fmtMaybe(s.trimPct,1)}% · 冻结线 ${fmtMaybe(s.capPct,1)}%</div></div></div>${decisionPanel(s)}${freshnessPanel(s)}${dataFreshnessPanel(s)}${collectionPanel(s)}${technicalAnalysisFlowPanel()}${financialAnalysisFlowPanel()}${unifiedPromptPanel(s)}${comprehensivePackagePanel(s)}${aiReviewImportPanel(s)}${aiReviewSummaryPanel(s)}${technicalAnalysisPanel(s)}${technicalSignalPanel(s)}${valuationSignalPanel(s)}${financialSignalPanel(s)}<div class="dash"><div class="card" style="grid-column:span 2"><div class="card-title">纪律规则</div><div class="text" style="max-width:none"><b>持有逻辑：</b>${esc(s.thesis||s.notes||'—')}<br><br><b>卖出/降仓：</b>${esc(s.sellRule||'—')}<br><br><b>加仓规则：</b>${esc(s.buyRule||'—')}</div></div><div class="card" style="grid-column:span 2"><div class="card-title">社媒舆情</div>${stockSocialSummary(s)}</div></div>${analysisInputsPanel(s)}${analysisFrameworkPanel(s)}<div class="dash"><div class="card" style="grid-column:span 2"><div class="card-title">加仓计划</div>${planListHtml(s.plans,'buy',cp)}</div><div class="card" style="grid-column:span 2"><div class="card-title">减仓计划</div>${planListHtml(s.plans,'sell',cp)}</div></div><div class="card"><div class="card-title">操作记录</div>${stockExecutionRows(s.name)}</div>`;
   document.getElementById('backToListBtn').addEventListener('click',closeStockDetail);
-  document.querySelectorAll('[data-detail-action]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.detailAction==='refresh')refreshOnePrice(s.id);if(b.dataset.detailAction==='edit')openModal(s.id);if(b.dataset.detailAction==='ai-assistant')openAiAssistant();if(b.dataset.detailAction==='financial-source')openFinancialSourceAssistant();if(b.dataset.detailAction==='valuation-source')openValuationSourceAssistant();if(b.dataset.detailAction==='ai-prompt')openAiAnalysisPrompt();if(b.dataset.detailAction==='ai-import')openAiAnalysisImport();if(b.dataset.detailAction==='ai-strategy-import')openAiAssistantTask('strategy');if(b.dataset.detailAction==='edit-inputs')openAnalysisInputsEditor();if(b.dataset.detailAction==='template')openAnalysisTemplateModal();if(b.dataset.detailAction==='edit-strategy')openStrategyEditor();if(b.dataset.detailAction==='edit-technical')openTechnicalDataEditor();if(b.dataset.detailAction==='import-history')importPriceHistoryCsv();if(b.dataset.detailAction==='update-technical-history')updateTechnicalFromHistoryForDetail();if(b.dataset.detailAction==='apply-technical')applyTechnicalSignalToAnalysis();if(b.dataset.detailAction==='edit-valuation')openValuationDataEditor();if(b.dataset.detailAction==='apply-valuation')applyValuationSignalToAnalysis();if(b.dataset.detailAction==='edit-financial')openFinancialDataEditor();if(b.dataset.detailAction==='import-financial')openFinancialImportModal();if(b.dataset.detailAction==='apply-financial')applyFinancialSignalToAnalysis()}));
+  document.querySelectorAll('[data-detail-action]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.detailAction==='refresh')refreshOnePrice(s.id);if(b.dataset.detailAction==='edit')openModal(s.id);if(b.dataset.detailAction==='ai-assistant')openAiAssistant();if(b.dataset.detailAction==='financial-source')openFinancialSourceAssistant();if(b.dataset.detailAction==='valuation-source')openValuationSourceAssistant();if(b.dataset.detailAction==='ai-prompt')openAiAnalysisPrompt();if(b.dataset.detailAction==='ai-import')openAiAnalysisImport();if(b.dataset.detailAction==='ai-strategy-import')openAiAssistantTask('strategy');if(b.dataset.detailAction==='edit-inputs')openAnalysisInputsEditor();if(b.dataset.detailAction==='template')openAnalysisTemplateModal();if(b.dataset.detailAction==='edit-strategy')openStrategyEditor();if(b.dataset.detailAction==='copy-technical-prompt')copyTechnicalAnalysisPrompt();if(b.dataset.detailAction==='import-technical-json')openTechnicalJsonImportModal();if(b.dataset.detailAction==='edit-technical')openTechnicalDataEditor();if(b.dataset.detailAction==='import-history')importPriceHistoryCsv();if(b.dataset.detailAction==='update-technical-history')updateTechnicalFromHistoryForDetail();if(b.dataset.detailAction==='apply-technical')applyTechnicalSignalToAnalysis();if(b.dataset.detailAction==='edit-valuation')openValuationDataEditor();if(b.dataset.detailAction==='apply-valuation')applyValuationSignalToAnalysis();if(b.dataset.detailAction==='edit-financial')openFinancialDataEditor();if(b.dataset.detailAction==='import-financial')openFinancialImportModal();if(b.dataset.detailAction==='apply-financial')applyFinancialSignalToAnalysis()}));
   document.querySelectorAll('[data-collection-action="save"]').forEach(b=>b.addEventListener('click',saveCollectionInputs));
   document.querySelectorAll('[data-collection-prompt]').forEach(b=>b.addEventListener('click',()=>copyCollectionPrompt(b.dataset.collectionPrompt)));
   const copyFinancialIntegratedFromCollection=document.getElementById('copyFinancialIntegratedPromptFromCollectionBtn');

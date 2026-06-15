@@ -18,6 +18,7 @@ docs/remote_control.html
    - 更新新闻 `update-news`
    - 全量更新 `update-all`
    - 重新生成 HTML `build-html`
+   - 更新技术面 `update-technical`（预留命令，当前只写入 report，不抓取真实行情）
 4. 页面会生成完整 JSON。
 5. 点击“一键复制 JSON”。
 6. 到 GitHub 仓库中打开 `remote_commands/command.json`。
@@ -113,6 +114,7 @@ docs/windows_startup.md
 - `update-news`
 - `update-all`
 - `build-html`
+- `update-technical`（预留，当前提示 not implemented yet）
 
 ## 执行完成后
 

@@ -53,6 +53,10 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "build-html":
             output_paths = build_html(root)
             success = True
+        elif args.command == "update-technical":
+            success = True
+            error_message = "not implemented yet: technical data update is reserved for future local automation."
+            print(error_message)
         else:
             raise ValueError(f"Unsupported command: {args.command}")
     except Exception as exc:
@@ -75,8 +79,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Mobile-friendly local trigger for the investment manual project.")
     parser.add_argument(
         "command",
-        choices=("update-news", "update-all", "build-html"),
-        help="update-news runs run_pipeline.py --source news; update-all is reserved and currently runs news; build-html rebuilds latest dist HTML.",
+        choices=("update-news", "update-all", "build-html", "update-technical"),
+        help="update-news runs run_pipeline.py --source news; update-all is reserved and currently runs news; build-html rebuilds latest dist HTML; update-technical is reserved.",
     )
     return parser
 
@@ -88,6 +92,8 @@ def trigger_command_text(command: str) -> str:
         return "python run_pipeline.py --source news"
     if command == "build-html":
         return "build latest HTML from index.html and src/*.js"
+    if command == "update-technical":
+        return "update technical data (reserved; not implemented yet)"
     return command
 
 

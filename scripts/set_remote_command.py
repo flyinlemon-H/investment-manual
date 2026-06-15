@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 
 
-VALID_COMMANDS = ("update-news", "update-all", "build-html")
+VALID_COMMANDS = ("update-news", "update-all", "build-html", "update-technical")
 SECRET_FILE = Path("config") / "remote_secret.txt"
 
 

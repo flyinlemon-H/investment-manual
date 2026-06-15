@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 
-ALLOWED_COMMANDS = {"update-news", "update-all", "build-html"}
+ALLOWED_COMMANDS = {"update-news", "update-all", "build-html", "update-technical"}
 VALID_COMMANDS = ALLOWED_COMMANDS
 COMMAND_FILE = Path("remote_commands") / "command.json"
 REPORT_FILE = Path("logs") / "remote_command_report.json"
