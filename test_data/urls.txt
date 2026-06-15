@@ -1,0 +1,3 @@
+# Replace these examples with real public web pages when running manually.
+https://example.com/news/alpha-robotics
+https://example.com/news/beta-energy

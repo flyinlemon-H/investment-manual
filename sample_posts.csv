@@ -1,0 +1,7 @@
+platform,author,content,posted_at,url,likes,comments,tags,summary,risk_points
+x,@market_watch,"小米集团 1810.HK 汽车交付继续超预期，SU7 订单热度高，手机高端化也有支撑。",2026-06-12T09:10:00+08:00,https://example.com/posts/xiaomi-1,320,48,"小米;SU7;交付","小米汽车和手机业务热度较高。","汽车产能爬坡仍需观察"
+forum,value_hunter,"紫金矿业受益黄金价格和铜矿扩张，但金属价格波动会放大利润弹性。",2026-06-12T10:20:00+08:00,https://example.com/posts/zijin-1,186,32,"紫金;黄金;铜矿","市场关注紫金矿业资源扩张和金价。","商品价格回落风险"
+news,user_macro,"工业富联 601138 AI服务器订单景气度仍高，算力链条短期情绪偏正面。",2026-06-12T11:30:00+08:00,https://example.com/posts/fii-1,210,36,"工业富联;AI服务器;算力","工业富联受益 AI 服务器需求。","估值波动风险"
+x,@consumer_note,"东鹏饮料渠道动销稳定，能量饮料旺季表现值得跟踪。",2026-06-12T13:00:00+08:00,https://example.com/posts/dongpeng-1,74,9,"东鹏饮料;能量饮料","东鹏饮料旺季销售被讨论。","消费需求放缓风险"
+forum,optical_chain,"长飞光纤 6869.HK 受数据中心和光纤需求关注，但订单兑现节奏仍不确定。",2026-06-12T14:15:00+08:00,https://example.com/posts/yangtze-1,58,11,"长飞光纤;数据中心;光纤","长飞光纤受益数据中心建设预期。","订单兑现不确定"
+x,@empty_time,"小米汽车交付热度仍在，但这条缺少时间，采集器应跳过。",,https://example.com/posts/no-time,10,1,"小米","缺少时间的测试行。",""

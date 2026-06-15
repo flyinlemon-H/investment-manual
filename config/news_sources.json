@@ -1,0 +1,72 @@
+[
+  {
+    "name": "MarketWatch Top Stories",
+    "url": "https://feeds.content.dowjones.io/public/rss/mw_topstories",
+    "platform": "news"
+  },
+  {
+    "name": "CNBC Top News",
+    "url": "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+    "platform": "news"
+  },
+  {
+    "name": "CNBC Technology",
+    "url": "https://www.cnbc.com/id/19854910/device/rss/rss.html",
+    "platform": "news"
+  },
+  {
+    "name": "NVIDIA Blog",
+    "url": "https://blogs.nvidia.com/feed/",
+    "platform": "news"
+  },
+  {
+    "name": "MIT News AI",
+    "url": "https://news.mit.edu/rss/topic/artificial-intelligence2",
+    "platform": "news"
+  },
+  {
+    "name": "Semiconductor Engineering",
+    "url": "https://semiengineering.com/feed/",
+    "platform": "news"
+  },
+  {
+    "name": "MINING.com",
+    "url": "https://www.mining.com/feed/",
+    "platform": "news"
+  },
+  {
+    "name": "Google News - 小米集团 1810.HK",
+    "url": "https://news.google.com/rss/search?q=%E5%B0%8F%E7%B1%B3%E9%9B%86%E5%9B%A2%20OR%20%E5%B0%8F%E7%B1%B3%E6%B1%BD%E8%BD%A6%20OR%201810.HK&hl=zh-CN&gl=HK&ceid=HK:zh-Hans",
+    "platform": "news"
+  },
+  {
+    "name": "Google News - 工业富联 601138.SS",
+    "url": "https://news.google.com/rss/search?q=%E5%B7%A5%E4%B8%9A%E5%AF%8C%E8%81%94%20OR%20%E5%AF%8C%E5%A3%AB%E5%BA%B7%E5%B7%A5%E4%B8%9A%E4%BA%92%E8%81%94%E7%BD%91%20OR%20601138.SS%20OR%20AI%E6%9C%8D%E5%8A%A1%E5%99%A8&hl=zh-CN&gl=CN&ceid=CN:zh-Hans",
+    "platform": "news"
+  },
+  {
+    "name": "Google News - 紫金矿业 2899.HK 601899.SS",
+    "url": "https://news.google.com/rss/search?q=%E7%B4%AB%E9%87%91%E7%9F%BF%E4%B8%9A%20OR%202899.HK%20OR%20601899.SS%20OR%20%E9%BB%84%E9%87%91%20OR%20%E9%93%9C%E7%9F%BF&hl=zh-CN&gl=HK&ceid=HK:zh-Hans",
+    "platform": "news"
+  },
+  {
+    "name": "Google News - 长飞光纤 6869.HK",
+    "url": "https://news.google.com/rss/search?q=%E9%95%BF%E9%A3%9E%E5%85%89%E7%BA%A4%20OR%20%E9%95%BF%E9%A3%9E%E5%85%89%E7%BA%A4%E5%85%89%E7%BC%86%20OR%206869.HK%20OR%20%E5%85%89%E7%BA%A4%E5%85%89%E7%BC%86&hl=zh-CN&gl=HK&ceid=HK:zh-Hans",
+    "platform": "news"
+  },
+  {
+    "name": "Google News - 美图 1357.HK",
+    "url": "https://news.google.com/rss/search?q=%E7%BE%8E%E5%9B%BE%E5%85%AC%E5%8F%B8%20OR%20%E7%BE%8E%E5%9B%BE%20OR%201357.HK%20OR%20AI%E5%9B%BE%E5%83%8F&hl=zh-CN&gl=HK&ceid=HK:zh-Hans",
+    "platform": "news"
+  },
+  {
+    "name": "Google News - 东鹏饮料 605499.SS",
+    "url": "https://news.google.com/rss/search?q=%E4%B8%9C%E9%B9%8F%E9%A5%AE%E6%96%99%20OR%20%E4%B8%9C%E9%B9%8F%E7%89%B9%E9%A5%AE%20OR%20605499.SS%20OR%20%E8%83%BD%E9%87%8F%E9%A5%AE%E6%96%99&hl=zh-CN&gl=CN&ceid=CN:zh-Hans",
+    "platform": "news"
+  },
+  {
+    "name": "Google News - 港股科技",
+    "url": "https://news.google.com/rss/search?q=%E6%B8%AF%E8%82%A1%E7%A7%91%E6%8A%80%20OR%20%E6%81%92%E7%94%9F%E7%A7%91%E6%8A%80%20OR%20%E6%B8%AF%E8%82%A1AI&hl=zh-CN&gl=HK&ceid=HK:zh-Hans",
+    "platform": "news"
+  }
+]

@@ -1,0 +1,66 @@
+{
+  "social_posts": [
+    {
+      "platform": "forum",
+      "symbol": "ALPHA.HK",
+      "company": "Alpha Robotics",
+      "post_time": "2026-06-13T09:00:00+08:00",
+      "content": "Alpha Robotics ALPHA.HK AlphaBot delivery beat and bullish outlook.",
+      "url": "https://example.test/alpha",
+      "likes": 10,
+      "comments": 2,
+      "sentiment": "bullish",
+      "tags": [
+        "AlphaBot",
+        "delivery",
+        "ALPHA.HK",
+        "ALPHA",
+        "Alpha Robotics"
+      ],
+      "matched_keywords": [
+        "ALPHA.HK",
+        "ALPHA",
+        "Alpha Robotics",
+        "AlphaBot",
+        "delivery"
+      ],
+      "summary": "Alpha delivery beat",
+      "risk_points": [],
+      "aliases": [
+        "AlphaBot"
+      ]
+    },
+    {
+      "platform": "news",
+      "symbol": "BETA.SS",
+      "company": "Beta Energy",
+      "post_time": "2026-06-13T10:00:00+08:00",
+      "content": "Beta Energy BETA.SS battery risk and downside remain.",
+      "url": "https://example.test/beta",
+      "likes": 5,
+      "comments": 3,
+      "sentiment": "bearish",
+      "tags": [
+        "battery",
+        "risk",
+        "BETA.SS",
+        "BETA",
+        "Beta Energy"
+      ],
+      "matched_keywords": [
+        "BETA.SS",
+        "BETA",
+        "Beta Energy",
+        "battery",
+        "risk"
+      ],
+      "summary": "Beta risk",
+      "risk_points": [
+        "policy risk"
+      ],
+      "aliases": [
+        "BetaPower"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,253 @@
+{
+  "social_summary": [
+    {
+      "symbol": "1357.HK",
+      "company": "美图公司",
+      "aliases": [
+        "美图",
+        "美图公司",
+        "Meitu",
+        "Meitu Inc",
+        "1357.HK"
+      ],
+      "today_heat": 0,
+      "post_count": 2,
+      "bullish_count": 0,
+      "bearish_count": 0,
+      "neutral_count": 2,
+      "sentiment_score": 0.0,
+      "hot_keywords": [
+        {
+          "keyword": "AI影像",
+          "count": 4
+        }
+      ],
+      "ai_brief": "美图公司 近端共 2 条社媒/新闻记录，舆情整体中性，仅用于投资复核。",
+      "bullish_points": [],
+      "bearish_points": [],
+      "risk_points": [],
+      "review_flags": [
+        "price_action_check",
+        "position_size_check"
+      ],
+      "updated_at": "2026-06-13T06:22:47.323122+00:00"
+    },
+    {
+      "symbol": "1810.HK",
+      "company": "小米集团",
+      "aliases": [
+        "小米",
+        "小米汽车",
+        "Xiaomi"
+      ],
+      "today_heat": 0,
+      "post_count": 30,
+      "bullish_count": 1,
+      "bearish_count": 0,
+      "neutral_count": 29,
+      "sentiment_score": 0.0333,
+      "hot_keywords": [
+        {
+          "keyword": "小米",
+          "count": 60
+        },
+        {
+          "keyword": "小米集团",
+          "count": 4
+        }
+      ],
+      "ai_brief": "小米集团 近端共 30 条社媒/新闻记录，舆情整体中性，仅用于投资复核。",
+      "bullish_points": [
+        "《AI》小米集團－Ｗ(01810.HK)出現「區域突破」技術圖表形態 - AASTOCKS.com"
+      ],
+      "bearish_points": [],
+      "risk_points": [],
+      "review_flags": [
+        "high_heat",
+        "price_action_check",
+        "position_size_check"
+      ],
+      "updated_at": "2026-06-13T06:22:47.323122+00:00"
+    },
+    {
+      "symbol": "2899.HK",
+      "company": "紫金矿业",
+      "aliases": [
+        "紫金",
+        "Zijin Mining"
+      ],
+      "today_heat": 0,
+      "post_count": 30,
+      "bullish_count": 4,
+      "bearish_count": 0,
+      "neutral_count": 26,
+      "sentiment_score": 0.1333,
+      "hot_keywords": [
+        {
+          "keyword": "紫金",
+          "count": 44
+        },
+        {
+          "keyword": "黄金",
+          "count": 16
+        },
+        {
+          "keyword": "紫金矿业",
+          "count": 4
+        }
+      ],
+      "ai_brief": "紫金矿业 近端共 30 条社媒/新闻记录，舆情暂偏利多，仅用于投资复核。",
+      "bullish_points": [
+        "现货黄金突破4200美元关口 - TradingView",
+        "黄金股ETF永赢(517520)上涨7.07%，最新融资净买额达1127.18万元 - FX168财经",
+        "现货黄金突破4100美元关口 - TradingView"
+      ],
+      "bearish_points": [],
+      "risk_points": [],
+      "review_flags": [
+        "high_heat",
+        "price_action_check",
+        "position_size_check"
+      ],
+      "updated_at": "2026-06-13T06:22:47.323122+00:00"
+    },
+    {
+      "symbol": "601138.SS",
+      "company": "工业富联",
+      "aliases": [
+        "富士康工业互联网",
+        "FII"
+      ],
+      "today_heat": 0,
+      "post_count": 30,
+      "bullish_count": 3,
+      "bearish_count": 2,
+      "neutral_count": 25,
+      "sentiment_score": 0.0333,
+      "hot_keywords": [
+        {
+          "keyword": "AI服务器",
+          "count": 32
+        },
+        {
+          "keyword": "工业富联",
+          "count": 26
+        },
+        {
+          "keyword": "算力",
+          "count": 4
+        },
+        {
+          "keyword": "601138",
+          "count": 4
+        }
+      ],
+      "ai_brief": "工业富联 近端共 30 条社媒/新闻记录，多空观点分歧较大，仅用于投资复核。",
+      "bullish_points": [
+        "股票行情快报：工业富联（601138）6月12日主力资金净买入2.13亿元_主力研究 - 证券之星",
+        "工业富联6月11日获融资买入9.68亿元，融资余额101.53亿元 - 新浪财经",
+        "工业富联6月10日获融资买入10.32亿元，融资余额103.52亿元 - 新浪财经"
+      ],
+      "bearish_points": [
+        "工业富联：6月11日融券卖出24.21万股，融资融券余额101.92亿元 - Sohu",
+        "工业富联（601138）6月10日主力资金净卖出18.89亿元_主力研究 - 证券之星"
+      ],
+      "risk_points": [],
+      "review_flags": [
+        "high_heat",
+        "sentiment_divergence",
+        "price_action_check",
+        "position_size_check"
+      ],
+      "updated_at": "2026-06-13T06:22:47.323122+00:00"
+    },
+    {
+      "symbol": "601899.SS",
+      "company": "紫金矿业",
+      "aliases": [
+        "紫金",
+        "Zijin Mining"
+      ],
+      "today_heat": 0,
+      "post_count": 30,
+      "bullish_count": 4,
+      "bearish_count": 0,
+      "neutral_count": 26,
+      "sentiment_score": 0.1333,
+      "hot_keywords": [
+        {
+          "keyword": "紫金",
+          "count": 44
+        },
+        {
+          "keyword": "黄金",
+          "count": 16
+        },
+        {
+          "keyword": "紫金矿业",
+          "count": 4
+        }
+      ],
+      "ai_brief": "紫金矿业 近端共 30 条社媒/新闻记录，舆情暂偏利多，仅用于投资复核。",
+      "bullish_points": [
+        "现货黄金突破4200美元关口 - TradingView",
+        "黄金股ETF永赢(517520)上涨7.07%，最新融资净买额达1127.18万元 - FX168财经",
+        "现货黄金突破4100美元关口 - TradingView"
+      ],
+      "bearish_points": [],
+      "risk_points": [],
+      "review_flags": [
+        "high_heat",
+        "price_action_check",
+        "position_size_check"
+      ],
+      "updated_at": "2026-06-13T06:22:47.323122+00:00"
+    },
+    {
+      "symbol": "605499.SS",
+      "company": "东鹏饮料",
+      "aliases": [
+        "东鹏",
+        "东鹏特饮"
+      ],
+      "today_heat": 0,
+      "post_count": 30,
+      "bullish_count": 6,
+      "bearish_count": 0,
+      "neutral_count": 24,
+      "sentiment_score": 0.2,
+      "hot_keywords": [
+        {
+          "keyword": "东鹏",
+          "count": 54
+        },
+        {
+          "keyword": "东鹏饮料",
+          "count": 52
+        },
+        {
+          "keyword": "605499",
+          "count": 8
+        },
+        {
+          "keyword": "能量饮料",
+          "count": 6
+        }
+      ],
+      "ai_brief": "东鹏饮料 近端共 30 条社媒/新闻记录，舆情暂偏利多，仅用于投资复核。",
+      "bullish_points": [
+        "股票行情快报：东鹏饮料（605499）6月12日主力资金净买入206.95万元 - Sohu",
+        "股票行情快报：东鹏饮料（605499）6月11日主力资金净买入3307.32万元_主力研究 - 证券之星",
+        "东鹏饮料：6月10日融资买入4085.66万元，融资融券余额7.74亿元 - Sohu"
+      ],
+      "bearish_points": [],
+      "risk_points": [],
+      "review_flags": [
+        "high_heat",
+        "price_action_check",
+        "position_size_check"
+      ],
+      "updated_at": "2026-06-13T06:22:47.323122+00:00"
+    }
+  ]
+}

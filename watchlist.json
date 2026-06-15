@@ -1,0 +1,101 @@
+{
+  "watchlist": [
+    {
+      "symbol": "1810.HK",
+      "company": "小米集团",
+      "aliases": [
+        "小米",
+        "小米汽车",
+        "Xiaomi"
+      ],
+      "keywords": [
+        "1810",
+        "SU7",
+        "小米手机"
+      ]
+    },
+    {
+      "symbol": "2899.HK",
+      "company": "紫金矿业",
+      "aliases": [
+        "紫金",
+        "Zijin Mining"
+      ],
+      "keywords": [
+        "2899",
+        "黄金",
+        "铜矿"
+      ]
+    },
+    {
+      "symbol": "601138.SS",
+      "company": "工业富联",
+      "aliases": [
+        "富士康工业互联网",
+        "FII"
+      ],
+      "keywords": [
+        "601138",
+        "AI服务器",
+        "算力"
+      ]
+    },
+    {
+      "symbol": "605499.SS",
+      "company": "东鹏饮料",
+      "aliases": [
+        "东鹏",
+        "东鹏特饮"
+      ],
+      "keywords": [
+        "605499",
+        "能量饮料"
+      ]
+    },
+    {
+      "symbol": "601899.SS",
+      "company": "紫金矿业",
+      "aliases": [
+        "紫金",
+        "Zijin Mining"
+      ],
+      "keywords": [
+        "601899",
+        "黄金",
+        "铜矿"
+      ]
+    },
+    {
+      "symbol": "6869.HK",
+      "company": "长飞光纤光缆",
+      "aliases": [
+        "长飞光纤",
+        "长飞"
+      ],
+      "keywords": [
+        "6869",
+        "光纤",
+        "数据中心"
+      ]
+    },
+    {
+      "symbol": "1357.HK",
+      "company": "美图公司",
+      "aliases": [
+        "美图",
+        "美图公司",
+        "Meitu",
+        "Meitu Inc",
+        "1357.HK"
+      ],
+      "keywords": [
+        "美图",
+        "美图公司",
+        "AI图像",
+        "AI影像",
+        "Meitu",
+        "1357.HK"
+      ]
+    }
+  ]
+}

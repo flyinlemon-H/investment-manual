@@ -1,0 +1,43 @@
+function ensureExecutionLogTab(){
+  const tabs=document.querySelector('.tabs');
+  if(!tabs||tabs.querySelector('[data-tab="logs"]'))return;
+  const btn=document.createElement('button');
+  btn.className='tab';
+  btn.dataset.tab='logs';
+  btn.textContent='操作记录';
+  tabs.appendChild(btn);
+}
+function ensureAnalysisOverviewTab(){
+  const tabs=document.querySelector('.tabs');
+  if(!tabs||tabs.querySelector('[data-tab="analysis"]'))return;
+  const btn=document.createElement('button');
+  btn.className='tab';
+  btn.dataset.tab='analysis';
+  btn.textContent='分析总览';
+  tabs.appendChild(btn);
+}
+
+ensureAnalysisOverviewTab();
+ensureExecutionLogTab();
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{detailStockId=null;currentTab=t.dataset.tab;render()}));
+document.getElementById('addBtn').addEventListener('click',()=>openModal(null));
+document.getElementById('importBtn').addEventListener('click',importData);
+document.getElementById('exportBtn').addEventListener('click',exportData);
+document.getElementById('socialImportBtn').addEventListener('click',importSocialData);
+document.getElementById('socialImportFile').addEventListener('change',handleSocialImport);
+document.getElementById('resetBtn').addEventListener('click',resetSeed);
+document.getElementById('refreshAllBtn').addEventListener('click',refreshAllPrices);
+document.getElementById('fxBtn').addEventListener('click',onFxClick);
+document.getElementById('importFile').addEventListener('change',handleImport);
+document.getElementById('cancelBtn').addEventListener('click',closeModal);
+document.getElementById('saveBtn').addEventListener('click',save);
+document.getElementById('testCodeBtn').addEventListener('click',testQuoteCode);
+document.getElementById('addBuy').addEventListener('click',()=>addPlan('buy'));
+document.getElementById('addSell').addEventListener('click',()=>addPlan('sell'));
+document.querySelectorAll('#typeToggle button').forEach(b=>b.addEventListener('click',()=>setType(b.dataset.type)));
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();if(typeof closeAnalysisModal==='function')closeAnalysisModal();if(typeof closeAiAnalysisPromptModal==='function')closeAiAnalysisPromptModal();if(typeof closeAiAnalysisImportModal==='function')closeAiAnalysisImportModal();if(typeof closeAiAssistantModal==='function')closeAiAssistantModal();if(typeof closeAnalysisInputsModal==='function')closeAnalysisInputsModal();if(typeof closeFinancialSourceModal==='function')closeFinancialSourceModal();if(typeof closeValuationSourceModal==='function')closeValuationSourceModal();if(typeof closeAnalysisTemplateModal==='function')closeAnalysisTemplateModal();if(typeof closeStrategyModal==='function')closeStrategyModal();if(typeof closeTechnicalDataModal==='function')closeTechnicalDataModal();if(typeof closeValuationDataModal==='function')closeValuationDataModal();if(typeof closeFinancialDataModal==='function')closeFinancialDataModal();if(typeof closeFinancialImportModal==='function')closeFinancialImportModal()}});
+loadState();
+render();
+if(typeof updateSocialDataStatus==='function')updateSocialDataStatus();
+if(typeof loadSocialPosts==='function')loadSocialPosts().then(()=>{render();updateSocialDataStatus()});

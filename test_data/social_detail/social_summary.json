@@ -1,0 +1,24 @@
+{
+  "social_summary": [
+    {
+      "symbol": "1810.HK",
+      "company": "小米集团",
+      "aliases": ["小米", "小米汽车", "Xiaomi", "SU7"],
+      "today_heat": 128,
+      "post_count": 6,
+      "bullish_count": 4,
+      "bearish_count": 1,
+      "neutral_count": 1,
+      "sentiment_score": 0.5,
+      "hot_keywords": [
+        {"keyword": "SU7", "count": 4},
+        {"keyword": "小米汽车", "count": 3},
+        {"keyword": "1810.HK", "count": 2},
+        {"keyword": "交付", "count": 2},
+        {"keyword": "毛利率", "count": 1}
+      ],
+      "risk_points": ["汽车业务投入仍高", "手机业务竞争激烈"],
+      "updated_at": "2026-06-13T10:00:00+08:00"
+    }
+  ]
+}

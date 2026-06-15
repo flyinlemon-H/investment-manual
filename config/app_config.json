@@ -1,0 +1,20 @@
+{
+  "watchlist_path": "watchlist.json",
+  "output_dir": "output",
+  "manual_dist_dir": "dist",
+  "posts_filename": "social_posts.json",
+  "summary_filename": "social_summary.json",
+  "log_dir": "logs",
+  "max_posts_per_symbol": 30,
+  "news_days_limit": 30,
+  "disabled_news_sources": [],
+  "preferred_news_sources": [
+    "Google News - 小米集团 1810.HK",
+    "Google News - 工业富联 601138.SS",
+    "Google News - 紫金矿业 2899.HK 601899.SS",
+    "Google News - 长飞光纤 6869.HK",
+    "Google News - 美图 1357.HK",
+    "Google News - 东鹏饮料 605499.SS",
+    "Google News - 港股科技"
+  ]
+}

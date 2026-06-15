@@ -1,0 +1,80 @@
+{
+  "social_summary": [
+    {
+      "symbol": "ALPHA.HK",
+      "company": "Alpha Robotics",
+      "aliases": [
+        "AlphaBot"
+      ],
+      "today_heat": 14,
+      "post_count": 1,
+      "bullish_count": 1,
+      "bearish_count": 0,
+      "neutral_count": 0,
+      "sentiment_score": 1.0,
+      "hot_keywords": [
+        {
+          "keyword": "ALPHA.HK",
+          "count": 2
+        },
+        {
+          "keyword": "ALPHA",
+          "count": 2
+        },
+        {
+          "keyword": "Alpha Robotics",
+          "count": 2
+        },
+        {
+          "keyword": "AlphaBot",
+          "count": 2
+        },
+        {
+          "keyword": "delivery",
+          "count": 2
+        }
+      ],
+      "risk_points": [],
+      "updated_at": "2026-06-13T02:45:48.504162+00:00"
+    },
+    {
+      "symbol": "BETA.SS",
+      "company": "Beta Energy",
+      "aliases": [
+        "BetaPower"
+      ],
+      "today_heat": 11,
+      "post_count": 1,
+      "bullish_count": 0,
+      "bearish_count": 1,
+      "neutral_count": 0,
+      "sentiment_score": -1.0,
+      "hot_keywords": [
+        {
+          "keyword": "BETA.SS",
+          "count": 2
+        },
+        {
+          "keyword": "BETA",
+          "count": 2
+        },
+        {
+          "keyword": "Beta Energy",
+          "count": 2
+        },
+        {
+          "keyword": "battery",
+          "count": 2
+        },
+        {
+          "keyword": "risk",
+          "count": 2
+        }
+      ],
+      "risk_points": [
+        "policy risk"
+      ],
+      "updated_at": "2026-06-13T02:45:48.504162+00:00"
+    }
+  ]
+}

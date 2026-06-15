@@ -1,0 +1,225 @@
+{
+  "social_summary": [
+    {
+      "symbol": "1810.HK",
+      "company": "小米集团",
+      "aliases": [
+        "小米",
+        "小米汽车",
+        "Xiaomi"
+      ],
+      "today_heat": 416,
+      "post_count": 1,
+      "bullish_count": 1,
+      "bearish_count": 0,
+      "neutral_count": 0,
+      "sentiment_score": 1.0,
+      "hot_keywords": [
+        {
+          "keyword": "1810.HK",
+          "count": 2
+        },
+        {
+          "keyword": "小米集团",
+          "count": 2
+        },
+        {
+          "keyword": "小米",
+          "count": 2
+        },
+        {
+          "keyword": "小米汽车",
+          "count": 2
+        },
+        {
+          "keyword": "SU7",
+          "count": 2
+        }
+      ],
+      "risk_points": [
+        "汽车产能爬坡仍需观察"
+      ],
+      "updated_at": "2026-06-12T14:11:41.576851+00:00"
+    },
+    {
+      "symbol": "2899.HK",
+      "company": "紫金矿业",
+      "aliases": [
+        "紫金",
+        "Zijin Mining"
+      ],
+      "today_heat": 250,
+      "post_count": 1,
+      "bullish_count": 1,
+      "bearish_count": 0,
+      "neutral_count": 0,
+      "sentiment_score": 1.0,
+      "hot_keywords": [
+        {
+          "keyword": "紫金矿业",
+          "count": 2
+        },
+        {
+          "keyword": "紫金",
+          "count": 2
+        },
+        {
+          "keyword": "黄金",
+          "count": 2
+        },
+        {
+          "keyword": "铜矿",
+          "count": 2
+        }
+      ],
+      "risk_points": [
+        "商品价格回落风险"
+      ],
+      "updated_at": "2026-06-12T14:11:41.576851+00:00"
+    },
+    {
+      "symbol": "601138.SS",
+      "company": "工业富联",
+      "aliases": [
+        "富士康工业互联网",
+        "FII"
+      ],
+      "today_heat": 282,
+      "post_count": 1,
+      "bullish_count": 1,
+      "bearish_count": 0,
+      "neutral_count": 0,
+      "sentiment_score": 1.0,
+      "hot_keywords": [
+        {
+          "keyword": "601138",
+          "count": 2
+        },
+        {
+          "keyword": "工业富联",
+          "count": 2
+        },
+        {
+          "keyword": "AI服务器",
+          "count": 2
+        },
+        {
+          "keyword": "算力",
+          "count": 2
+        }
+      ],
+      "risk_points": [
+        "估值波动风险"
+      ],
+      "updated_at": "2026-06-12T14:11:41.576851+00:00"
+    },
+    {
+      "symbol": "601899.SS",
+      "company": "紫金矿业",
+      "aliases": [
+        "紫金",
+        "Zijin Mining"
+      ],
+      "today_heat": 250,
+      "post_count": 1,
+      "bullish_count": 1,
+      "bearish_count": 0,
+      "neutral_count": 0,
+      "sentiment_score": 1.0,
+      "hot_keywords": [
+        {
+          "keyword": "紫金矿业",
+          "count": 2
+        },
+        {
+          "keyword": "紫金",
+          "count": 2
+        },
+        {
+          "keyword": "黄金",
+          "count": 2
+        },
+        {
+          "keyword": "铜矿",
+          "count": 2
+        }
+      ],
+      "risk_points": [
+        "商品价格回落风险"
+      ],
+      "updated_at": "2026-06-12T14:11:41.576851+00:00"
+    },
+    {
+      "symbol": "605499.SS",
+      "company": "东鹏饮料",
+      "aliases": [
+        "东鹏",
+        "东鹏特饮"
+      ],
+      "today_heat": 92,
+      "post_count": 1,
+      "bullish_count": 0,
+      "bearish_count": 0,
+      "neutral_count": 1,
+      "sentiment_score": 0.0,
+      "hot_keywords": [
+        {
+          "keyword": "东鹏饮料",
+          "count": 2
+        },
+        {
+          "keyword": "东鹏",
+          "count": 2
+        },
+        {
+          "keyword": "能量饮料",
+          "count": 2
+        }
+      ],
+      "risk_points": [
+        "消费需求放缓风险"
+      ],
+      "updated_at": "2026-06-12T14:11:41.576851+00:00"
+    },
+    {
+      "symbol": "6869.HK",
+      "company": "长飞光纤光缆",
+      "aliases": [
+        "长飞光纤",
+        "长飞"
+      ],
+      "today_heat": 80,
+      "post_count": 1,
+      "bullish_count": 0,
+      "bearish_count": 1,
+      "neutral_count": 0,
+      "sentiment_score": -1.0,
+      "hot_keywords": [
+        {
+          "keyword": "6869.HK",
+          "count": 2
+        },
+        {
+          "keyword": "长飞光纤",
+          "count": 2
+        },
+        {
+          "keyword": "长飞",
+          "count": 2
+        },
+        {
+          "keyword": "光纤",
+          "count": 2
+        },
+        {
+          "keyword": "数据中心",
+          "count": 2
+        }
+      ],
+      "risk_points": [
+        "订单兑现不确定"
+      ],
+      "updated_at": "2026-06-12T14:11:41.576851+00:00"
+    }
+  ]
+}

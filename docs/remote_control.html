@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>投资作战手册 · 远程指令生成器</title>
+  <style>
+    :root{--paper:#f5f1e8;--ink:#1f1f1f;--muted:#6f6a60;--line:#d8cfbf;--seal:#b83a2b;--ok:#2f5d46}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+    .wrap{max-width:720px;margin:0 auto;padding:24px 16px 42px}
+    header{border-bottom:1px solid var(--ink);padding-bottom:14px;margin-bottom:18px}
+    h1{font-size:24px;margin:0 0 6px;font-family:Georgia,"Songti SC",serif;letter-spacing:1px}
+    .sub{font-size:13px;line-height:1.6;color:var(--muted)}
+    .card{border:1px solid var(--line);background:rgba(255,255,255,.32);padding:14px;margin-bottom:14px}
+    label{display:block;font-size:12px;font-weight:800;color:var(--muted);letter-spacing:1px;margin-bottom:6px}
+    input,textarea{width:100%;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:11px 12px;border-radius:2px;font-size:15px}
+    textarea{min-height:230px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.5}
+    .actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+    button{border:1px solid var(--ink);background:var(--ink);color:var(--paper);padding:12px 14px;border-radius:2px;font-weight:800;font-size:15px;letter-spacing:.5px}
+    button.secondary{background:transparent;color:var(--ink);border-color:var(--line)}
+    button.copy{background:var(--ok);border-color:var(--ok)}
+    .hint{font-size:12px;line-height:1.6;color:var(--muted);margin-top:8px}
+    .status{min-height:20px;font-size:13px;color:var(--ok);font-weight:700;margin-top:8px}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    @media(min-width:640px){.actions{grid-template-columns:1fr 1fr 1fr}.copy-row{display:flex;gap:10px}.copy-row button{min-width:150px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>远程指令生成器</h1>
+      <div class="sub">在手机上生成 <code>remote_commands/command.json</code> 内容。页面完全本地运行，不连接 GitHub，不上传 secret。</div>
+    </header>
+
+    <section class="card">
+      <label for="secretInput">secret</label>
+      <input id="secretInput" type="password" autocomplete="off" placeholder="填写与电脑 config/remote_secret.txt 相同的口令">
+      <div class="hint">点击下方按钮后，会把该 secret 写入生成的 JSON。复制后到 GitHub 粘贴覆盖 <code>remote_commands/command.json</code>。</div>
+      <div class="actions">
+        <button type="button" data-command="update-news">更新新闻<br><small>update-news</small></button>
+        <button type="button" data-command="update-all">全量更新<br><small>update-all</small></button>
+        <button type="button" data-command="build-html">重新生成 HTML<br><small>build-html</small></button>
+      </div>
+    </section>
+
+    <section class="card">
+      <label for="jsonPreview">结果预览</label>
+      <textarea id="jsonPreview" readonly placeholder="点击上方按钮生成 JSON"></textarea>
+      <div class="copy-row" style="margin-top:10px">
+        <button class="copy" type="button" id="copyBtn">一键复制 JSON</button>
+        <button class="secondary" type="button" id="clearBtn">清空</button>
+      </div>
+      <div class="status" id="statusText"></div>
+      <div class="hint">复制后，在 GitHub 仓库中打开 <code>remote_commands/command.json</code>，编辑文件，粘贴覆盖全部内容并提交。</div>
+    </section>
+  </main>
+
+  <script>
+    const secretInput=document.getElementById('secretInput');
+    const jsonPreview=document.getElementById('jsonPreview');
+    const statusText=document.getElementById('statusText');
+    function nowIsoLocal(){
+      const d=new Date();
+      const pad=n=>String(n).padStart(2,'0');
+      const tz=-d.getTimezoneOffset();
+      const sign=tz>=0?'+':'-';
+      const hh=pad(Math.floor(Math.abs(tz)/60));
+      const mm=pad(Math.abs(tz)%60);
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}${sign}${hh}:${mm}`;
+    }
+    function generate(command){
+      const payload={
+        command,
+        created_at:nowIsoLocal(),
+        status:'pending',
+        secret:secretInput.value || '',
+        command_id:makeCommandId()
+      };
+      jsonPreview.value=JSON.stringify(payload,null,2);
+      statusText.textContent=`已生成 ${command} 指令。`;
+    }
+    function makeCommandId(){
+      const d=new Date();
+      const pad=n=>String(n).padStart(2,'0');
+      const stamp=`${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
+      const rand=Math.random().toString(36).slice(2,7);
+      return `cmd-${stamp}-${rand}`;
+    }
+    document.querySelectorAll('[data-command]').forEach(btn=>{
+      btn.addEventListener('click',()=>generate(btn.dataset.command));
+    });
+    document.getElementById('copyBtn').addEventListener('click',async()=>{
+      const text=jsonPreview.value.trim();
+      if(!text){statusText.textContent='请先生成 JSON。';return}
+      try{
+        await navigator.clipboard.writeText(text);
+        statusText.textContent='JSON 已复制。';
+      }catch(e){
+        jsonPreview.focus();
+        jsonPreview.select();
+        document.execCommand('copy');
+        statusText.textContent='JSON 已复制。';
+      }
+    });
+    document.getElementById('clearBtn').addEventListener('click',()=>{
+      jsonPreview.value='';
+      statusText.textContent='';
+    });
+  </script>
+</body>
+</html>

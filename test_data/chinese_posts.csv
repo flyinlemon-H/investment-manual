@@ -1,0 +1,5 @@
+platform,author,content,posted_at,url,likes,comments,tags,summary,risk_points
+news,@cn_alpha,"小米集团 1810.HK SU7 交付超预期，市场看多小米汽车。",2026-06-13T09:00:00+08:00,https://example.test/cn-xiaomi,30,4,"小米;SU7","小米汽车交付超预期",""
+news,@cn_gold,"紫金矿业 2899.HK 受益黄金和铜矿扩张，利多资源股。",2026-06-13T10:00:00+08:00,https://example.test/cn-zijin,18,2,"紫金;黄金;铜矿","紫金资源扩张",""
+news,@cn_fii,"工业富联 601138.SS AI服务器订单正常推进，暂无明显方向。",2026-06-13T11:00:00+08:00,https://example.test/cn-fii,8,1,"工业富联;AI服务器","工业富联订单正常",""
+news,@cn_bear,"工业富联 601138.SS 若订单不及预期，存在回落风险。",2026-06-13T12:00:00+08:00,https://example.test/cn-fii-risk,6,3,"工业富联;风险","工业富联风险提醒","订单不及预期"

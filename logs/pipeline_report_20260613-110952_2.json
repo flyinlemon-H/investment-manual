@@ -1,0 +1,63 @@
+{
+  "source": "csv",
+  "input": [
+    "E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\test_data\\sample_posts.csv"
+  ],
+  "watchlist": "E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\watchlist.json",
+  "output": "E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\output\\v67_empty_allow\\social_posts.json",
+  "summary": "E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\output\\v67_empty_allow\\social_summary.json",
+  "posts_count": 0,
+  "symbols_count": 0,
+  "validation_status": "passed",
+  "copied": true,
+  "dry_run": false,
+  "allow_empty": true,
+  "errors": [],
+  "warnings": [],
+  "unmatched_watchlist": [
+    {
+      "symbol": "1810.HK",
+      "company": "小米集团"
+    },
+    {
+      "symbol": "2899.HK",
+      "company": "紫金矿业"
+    },
+    {
+      "symbol": "601138.SS",
+      "company": "工业富联"
+    },
+    {
+      "symbol": "605499.SS",
+      "company": "东鹏饮料"
+    },
+    {
+      "symbol": "601899.SS",
+      "company": "紫金矿业"
+    },
+    {
+      "symbol": "6869.HK",
+      "company": "长飞光纤光缆"
+    }
+  ],
+  "unmatched_posts": [
+    {
+      "source": "csv:E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\test_data\\sample_posts.csv:2",
+      "time": "2026-06-13T09:00:00+08:00",
+      "url": "https://example.test/alpha",
+      "summary": "Alpha delivery beat"
+    },
+    {
+      "source": "csv:E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\test_data\\sample_posts.csv:3",
+      "time": "2026-06-13T09:05:00+08:00",
+      "url": "https://example.test/alpha",
+      "summary": "Alpha duplicate"
+    },
+    {
+      "source": "csv:E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\test_data\\sample_posts.csv:4",
+      "time": "2026-06-13T10:00:00+08:00",
+      "url": "https://example.test/beta",
+      "summary": "Beta risk"
+    }
+  ]
+}

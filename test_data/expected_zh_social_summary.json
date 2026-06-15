@@ -1,0 +1,143 @@
+{
+  "social_summary": [
+    {
+      "symbol": "1810.HK",
+      "company": "小米集团",
+      "aliases": [
+        "小米",
+        "小米汽车"
+      ],
+      "today_heat": 38,
+      "post_count": 1,
+      "bullish_count": 1,
+      "bearish_count": 0,
+      "neutral_count": 0,
+      "sentiment_score": 1.0,
+      "hot_keywords": [
+        {
+          "keyword": "1810.HK",
+          "count": 2
+        },
+        {
+          "keyword": "小米集团",
+          "count": 2
+        },
+        {
+          "keyword": "小米",
+          "count": 2
+        },
+        {
+          "keyword": "小米汽车",
+          "count": 2
+        },
+        {
+          "keyword": "SU7",
+          "count": 2
+        }
+      ],
+      "ai_brief": "小米集团 近端共 1 条社媒/新闻记录，舆情整体中性，仅用于投资复核。",
+      "bullish_points": [
+        "小米汽车交付超预期"
+      ],
+      "bearish_points": [],
+      "risk_points": [],
+      "review_flags": [
+        "price_action_check",
+        "position_size_check"
+      ],
+      "updated_at": "2026-06-13T00:00:00+00:00"
+    },
+    {
+      "symbol": "2899.HK",
+      "company": "紫金矿业",
+      "aliases": [
+        "紫金"
+      ],
+      "today_heat": 22,
+      "post_count": 1,
+      "bullish_count": 1,
+      "bearish_count": 0,
+      "neutral_count": 0,
+      "sentiment_score": 1.0,
+      "hot_keywords": [
+        {
+          "keyword": "2899.HK",
+          "count": 2
+        },
+        {
+          "keyword": "紫金矿业",
+          "count": 2
+        },
+        {
+          "keyword": "紫金",
+          "count": 2
+        },
+        {
+          "keyword": "黄金",
+          "count": 2
+        },
+        {
+          "keyword": "铜矿",
+          "count": 2
+        }
+      ],
+      "ai_brief": "紫金矿业 近端共 1 条社媒/新闻记录，舆情整体中性，仅用于投资复核。",
+      "bullish_points": [
+        "紫金资源扩张"
+      ],
+      "bearish_points": [],
+      "risk_points": [],
+      "review_flags": [
+        "price_action_check",
+        "position_size_check"
+      ],
+      "updated_at": "2026-06-13T00:00:00+00:00"
+    },
+    {
+      "symbol": "601138.SS",
+      "company": "工业富联",
+      "aliases": [
+        "FII",
+        "富士康工业互联网"
+      ],
+      "today_heat": 22,
+      "post_count": 2,
+      "bullish_count": 0,
+      "bearish_count": 1,
+      "neutral_count": 1,
+      "sentiment_score": -0.5,
+      "hot_keywords": [
+        {
+          "keyword": "601138.SS",
+          "count": 4
+        },
+        {
+          "keyword": "工业富联",
+          "count": 4
+        },
+        {
+          "keyword": "AI服务器",
+          "count": 2
+        },
+        {
+          "keyword": "风险",
+          "count": 1
+        }
+      ],
+      "ai_brief": "工业富联 近端共 2 条社媒/新闻记录，舆情整体中性，仅用于投资复核。",
+      "bullish_points": [],
+      "bearish_points": [
+        "工业富联风险提醒"
+      ],
+      "risk_points": [
+        "订单不及预期"
+      ],
+      "review_flags": [
+        "negative_risk",
+        "price_action_check",
+        "position_size_check"
+      ],
+      "updated_at": "2026-06-13T00:00:00+00:00"
+    }
+  ]
+}

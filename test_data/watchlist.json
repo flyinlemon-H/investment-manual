@@ -1,0 +1,16 @@
+{
+  "watchlist": [
+    {
+      "symbol": "ALPHA.HK",
+      "company": "Alpha Robotics",
+      "aliases": ["AlphaBot"],
+      "keywords": ["delivery"]
+    },
+    {
+      "symbol": "BETA.SS",
+      "company": "Beta Energy",
+      "aliases": ["BetaPower"],
+      "keywords": ["battery", "risk"]
+    }
+  ]
+}

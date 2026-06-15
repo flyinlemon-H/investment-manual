@@ -1,0 +1,4 @@
+﻿[
+  {"name":"local-news-rss","url":"file:///E:/users/kaka/onedrive/文档/投资分析程序/test_data/sample_feed.xml","platform":"news"},
+  {"name":"local-news-atom","url":"file:///E:/users/kaka/onedrive/文档/投资分析程序/test_data/sample_atom.xml","platform":"news"}
+]

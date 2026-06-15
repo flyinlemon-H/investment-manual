@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>社媒舆情详情模块验收页</title>
+<style>
+:root{--paper:#F5F1E8;--ink:#1B1B1B;--ink2:#4A4A48;--ink3:#8A857A;--line:rgba(27,27,27,.16);--lines:rgba(27,27,27,.28);--seal:#B83A2B}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}.wrap{max-width:1080px;margin:0 auto;padding:24px 16px 60px}h1{font-size:22px;margin:0 0 6px}.note{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:18px}.case{border:1px solid var(--line);background:rgba(255,255,255,.25);padding:14px;margin-bottom:14px}.case h2{font-size:16px;margin:0 0 10px}.muted{color:var(--ink3)}.card-title{font-size:11px;color:var(--ink3);font-weight:800;letter-spacing:1.4px;margin:12px 0 8px}.hint{border:1px solid var(--line);padding:10px 12px;color:var(--ink2);font-size:13px;line-height:1.6;margin:10px 0}.social-panel{border:1px dashed var(--line);background:rgba(255,255,255,.18);padding:10px 12px}.social-panel summary{cursor:pointer;font-weight:800;color:var(--ink2);font-size:12px;letter-spacing:1px;list-style:none}.social-panel summary::-webkit-details-marker{display:none}.social-panel summary::before{content:'+';display:inline-grid;place-items:center;width:16px;height:16px;margin-right:6px;border:1px solid var(--lines);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}.social-panel[open] summary::before{content:'-'}.social-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.social-metric{border:1px solid var(--line);padding:9px;background:rgba(245,241,232,.68);min-width:0}.social-label{font-size:10px;color:var(--ink3);font-weight:800;letter-spacing:1px;margin-bottom:4px}.social-value{font-size:13px;font-weight:800;color:var(--ink);line-height:1.35}.social-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}.social-tag{border:1px solid var(--line);padding:1px 6px;border-radius:10px;color:var(--ink3);font-size:11px}.social-list{display:grid;gap:7px;margin-top:8px}.social-post{border-top:1px dashed var(--line);padding-top:8px;font-size:12px;line-height:1.55;color:var(--ink2)}.social-post:first-child{border-top:0}.social-post-head{display:flex;justify-content:space-between;gap:8px;color:var(--ink3);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px}.social-risk{color:var(--seal);font-weight:700}.social-empty{font-size:12px;color:var(--ink3);padding:8px 0}.social-review-note{font-size:12px;color:var(--ink3);margin:8px 0}.social-review-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.social-review-block{border:1px solid var(--line);padding:8px}.social-review-block ul{margin:6px 0 0;padding-left:18px;font-size:12px;line-height:1.5}
+@media(max-width:640px){.social-grid,.social-review-grid{grid-template-columns:1fr}.wrap{padding:18px 12px}.social-post-head{display:block}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>社媒舆情详情模块验收页</h1>
+  <div class="note">用于验收 <code>socialDetailPanel()</code>。三只测试股票分别覆盖：有 summary + posts、只有 posts、无数据。模块应默认折叠，点击标题展开。</div>
+  <div id="cases"></div>
+</div>
+<script>
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtInt=n=>(n===null||n===undefined||n===''||isNaN(Number(n)))?'—':Number(n).toLocaleString('en-US',{maximumFractionDigits:2});
+</script>
+<script src="src/social.js"></script>
+<script>
+const TEST_STOCKS=[
+  {name:'小米集团',code:'1810.HK',id:'xiaomi',type:'holding'},
+  {name:'工业富联',code:'601138.SS',id:'fii',type:'holding'},
+  {name:'紫金矿业',code:'2899.HK',id:'zijin',type:'holding'}
+];
+const CASE_LABELS=['有 summary + posts','只有 posts','无数据'];
+
+async function loadFixture(path){
+  const response=await fetch(path,{cache:'no-store'});
+  if(!response.ok)throw new Error(path+' '+response.status);
+  return response.json();
+}
+
+async function main(){
+  const [posts,summary]=await Promise.all([
+    loadFixture('test_data/social_detail/social_posts.json'),
+    loadFixture('test_data/social_detail/social_summary.json')
+  ]);
+  setSocialPosts(posts);
+  setSocialSummary(summary);
+  document.getElementById('cases').innerHTML=TEST_STOCKS.map((stock,index)=>`
+    <section class="case">
+      <h2>${esc(CASE_LABELS[index])} · ${esc(stock.name)} ${esc(stock.code)}</h2>
+      ${socialDetailPanel(stock)}
+    </section>
+  `).join('');
+}
+
+main().catch(error=>{
+  document.getElementById('cases').innerHTML='<div class="case social-empty">加载 fixture 失败：'+esc(error.message)+'</div>';
+});
+</script>
+</body>
+</html>

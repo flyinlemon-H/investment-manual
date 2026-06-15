@@ -1,0 +1,21 @@
+{
+  "source": "csv",
+  "input": [
+    "E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\test_data\\sample_posts.csv"
+  ],
+  "watchlist": "E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\test_data\\watchlist.json",
+  "output": "E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\output\\v70_pipeline_check\\social_posts.json",
+  "summary": "E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\output\\v70_pipeline_check\\social_summary.json",
+  "posts_count": 2,
+  "symbols_count": 2,
+  "validation_status": "passed",
+  "copied": false,
+  "dry_run": true,
+  "allow_empty": false,
+  "errors": [],
+  "warnings": [
+    "dry-run enabled; skipped copying to manual dist."
+  ],
+  "unmatched_watchlist": [],
+  "unmatched_posts": []
+}

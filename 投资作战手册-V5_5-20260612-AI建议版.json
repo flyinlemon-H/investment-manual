@@ -1,0 +1,1085 @@
+{
+  "stocks": [
+    {
+      "id": "zijin",
+      "type": "holding",
+      "name": "紫金矿业",
+      "shares": 22000,
+      "avgCost": 27.397,
+      "role": "核心仓",
+      "theme": "黄金资源",
+      "targetPct": 15,
+      "notes": "资源周期核心仓。原则：不机械止损，按周期和仓位再平衡；上涨分批止盈，保留长期底仓。 2026-06补充策略：资源板块（紫金矿业+黄金ETF+有色ETF）整体仓位已较重。原则上不因5%-10%普通回调机械补仓；优先保留现金等待更高赔率机会。紫金矿业维持25元附近战略补仓计划；黄金ETF重点观察1.55-1.60区间及止跌信号；有色ETF重点观察1.70附近及止跌信号。在资源逻辑未破坏前继续长期看多，但新增资金阶段性优先考虑AI方向仓位恢复。\n[2026-06-11 AI建议-V5.4调整] 目标12%→15%, 承认核心长期持有地位。当前22000股, 在262万总资产下占22%, 仍超配; 不主动减仓, 仅依靠原计划35减4400/40减4400被动再平衡。逻辑: 央行月均购金60吨, 长期支撑; 短期金价从5185回到4328美元(回撤16%), 维持原25元战略补仓档不变。",
+      "plans": [
+        {
+          "id": "z1",
+          "action": "sell",
+          "price": 35,
+          "shares": 4400,
+          "note": "第一档减仓约20%",
+          "triggerOn": "above"
+        },
+        {
+          "id": "z2",
+          "action": "sell",
+          "price": 40,
+          "shares": 4400,
+          "note": "第二档再减20%",
+          "triggerOn": "above"
+        },
+        {
+          "id": "z3",
+          "action": "buy",
+          "price": 25,
+          "shares": 2200,
+          "note": "只在资源逻辑未变时补",
+          "triggerOn": "below"
+        }
+      ],
+      "thesis": "资源周期核心仓。原则：不机械止损，按周期和仓位再平衡；上涨分批止盈，保留长期底仓。",
+      "sellRule": "35：第一档减仓约20%；40：第二档再减20%",
+      "buyRule": "25：只在资源逻辑未变时补",
+      "currentPrice": 28.52,
+      "currentValue": "",
+      "priceUpdatedAt": "2026-06-11",
+      "valueUpdatedAt": "",
+      "code": "2899.HK",
+      "priceSource": "东方财富·直连",
+      "syncStatus": "success",
+      "portfolioRuleTag": "RESOURCE_CONTROL",
+      "portfolioActionBias": "hold_wait_for_strategic_buy_zone",
+      "currency": "",
+      "dailyChange": -4.04,
+      "updatedAt": 1781192341839
+    },
+    {
+      "id": "xiaomi",
+      "type": "holding",
+      "name": "小米集团",
+      "shares": 3000,
+      "avgCost": 82.013,
+      "role": "成长仓",
+      "theme": "AI科技",
+      "targetPct": 3,
+      "notes": "汽车业务兑现期，目标从低仓位逐步恢复到约10000股，但不一次性重仓补回。当前已从2200股补至2400股；后续按200股为最小单位，采用“26附近首档补足 + 下跌分批加大 + 反弹确认再跟随”的方式执行。\n[2026-06-11 AI建议-V5.4调整] 目标6%→3%, 弱基本面期降权。已删除25密集回调档(与26首档过近), 加仓数量整体下调33%; 当前2.1%基本匹配3%目标, 不急于补仓。汽车业务证伪条件: 月销量低于xx万辆且毛利率持续下行→直接清仓。",
+      "plans": [
+        {
+          "id": "x_buy_22",
+          "action": "buy",
+          "price": 22,
+          "shares": 800,
+          "note": "深度回调档(原1200→800), 汽车/手机主线逻辑未破坏才执行",
+          "triggerOn": "below"
+        },
+        {
+          "id": "x_buy_20",
+          "action": "buy",
+          "price": 20,
+          "shares": 1000,
+          "note": "极端回调档(原1600→1000), 控制单票仓位",
+          "triggerOn": "below"
+        },
+        {
+          "id": "x_buy_break_30",
+          "action": "buy",
+          "price": 30,
+          "shares": 400,
+          "note": "若反弹放量站稳30(原600→400), 趋势确认补一档",
+          "triggerOn": "above"
+        },
+        {
+          "id": "x_buy_break_35",
+          "action": "buy",
+          "price": 35,
+          "shares": 400,
+          "note": "站稳35趋势修复, 但严格控制总仓位不超3%目标",
+          "triggerOn": "above"
+        }
+      ],
+      "thesis": "汽车业务兑现期，目标从低仓位逐步恢复到约10000股。策略重点不是单纯解套，而是在业务逻辑未破坏的前提下，用分批建仓降低高成本仓位压力。",
+      "sellRule": "不因短期波动机械止损；若汽车业务兑现不及预期、亏损扩大或AI科技总仓位超标，暂停补仓并考虑降低风险。",
+      "buyRule": "目标恢复到约10000股；26附近首档合计约600股，其中200股已执行，可再补400股；若下行，25/22/20分批加大；若直接反弹，站稳30/35后用趋势确认方式补仓，不追单日急涨。",
+      "currentPrice": 25.62,
+      "currentValue": "",
+      "priceUpdatedAt": "2026-06-11",
+      "valueUpdatedAt": "",
+      "code": "1810.HK",
+      "priceSource": "东方财富·直连",
+      "syncStatus": "success",
+      "updatedAt": 1781192341839,
+      "portfolioRuleTag": "AI_RECOVERY",
+      "portfolioActionBias": "recover_position_by_priority",
+      "currency": "",
+      "dailyChange": -2.66
+    },
+    {
+      "id": "meitu",
+      "type": "holding",
+      "name": "美图公司",
+      "shares": 6000,
+      "avgCost": 14.222,
+      "role": "卫星仓",
+      "theme": "AI科技",
+      "targetPct": 1,
+      "notes": "高弹性AI应用仓，确定性低于算力链。原则：不继续重仓；若AI情绪狂热或大幅反弹，优先减仓回收资金。\n[2026-06-11 AI建议-V5.4调整] 目标2%→1%, 反弹清仓导向。原止盈档12/14.2在浮亏67%状态下永远触发不到; 下移至8/10, 与notes中'优先减仓回收资金'一致。明确退出: 反弹清掉后不再补仓。",
+      "plans": [
+        {
+          "id": "m_sell_8",
+          "action": "sell",
+          "price": 8,
+          "shares": 3000,
+          "note": "反弹清仓档1(原12→8): 净亏卖一半, 优先回收资金",
+          "triggerOn": "above"
+        },
+        {
+          "id": "m_sell_10",
+          "action": "sell",
+          "price": 10,
+          "shares": 3000,
+          "note": "反弹清仓档2(原14.2→10): 反弹超100%清掉剩余",
+          "triggerOn": "above"
+        }
+      ],
+      "thesis": "高弹性AI应用仓，确定性低于算力链。原则：不继续重仓；若AI情绪狂热或大幅反弹，优先减仓回收资金。",
+      "sellRule": "12：反弹减仓观察；14.2：接近成本先降风险",
+      "buyRule": "低于目标仓位且投资逻辑未变时再考虑补充。",
+      "currentPrice": 4.59,
+      "currentValue": "",
+      "priceUpdatedAt": "2026-06-11",
+      "valueUpdatedAt": "",
+      "code": "1357.HK",
+      "priceSource": "东方财富·直连",
+      "syncStatus": "success",
+      "portfolioRuleTag": "AI_RECOVERY",
+      "portfolioActionBias": "recover_position_by_priority",
+      "currency": "",
+      "dailyChange": -3.16,
+      "updatedAt": 1781192341839
+    },
+    {
+      "id": "fii",
+      "type": "holding",
+      "name": "工业富联",
+      "shares": 4400,
+      "avgCost": 55.33,
+      "role": "成长仓",
+      "theme": "AI科技",
+      "targetPct": 10,
+      "notes": "AI服务器业绩兑现核心方向, 优先级最高的成长仓。\n[2026-06-12 V5.5调整] 目标8%→10%(成长仓顶格), 新增12%削减线/13%绝对冻结线(≥13%时任何价格不再买入)。\n■补仓: 65/60/55/50四档×300/400/600/700股, 预算≤11.2万, 档距≥8%。每档双重前置: (1)止跌确认=收盘站回5日线的阳线; (2)五项基本面清单全过——①北美云厂商capex指引未集体下调 ②AI/云计算营收增速>40%且毛利率未连续两季下滑 ③GB300→Rubin切换中份额未丢(对手广达/纬创/超微) ④存货增速未持续高于营收+毛利率下行组合(Q1存货1673亿+10.9%QoQ尚属备货逻辑) ⑤下跌属β(大盘/板块)而非α(公司丢单/miss)。\n■止盈三层: ①占比≥12%机械削回10%, 每月底+触发式检查, 现持仓约75元首触(卖约800股, 修正原75减400力度不足的问题); ②价格档84/95/110(弹性仓, 落点保留核心2400股); ③基本面保险丝(优先级最高,不等价格): 连续两季营收或净利增速<25-30%且指引转弱, 或云厂商集体砍capex→削至5%以下; 技术保险丝: 周线收盘破60周线, 或自高点回撤25%并破前低→清弹性仓。\n■分层: 核心仓2400股长期持有(只受保险丝管)+弹性仓网格(卖出后回落>12%且占比<10%可低一档接回, 数量上保证净方向为减)。\n■估值锚: 2026E净利券商区间500-758亿(天风500/华安668/国信693/中金758, 中值~650亿, EPS~3.3)。",
+      "plans": [
+        {
+          "id": "fii_b65",
+          "action": "buy",
+          "price": 65,
+          "shares": 300,
+          "note": "第1档64-65区(60日线附近/5月平台上沿,2026E约19.5x): 触发后等收盘站回5日线的阳线再买,不接飞刀; 需过五项基本面清单",
+          "triggerOn": "below"
+        },
+        {
+          "id": "fii_b60",
+          "action": "buy",
+          "price": 60,
+          "shares": 400,
+          "note": "第2档59-60区(整数关+4月底密集成交平台,约18x): 同上确认条件",
+          "triggerOn": "below"
+        },
+        {
+          "id": "fii_b55",
+          "action": "buy",
+          "price": 55,
+          "shares": 600,
+          "note": "第3档54-55区(筹码密集下沿54.16/去年11月恐慌低点55.94/持仓成本线,约16x): 同上确认条件",
+          "triggerOn": "below"
+        },
+        {
+          "id": "fii_b50",
+          "action": "buy",
+          "price": 50,
+          "shares": 700,
+          "note": "第4档49-50区(3月低点48.5复测,约15x,真正的极端档): 仅β下跌且基本面未破才买; α下跌(丢单/业绩miss)不买反而评估减仓",
+          "triggerOn": "below"
+        },
+        {
+          "id": "fii_s75",
+          "action": "sell",
+          "price": 75,
+          "shares": 800,
+          "note": "再平衡档: 占比≥12%机械削回10%(按现4400股约75元首触,卖约800股); 若此前补仓档已成交,执行时按当时占比重算数量",
+          "triggerOn": "above"
+        },
+        {
+          "id": "fii_s84",
+          "action": "sell",
+          "price": 84,
+          "shares": 400,
+          "note": "82-85双顶区(83.55/84.95)主动锁利,2026E约25x/TTM约41x",
+          "triggerOn": "above"
+        },
+        {
+          "id": "fii_s95",
+          "action": "sell",
+          "price": 95,
+          "shares": 400,
+          "note": "93-96机构最乐观定价兑现区(高盛目标92.9上方),2026E约28x",
+          "triggerOn": "above"
+        },
+        {
+          "id": "fii_s110",
+          "action": "sell",
+          "price": 110,
+          "shares": 400,
+          "note": "108-112纯情绪定价区(2026E约33x): 弹性仓清空,仅留核心2400股(实际数量=当时持股-2400)",
+          "triggerOn": "above"
+        }
+      ],
+      "thesis": "AI算力硬件核心资产(GB300/Rubin主力代工+800G交换机, Q1净利+102.6%/AI机柜+3.8倍)。策略=核心仓吃AI基建周期+弹性仓上限内网格: 买入看估值档+止跌确认+基本面清单, 卖出以'12%削回10%'再平衡为主轴, 基本面保险丝优先级最高。",
+      "sellRule": "①占比≥12%削回10%(约75元首触, 卖约800股); ②84前高区/95机构目标区/110情绪区分批, 落点核心2400股; ③保险丝: 增速连续两季<25-30%或云厂商砍capex→削至5%以下; 周线破60周线/高点回撤25%破前低→清弹性仓",
+      "buyRule": "65/60/55/50四档(300/400/600/700股, 预算≤11.2万); 触发后需收盘站回5日线阳线确认+五项基本面清单通过; 占比≥13%冻结一切买入; α下跌不补",
+      "currentPrice": 69.3,
+      "currentValue": "",
+      "priceUpdatedAt": "2026-06-11",
+      "valueUpdatedAt": "",
+      "code": "601138.SS",
+      "priceSource": "东方财富·直连",
+      "syncStatus": "success",
+      "portfolioRuleTag": "AI_CORE_GRID",
+      "portfolioActionBias": "ladder_buy_capped_trim_to_target",
+      "currency": "",
+      "dailyChange": -2.57,
+      "updatedAt": 1781251200000
+    },
+    {
+      "id": "dp",
+      "type": "watching",
+      "name": "东鹏饮料",
+      "shares": 100,
+      "avgCost": -1,
+      "role": "观察仓",
+      "theme": "消费",
+      "targetPct": 1,
+      "notes": "已兑现前期利润约29.8万，100股作为消费风格哨兵。不是核心加仓对象，除非消费赛道重新占优。\n[2026-06-11 AI建议-V5.4调整] 目标1%不变, 升级为完整哨兵仓。新增130/120两档买入计划, 补足到约200股(1%目标)。消费防御方向。",
+      "plans": [
+        {
+          "id": "dp_buy_130",
+          "action": "buy",
+          "price": 130,
+          "shares": 100,
+          "note": "消费哨兵补足: 当前100股仅0.5%, 130附近补一档至1%目标",
+          "triggerOn": "below"
+        },
+        {
+          "id": "dp_buy_120",
+          "action": "buy",
+          "price": 120,
+          "shares": 100,
+          "note": "若进一步回调可再补一档",
+          "triggerOn": "below"
+        }
+      ],
+      "thesis": "已兑现前期利润约29.8万，100股作为消费风格哨兵。不是核心加仓对象，除非消费赛道重新占优。",
+      "sellRule": "观察仓不执着；逻辑不再跟踪或不符合组合方向时可删除/退出。",
+      "buyRule": "低于目标仓位且投资逻辑未变时再考虑补充。",
+      "currentPrice": 132.1,
+      "currentValue": "",
+      "priceUpdatedAt": "2026-06-11",
+      "valueUpdatedAt": "",
+      "code": "605499.SS",
+      "priceSource": "东方财富·直连",
+      "syncStatus": "success",
+      "portfolioRuleTag": "CONSUMER_WATCH",
+      "portfolioActionBias": "watch_only",
+      "currency": "",
+      "dailyChange": 0.17,
+      "updatedAt": 1781192341839
+    },
+    {
+      "id": "huaqin",
+      "type": "watching",
+      "name": "华勤技术",
+      "shares": 100,
+      "avgCost": 110.83,
+      "role": "观察仓",
+      "theme": "AI科技",
+      "targetPct": 2,
+      "notes": "AI服务器ODM方向，具备由观察仓转正式仓可能。若业绩继续增长且回调20%-30%，可考虑升级仓位。\n[2026-06-11 AI建议-V5.4调整] 目标2%不变。当前0.4%, 原计划95/85两档加仓配置合理, 触发后即可补足到2%。",
+      "plans": [
+        {
+          "id": "h1",
+          "action": "buy",
+          "price": 95,
+          "shares": 100,
+          "note": "观察转正第一档",
+          "triggerOn": "below"
+        },
+        {
+          "id": "h2",
+          "action": "buy",
+          "price": 85,
+          "shares": 100,
+          "note": "第二档",
+          "triggerOn": "below"
+        }
+      ],
+      "thesis": "AI服务器ODM方向，具备由观察仓转正式仓可能。若业绩继续增长且回调20%-30%，可考虑升级仓位。",
+      "sellRule": "观察仓不执着；逻辑不再跟踪或不符合组合方向时可删除/退出。",
+      "buyRule": "95：观察转正第一档；85：第二档",
+      "currentPrice": 104.54,
+      "currentValue": "",
+      "priceUpdatedAt": "2026-06-11",
+      "valueUpdatedAt": "",
+      "code": "603296.SS",
+      "priceSource": "东方财富·直连",
+      "syncStatus": "success",
+      "portfolioRuleTag": "AI_RECOVERY",
+      "portfolioActionBias": "watch_then_upgrade_by_plan",
+      "currency": "",
+      "dailyChange": 1.33,
+      "updatedAt": 1781192341839
+    },
+    {
+      "id": "hs300",
+      "type": "etf",
+      "name": "沪深300ETF富国",
+      "shares": 13300,
+      "avgCost": 4.92,
+      "role": "核心仓",
+      "theme": "宽基指数",
+      "targetPct": 16,
+      "notes": "A股核心Beta。宽基ETF不设机械止损，只做仓位再平衡；低于目标仓位时优先补。\n[2026-06-11 AI建议-V5.4调整] 目标18%→16%, 仍是最大核心仓。当前2.6%严重低配, 需用现金分3批补43万市值。第一批不等回调(当前价立即补), 后两档等沪深300回调5%/10%执行。重点说明: 6月12日调样后沪深300科技+通信权重升至约22%, 本身已含科技敞口。",
+      "plans": [
+        {
+          "id": "hs300_buy_now",
+          "action": "buy",
+          "price": 5.4,
+          "shares": 20000,
+          "note": "立即分批1(不依赖回调): 当前严重低配2.6%, 先补12万市值约2.2万股",
+          "triggerOn": "below"
+        },
+        {
+          "id": "hs300_buy_5_1",
+          "action": "buy",
+          "price": 5.1,
+          "shares": 24000,
+          "note": "回调5%补一档",
+          "triggerOn": "below"
+        },
+        {
+          "id": "hs300_buy_4_8",
+          "action": "buy",
+          "price": 4.8,
+          "shares": 20000,
+          "note": "回调10%深度档",
+          "triggerOn": "below"
+        }
+      ],
+      "thesis": "A股核心Beta。宽基ETF不设机械止损，只做仓位再平衡；低于目标仓位时优先补。",
+      "sellRule": "不设机械止损；按目标仓位做再平衡，超配时减仓，低配时补仓。",
+      "buyRule": "低于目标仓位且投资逻辑未变时再考虑补充。",
+      "currentPrice": "",
+      "currentValue": 66978.8,
+      "priceUpdatedAt": "",
+      "valueUpdatedAt": "2026-06-11",
+      "code": "159300.SZ",
+      "priceSource": "东方财富·直连",
+      "syncStatus": "success",
+      "updatedAt": 1781192341839,
+      "lastUnitPrice": 5.036,
+      "portfolioRuleTag": "INDEX_STABILIZER",
+      "portfolioActionBias": "rebalance_by_target_pct",
+      "currency": "",
+      "dailyChange": -1.12
+    },
+    {
+      "id": "shanghai",
+      "type": "etf",
+      "name": "上证指数ETF汇添富",
+      "shares": 94200,
+      "avgCost": 1.344,
+      "role": "核心仓",
+      "theme": "宽基指数",
+      "targetPct": 7,
+      "notes": "A股宽基底仓。用于降低个股波动，原则为长期持有和再平衡。\n[2026-06-11 AI建议-V5.4调整] 目标12%→7%, 与沪深300成分高度重叠降权。当前5.4%, 仅需小幅补仓4.4万市值。",
+      "plans": [
+        {
+          "id": "shanghai_buy_now",
+          "action": "buy",
+          "price": 1.55,
+          "shares": 30000,
+          "note": "小幅补仓: 当前5.4%→目标7%, 缺约4.4万市值约2.8万股",
+          "triggerOn": "below"
+        }
+      ],
+      "thesis": "A股宽基底仓。用于降低个股波动，原则为长期持有和再平衡。",
+      "sellRule": "不设机械止损；按目标仓位做再平衡，超配时减仓，低配时补仓。",
+      "buyRule": "低于目标仓位且投资逻辑未变时再考虑补充。",
+      "currentPrice": "",
+      "currentValue": 130372.8,
+      "priceUpdatedAt": "",
+      "valueUpdatedAt": "2026-06-11",
+      "code": "510980.SS",
+      "priceSource": "东方财富·直连",
+      "syncStatus": "success",
+      "updatedAt": 1781192341839,
+      "portfolioRuleTag": "INDEX_STABILIZER",
+      "portfolioActionBias": "rebalance_by_target_pct",
+      "currency": "",
+      "lastUnitPrice": 1.384,
+      "dailyChange": -0.79
+    },
+    {
+      "id": "hsi",
+      "type": "etf",
+      "name": "恒指港股通ETF广发",
+      "shares": 20400,
+      "avgCost": 1.231,
+      "role": "核心仓",
+      "theme": "宽基指数",
+      "targetPct": 12,
+      "notes": "港股Beta底仓。优先级高于继续追高科技股；低估时分批补。\n[2026-06-11 AI建议-V5.4调整] 目标12%不变, 当前严重低配1.1%。港股市场敞口已含紫金(15)/小米(3)/美图(1)=19%, 加恒指ETF 12%=31%, 是组合最大单一市场暴露, 后续加仓节奏稀释而非扩大。",
+      "plans": [
+        {
+          "id": "hsi_buy_now",
+          "action": "buy",
+          "price": 1.4,
+          "shares": 50000,
+          "note": "立即分批1: 当前1.1%严重低配, 先补7万市值约5万股",
+          "triggerOn": "below"
+        },
+        {
+          "id": "hsi_buy_25500",
+          "action": "buy",
+          "price": 1.35,
+          "shares": 80000,
+          "note": "恒指25,500附近补一档",
+          "triggerOn": "below"
+        },
+        {
+          "id": "hsi_buy_24500",
+          "action": "buy",
+          "price": 1.3,
+          "shares": 80000,
+          "note": "恒指24,500附近深度档",
+          "triggerOn": "below"
+        }
+      ],
+      "thesis": "港股Beta底仓。优先级高于继续追高科技股；低估时分批补。",
+      "sellRule": "不设机械止损；按目标仓位做再平衡，超配时减仓，低配时补仓。",
+      "buyRule": "低于目标仓位且投资逻辑未变时再考虑补充。",
+      "currentPrice": "",
+      "currentValue": 22950,
+      "priceUpdatedAt": "",
+      "valueUpdatedAt": "2026-06-11",
+      "code": "159312.SZ",
+      "priceSource": "东方财富·直连",
+      "syncStatus": "success",
+      "updatedAt": 1781192341839,
+      "portfolioRuleTag": "INDEX_STABILIZER",
+      "portfolioActionBias": "rebalance_by_target_pct",
+      "currency": "",
+      "lastUnitPrice": 1.125,
+      "dailyChange": -1.06
+    },
+    {
+      "id": "cyb50",
+      "type": "etf",
+      "name": "创业板50ETF易方达",
+      "shares": 25600,
+      "avgCost": 1.557,
+      "role": "成长仓",
+      "theme": "AI科技",
+      "targetPct": 0,
+      "notes": "成长风格ETF，与科技个股相关性较高。新增资金不要与半导体、科创同时过度加仓。\n[2026-06-11 AI建议-V5.4调整] 目标5%→0%, 反弹清仓。理由: 与个股AI科技+科创50ETF+半导体ETF成分高度重叠, 砍掉它简化结构、避免三重重复。释放资金约5万。",
+      "plans": [
+        {
+          "id": "cyb50_sell_now",
+          "action": "sell",
+          "price": 2.0,
+          "shares": 12800,
+          "note": "立即减一半: 与个股科技+科创50+半导体ETF高度重叠, 当前价反弹时即可清",
+          "triggerOn": "above"
+        },
+        {
+          "id": "cyb50_sell_rebound",
+          "action": "sell",
+          "price": 2.1,
+          "shares": 12800,
+          "note": "反弹5%清剩余, 完成目标→0",
+          "triggerOn": "above"
+        }
+      ],
+      "thesis": "成长风格ETF，与科技个股相关性较高。新增资金不要与半导体、科创同时过度加仓。",
+      "sellRule": "不设机械止损；按目标仓位做再平衡，超配时减仓，低配时补仓。",
+      "buyRule": "低于目标仓位且投资逻辑未变时再考虑补充。",
+      "currentPrice": "",
+      "currentValue": 40140.8,
+      "priceUpdatedAt": "",
+      "valueUpdatedAt": "2026-06-11",
+      "code": "159369.SZ",
+      "priceSource": "东方财富·直连",
+      "syncStatus": "success",
+      "updatedAt": 1781192341839,
+      "portfolioRuleTag": "AI_RECOVERY",
+      "portfolioActionBias": "recover_position_by_priority",
+      "currency": "",
+      "lastUnitPrice": 1.568,
+      "dailyChange": -2.18
+    },
+    {
+      "id": "nonferrous",
+      "type": "etf",
+      "name": "有色金属ETF南方",
+      "shares": 14000,
+      "avgCost": 2.284,
+      "role": "成长仓",
+      "theme": "黄金资源",
+      "targetPct": 2,
+      "notes": "资源周期Beta。与紫金、黄金ETF有相关性，合计仓位需要控制。 2026-06补充策略：资源板块（紫金矿业+黄金ETF+有色ETF）整体仓位已较重。原则上不因5%-10%普通回调机械补仓；优先保留现金等待更高赔率机会。紫金矿业维持25元附近战略补仓计划；黄金ETF重点观察1.55-1.60区间及止跌信号；有色ETF重点观察1.70附近及止跌信号。在资源逻辑未破坏前继续长期看多，但新增资金阶段性优先考虑AI方向仓位恢复。\n[2026-06-11 AI建议-V5.4调整] 目标4%→2%, 与紫金高度同源降权。当前1.4%已低于目标, 但仍建议反弹时减半(因为是高位减仓机会)。后续若回调可补回。",
+      "plans": [
+        {
+          "id": "nf_sell_now",
+          "action": "sell",
+          "price": 2.8,
+          "shares": 7000,
+          "note": "减一半: 与紫金高度同源, 现价附近先减一半",
+          "triggerOn": "above"
+        },
+        {
+          "id": "nf_buy_2_5",
+          "action": "buy",
+          "price": 2.5,
+          "shares": 5000,
+          "note": "若深度回调可补回, 但严控2%目标",
+          "triggerOn": "below"
+        }
+      ],
+      "updatedAt": 1781192341839,
+      "thesis": "资源周期Beta。与紫金、黄金ETF有相关性，合计仓位需要控制。",
+      "sellRule": "不设机械止损；按目标仓位做再平衡，超配时减仓，低配时补仓。",
+      "buyRule": "低于目标仓位且投资逻辑未变时再考虑补充。",
+      "currentPrice": "",
+      "currentValue": 26026,
+      "priceUpdatedAt": "",
+      "valueUpdatedAt": "2026-06-11",
+      "code": "512400.SS",
+      "priceSource": "东方财富·直连",
+      "syncStatus": "success",
+      "portfolioRuleTag": "RESOURCE_CONTROL",
+      "portfolioActionBias": "hold_wait_for_strategic_buy_zone",
+      "currency": "",
+      "lastUnitPrice": 1.859,
+      "dailyChange": 0.87
+    },
+    {
+      "id": "gold",
+      "type": "etf",
+      "name": "黄金股ETF永赢",
+      "shares": 101400,
+      "avgCost": 1.995,
+      "role": "核心仓",
+      "theme": "黄金资源",
+      "targetPct": 4,
+      "notes": "黄金资源核心仓。若市场进入黄金狂热、成交放大、舆论一致看多，应主动再平衡减仓。 2026-06补充策略：资源板块（紫金矿业+黄金ETF+有色ETF）整体仓位已较重。原则上不因5%-10%普通回调机械补仓；优先保留现金等待更高赔率机会。紫金矿业维持25元附近战略补仓计划；黄金ETF重点观察1.55-1.60区间及止跌信号；有色ETF重点观察1.70附近及止跌信号。在资源逻辑未破坏前继续长期看多，但新增资金阶段性优先考虑AI方向仓位恢复。\n[2026-06-11 AI建议-V5.4调整] 目标9%→4%, 与紫金重叠+黄金趋势走弱。当前8.6%, 需减约5.5万股。黄金回调期(现货金从5185→4328, 回撤16%), 紫金作为核心仓已足够暴露, ETF端压薄。",
+      "plans": [
+        {
+          "id": "gold_sell_now",
+          "action": "sell",
+          "price": 2.3,
+          "shares": 30000,
+          "note": "立即减一档: 当前8.6%超配, 现价附近先减约3万股",
+          "triggerOn": "above"
+        },
+        {
+          "id": "gold_sell_rebound1",
+          "action": "sell",
+          "price": 2.4,
+          "shares": 25000,
+          "note": "反弹5%再减一档(金价反弹至4500美元附近触发)",
+          "triggerOn": "above"
+        },
+        {
+          "id": "gold_buy_1_55",
+          "action": "buy",
+          "price": 1.55,
+          "shares": 30000,
+          "note": "深度回调档1: 跌至1.55-1.60区间且出现止跌信号补回",
+          "triggerOn": "below"
+        }
+      ],
+      "updatedAt": 1781192341839,
+      "thesis": "黄金资源核心仓。若市场进入黄金狂热、成交放大、舆论一致看多，应主动再平衡减仓。",
+      "sellRule": "不设机械止损；按目标仓位做再平衡，超配时减仓，低配时补仓。",
+      "buyRule": "低于目标仓位且投资逻辑未变时再考虑补充。",
+      "currentPrice": "",
+      "currentValue": 170859,
+      "priceUpdatedAt": "",
+      "valueUpdatedAt": "2026-06-11",
+      "code": "517520.SS",
+      "priceSource": "东方财富·直连",
+      "syncStatus": "success",
+      "portfolioRuleTag": "RESOURCE_CONTROL",
+      "portfolioActionBias": "hold_wait_for_strategic_buy_zone",
+      "currency": "",
+      "lastUnitPrice": 1.685,
+      "dailyChange": -0.82
+    },
+    {
+      "id": "star",
+      "type": "etf",
+      "name": "科创50ETF广发",
+      "shares": 50000,
+      "avgCost": "",
+      "role": "成长仓",
+      "theme": "AI科技",
+      "targetPct": 3,
+      "notes": "科创成长Beta，与半导体设备、工业富联、华勤等AI链条存在相关性。\n[2026-06-11 AI建议-V5.4调整] 目标5%→3%, 与个股科技重叠降权。当前2.2%基本匹配, 不急动作。",
+      "plans": [
+        {
+          "id": "star_sell_now",
+          "action": "sell",
+          "price": 1.2,
+          "shares": 0,
+          "note": "当前2.2%已接近3%目标, 无需操作; 仅作为减仓档备用",
+          "triggerOn": "above"
+        },
+        {
+          "id": "star_buy_dip",
+          "action": "buy",
+          "price": 1.1,
+          "shares": 20000,
+          "note": "回调8%以上可补一档",
+          "triggerOn": "below"
+        }
+      ],
+      "thesis": "科创成长Beta，与半导体设备、工业富联、华勤等AI链条存在相关性。",
+      "sellRule": "不设机械止损；按目标仓位做再平衡，超配时减仓，低配时补仓。",
+      "buyRule": "低于目标仓位且投资逻辑未变时再考虑补充。",
+      "currentPrice": "",
+      "currentValue": 52050,
+      "priceUpdatedAt": "",
+      "valueUpdatedAt": "2026-06-11",
+      "code": "588060.SS",
+      "priceSource": "东方财富·直连",
+      "syncStatus": "success",
+      "updatedAt": 1781192341839,
+      "portfolioRuleTag": "AI_RECOVERY",
+      "portfolioActionBias": "recover_position_by_priority",
+      "currency": "",
+      "lastUnitPrice": 1.041,
+      "dailyChange": -1.14
+    },
+    {
+      "id": "semi",
+      "type": "etf",
+      "name": "半导体设备ETF广发",
+      "shares": 21700,
+      "avgCost": 1.921,
+      "role": "卫星仓",
+      "theme": "AI科技",
+      "targetPct": 2,
+      "notes": "国产替代+AI硬件弹性仓。波动较大，不宜无限加仓；超过目标仓位后只观察不追。\n[2026-06-11 AI建议-V5.4调整] 目标4%→2%, 卫星仓降权。当前1.8%基本匹配, 不主动加; 上涨触发被动止盈。",
+      "plans": [
+        {
+          "id": "semi_sell_now",
+          "action": "sell",
+          "price": 2.2,
+          "shares": 0,
+          "note": "当前1.8%已接近2%目标, 无需主动减",
+          "triggerOn": "above"
+        },
+        {
+          "id": "semi_sell_high",
+          "action": "sell",
+          "price": 2.6,
+          "shares": 8000,
+          "note": "上涨20%时主动减仓控制卫星仓暴露",
+          "triggerOn": "above"
+        }
+      ],
+      "thesis": "国产替代+AI硬件弹性仓。波动较大，不宜无限加仓；超过目标仓位后只观察不追。",
+      "sellRule": "不设机械止损；按目标仓位做再平衡，超配时减仓，低配时补仓。",
+      "buyRule": "低于目标仓位且投资逻辑未变时再考虑补充。",
+      "currentPrice": "",
+      "currentValue": 63624.4,
+      "priceUpdatedAt": "",
+      "valueUpdatedAt": "2026-06-11",
+      "code": "560780.SS",
+      "priceSource": "东方财富·直连",
+      "syncStatus": "success",
+      "updatedAt": 1781192341839,
+      "portfolioRuleTag": "AI_RECOVERY",
+      "portfolioActionBias": "recover_position_by_priority",
+      "currency": "",
+      "lastUnitPrice": 2.932,
+      "dailyChange": 2.84
+    },
+    {
+      "id": "yofc",
+      "type": "watching",
+      "name": "长飞光纤",
+      "shares": 100,
+      "avgCost": 444.904,
+      "role": "观察仓",
+      "theme": "AI科技",
+      "targetPct": 2,
+      "notes": "2026-06-11建立100股观察仓，成本444.904。AI光通信基础设施方向，受益于AI数据中心建设与光纤需求增长。当前处于强势上升趋势，但位置不属于低风险区域，因此采用观察仓+分批建仓策略。\n[2026-06-11 AI建议-V5.4调整] 目标3%→2%, 估值偏紧降权。已删除y_buy_break_500档(突破500加仓), 反向加入y_sell_500/550止盈档。逻辑: Q1净利+226%扣非+966%景气真实, 但现价444 vs 机构90天目标均价364.86溢价22%, 二阶导(增速变化)需观察。",
+      "plans": [
+        {
+          "id": "y_buy_420",
+          "action": "buy",
+          "price": 420,
+          "shares": 100,
+          "note": "第一档回调加仓",
+          "triggerOn": "below"
+        },
+        {
+          "id": "y_buy_400",
+          "action": "buy",
+          "price": 400,
+          "shares": 100,
+          "note": "第二档加仓(原200→100, 控制总仓位至2%)",
+          "triggerOn": "below"
+        },
+        {
+          "id": "y_sell_500",
+          "action": "sell",
+          "price": 500,
+          "shares": 50,
+          "note": "新增止盈档1: 突破500反而减一半(原计划是突破加仓, 因估值偏紧反向操作)",
+          "triggerOn": "above"
+        },
+        {
+          "id": "y_sell_550",
+          "action": "sell",
+          "price": 550,
+          "shares": 50,
+          "note": "止盈档2: 估值进一步过热全部止盈",
+          "triggerOn": "above"
+        }
+      ],
+      "thesis": "AI光通信基础设施方向。行业景气度高，技术形态保持强势主升趋势。当前策略为先建立观察仓，再根据回调或突破情况逐步扩仓。",
+      "sellRule": "观察仓阶段不设机械止损；若行业逻辑恶化、业绩不及预期或趋势明显破坏，再重新评估。",
+      "buyRule": "已完成100股观察仓建仓；420附近加100股；400附近加200股；放量突破495-500区间加100股。",
+      "currentPrice": 436.79,
+      "currentValue": "",
+      "priceUpdatedAt": "2026-06-11",
+      "valueUpdatedAt": "",
+      "code": "601869.SS",
+      "priceSource": "东方财富·直连",
+      "syncStatus": "success",
+      "updatedAt": 1781192341839,
+      "portfolioRuleTag": "AI_RECOVERY",
+      "portfolioActionBias": "watch_then_upgrade_by_plan",
+      "currency": "",
+      "dailyChange": -3.51
+    },
+    {
+      "id": "dividend",
+      "type": "etf",
+      "name": "红利ETF(新增)",
+      "shares": 0,
+      "avgCost": 0,
+      "role": "防御核心仓",
+      "theme": "防御",
+      "targetPct": 7,
+      "notes": "\n[2026-06-11 AI建议-V5.4调整] 新增防御压舱石。选品方向: 红利低波512890 / 中证红利515080 / 港股通红利513530。建议用现金分3批建仓至约18.3万市值(7%目标), 不依赖回调。逻辑: 6月初市场资金已从科技切换到煤炭/石油石化等防御板块, 红利方向提供低Beta+稳定股息+对冲科技回撤。",
+      "plans": [
+        {
+          "id": "div_buy_1",
+          "action": "buy",
+          "price": 1.5,
+          "shares": 40000,
+          "note": "立即建仓1: 不等回调, 当前价先建一半",
+          "triggerOn": "below"
+        },
+        {
+          "id": "div_buy_2",
+          "action": "buy",
+          "price": 1.45,
+          "shares": 40000,
+          "note": "回调3%补一档",
+          "triggerOn": "below"
+        },
+        {
+          "id": "div_buy_3",
+          "action": "buy",
+          "price": 1.4,
+          "shares": 40000,
+          "note": "回调6%深度档",
+          "triggerOn": "below"
+        }
+      ],
+      "thesis": "组合防御压舱石, 提供稳定股息+低Beta, 对冲科技/资源高位风险。",
+      "sellRule": "无机械止盈; 红利溢价过高(股息率<2.5%)时再平衡",
+      "buyRule": "分3批建仓, 不依赖回调",
+      "currentPrice": 1.5,
+      "currentValue": "",
+      "priceUpdatedAt": "2026-06-11",
+      "valueUpdatedAt": "",
+      "code": "待定(512890/515080/513530)",
+      "priceSource": "待选品",
+      "syncStatus": "pending",
+      "portfolioRuleTag": "DEFENSIVE_ANCHOR",
+      "portfolioActionBias": "build_position_steady",
+      "currency": "",
+      "dailyChange": 0,
+      "updatedAt": 1781192341839,
+      "lastUnitPrice": 1.5
+    },
+    {
+      "id": "consumer",
+      "type": "etf",
+      "name": "消费ETF(新增)",
+      "shares": 0,
+      "avgCost": 0,
+      "role": "卫星仓",
+      "theme": "消费",
+      "targetPct": 2,
+      "notes": "\n[2026-06-11 AI建议-V5.4调整] 新增消费方向Beta。选品方向: 消费ETF 159928 / 食品饮料515170 / 必选消费. 建议分2批建仓至约5.2万市值(2%目标). 与东鹏饮料(消费哨兵)形成消费方向暴露互补.",
+      "plans": [
+        {
+          "id": "cons_buy_1",
+          "action": "buy",
+          "price": 1.3,
+          "shares": 20000,
+          "note": "立即建仓1: 先建一半",
+          "triggerOn": "below"
+        },
+        {
+          "id": "cons_buy_2",
+          "action": "buy",
+          "price": 1.25,
+          "shares": 20000,
+          "note": "回调4%补一档",
+          "triggerOn": "below"
+        }
+      ],
+      "thesis": "消费方向Beta补足, 与东鹏饮料哨兵形成完整消费暴露.",
+      "sellRule": "消费板块过热再平衡",
+      "buyRule": "分2批建仓, 不依赖回调",
+      "currentPrice": 1.3,
+      "currentValue": "",
+      "priceUpdatedAt": "2026-06-11",
+      "valueUpdatedAt": "",
+      "code": "待定(159928/515170)",
+      "priceSource": "待选品",
+      "syncStatus": "pending",
+      "portfolioRuleTag": "CONSUMER_BETA",
+      "portfolioActionBias": "build_position_steady",
+      "currency": "",
+      "dailyChange": 0,
+      "updatedAt": 1781192341839,
+      "lastUnitPrice": 1.3
+    },
+    {
+      "id": "cash",
+      "type": "etf",
+      "name": "现金(手动维护)",
+      "shares": 0,
+      "avgCost": 0,
+      "role": "现金",
+      "theme": "现金",
+      "targetPct": 11,
+      "notes": "虚拟持仓, 两个作用: ①修正V5.42程序口径——程序无现金字段, 原用targetPct反推总资产, 低估约28%, 导致富联界面显示15.8%并误提示'立即卖2200股'; 录入现金后程序总资产=真实总资产, 界面占比与手册口径一致(富联≈11.4%)。②弹药库台账: 每次出入金/成交后手动更新'当前市值'=实际现金余额。\n目标11%=100-89(全部持仓目标合计)的配置口径; 实际操作底线仍为13%(约35万), 仅当多个标的同时进入战略买点(如富联50元档/宽基深度回调)时允许短期降至10-11%。",
+      "plans": [],
+      "thesis": "组合分母修正+补仓弹药库。当前约100万(37%), 按capitalPriority分阶段降至13-20%。",
+      "sellRule": "-(现金不适用)",
+      "buyRule": "-(现金不适用)",
+      "currentPrice": "",
+      "currentValue": 1000000,
+      "priceUpdatedAt": "",
+      "valueUpdatedAt": "2026-06-12",
+      "code": "",
+      "priceSource": "手动维护",
+      "syncStatus": "",
+      "portfolioRuleTag": "CASH_LEDGER",
+      "portfolioActionBias": "manual",
+      "currency": "",
+      "dailyChange": 0,
+      "updatedAt": 1781251200000,
+      "lastUnitPrice": ""
+    }
+  ],
+  "updatedAt": 1781251200000,
+  "version": "V5.5",
+  "strategyUpdatedAt": 1781251200000,
+  "portfolioStrategy": {
+    "name": "组合级资金调度规则 V5.5",
+    "purpose": "避免只看单一标的补仓，改为同时考虑主题仓位、现金储备、相关性和新增资金优先级。",
+    "corePrinciples": [
+      "不因单个标的短期下跌而机械补仓，必须结合主题仓位是否已偏高。",
+      "新增资金优先投向胜率、赔率、仓位缺口三者更匹配的方向。",
+      "核心仓允许长期持有，但主题仓位接近上限时，补仓优先级自动下降。",
+      "观察仓只用于跟踪，不应快速升级为重仓，除非出现回调、业绩确认或趋势突破。",
+      "宽基ETF承担组合稳定器作用，个股和行业ETF承担弹性收益作用。"
+    ],
+    "minimumCashPct": 13,
+    "cashRule": {
+      "minimumCashPct": 13,
+      "preferredCashPct": "13-20",
+      "rule": "正常情况下保留至少13%现金(约35万); 当前现金充裕(100万/37%), 主动分阶段降至13-20%; 在指数高位/主题接近上限时维持上限。现金已录入'现金(手动维护)'虚拟持仓(目标11%为配置口径余数: 100-89持仓目标), 操作底线仍以13%为准。",
+      "exception": "仅在多个标的同时进入战略买点时, 现金可短期降至10%."
+    },
+    "themeLimits": {
+      "黄金资源": {
+        "targetPct": 21,
+        "softLimitPct": 22,
+        "hardLimitPct": 27,
+        "status": "紫金长期持有(15%)+ETF端压薄(黄金股4+有色2)",
+        "rule": "紫金作为核心仓不主动减, 仅依靠35/40高位被动再平衡; ETF端在反弹时减仓控制板块同源风险."
+      },
+      "AI科技": {
+        "targetPct": 23,
+        "softLimitPct": 24,
+        "hardLimitPct": 27,
+        "status": "富联目标上调至10%为主题内核心; 直接敞口现约23.1%, 已贴24%软上限",
+        "rule": "穿透后科技有效敞口约31%(直接23+宽基隐含8), 距32%暂停线仅1点 → 富联按个股四档计划运作, 其余AI标的(小米/长飞/美图/创业板残余)只减不加; 富联12%削减/13%冻结线为主题风控第一道闸。"
+      },
+      "宽基指数": {
+        "targetPct": 35,
+        "softLimitPct": 38,
+        "hardLimitPct": 45,
+        "status": "组合稳定器, 当前9.1%严重低配, 重点补仓",
+        "rule": "沪深300_16 / 恒指12 / 上证7. 不择时, 按目标比例分批补足."
+      },
+      "消费": {
+        "targetPct": 3,
+        "softLimitPct": 4,
+        "hardLimitPct": 6,
+        "status": "东鹏哨兵(1)+消费ETF(2), 完整消费暴露",
+        "rule": "新增消费ETF后形成完整消费方向, 不再扩大."
+      },
+      "防御": {
+        "targetPct": 7,
+        "softLimitPct": 8,
+        "hardLimitPct": 10,
+        "status": "新增主题, 红利方向压舱石",
+        "rule": "红利ETF 7%目标. 用于对冲科技/资源高位回撤. 不机械加减仓."
+      }
+    },
+    "capitalPriority": {
+      "currentOrder": [
+        "沪深300ETF(补36万)",
+        "恒指ETF(补30万)",
+        "红利ETF(新建仓11万)",
+        "消费ETF(新建仓5万)",
+        "有色金属ETF小幅补",
+        "工业富联回调档(预算≤11.2万, 见个股四档计划)",
+        "华勤技术回调档",
+        "长飞光纤回调档"
+      ],
+      "rule": "新增资金优先补严重低配的宽基核心, 然后建仓防御方向, 最后才补个股。紫金/黄金股ETF为减仓方不再补; 工业富联由'不再补'修订为'上限内阶梯补'(目标10%, 12%削减/13%冻结, 预算≤11.2万), 解决V5.4中'不再补'与65/60/55买入档并存的矛盾; 其余AI标的只减不加(穿透科技敞口已贴近上限)。"
+    },
+    "themeViews": {
+      "黄金资源": {
+        "view": "长期看多但短期谨慎, 板块同源风险高",
+        "action": "紫金长期持有, ETF端在反弹时减薄",
+        "triggerToBuy": [
+          "紫金接近25元且资源逻辑未破坏",
+          "黄金股ETF跌至1.55-1.60区间并出现止跌信号(分批最多补回4%目标)",
+          "有色ETF跌至2.5附近止跌可补回2%目标"
+        ],
+        "triggerToSellOrRebalance": [
+          "紫金35元按计划减约20%(原档位)",
+          "紫金40元再减约20%(原档位)",
+          "黄金股ETF反弹至2.3-2.4区间减仓至4%目标",
+          "有色金属ETF反弹时减至2%目标",
+          "黄金资源主题超过27%硬上限"
+        ]
+      },
+      "AI科技": {
+        "view": "中长期重点方向; 富联上调后主题目标23%, 穿透敞口约31%, 贴近32%暂停线",
+        "action": "富联核心2400股+弹性仓双层运作; 其他AI标的只减不加",
+        "triggerToBuy": [
+          "工业富联65/60/55/50四档(需止跌确认+五项基本面清单, 详见个股计划)",
+          "小米深度回调至22/20(密集档25已删除)",
+          "长飞回调至420/400(突破500加仓改为反向止盈)",
+          "华勤回调至95/85"
+        ],
+        "triggerToPause": [
+          "AI科技直接敞口接近24%软上限/27%硬上限",
+          "穿透后科技有效敞口超过32%",
+          "多只AI标的同时急涨且估值明显过热",
+          "工业富联触发12%削减线或84/95/110减仓档启动",
+          "工业富联占比≥13%(个股冻结线, 触发后该股一切买入冻结)"
+        ]
+      },
+      "宽基指数": {
+        "view": "严重低配的核心稳定器",
+        "action": "用现金分批主动补足, 不等极端回调",
+        "rule": "沪深300+恒指+上证三档配比16/12/7. 第一批不依赖价位立即补, 后续档位等回调触发."
+      },
+      "消费": {
+        "view": "新增完整消费暴露",
+        "action": "东鹏补足至1% + 消费ETF建仓至2%",
+        "rule": "消费板块作为内需稳定器, 不主动追逐, 按目标比例配置."
+      },
+      "防御": {
+        "view": "红利方向压舱石, 对冲高位回撤",
+        "action": "分3批建仓红利ETF至7%目标",
+        "rule": "压力测试场景B(流动性冲击全跌)下, 红利+消费+现金合计提供约20%缓冲. 不机械止盈."
+      }
+    },
+    "singlePositionRules": {
+      "coreHoldingMaxPct": 15,
+      "growthHoldingMaxPct": 10,
+      "satelliteHoldingMaxPct": 5,
+      "watchingMaxPct": 3,
+      "rule": "单一核心个股原则上不超过15%(紫金作为唯一例外允许长期持有, 但触发35/40档时执行被动再平衡); 成长个股不超过10%——工业富联目标上调至10%顶格, 12%触发机械削回10%, 13%为绝对冻结线(任何价格不再买入); 卫星仓不超过5%; 观察仓不超过3%。"
+    },
+    "decisionChecklist": [
+      "这笔买入是否会让某个主题超过软上限(穿透ETF重叠计算)?",
+      "是否仍保留至少13%现金?",
+      "这次下跌是普通波动, 还是已经到达战略补仓区?",
+      "当前买入的是核心仓、成长仓、卫星仓还是观察仓?",
+      "是否存在更高优先级标的也接近买点?",
+      "该标的投资逻辑是否仍然成立?",
+      "如果继续下跌10%-20%, 是否还有资金和心理空间继续执行计划?",
+      "执行这笔交易前, 港股市场敞口是否会超过35%?",
+      "该买入是否在当前capitalPriority清单的前列?"
+    ],
+    "v5_4_changesummary": {
+      "调整日期": "2026-06-11",
+      "新增标的": [
+        "红利ETF(目标7%)",
+        "消费ETF(目标2%)"
+      ],
+      "目标主题变化": {
+        "黄金资源": "25% → 21%(紫金不动, ETF降权)",
+        "AI科技": "30% → 21%(创业板50砍至0, 其他ETF降权)",
+        "宽基": "40% → 35%(上证降权, 沪深300/恒指不变)",
+        "消费+防御": "5% → 10%(新增红利方向)",
+        "现金": "10%最低 → 13%最低"
+      },
+      "核心调整原因": [
+        "紫金作为长期持有核心仓占总资产21%, 已超出常规15%上限, 通过主题内ETF降权而非减紫金来控制板块同源风险",
+        "穿透ETF成分发现AI/科技真实敞口约32%, 超过手册原20-30%上限, 故压缩AI主题ETF",
+        "100万现金充裕, 但宽基核心严重低配, 应优先用现金补宽基而非个股加仓",
+        "组合缺乏防御资产, 新增红利+消费ETF作为压舱石, 应对压力测试中-19%的全跌场景"
+      ],
+      "净现金使用": "约73万(买入106万 - 减仓回收33万), 现金从37%降至10%"
+    },
+    "v5_5_changesummary": {
+      "调整日期": "2026-06-12",
+      "本次范围": "仅工业富联策略升级+组合口径修正, 其余标的计划未动",
+      "工业富联": [
+        "目标8%→10%(成长仓顶格); 新增12%削减线/13%冻结线",
+        "买入阶梯重构: 65/60/55/50×300/400/600/700股(预算≤11.2万), 档距≥8%; 新增止跌确认(收盘站回5日线阳线)+五项基本面清单前置; 原'55=极端档'定义废止(3月低点48.5才是极端区, 故第4档下移至50)",
+        "止盈重构三层: ①占比≥12%机械削回10%(约75元首触卖约800股, 替代原75减400的不足力度) ②84/95/110价格档(弹性仓, 落点保留核心2400股) ③基本面/趋势保险丝(增速连续两季<25-30%或云厂商砍capex→削至5%以下; 周线破60周线或高点回撤25%破前低→清弹性仓)",
+        "持仓分层: 核心2400股长期+弹性仓网格(仅占比<10%时接回), 解决V5.4中65买/75卖网格往返导致超配无法收敛的矛盾",
+        "清理过期标签AI_RECOVERY/recover_position_by_priority"
+      ],
+      "组合修正": [
+        "新增'现金(手动维护)'虚拟持仓(100万): 修正程序无现金字段导致总资产低估28%、富联显示15.8%并误提示卖2200股的口径错误; 导入后界面占比与手册一致",
+        "AI科技主题目标21%→23%(随富联+2), 贴近24%软上限; 穿透敞口约31%, 距32%暂停线仅1点→其余AI标的只减不加",
+        "capitalPriority矛盾修复: 富联由'不再补'改为'上限内阶梯补', 列入资金优先级第6位(宽基/防御之后)",
+        "配置口径: 持仓目标合计89%+现金11%=100%; 现金操作底线仍为13%, 仅多标的同时进入战略买点时允许降至10-11%"
+      ],
+      "估值依据": "2026E归母净利券商区间500-758亿(天风500/华安668/国信693/中金758), 中值~650亿/EPS~3.3; 档位PE: 65≈19.5x/60≈18x/55≈16x/50≈15x/84≈25x/95≈28x/110≈33x"
+    }
+  },
+  "fx": {
+    "hkdcny": 0.92,
+    "updatedAt": "",
+    "source": "默认"
+  }
+}

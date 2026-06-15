@@ -1,0 +1,9 @@
+{
+  "executed_at": "2026-06-15T08:48:41",
+  "command": "build latest HTML from index.html and src/*.js",
+  "success": true,
+  "error": "",
+  "output_file_paths": [
+    "E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\dist\\投资作战手册_V9.3.1.html"
+  ]
+}

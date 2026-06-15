@@ -1,0 +1,22 @@
+{
+  "watchlist": [
+    {
+      "symbol": "1810.HK",
+      "company": "小米集团",
+      "aliases": ["小米", "小米汽车"],
+      "keywords": ["1810", "SU7"]
+    },
+    {
+      "symbol": "2899.HK",
+      "company": "紫金矿业",
+      "aliases": ["紫金"],
+      "keywords": ["2899", "黄金", "铜矿"]
+    },
+    {
+      "symbol": "601138.SS",
+      "company": "工业富联",
+      "aliases": ["FII", "富士康工业互联网"],
+      "keywords": ["601138", "AI服务器", "算力"]
+    }
+  ]
+}

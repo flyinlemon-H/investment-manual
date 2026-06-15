@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Collector Test Feed</title>
+    <item>
+      <title>Alpha Robotics delivery beat</title>
+      <description>Alpha Robotics ALPHA.HK AlphaBot delivery remains bullish.</description>
+      <link>https://example.test/rss-alpha</link>
+      <pubDate>Sat, 13 Jun 2026 09:30:00 +0800</pubDate>
+    </item>
+  </channel>
+</rss>

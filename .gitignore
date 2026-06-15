@@ -1,0 +1,6 @@
+config/remote_secret.txt
+__pycache__/
+*.pyc
+.env
+.DS_Store
+Thumbs.db

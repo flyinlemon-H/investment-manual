@@ -1,0 +1,120 @@
+{
+  "social_posts": [
+    {
+      "platform": "news",
+      "symbol": "1810.HK",
+      "company": "小米集团",
+      "post_time": "2026-06-13T09:00:00+08:00",
+      "content": "小米集团 1810.HK SU7 交付超预期，市场看多小米汽车。",
+      "url": "https://example.test/cn-xiaomi",
+      "likes": 30,
+      "comments": 4,
+      "sentiment": "bullish",
+      "tags": [
+        "小米",
+        "SU7",
+        "1810.HK",
+        "小米集团",
+        "小米汽车"
+      ],
+      "matched_keywords": [
+        "1810.HK",
+        "小米集团",
+        "小米",
+        "小米汽车",
+        "SU7"
+      ],
+      "summary": "小米汽车交付超预期",
+      "risk_points": [],
+      "aliases": [
+        "小米",
+        "小米汽车"
+      ]
+    },
+    {
+      "platform": "news",
+      "symbol": "2899.HK",
+      "company": "紫金矿业",
+      "post_time": "2026-06-13T10:00:00+08:00",
+      "content": "紫金矿业 2899.HK 受益黄金和铜矿扩张，利多资源股。",
+      "url": "https://example.test/cn-zijin",
+      "likes": 18,
+      "comments": 2,
+      "sentiment": "bullish",
+      "tags": [
+        "紫金",
+        "黄金",
+        "铜矿",
+        "2899.HK",
+        "紫金矿业"
+      ],
+      "matched_keywords": [
+        "2899.HK",
+        "紫金矿业",
+        "紫金",
+        "黄金",
+        "铜矿"
+      ],
+      "summary": "紫金资源扩张",
+      "risk_points": [],
+      "aliases": [
+        "紫金"
+      ]
+    },
+    {
+      "platform": "news",
+      "symbol": "601138.SS",
+      "company": "工业富联",
+      "post_time": "2026-06-13T11:00:00+08:00",
+      "content": "工业富联 601138.SS AI服务器订单正常推进，暂无明显方向。",
+      "url": "https://example.test/cn-fii",
+      "likes": 8,
+      "comments": 1,
+      "sentiment": "neutral",
+      "tags": [
+        "工业富联",
+        "AI服务器",
+        "601138.SS"
+      ],
+      "matched_keywords": [
+        "601138.SS",
+        "工业富联",
+        "AI服务器"
+      ],
+      "summary": "工业富联订单正常",
+      "risk_points": [],
+      "aliases": [
+        "FII",
+        "富士康工业互联网"
+      ]
+    },
+    {
+      "platform": "news",
+      "symbol": "601138.SS",
+      "company": "工业富联",
+      "post_time": "2026-06-13T12:00:00+08:00",
+      "content": "工业富联 601138.SS 若订单不及预期，存在回落风险。",
+      "url": "https://example.test/cn-fii-risk",
+      "likes": 6,
+      "comments": 3,
+      "sentiment": "bearish",
+      "tags": [
+        "工业富联",
+        "风险",
+        "601138.SS"
+      ],
+      "matched_keywords": [
+        "601138.SS",
+        "工业富联"
+      ],
+      "summary": "工业富联风险提醒",
+      "risk_points": [
+        "订单不及预期"
+      ],
+      "aliases": [
+        "FII",
+        "富士康工业互联网"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Collector Atom Test Feed</title>
+  <entry>
+    <title>Beta Energy battery risk</title>
+    <summary>Beta Energy BETA.SS faces battery risk and downside pressure.</summary>
+    <link href="https://example.test/atom-beta" rel="alternate" />
+    <updated>2026-06-13T10:30:00+08:00</updated>
+  </entry>
+</feed>

@@ -1,0 +1,10 @@
+{
+  "executed_at": "2026-06-15T08:48:59",
+  "command": "build-html",
+  "success": true,
+  "error": "",
+  "command_file": "E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\remote_commands\\command.json",
+  "output_file_paths": [],
+  "stdout_tail": "duplicate command_id skipped: cmd-20260615-084836-7ixmx",
+  "stderr_tail": ""
+}

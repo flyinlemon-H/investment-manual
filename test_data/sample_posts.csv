@@ -1,0 +1,4 @@
+platform,author,content,posted_at,url,likes,comments,tags,summary,risk_points
+forum,@alpha,"Alpha Robotics ALPHA.HK AlphaBot delivery beat and bullish outlook.",2026-06-13T09:00:00+08:00,https://example.test/alpha,10,2,"AlphaBot;delivery","Alpha delivery beat",""
+forum,@alpha_dup,"Alpha Robotics ALPHA.HK AlphaBot delivery beat duplicate.",2026-06-13T09:05:00+08:00,https://example.test/alpha,8,1,"AlphaBot;delivery","Alpha duplicate",""
+news,@beta,"Beta Energy BETA.SS battery risk and downside remain.",2026-06-13T10:00:00+08:00,https://example.test/beta,5,3,"battery;risk","Beta risk","policy risk"

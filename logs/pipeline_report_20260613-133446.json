@@ -1,0 +1,3016 @@
+{
+  "source": "news",
+  "input": [
+    "E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\config\\news_sources.json"
+  ],
+  "watchlist": "E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\watchlist.json",
+  "output": "E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\output\\social_posts.json",
+  "summary": "E:\\users\\kaka\\onedrive\\文档\\投资分析程序\\output\\social_summary.json",
+  "posts_count": 367,
+  "symbols_count": 5,
+  "validation_status": "passed",
+  "copied": false,
+  "dry_run": true,
+  "allow_empty": false,
+  "errors": [],
+  "warnings": [
+    "Warning: news:Semiconductor Industry Association https://www.semiconductors.org/feed/: RSS XML parse failed: not well-formed (invalid token): line 18, column 42",
+    "dry-run enabled; skipped copying to manual dist."
+  ],
+  "unmatched_watchlist": [
+    {
+      "symbol": "605499.SS",
+      "company": "东鹏饮料"
+    }
+  ],
+  "unmatched_posts": [
+    {
+      "source": "news:MarketWatch Top Stories",
+      "time": "2026-06-12T22:59:00+00:00",
+      "url": "https://www.marketwatch.com/story/this-hidden-investing-flaw-is-costing-you-money-talking-to-political-opponents-fixes-it-fc1f7be3?mod=mw_rss_topstories",
+      "summary": "This hidden investing flaw is costing you money. Talking to political opponents fixes it."
+    },
+    {
+      "source": "news:MarketWatch Top Stories",
+      "time": "2026-06-12T22:58:00+00:00",
+      "url": "https://www.marketwatch.com/story/theres-a-68-chance-the-stock-market-ends-the-year-higher-why-the-headlines-shouldnt-disrupt-your-portfolio-3d78cfae?mod=mw_rss_topstories",
+      "summary": "There’s a 68% chance the stock market ends the year higher. Why the headlines shouldn’t disrupt your portfolio."
+    },
+    {
+      "source": "news:MarketWatch Top Stories",
+      "time": "2026-06-12T22:50:00+00:00",
+      "url": "https://www.marketwatch.com/story/this-is-not-a-flash-in-the-pan-why-value-stocks-are-beating-growth-by-such-a-wide-margin-b2bddccc?mod=mw_rss_topstories",
+      "summary": "‘This is not a flash in the pan’: Why value stocks are beating growth by such a wide margin"
+    },
+    {
+      "source": "news:MarketWatch Top Stories",
+      "time": "2026-06-12T21:57:00+00:00",
+      "url": "https://www.marketwatch.com/story/how-elon-musk-nailed-the-spacex-ipo-im-not-sure-that-this-could-have-gone-much-better-8149d479?mod=mw_rss_topstories",
+      "summary": "How Elon Musk nailed the SpaceX IPO: ‘I’m not sure that this could have gone much better’"
+    },
+    {
+      "source": "news:MarketWatch Top Stories",
+      "time": "2026-06-12T21:44:00+00:00",
+      "url": "https://www.marketwatch.com/story/fifa-world-cup-prize-money-what-each-usmnt-player-stands-to-earn-332f8a96?mod=mw_rss_topstories",
+      "summary": "FIFA World Cup prize money: What each USMNT player stands to earn"
+    },
+    {
+      "source": "news:MarketWatch Top Stories",
+      "time": "2026-06-12T21:00:00+00:00",
+      "url": "https://www.marketwatch.com/story/im-55-and-earn-100-000-should-i-take-a-2-900-monthly-pension-or-2-200-with-3-annual-hikes-c02dc525?mod=mw_rss_topstories",
+      "summary": "I’m 55 and earn $100,000. Should I take a $2,900 monthly pension — or $2,200 with 3% annual hikes?"
+    },
+    {
+      "source": "news:MarketWatch Top Stories",
+      "time": "2026-06-12T20:35:00+00:00",
+      "url": "https://www.marketwatch.com/story/how-to-decide-whether-a-major-splurge-like-spending-thousands-on-knicks-or-world-cup-tickets-is-worth-it-8fb46c18?mod=mw_rss_topstories",
+      "summary": "How to decide whether a major splurge — like spending thousands on Knicks or World Cup tickets — is worth it"
+    },
+    {
+      "source": "news:MarketWatch Top Stories",
+      "time": "2026-06-12T20:30:00+00:00",
+      "url": "https://www.marketwatch.com/story/our-financial-adviser-keeps-pushing-annuities-even-after-we-said-no-should-we-fire-him-19188c98?mod=mw_rss_topstories",
+      "summary": "‘I feel like he may be taking advantage of us’: Our adviser pushes annuities after we already said no. Do we fire him?"
+    },
+    {
+      "source": "news:MarketWatch Top Stories",
+      "time": "2026-06-12T20:06:00+00:00",
+      "url": "https://www.marketwatch.com/story/is-it-too-late-to-buy-spacexs-stock-heres-how-teslas-did-after-one-day-and-five-years-9c7564d3?mod=mw_rss_topstories",
+      "summary": "Is it too late to buy SpaceX’s stock? Here’s how Tesla’s did after one day — and five years."
+    },
+    {
+      "source": "news:MarketWatch Top Stories",
+      "time": "2026-06-12T19:56:00+00:00",
+      "url": "https://www.marketwatch.com/story/it-seems-too-good-to-be-true-at-a-steak-dinner-retirement-seminar-the-guy-said-annuities-can-outperform-the-market-is-that-true-33e11b0a?mod=mw_rss_topstories",
+      "summary": "‘It seems too good to be true’: At a steak-dinner retirement seminar, the guy said annuities can outperform the market...."
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T20:21:14+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/iran-deal-trump-pakistan-sharif.html",
+      "summary": "Trump administration: Iran deal signing likely in coming days, but not '100%' certain"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-13T01:36:34+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/anthropic-disables-access-to-fable-5-and-mythos-5-to-comply-with-government-directive.html",
+      "summary": "Anthropic disables access to Fable 5 and Mythos 5 to comply with government directive"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T22:54:06+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/paramount-wbd-merger-approval-doj.html",
+      "summary": "Paramount-WBD merger wins approval from DOJ"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T21:48:59+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/small-investors-scrambled-to-get-in-on-the-spacex-ipo-even-as-some-believe-the-valuation-is-stupid.html",
+      "summary": "Small investors scrambled to get in on the SpaceX IPO, even as some believe the valuation is 'stupid'"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T23:58:41+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/trump-loses-kennedy-center-name.html",
+      "summary": "Trump name must be removed from Kennedy Center by Friday night as appeals court rejects delay"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T20:33:52+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/spacex-stock-jumps-2-trillion.html",
+      "summary": "SpaceX market cap tops $2 trillion after shares of Elon Musk's rocket company gain 19% on debut"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T21:15:28+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/lisa-mcclain-spacex-ipo-xai-investment-congress.html",
+      "summary": "Top House Republican’s family investment poised to benefit from SpaceX IPO"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T21:11:46+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/fed-kevin-warsh-chairman-title.html",
+      "summary": "Call Kevin Warsh the Fed 'chairman'"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T10:00:01+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/warsh-fed-chair-interest-rates.html",
+      "summary": "For Warsh as Fed chair, silence may be the point"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T00:19:38+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/pirro-fed-jerome-powell.html",
+      "summary": "Pirro's losses in Fed investigation should stay on the books, judge rules"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T17:33:56+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/as-investors-flock-to-spacex-one-trader-eyes-a-sleepy-stealth-play.html",
+      "summary": "As investors flock to SpaceX, one trader eyes a sleepy 'stealth' play"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T23:04:29+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/jim-cramer-not-too-late-to-buy-spacex-one-condition.html",
+      "summary": "Jim Cramer says it's not too late to buy SpaceX — under one condition"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T17:57:56+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/spacex-coo-shotwell-tesla-deal-makes-elons-life-a-little-easier.html",
+      "summary": "SpaceX COO Shotwell says Tesla tie-up ‘might make Elon’s life a little easier’"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T20:43:50+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/spacex-proxies-crash-as-real-deal-arrives-heres-where-traders-are-buying-the-dip.html",
+      "summary": "SpaceX 'proxies' plunge as real deal arrives: Here's where traders are buying the dip"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T21:18:06+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/social-security-cola-2027-inflation-estimate.html",
+      "summary": "Social Security COLA for 2027 may jump to 4.7%, one estimate finds. This chart shows prices driving the increase"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T17:01:13+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/trump-doj-fund-preliminary-injunction-blanche-bessent.html",
+      "summary": "Judge blocks DOJ 'anti-weaponization' fund for longer, wants guarantee it’s dead"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T21:56:52+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/spacex-millionaires-wealth-management.html",
+      "summary": "New SpaceX millionaires are reinventing the business of managing large wealth"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T18:52:10+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/goldman-nets-a-big-payday-for-spacex-ipo-plus-what-drove-our-winners-and-losers-this-week.html",
+      "summary": "Goldman nets a big payday for SpaceX IPO. Plus, what drove our winners and losers this week"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T17:20:24+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/spacex-coo-gwynne-shotwell-spcx-ipo.html",
+      "summary": "SpaceX’s Gwynne Shotwell had IPO doubts for years, now she has a message for investors"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T17:46:01+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/how-to-buy-spacex-stock-without-buying-the-ipo.html",
+      "summary": "How to get SpaceX stock — without buying the IPO"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T19:42:01+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/oil-prices-wti-brent-on-hopes-of-us-iran-deal-despite-tehran-pushback.html",
+      "summary": "U.S. crude oil falls below $85 as U.S. and Iran near a deal to reopen Hormuz"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T15:59:09+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/spacex-ipo-sp-500-index-funds-investors.html",
+      "summary": "The S&P 500 already made a big call on SpaceX stock and index fund investors need to know it"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T18:01:55+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/bitcoins-price-drop-is-forcing-investors-to-revisit-why-they-own-it.html",
+      "summary": "Bitcoin's latest plunge revives the debate over owning it—and whether it's just 'crypto being crypto'"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T15:18:50+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/space-stocks-jump-with-huge-demand-as-investors-clamor-for-any-way-to-get-long-spacex.html",
+      "summary": "Options volume in space stocks boomed as investors look for any way 'to get long SpaceX'"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T07:41:11+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/meta-reportedly-begins-dismantling-2-billion-manus-deal-on-beijings-orders.html",
+      "summary": "Meta reportedly begins dismantling $2 billion Manus deal on Beijing's orders"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-11T16:57:05+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/waymo-launches-premier-subscription-tier-for-29point99-a-month.html",
+      "summary": "Waymo launches premier subscription tier for $29.99 a month, starting in select cities"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-11T20:43:22+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/ex-a16z-partner-slams-old-firm-othes-political-infiltration-in-ai.html",
+      "summary": "Ex-Andreessen Horowitz partner slams his old firm, other VCs for 'political infiltration' around AI"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T14:48:01+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/spacex-moonshots-valuation-westly-tesla.html",
+      "summary": "Former Tesla board member says SpaceX needs to achieve 2 of its 3 moonshots to keep its valuation"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-11T22:22:15+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/trump-jay-clayton-national-intelligence-pulte.html",
+      "summary": "Trump picks former SEC Chairman Jay Clayton as national intelligence director"
+    },
+    {
+      "source": "news:CNBC Top News",
+      "time": "2026-06-12T13:38:21+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/warren-spacex-ipo-exchanges.html",
+      "summary": "Warren questions SpaceX IPO oversight in new letter to stock indexes"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-13T01:36:34+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/anthropic-disables-access-to-fable-5-and-mythos-5-to-comply-with-government-directive.html",
+      "summary": "Anthropic disables access to Fable 5 and Mythos 5 to comply with government directive"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-13T00:29:18+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/openai-says-its-engaging-constructively-with-state-ags-.html",
+      "summary": "OpenAI says it's engaging 'constructively' with state AGs about concerns"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T23:04:29+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/jim-cramer-not-too-late-to-buy-spacex-one-condition.html",
+      "summary": "Jim Cramer says it's not too late to buy SpaceX — under one condition"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T22:28:39+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/jim-cramer-spacex-ipo-implications-week-ahead.html",
+      "summary": "Jim Cramer says SpaceX’s blockbuster IPO could have major implications for the week ahead"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T21:15:28+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/lisa-mcclain-spacex-ipo-xai-investment-congress.html",
+      "summary": "Top House Republican’s family investment poised to benefit from SpaceX IPO"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T17:57:56+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/spacex-coo-shotwell-tesla-deal-makes-elons-life-a-little-easier.html",
+      "summary": "SpaceX COO Shotwell says Tesla tie-up ‘might make Elon’s life a little easier’"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T20:42:19+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/elon-musk-trillionaire-spacex.html",
+      "summary": "Elon Musk becomes world's first trillionaire as SpaceX begins trading on the Nasdaq"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T15:56:15+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/cramer-calls-this-chipmaker-his-no-1-stock-and-sees-63percent-upside-ahead.html",
+      "summary": "Jim Cramer calls this chipmaker his No. 1 stock — and sees 63% upside ahead"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T20:33:52+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/spacex-stock-jumps-2-trillion.html",
+      "summary": "SpaceX market cap tops $2 trillion after shares of Elon Musk's rocket company gain 19% on debut"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T21:56:52+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/spacex-millionaires-wealth-management.html",
+      "summary": "New SpaceX millionaires are reinventing the business of managing large wealth"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T14:22:19+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/5-things-to-know-before-the-stock-market-opens.html",
+      "summary": "SpaceX IPO, U.S.-Iran deal, Bezos on AI and more in Morning Squawk"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T17:46:01+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/how-to-buy-spacex-stock-without-buying-the-ipo.html",
+      "summary": "How to get SpaceX stock — without buying the IPO"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T21:48:59+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/small-investors-scrambled-to-get-in-on-the-spacex-ipo-even-as-some-believe-the-valuation-is-stupid.html",
+      "summary": "Small investors scrambled to get in on the SpaceX IPO, even as some believe the valuation is 'stupid'"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T14:48:01+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/spacex-moonshots-valuation-westly-tesla.html",
+      "summary": "Former Tesla board member says SpaceX needs to achieve 2 of its 3 moonshots to keep its valuation"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T11:00:01+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/tech-download-mistral-mensch-agentic-ai-chips.html",
+      "summary": "The Tech Download: Mistral's Arthur Mensch on agentic AI, chips and enterprise adoption"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T17:20:24+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/spacex-coo-gwynne-shotwell-spcx-ipo.html",
+      "summary": "SpaceX’s Gwynne Shotwell had IPO doubts for years, now she has a message for investors"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T06:07:18+00:00",
+      "url": "https://www.cnbc.com/2026/06/12/chatgpt-a-billion-monthly-app-users-despite-souring-public-ai-sentiment.html",
+      "summary": "ChatGPT hits a billion monthly app users despite souring public AI sentiment"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T11:34:46+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/spacex-raises-75-billion-in-record-setting-ipo-ahead-of-nasdaq-debut.html",
+      "summary": "SpaceX raising $75 billion in record-setting IPO as Nasdaq debut awaits"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-11T22:24:10+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/jim-cramer-spacex-unsustainable-debut.html",
+      "summary": "Jim Cramer warns SpaceX could soar to unsustainable levels after its debut"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T13:38:21+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/warren-spacex-ipo-exchanges.html",
+      "summary": "Warren questions SpaceX IPO oversight in new letter to stock indexes"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-12T14:49:19+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/spacex-starlink-growth-getting-harder-ahead-of-ipo.html",
+      "summary": "SpaceX is way ahead of competitors with Starlink, but growth is harder heading into IPO"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-11T20:43:22+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/ex-a16z-partner-slams-old-firm-othes-political-infiltration-in-ai.html",
+      "summary": "Ex-Andreessen Horowitz partner slams his old firm, other VCs for 'political infiltration' around AI"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-11T18:31:17+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/spacex-ipo-wall-street-valuation-strategic-tech.html",
+      "summary": "SpaceX IPO will test how Wall Street prices ‘strategic tech’"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-11T17:24:40+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/elon-musk-addresses-asml-employees-pushes-into-chip-manufacturing.html",
+      "summary": "Ahead of SpaceX IPO, Elon Musk addresses ASML employees as part of push into chip manufacturing"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-11T17:00:38+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/coinbase-launches-tool-to-let-ai-agents-manage-trading-and-payments.html",
+      "summary": "Coinbase launches tool to let AI agents manage trading and payments"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-11T16:57:05+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/waymo-launches-premier-subscription-tier-for-29point99-a-month.html",
+      "summary": "Waymo launches premier subscription tier for $29.99 a month, starting in select cities"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-11T18:53:30+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/trump-h1b-visa-fee-appeal.html",
+      "summary": "Trump administration appeals ruling blocking $100,000 H-1B fee"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-11T16:26:10+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/open-ai-ona-acquisition-codex.html",
+      "summary": "OpenAI to acquire Ona to support its AI coding assistant, Codex"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-11T16:25:25+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/avalanche-focused-treasury-firm-launches-on-nasdaq-as-crypto-proxy-trade-evolves.html",
+      "summary": "Avalanche Treasury Co set to start trading on Nasdaq as crypto proxy trade evolves"
+    },
+    {
+      "source": "news:CNBC Technology",
+      "time": "2026-06-11T15:54:56+00:00",
+      "url": "https://www.cnbc.com/2026/06/11/jim-cramer-says-this-industrial-stock-is-a-buy-ahead-of-its-breakup-.html",
+      "summary": "Jim Cramer says this industrial stock is a buy ahead of its breakup this month"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-12T21:00:08+00:00",
+      "url": "https://blogs.nvidia.com/blog/nvidia-blackwell-agentperf-artificial-analysis/",
+      "summary": "NVIDIA Blackwell Leads on First Agentic AI Infrastructure Benchmark"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-11T13:00:17+00:00",
+      "url": "https://blogs.nvidia.com/blog/geforce-now-thursday-summer-sale-2026/",
+      "summary": "Save Big and Play Bigger: GeForce NOW Summer Sale Brings Major Membership Savings"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-10T19:00:12+00:00",
+      "url": "https://blogs.nvidia.com/blog/halos-os-robotaxi-safety/",
+      "summary": "For Robotaxis, Safety Must Be Built In, Not Bolted On"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-10T16:15:20+00:00",
+      "url": "https://blogs.nvidia.com/blog/rtx-ai-garage-local-gemma-diffusion/",
+      "summary": "NVIDIA Accelerates Google DeepMind’s DiffusionGemma for Local AI"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-09T22:34:27+00:00",
+      "url": "https://blogs.nvidia.com/blog/nvidia-confidential-computing-apple-private-cloud-compute/",
+      "summary": "NVIDIA Confidential Computing to Help Expand Apple’s Private Cloud Compute"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-08T06:00:57+00:00",
+      "url": "https://blogs.nvidia.com/blog/uk-sovereign-ai-advancements/",
+      "summary": "How the UK Is Turning Sovereign AI Ambition Into Action With NVIDIA Technologies"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-08T03:00:50+00:00",
+      "url": "https://blogs.nvidia.com/blog/nvidia-and-lg-group-ai-factory/",
+      "summary": "NVIDIA and LG Group Build an AI Factory to Advance Physical AI, Mobility and AI Infrastructure"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-07T23:00:36+00:00",
+      "url": "https://blogs.nvidia.com/blog/nvidia-and-doosan-group-physical-ai/",
+      "summary": "NVIDIA and Doosan Group Collaborate to Advance Physical AI and AI Factory Infrastructure"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-07T07:00:15+00:00",
+      "url": "https://blogs.nvidia.com/blog/krafton-nc-t1-korea-gaming-pc-bang-rtx-spark/",
+      "summary": "NVIDIA, KRAFTON, NC and Reigning ‘League of Legends’ Champions T1 Celebrate RTX Spark at Korea’s PC Bangs"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-05T05:38:37+00:00",
+      "url": "https://blogs.nvidia.com/blog/korea-ecosystem-2026/",
+      "summary": "Seoul Purpose: How NVIDIA and South Korea Are Building the Future of AI"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-04T13:00:27+00:00",
+      "url": "https://blogs.nvidia.com/blog/geforce-now-thursday-june-2026-games-list/",
+      "summary": "Forecast: Fun Ahead — 18 Games Join in June to Stream on GeForce NOW"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-03T15:00:57+00:00",
+      "url": "https://blogs.nvidia.com/blog/cvpr-research-grasping-driving-agent-training/",
+      "summary": "NVIDIA Research Unlocks Advanced Grasping, Smarter Autonomous Driving and Agent Training at Scale"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-03T15:00:35+00:00",
+      "url": "https://blogs.nvidia.com/blog/cvpr-physical-ai-research-agent-skills/",
+      "summary": "NVIDIA Enables the Next Era Of Physical AI Research With Agent Skills For Autonomous Vehicles, Robotics And Vision AI"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-02T22:00:58+00:00",
+      "url": "https://blogs.nvidia.com/blog/industrial-software-leaders-secure-autonomous-ai-engineers-nemoclaw/",
+      "summary": "Industrial Software Leaders Build Secure, Autonomous AI Engineers With NVIDIA NemoClaw"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-02T19:00:08+00:00",
+      "url": "https://blogs.nvidia.com/blog/microsoft-build-windows-local-cloud-devices/",
+      "summary": "NVIDIA Partners With Microsoft on Unified Stack for Agentic AI Deployment, From Windows Devices to Cloud to Local"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-02T06:00:36+00:00",
+      "url": "https://blogs.nvidia.com/blog/financial-institutions-transaction-foundation-models/",
+      "summary": "Why Financial Institutions Are Converging on Transaction Foundation Models to Build Their Own Intelligence"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-02T02:00:40+00:00",
+      "url": "https://blogs.nvidia.com/blog/jetson-agentic-ai-physical-world/",
+      "summary": "NVIDIA Jetson Brings Agentic AI to the Physical World"
+    },
+    {
+      "source": "news:NVIDIA Blog",
+      "time": "2026-06-01T05:00:56+00:00",
+      "url": "https://blogs.nvidia.com/blog/ai-cloud-ecosystem/",
+      "summary": "NVIDIA AI Cloud Ecosystem Expands Worldwide to Meet Global AI Compute Demand"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-06-11T16:20:00-04:00",
+      "url": "https://news.mit.edu/2026/jinhua-zhao-named-head-department-urban-studies-planning-0611",
+      "summary": "Jinhua Zhao named head of the Department of Urban Studies and Planning"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-06-11T15:10:00-04:00",
+      "url": "https://news.mit.edu/2026/when-predicting-preferences-it-pays-to-consider-power-of-three-0611",
+      "summary": "When it comes to predicting people’s preferences, it pays to consider “the power of three”"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-06-11T13:30:00-04:00",
+      "url": "https://news.mit.edu/2026/hertz-foundation-fellowships-0611",
+      "summary": "MIT affiliates win 2026 Hertz Foundation Fellowships"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-06-10T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/nuclear-inspired-cooling-system-ferveret-could-make-data-centers-more-sustainable-0610",
+      "summary": "Startup’s nuclear-inspired cooling system could make data centers more sustainable"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-06-09T16:30:00-04:00",
+      "url": "https://news.mit.edu/2026/consequences-of-relying-on-ai-for-accurate-news-0609",
+      "summary": "The consequences of relying on AI for accurate news"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-06-05T16:10:00-04:00",
+      "url": "https://news.mit.edu/2026/crucial-human-component-computing-and-ai-0605",
+      "summary": "The crucial human component in computing and AI"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-06-04T15:50:00-04:00",
+      "url": "https://news.mit.edu/2026/mit-raise-georgia-state-university-announce-path-0604",
+      "summary": "PATH to boost AI training and career opportunities for industry-aligned jobs"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-06-04T12:00:00-04:00",
+      "url": "https://news.mit.edu/2026/nsf-renews-support-mit-led-ai-and-physics-institute-0604",
+      "summary": "NSF renews support for MIT-led AI and physics institute, expanding a new model for discovery"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-06-03T17:00:00-04:00",
+      "url": "https://news.mit.edu/2026/teaching-ai-agents-ask-better-questions-playing-battleship-0603",
+      "summary": "Teaching AI agents to ask better questions by playing “Battleship”"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-06-03T16:50:00-04:00",
+      "url": "https://news.mit.edu/2026/tod-machover-receives-george-peabody-medal-0603",
+      "summary": "Tod Machover receives George Peabody Medal for contributions to music and technology"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-06-03T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/mit-researchers-teach-ai-models-to-interpret-charts-0603",
+      "summary": "MIT researchers teach AI models to interpret charts"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-05-28T12:00:00-04:00",
+      "url": "https://news.mit.edu/2026/media-advisory-mit-establish-regional-quantum-hub",
+      "summary": "Media Advisory: MIT to establish regional quantum hub"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-05-21T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/technology-creates-jobs-young-skilled-workers-ai-0521",
+      "summary": "Technology usually creates jobs for young, skilled workers. Will AI do the same?"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-05-20T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/building-ai-models-with-chemical-principles-connor-coley-0520",
+      "summary": "Building AI models that understand chemical principles"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-05-19T17:10:00-04:00",
+      "url": "https://news.mit.edu/2026/justin-solomon-appointed-associate-dean-engineering-education-0519",
+      "summary": "Justin Solomon appointed associate dean of engineering education"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-05-14T16:55:00-04:00",
+      "url": "https://news.mit.edu/2026/knight-hennessy-scholars-0514",
+      "summary": "Two from MIT named 2026 Knight-Hennessy Scholars"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-05-12T11:00:00-04:00",
+      "url": "https://news.mit.edu/2026/qa-expanding-mit-global-reach-through-universal-learning-0512",
+      "summary": "Q&A: Expanding MIT’s global reach through Universal Learning"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-05-12T11:00:00-04:00",
+      "url": "https://news.mit.edu/2026/universal-ai-pathway-to-ai-fluency-accessible-to-anyone-0512",
+      "summary": "Universal AI is “a pathway to AI fluency that’s accessible and approachable to anyone, anywhere”"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-05-07T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/study-firms-often-use-automation-control-certain-workers-wages-0507",
+      "summary": "Study: Firms often use automation to control certain workers’ wages"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-05-05T17:00:00-04:00",
+      "url": "https://news.mit.edu/2026/untangling-strategic-reasoning-to-advance-ai-gabriele-farina-0505",
+      "summary": "Games people — and machines — play: Untangling strategic reasoning to advance AI"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-05-01T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/beacon-biosignals-maps-brain-during-sleep-0501",
+      "summary": "Beacon Biosignals is mapping the brain during sleep"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-05-01T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/improving-understanding-language-olivia-honeycutt-0501",
+      "summary": "Improving understanding with language"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-30T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/making-case-curiosity-driven-science",
+      "summary": "Making the case for curiosity-driven science"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-29T17:40:00-04:00",
+      "url": "https://news.mit.edu/2026/smarter-way-to-debias-ai-vision-models-0429",
+      "summary": "Solving the “Whac-a-mole dilemma”: A smarter way to debias AI vision models"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-29T06:00:00-04:00",
+      "url": "https://news.mit.edu/2026/mit-ibm-computing-research-lab-launches-0429",
+      "summary": "The MIT-IBM Computing Research Lab launches to shape the future of AI and quantum computing"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-29T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/enabling-privacy-preserving-ai-training-everyday-devices-0429",
+      "summary": "Enabling privacy-preserving AI training on everyday devices"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-27T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/faster-way-to-estimate-ai-power-consumption-0427",
+      "summary": "A faster way to estimate AI power consumption"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-24T13:00:00-04:00",
+      "url": "https://news.mit.edu/2026/mit-scientists-build-worlds-largest-collection-olympiad-level-math-problems-open-0424",
+      "summary": "MIT scientists build the world’s largest collection of Olympiad-level math problems, and open it to everyone"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-22T15:15:00-04:00",
+      "url": "https://news.mit.edu/2026/teaching-ai-models-to-say-im-not-sure-0422",
+      "summary": "Teaching AI models to say “I’m not sure”"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-17T09:40:00-04:00",
+      "url": "https://news.mit.edu/2026/jacob-andreas-brett-mcguire-edgerton-award-winners-0417",
+      "summary": "Jacob Andreas and Brett McGuire named Edgerton Award winners"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-17T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/bringing-ai-driven-protein-design-tools-everywhere-0417",
+      "summary": "Bringing AI-driven protein-design tools to biologists everywhere"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-14T09:00:00-04:00",
+      "url": "https://news.mit.edu/2026/human-machine-teaming-dives-underwater-0414",
+      "summary": "Human-machine teaming dives underwater"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-14T09:00:00-04:00",
+      "url": "https://news.mit.edu/2026/qa-mit-shass-and-future-of-education-age-ai-0414",
+      "summary": "Q&A: MIT SHASS and the future of education in the age of AI"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-09T14:00:00-04:00",
+      "url": "https://news.mit.edu/2026/philosophy-work-michal-masny-0409",
+      "summary": "A philosophy of work"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-09T09:00:00-04:00",
+      "url": "https://news.mit.edu/2026/new-technique-makes-ai-models-leaner-faster-while-still-learning-0409",
+      "summary": "New technique makes AI models leaner and faster while they’re still learning"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-07T16:40:00-04:00",
+      "url": "https://news.mit.edu/2026/sixteen-new-startnano-companies-developing-hard-tech-solutions-with-mitnano-0407",
+      "summary": "Sixteen new START.nano companies are developing hard-tech solutions with the support of MIT.nano"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-07T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/helping-data-centers-deliver-higher-performance-less-hardware-0407",
+      "summary": "Helping data centers deliver higher performance with less hardware"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-03T16:55:00-04:00",
+      "url": "https://news.mit.edu/2026/working-to-advance-nuclear-renaissance-dean-price-0403",
+      "summary": "Working to advance the nuclear renaissance"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-02T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/evaluating-autonomous-systems-ethics-0402",
+      "summary": "Evaluating the ethics of autonomous systems"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-04-01T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/preview-tool-helps-makers-visualize-3d-printed-objects-0401",
+      "summary": "Preview tool helps makers visualize 3D-printed objects"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-03-30T11:00:00-04:00",
+      "url": "https://news.mit.edu/2026/mit-researchers-use-ai-uncover-atomic-defects-materials-0330",
+      "summary": "MIT researchers use AI to uncover atomic defects in materials"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-03-26T16:45:00-04:00",
+      "url": "https://news.mit.edu/2026/seeing-sounds-mariano-salcedo-0326",
+      "summary": "Seeing sounds"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-03-26T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/ai-system-keeps-warehouse-robot-traffic-running-smoothly-0326",
+      "summary": "AI system learns to keep warehouse robot traffic running smoothly"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-03-25T06:00:00-04:00",
+      "url": "https://news.mit.edu/2026/wristband-enables-wearers-control-robotic-hand-with-own-movements-0325",
+      "summary": "Wristband enables wearers to control a robotic hand with their own movements"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-03-24T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/creating-humble-ai-0324",
+      "summary": "How to create “humble” AI"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-03-23T13:45:00-04:00",
+      "url": "https://news.mit.edu/2026/algorithms-life-learning-killian-lecture-dimitris-bertsimas-0323",
+      "summary": "On algorithms, life, and learning"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-03-20T09:30:00-04:00",
+      "url": "https://news.mit.edu/2026/right-path-for-ai-karen-hao-paola-ricaurte-0320",
+      "summary": "What’s the right path for AI?"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-03-20T08:45:00-04:00",
+      "url": "https://news.mit.edu/2026/mit-hasso-plattner-institute-collaborative-hub-for-ai-and-creativity-0320",
+      "summary": "MIT and Hasso Plattner Institute establish collaborative hub for AI and creativity"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-03-19T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/generative-ai-improves-wireless-vision-system-sees-through-obstructions-0319",
+      "summary": "Generative AI improves a wireless vision system that sees through obstructions"
+    },
+    {
+      "source": "news:MIT News AI",
+      "time": "2026-03-19T00:00:00-04:00",
+      "url": "https://news.mit.edu/2026/better-method-identifying-overconfident-large-language-models-0319",
+      "summary": "A better method for identifying overconfident large language models"
+    },
+    {
+      "source": "news:Semiconductor Engineering",
+      "time": "2026-06-12T20:07:47+00:00",
+      "url": "https://semiengineering.com/cross-validated-timing-analysis-for-automotive-can-networks-nycu-et-al/",
+      "summary": "Cross-Validated Timing Analysis for Automotive CAN Networks (NYCU et al.)"
+    },
+    {
+      "source": "news:Semiconductor Engineering",
+      "time": "2026-06-12T18:51:41+00:00",
+      "url": "https://semiengineering.com/optimizing-euv-source-efficiency-with-radiation-hydrodynamic-simulations-u-of-osaka-et-al/",
+      "summary": "Optimizing EUV Source Efficiency With Radiation-Hydrodynamic Simulations (U. Of Osaka et al.)"
+    },
+    {
+      "source": "news:Semiconductor Engineering",
+      "time": "2026-06-12T18:37:45+00:00",
+      "url": "https://semiengineering.com/refining-vision-language-models-for-lithography-defect-detection/",
+      "summary": "Refining Vision-Language Models For Lithography Defect Detection"
+    },
+    {
+      "source": "news:Semiconductor Engineering",
+      "time": "2026-06-12T18:24:28+00:00",
+      "url": "https://semiengineering.com/boosting-euv-conversion-efficiency-with-dual-beam-2-%c2%b5m-laser-irradiation/",
+      "summary": "Boosting EUV Conversion Efficiency With 2-Micron Dual-Beam Laser Irradiation"
+    },
+    {
+      "source": "news:Semiconductor Engineering",
+      "time": "2026-06-12T07:01:27+00:00",
+      "url": "https://semiengineering.com/chip-industry-week-in-review-142/",
+      "summary": "Chip Industry Week In Review"
+    },
+    {
+      "source": "news:Semiconductor Engineering",
+      "time": "2026-06-11T07:11:56+00:00",
+      "url": "https://semiengineering.com/agentic-ai-is-changing-data-center-architectures/",
+      "summary": "Agentic AI Is Changing Data Center Architectures"
+    },
+    {
+      "source": "news:Semiconductor Engineering",
+      "time": "2026-06-11T07:11:09+00:00",
+      "url": "https://semiengineering.com/can-ai-create-missing-models/",
+      "summary": "Can AI Create Missing Models?"
+    },
+    {
+      "source": "news:Semiconductor Engineering",
+      "time": "2026-06-11T07:08:15+00:00",
+      "url": "https://semiengineering.com/mastering-3d-ic-verification-complexity/",
+      "summary": "Mastering 3D-IC Verification Complexity"
+    },
+    {
+      "source": "news:Semiconductor Engineering",
+      "time": "2026-06-11T07:07:46+00:00",
+      "url": "https://semiengineering.com/clocked-ddr5-client-memory-modules-enable-scaling-to-9600-mt-s-for-ai-pcs/",
+      "summary": "Clocked DDR5 Client Memory Modules Enable Scaling To 9600 MT/s For AI PCs"
+    },
+    {
+      "source": "news:Semiconductor Engineering",
+      "time": "2026-06-11T07:05:50+00:00",
+      "url": "https://semiengineering.com/how-to-start-building-edge-native-ai/",
+      "summary": "How To Start Building Edge-Native AI"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-12T23:00:00+00:00",
+      "url": "https://www.mining.com/op-ed-scripted-to-fail-europes-critical-minerals-blind-spot/",
+      "summary": "Op-Ed: Scripted to fail — Europe’s critical minerals blind spot"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-12T22:03:00+00:00",
+      "url": "https://www.mining.com/silver-stockpile-drawdown-risk-is-misunderstood/",
+      "summary": "Silver stockpile drawdown risk is misunderstood"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-12T21:44:54+00:00",
+      "url": "https://www.mining.com/minings-next-boom-is-off-the-map-arctic-ice-abyssal-plains-and-asteroids/",
+      "summary": "Mining’s next boom is off the map: Arctic ice, abyssal plains and asteroids"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-12T21:03:19+00:00",
+      "url": "https://www.mining.com/hertha-metals-targets-rare-earth-magnet-supply-gap-with-texas-high-purity-iron-plant/",
+      "summary": "Hertha Metals targets rare-earth magnet supply gap with Texas high-purity iron plant"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-12T15:51:18+00:00",
+      "url": "https://www.mining.com/triple-flag-buys-gold-stream-on-ravenswood-mine-for-440m/",
+      "summary": "Triple Flag buys gold stream on Ravenswood mine for $440M"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-12T15:43:47+00:00",
+      "url": "https://www.mining.com/chinas-gold-market-cools-amid-etf-outflows-report/",
+      "summary": "China’s gold market cools amid ETF outflows: report"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-12T15:23:00+00:00",
+      "url": "https://www.mining.com/norsk-hydro-hit-by-second-aluminum-supply-crisis/",
+      "summary": "Norsk Hydro hit by second aluminum supply crisis"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-12T13:32:30+00:00",
+      "url": "https://www.mining.com/marenica-growth-backs-elevates-namibia-uranium-push/",
+      "summary": "Marenica growth backs Elevate’s Namibia uranium push"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-12T10:52:00+00:00",
+      "url": "https://www.mining.com/de-beers-finds-gen-z-driving-diamond-demand-rebound/",
+      "summary": "De Beers finds Gen Z driving diamond demand rebound"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-11T21:52:59+00:00",
+      "url": "https://www.mining.com/glencore-to-resume-emissions-spending-at-quebec-smelter/",
+      "summary": "Glencore to resume emissions spending at Quebec smelter"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-11T20:19:15+00:00",
+      "url": "https://www.mining.com/peacegold-sigrafi-sign-responsible-artisanal-gold-supply-deal-in-drc/",
+      "summary": "PeaceGold, SigraFi sign responsible artisanal gold supply deal in DRC"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-11T19:43:53+00:00",
+      "url": "https://www.mining.com/komatsu-opens-new-distribution-plant-in-arizona/",
+      "summary": "Komatsu opens new distribution plant in Arizona"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-11T17:21:30+00:00",
+      "url": "https://www.mining.com/troilus-drills-shallow-gold-boosts-quebec-satellite-case/",
+      "summary": "Troilus drills shallow gold, boosts Quebec satellite case"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-11T17:02:24+00:00",
+      "url": "https://www.mining.com/larvotto-buys-hammer-metals-to-expand-copper-holding-in-queensland/",
+      "summary": "Larvotto buys Hammer Metals to expand copper holding in Queensland"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-11T15:47:47+00:00",
+      "url": "https://www.mining.com/energy-fuels-expects-to-hit-2026-uranium-guidance-by-midyear/",
+      "summary": "Energy Fuels expects to hit 2026 uranium guidance by midyear"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-11T14:51:35+00:00",
+      "url": "https://www.mining.com/kazakhstan-ground-view-what-you-cant-see-from-the-spreadsheet/",
+      "summary": "Kazakhstan ground view: What you can’t see from the spreadsheet"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-11T14:29:52+00:00",
+      "url": "https://www.mining.com/op-ed-volatility-in-markets-has-not-changed-positive-outlook-for-gold/",
+      "summary": "Op-Ed: Volatility in markets has not changed positive outlook for gold"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-11T13:49:54+00:00",
+      "url": "https://www.mining.com/goldmining-pea-outlines-532m-value-10-year-life-for-sao-jorge-project/",
+      "summary": "GoldMining PEA outlines $532M value, 10-year life for São Jorge project"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-11T13:23:00+00:00",
+      "url": "https://www.mining.com/conflict-coltan-from-congo-linked-to-sony-microsoft-nvidia-supply-chains/",
+      "summary": "Conflict coltan from Congo linked to Sony, Microsoft, Nvidia supply chains"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-11T11:37:00+00:00",
+      "url": "https://www.mining.com/indonesia-raids-gold-company-in-1-4b-laundering-probe/",
+      "summary": "Indonesia raids gold company in $1.4B laundering probe"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-11T10:58:00+00:00",
+      "url": "https://www.mining.com/canada-risks-losing-critical-minerals-infrastructure-race-pwc-warns/",
+      "summary": "Canada risks losing critical minerals infrastructure race, PwC warns"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-10T22:51:24+00:00",
+      "url": "https://www.mining.com/mp-materials-coo-increases-shareholding/",
+      "summary": "MP Materials COO increases shareholding"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-10T22:19:32+00:00",
+      "url": "https://www.mining.com/schneider-electric-torngat-metals-ink-rare-earth-mou/",
+      "summary": "Schneider Electric, Torngat Metals ink rare earth MoU"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-10T17:10:21+00:00",
+      "url": "https://www.mining.com/mining-ma-value-surges-in-q1-but-deal-count-plunges-sp/",
+      "summary": "Mining M&A value surges in Q1, but deal count plunges: S&P"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-10T16:20:00+00:00",
+      "url": "https://www.mining.com/illegal-mining-gangs-eyed-in-south-africa-massacre-that-killed-12/",
+      "summary": "Illegal mining gangs implicated in South Africa massacre that killed 12"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-10T16:13:11+00:00",
+      "url": "https://www.mining.com/central-asia-metals-copper-zinc-production-outpaces-last-year/",
+      "summary": "Central Asia Metals’ copper-zinc production outpaces last year"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-10T15:33:00+00:00",
+      "url": "https://www.mining.com/chile-copper-mines-pursue-tie-up-to-cut-costs/",
+      "summary": "Chile copper mines pursue tie-up to cut costs"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-10T15:13:01+00:00",
+      "url": "https://www.mining.com/british-columbia-court-reopens-seabridge-golds-approval-fight/",
+      "summary": "British Columbia court reopens Seabridge Gold’s approval fight"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-10T15:10:44+00:00",
+      "url": "https://www.mining.com/metals-retreat-amid-iran-conflict-and-lingering-rate-hike-concerns/",
+      "summary": "Metals retreat amid Iran conflict and lingering rate-hike concerns"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-10T14:18:34+00:00",
+      "url": "https://www.mining.com/ero-copper-sees-resource-growth-potential-in-brazil/",
+      "summary": "Ero Copper sees resource growth potential in Brazil"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-10T11:53:00+00:00",
+      "url": "https://www.mining.com/northern-star-rejects-elliott-push-to-sale-company/",
+      "summary": "Northern Star rejects Elliott push to sell company"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-10T11:29:00+00:00",
+      "url": "https://www.mining.com/meteorite-may-have-rained-gold-on-australia/",
+      "summary": "Meteorite may have ‘rained gold’ on Australia"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-10T11:03:00+00:00",
+      "url": "https://www.mining.com/critical-minerals-diplomacy-surges-but-few-deals-have-teeth/",
+      "summary": "Critical minerals diplomacy surges, but few deals have teeth"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-09T22:44:26+00:00",
+      "url": "https://www.mining.com/the-us-passes-dominance-act-for-critical-minerals-security/",
+      "summary": "US passes DOMINANCE Act for critical minerals security"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-09T20:44:32+00:00",
+      "url": "https://www.mining.com/larvotto-resources-inks-gold-offtake-deal-with-glencore/",
+      "summary": "Larvotto Resources inks gold offtake deal with Glencore"
+    },
+    {
+      "source": "news:MINING.com",
+      "time": "2026-06-09T17:17:35+00:00",
+      "url": "https://www.mining.com/debt-cycle-points-to-stronger-case-for-gold-price-sprott/",
+      "summary": "Debt cycle points to stronger case for gold price: Sprott"
+    },
+    {
+      "source": "news:Google News - 工业富联 601138.SS",
+      "time": "2026-05-25T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE1yTWdkNGNZMFEzRE5fMDZ0NGRVQjA4Q05haHFybzB6YlliQWppRnVUWU1iSHFkZHBycjJtN2t5ajJWNVFiX3FGXzRFME8wUlFmamZzei1jRlRDdExidzlMUzUzNW5ReUdXSDNycVRhYl81ZzRx?oc=5",
+      "summary": "AI 服务器市场规模、份额、增长报告，2034 年 - Fortune Business Insights"
+    },
+    {
+      "source": "news:Google News - 工业富联 601138.SS",
+      "time": "2026-06-11T22:14:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTFBmcU96LUx5RXJTQ2x6MWdhRW41OHR0c1dLOW93dVFjQnhQZGNTVjJaYzh4NG5DX1B4WFU4cHBuRGhQWFFSNXpvaVhqTXhiWGxLWXFn?oc=5",
+      "summary": "涨势比肩存储！MLCC与GPU、HBM同席共“涨” - 36 Kr"
+    },
+    {
+      "source": "news:Google News - 工业富联 601138.SS",
+      "time": "2026-06-10T00:26:13+00:00",
+      "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPeF96aFRBS3RBUXVJeTkxQ24tLVc5MVNIQk9hOU5QSHdtRWprcWpZcVZIMUF6a09kemNGTmZMcVlrMGJRU3lyVFFlTWZhNnRJZThsV0FnVDd5bW9ZOGJOd2tvU2NTRlhhWXFIc2dGRjRLelZPUnNGcENNS0V2QllBZnlYUi0tcXdZRjBKdA?oc=5",
+      "summary": "6月10日每日研选丨高端MLCC供不应求，被动元件景气度能否持续？ - Sohu"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-06-12T16:15:33+00:00",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNN0M3dlNkcGVONHdqa0g3NTlqR3p4UnhRTWtDNDBYc0lOSWFxRVdxelZDdWpTbWh6V09NQlMxWUF6UV9sN2t5VjdOaHl4c3dSTGY1VW1NM2lpR245QWx6cUFYZmhwUWQwR0NVeEVOLWhwbG1tSUFONWtIanV2MnF0UXNKZ0JKbWdPR3JQRk1uZkRxU29fWlJuS1NzaXFPOWc5S3ZFcjl3?oc=5",
+      "summary": "美股異動 | 銅礦板塊普漲 Taseko Mines(TGB.US)漲8% - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-06-12T17:05:05+00:00",
+      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPSldNMmR3QTRrdTlVNW4yaXcwRWdHdDNYRGJIR29hSndxMXBFMjBybTBPTDl1UE9MeXF6bURPZjU0UnpKZXdrTF9JUVpkdXg1VlRRV3RpYmpEZDRoek5UX2tBNDlVY1h2ZWxUQ3pncHdjT2dreS12U3U2cHVYQlRqSGE0ZHNjVW5VMFhSTWJrclBGa2ZpVEMtaUNpZDlqckU0d29SZTZvWWxRem9nN2c?oc=5",
+      "summary": "美股異動 | 銅礦板塊普漲 Taseko Mines(TGB.US)漲8% - Moomoo"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-06-08T01:52:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNcUpLM2xRbl9yVVdISy1oMGJpRlNpZ0x5eHlYdHRZMkRlTFh6enFfWXhHX2lRSUhESFp1TGxoVHcxdGN6U1JQNVpENG40a3lQN1p3bFZlZTB6U3B5Tm1EeVFNZFR3MWJNQXhWSGF5QUNMcjJuMXRjLUptMFV6bU12dFRfWE96a2VMNnZPc0dKQUVsUQ?oc=5",
+      "summary": "供應增長趕不上需求高盛看好銅礦商股票- 新聞 - MoneyDJ"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-06-10T02:58:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPamltMGNfYzdEeUNkcXk5LVZKRjdlaW52WkZIczFzaEtyRkI2cWoybm1zQVhydFJCRExyM2FmVy1ZcWpxWFMxVWxLQ3U3c2hfRkEyWUtzNnB5OUVxMXM3Q0Vfa0VVdHJzbml6a1pUVVJHc3RBTWlhWDlKeGNxZ2JxNjF6cHdDd3Ftc2RlcE1NUGRUZw?oc=5",
+      "summary": "中國銅礦砂進口量年減1% 未鍛軋銅進口年減7% - MoneyDJ"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-06-03T09:52:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5SMno0R0VqNjg3ZllsNXdfSG1EdExpQi02ZlVJcWd3cjFzVlVLZ2FoSFg5c2hhQ2FHZ0xGUHZnd19Mb3JWbzhENjBKclprcXRnRTYtS3RRRm0ycG1STGxSeWxJTVhmUWg1ODF2dXln?oc=5",
+      "summary": "贊比亞銅礦商孔科拉銅業冶煉廠停產60天 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-06-09T03:41:13+00:00",
+      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNcGtCQ3hOLWN4TnRzb3lIU3ZtZmtfWjNJdzlhRXZ3U1ZOd2tCZ1M0ZVVPeG9oUzJiY0pyVmNDNzBhMzFnRmxFU3o2THpRVnU0dkt4R1JFN3JyWGZWV1gyY1ViNDZhVzA0OTFBbWdtZk8zMVBBbnNIa1BXSkJIWUZ0NUxIUnJYVHlYOWh0YjNWU1N5V3M?oc=5",
+      "summary": "三峽水運新通道動工 助提升長江黃金水道通航能力 - 澳門廣播電視股份有限公司"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-06-12T06:27:21+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNN0hfVGxsc1BUT2ZnZ25ObUhRUDY0cjJIcVlhUW5ib1M2a3hmN1dReW4wd0dZSWFWTW5fOXpIQWdRQlE2ckxlUGNWX0J5engwbnRFQ2dEQ1dHV1BmaXlSMjB3OXFiMFA4TTJPaU1KLW5Qa3l3VnNvYlJwQ0luTUVHajM1UjUtOVVpRW5DOHM3TGdWemZqZk9tQ0szMExtMTZqc2M3V2FDLVE?oc=5",
+      "summary": "熱門板塊速睇：港股銅礦股走勢強勁，洛陽鉬業領升 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-06-12T03:07:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNVmZLMTk2aU1fUkpjemZZeVNDYWcySFc2YzZXQzVucmNzZWFhcEpRZ0E3bGNIZUZXSTdlRmtnb19EWV9ZeVBNSGVwVzNYeUZjSGgzOVp3QmZvNV9sOEZxUFM1elVUR1FfeEk5QVQ3b01TaGh1bUlZdGIzWGpyYlJsSEhMbXA4Vzg?oc=5",
+      "summary": "安塔米納產量增長 秘魯4月銅產量年增4.4% - 期權 - 新聞 - MoneyDJ"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-06-12T03:17:39+00:00",
+      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQR0s2VDZlVzZCalRGak93NmFMb28zeUhFb3k4LWI0bFZCRHktSjRSUGw3LVVQS25uQXpjVlN3eWZzTVMtb0c1S3BRZ3VYc2dKQWlucDNTUTdwVktDY05mTFdMOWVPTW9xWEFWOWJtSUhub1RBWDVJZGtzMmJ5RVR0OXM2MVRlUmk0NkItQllmQmFQdmNiWlE?oc=5",
+      "summary": "大型銅礦產量下滑 智利4月銅產量年減13.8%-台股 - MoneyDJ"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-06-12T02:54:14+00:00",
+      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOWkVUX3lyUXV1cEgxcXlqcVZMVXpqeUU0U3hYZ1lab084bFlhN2QyOGU3ZFB6bFBLTW05Y3dfOG95WmhkWUtUbVN4X0FDdko0ZDRXeW03M3VIajU0a1RSaVpVbDdmNndaMTdzX01kZHM5YmdjXzhUeWYtQlk4MmJJYTRobkNIY1RDbi1RVkNDNVFhOHJfQmc?oc=5",
+      "summary": "政策與投資支持 拉丁美洲銅礦項目加速推進-台股 - MoneyDJ"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-05-08T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE9mMlNBMTVnOTNTS1NyNml1RzZicS0yNlYyTUdhdm1DOVZydlg2Z2lpTy00dmF3QVZUV1VDLVNpY1pSX3NGQTZJSk1kRGhpWFczRzZKM2x4VVpuTk1tdVp6N2UxZnBTZHU5N19LcVQ4Yw?oc=5",
+      "summary": "中國中鐵(00390.HK)洽商在剛果興建大型新銅礦 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-06-10T18:57:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQQmxvcC1KSU1KSXJuZGVIc3NYbGw2NktTYnRNbUZFZXhvWkhuM1lHdGlVYXAzRS1DUVZCTzNFamhRNlo5NjVMblZRVU9BLV90ZmQxbE8ySjFMWjI4Qml3UXlvYVZvM0JrWVdjSW5MdTJEMDVnYktzMFZoV3hBOVFzcE14dVJyTmszLWxiNHd5aUVGUEJlNEphag?oc=5",
+      "summary": "日本太陽能產業拚復興 PXP推黃銅礦太陽能電池挑戰30%轉換效率 - DIGITIMES"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-06-12T05:45:17+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiowJBVV95cUxORXJRa3ZhQlZieFoydDItSERhSncxZGtHRmFwdHJDbDc5YktMX2MtWjVhQ3A5VjRkZjlxbVNCNjd6ckdtSnlWMVFqdTdJajVaanNadnRyTUVxczQ2MVNscGlYeDlyUHUteE5Pb29IQ09HRm5hZHFLandEOHBCV3MtVlAyLTA4TTVEWjNfOURyVktBQVZlUFBjWmtpMFdKc3JZOWUybkVBTlVkOE1wWXpOdkQ0bVd2bHZISEVFTXFKLVhNRFRXVlFlUnV1eXh3VFc5UWlocm0wNnllejZZYTRKMDB5ZUpra1ppUkRPZWxPc1FtWl83cUstNDRQV1VzdjM3ck1pTlVqb1ZsbE9aQk1KSy1Ubm94S0hMc0s3T3JOcUtTR3M?oc=5",
+      "summary": "大型銅礦產量下滑 智利4月銅產量年減13.8% - Yahoo股市"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-06-06T03:03:51+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi-gJBVV95cUxNRVJEVEZZeWtCZWx3Njh3LXVKTUZTVzBWNE0xWVlEbjFZSmZLc3NXV3lDQnJaZmIzVHN2X0FZU2M0aXJNcUczaXdaMFM4YV93WXJxeERYVmJna1BucnU4VjkzdEJXby1Gcmd0NlVIUThpWmtVejllQldDX2xVV2dHMkF6UmpHWl9IVUJVQzhzYnEzZ2ZSN2tHVzk3cHhzZy10UG50eVFLZ0p0Z2FHRnh4RzEwQUR4dTI5dExqdWJidkowVGtRbVQ2aWdiWGZCOWlQVGdqamN6dE5tanBBXzlnbDNhdW1GQ044SkprbkMwOV9FTkJZZkdMbHBCT0lPZ2hnWjlxblNqbjQyeUFZUTdfTkZVc3NyYk14UHRTM0RGNHpjT0ZCTk9Sb211RVdpSXR6c0JnR1pxcDNaQS1GVWxLTF9yeWF2N25OSDZBYlo2bGRPR3NGQ0xZUnVqUDYzenAwblFiNGExYnp4X0tDMVpFMkh3ekFPZ1RMdGc?oc=5",
+      "summary": "銅礦股(BK24039)討論區- 股票評論- 股吧交流社區 - Moomoo"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-05-29T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE45MkRvU1NIOTJBY19fU09ZUW45dnFQTnc2UFdVOGZZSmYzWEpFY29wVUh0TERYTDFobTY2SWx2NFlRcEhOQVZFVmh1dmU4WGlE0gFWQVVfeXFMTzlQdnNkVjg0VE1FM3RQOXc2czFvN2RPRnRxYUtSMmpkM1c3QTQ2c0g0RUE3X2xJal9nWUF6Tkw5RDZQdVdGNGh0ZVVrYlAtdWdNT2ZKZ0E?oc=5",
+      "summary": "需求旺盛 陸銅礦場滿載開採 - UDN"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-05-30T01:27:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTFBINjRIR3lVb0VnamxqUzFHT29IMGRYRkJ6TDhJYUo4Q01yVERiWjBxb2xXZmFXTVk2OEpiRDRBOWlEdEFnOWtKWWxlR05sN2V5QzlfUS1HeTRlS3E4ZlBtQWtsWW0?oc=5",
+      "summary": "“鉛筆芯靠我賣！”洗腦神曲背後，中國讓非洲礦山重煥生機 - hkcna.hk"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-05-21T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQbnlvekFGY25YUWdnX2pNUnYzXzN2QlJQZjJvR0Vwdk1qdGdzNERVTElDUWJXbDR1RFZIdC0yeTNFSE1FWjBNdzlac09md21Qdmp1QjdvWjFUVVlPWlotMXhqbUhZVlNFTHVySmhVcGozdFZZYlVfdzhUZ2JReFdBWlZTN1RrVTE5RzF0NHZkQ0M5Zw?oc=5",
+      "summary": "智利國銅尋求整合旗下銅礦營運以降低成本- 新聞 - MoneyDJ"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-05-16T04:58:39+00:00",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOUWZGR09CU3o2dk4tX1BXUmw5MFJxNlU1dnotYzlTNHhUN3RzTmg1SjRzd0g1SVA4OTRXcWVYS3djdE9saGxGZkZtY1RCNzcwb01FTklnd2QyU1doRnQzbkRQdEY5ZHFidHJPY3dIWXVPWWJscHkzelFBLU1fXy1nTmUxbGU4Vzl4WmVVdWZkODdUbWFpTS1Id3NWVktlUGs?oc=5",
+      "summary": "中國中鐵(00390.HK)洽商在剛果興建大型新銅礦Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 紫金矿业 2899.HK 601899.SS",
+      "time": "2026-05-08T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTFBZeGJyUUM2dHB0RzN0Z2V3OGJ6aXh4MG1yZEc2NE91VU10SEhaVEhxQ1JzM1M3bFE5d3F0TTR2WU80bkZlR0tpbkhBN203MU9pOXVvR2N6a2VxVDlUZVNxRzRiVU9iZzVfdkpBdjZ3?oc=5",
+      "summary": "中國中鐵(00390.HK)洽商在剛果興建大型新銅礦- 財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-12T16:26:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNeVFHUWRlUk5BMUJQdzl3UHdRUVZmSnNPeUdYdmtLUU1saVllNndvZ0NsZzJWQVdYS0xBbFZyellaVlpiMk1GQVEtLW5OWmpLVzVQdHE5dzNsY24zOTJHMWNWTGtzVlZHZXBmbXBpdmhNSC1VanU4dllFcl9ZelBoMlBZTUFnUHc2aGxTSTZQYWt1ZllUOGtBRGwtNm5ncUxnT1duem9zeElrQTVaaWVOdzNtUWk?oc=5",
+      "summary": "長飛光纖AI引爆業績 - 香港經濟日報HKET"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-12T10:08:25+00:00",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTFBRZTltRTd6ZG1PRlUwQUYxV0ZFMzFhZGtUTTA3OVRWWFJLQW45b2g3UEJiXzNMdTRLclN0RVhMaXpLQzQtczVRU1hIa0dReTd6VjNvZERRUWZvWU1JMjdEN2FNRDA1ajY2TU00MkVsUEFndw?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手買入2.65萬股，成交價$234.0，涉資620.1萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-12T12:40:20+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1Ya1ZWVVJjOGt5QTZNeTFsQTRHOE94X1VUUXVBZEppc0JuSmpGR1hrSEtSZFFZd0RyN3Q5NXZwVGx1WXlodERmaDgtMm5iQjNlYXlTTWJtOEhkWDVudk1IczZlcHRCUQ?oc=5",
+      "summary": "資金覆盤 | 北水拋售港股超39億港元，長飛光纖光纜、中海油分別獲逆勢加倉近9億、超6億港元 - hstong.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-12T06:45:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQTk5HVGJ2ei1mNW11UUZ2b0JhVVo0Szg0czQ0MG9RcWM0cVRtT25LQkhCdmp0UGtBTXF0ZmVsRFhiaUkzd1k3Y2JVdXBrTGZPb1Y5d2lHUFJVMW45dVl6Sk1wcjdGNE1uMDlqNnVGU0d1RTNRY3N4d25oOUtHRTBOSGpYWHdRdlZTcFkw?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手賣出2.9萬股，成交價$225.0，涉資652.5萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-12T15:50:53+00:00",
+      "url": "https://news.google.com/rss/articles/CBMinwJBVV95cUxQbEJzLUxPNWozT242RzJxdFB5dUNPT1k3WmdNaVMwdXNkTzh5TWltYmRuWTFrTmVCTktsMVB1Z2RiTHFHeUhLY0NCNjI0b1BaNWtKU0JxUTFWanZHcE5pWkxRZDRSSHJ3dnhUaXFnSDFaZUFuMUU1elNBQWd1Ymo3eVBQQzRHSk5CLS1fZG9OOHNvOFdzX0ZkYWlxNzQzcXM4X0JBVHI4aGhtQzdWczE2STUxTDdTYm04YkZET2U0SDZVWHpBY3p1X0JKNFBjTEgySDVuYlNZY09GdFFEZFg4UEpMVlBiVDhXUTZCS2NmUDFRNXhJRlprVjUtcUZrTzZCYnNqNTJBeVBHaWtTOGtWaDNuY0VUbllmNlZQQlctbw?oc=5",
+      "summary": "北水操作｜無懼價跌 北水近9億撑長飛 - 香港經濟日報HKET"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-10T03:08:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNN3BKMER3LUl1Zjh1azdLWWtZRzNoNHNWc0dvZm5DY21ET21lSDlnQlRuUkNYc1VRM0I1MXd1NU5acmlCVS1DSno3TzNKMlFIY1N0ZUxxNWhnX1NHeGJNUDZvNFYwMjd6V19PZ1BqVGhjTUp5d3dNWnlyWmcwRkIzeVRZS0M?oc=5",
+      "summary": "長飛光纖光纜(06869.HK)挫9% 高盛：AI需求支撐光纖定價穩固 估值合理維持「中性」評級 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-12T06:50:23+00:00",
+      "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTFB0eXduOU1FcmpmazFGMm5CQU9tZHBWM2tEVFFYUEtwQUxRVnluQy1MZV9IQ3JCM1R0dTdRR3YyZlc3b1FOc1RDZS14RFNsUVRFNHRhQUhYN1VnTGJNWVI3NFNBN3FMVnB1WEdWbXZtR2NNMXc?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手賣出2.8萬股，成交價$223.0，涉資624.4萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-12T06:33:51+00:00",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTFBXS1laM193ZzlaYmR2VURFS2JkVE96cmpHV1gwSXIwcEZDQXctOUF0eXlBeERhaXJEeWtpbmh2ZWlsSGN2NVFXTV9jbERIUXEyeWROT3VIcHJxS2ZwSE1YRlBoUXRIU0gtUlFBa0Jxa1JwQQ?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手賣出2.5萬股，成交價$235.0，涉資587.5萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-12T03:17:15+00:00",
+      "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE1WbTROSW9MczBiVHk5ZEFqNlJkZGx5N3NJODVEZlB3ODYyMkxxVkZyQ2FwR0o4ZVRyeWNneGQwUEY0SHo0VVVvMHBnOEdqLUZhX3VxTE5hYTc5SnZLcTFybWUtRGdaYTNkOFpSNVppUjNHYTQ?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手買入2.1萬股，成交價$242.0，涉資508.2萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-12T03:02:13+00:00",
+      "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE9VWHBtanQ5eGY2d2JKbHJZT3hFVnZkV3NsTDZVR1dOMS1TMUsyYjMwZEdVZTVqQktEam1Tc2Q0RFFnbzRKUllMZlFfOWctdlBvN0REZlE3RlJtaWUxR2ZLZHlqVEJna0hhb0xpZTFKdFZyN1E?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手賣出4.25萬股，成交價$240.0，涉資1.02千萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-11T05:19:56+00:00",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE1SeUZiWkdqbE1BMHAxT3dPWHBxczFmaVk2c2FrQS1IOFJISktNaXFxMHZrWkdTRjdzX0JHWjJMMnVTcW5vR2pGNVR0WDZ6eU1QaGNRVzVXeXBMMnlPMkotQWdyRTZjVzROdUxNV1l6ZHdWQQ?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手買入4.7萬股，成交價$230.0，涉資1.081千萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-11T01:49:31+00:00",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTFA4ckV0LWxOdVljOThxZXJ3SkpOQWM5Q2JGTElrRjZxLVYwMzZqMUdpdzlUWmI3ZGI5TnBaYzM1QW1Rb24wbTZzWWNYcEpuNmlkaDNEYmNLSDFEYmVLVGNZTElxRGNIc0NJOXNEWXlGSHY?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手買入2.15萬股，成交價$234.0，涉資503.1萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-10T10:14:07+00:00",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE82VHVIODFBcXg1VC1HYk1oamFiWlJDN2lyekdqcXlmS0xoeEZEaU4yOGxTODgwdjZzWkJ5YlV6RFN4azllcXJWNFdIbkFqcFZ3b0t4Y2dsTlJKemtqYkxaNW5kYkJrb0lWNk5tS25aWHdYUQ?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手賣出6.4萬股，成交價$231.0，涉資1.478千萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-10T06:18:09+00:00",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE9oSUlJUU9URjY2S08wcVRleXlxUGN6RWZMYndXNTJpVGg1OU5HQmszZHQxLVA1YW9ueGdxLVE2Z3NJM2w1WUFqcjVFYjBiWjJFTzhyeVY1NWNBNTJtY0RxSU9QNGUtLXZscUxEd3o2T0JsZw?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手賣出2.35萬股，成交價$239.0，涉資561.65萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-10T06:13:09+00:00",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE5EcnBLd0hrSnRzNGdUMkk5Z0hheC1pZEVCclhGenkxRUNVVFg1TWFMclhsZkk0QXFuUHRwZGFyTUdsUW1lX3JHWFBONGQ4enhjZFFNOWpNMllCMEt5Z0xwaGt2cTRleW9MV0RIeTVUcEo0QQ?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手賣出3.95萬股，成交價$230.0，涉資908.5萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-05T03:09:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPdXZyWnRHdG9DRlNFQzVTU2RtMXpoai1NaDVranRuOVJDUEU0MlJqUUZkT2lKSXVfRDNFZUtzd0YxNVVRY2FWRE9WZEJqZE9sNEhBSlRFSGNBNi1RZ2lpanU4X3ZpaUpjbTd3WXctUkhQaVF4UU5zWWdhUVpmMXJzeXdR?oc=5",
+      "summary": "《輪動華泰》創新醫藥股份逆市造好 長飛光纖再升8% - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-10T01:42:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE9uUW1ob2h2WTVpeHdqc2VRQ0ZENUp5TnJlZEVZUDZuNzRHZmdLSThOcWJhdm1rN1VPamgyb0t6aW92TEhXb1k0VFN6R1ZneUI0MENYVGlxaktGbGszQW1sbm52d2RSNmQyTVY4Wmw3WQ?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手賣出15.25萬股，成交價$250.0，涉資3.812千萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-09T04:42:13+00:00",
+      "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE1PdzBDTmNKY1B5QTd3RzFIZ0dHWXFVdFFobHpTRUdZY01Odm1IRFA5QklKdFc2eTJocFZsYnRSdm9tQVJyemJ5QlMyVGRaZnU1NUtTOGwtRENyZEFwT0JUeHF5bldOajhuRGdFaXhBVjJIM28?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手買入2.75萬股，成交價$255.0，涉資701.25萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-09T04:31:13+00:00",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE5QTlQxaTBUbk4wR3VHcmpsQWZNSGpfYXpqNUI0RUt5SHdRc09rQVloWXlGTXMwRlJWY2RGbE5pQldtMEpCb3puUDBuR0N6SXE0MzJJaDRVZDRGQXFiSTdWTGdaZFRBakJaNmZSdGszcmhEUQ?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手買入10.9萬股，成交價$252.0，涉資2.747千萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-09T04:42:14+00:00",
+      "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE5SODN3elRwM2h0X0d0Q2plZW14by1SWUplRFowQUlFVXF2QU9wREZIRF80cjFGMkZYV3Jacm4tTEFyTV9yTlFWbG16b2hEMjM1SFVseUtkNFNIMXBJMHRUVmI2bkJJdkdta0R2ckwwVDdiVEk?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手買入2.8萬股，成交價$255.0，涉資714萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-09T02:03:41+00:00",
+      "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE93bXA3QlJrbEptR01SdDdFT25JdTlaQUV3TXpQdkdCWmlEMXVnaVMtUy1OREhGR3VBaHVwc3MwVUlheEYxZTV3d3BkTnAxb09qaFRKRjNEdHkxZkthODBiS2JNRkw0R2RQUTY4aVRCWURBcTA?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手成交3.2萬股，成交價$244.4，涉資782.08萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-12T09:39:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi7gJBVV95cUxNdEVFeVBvRWhMVF94aG5XLVVORGNaTS1jU2d5VWNmUFU3S2xNOW5wOHpOSktOSlVaVG92SExXc0YzeEdyT3J3T1JVS05BUWQyYnZuc1JpdklPQnFuMWVCOUdEaVlUbmJrVUNaRTVVaXpGclpveVlXbV9uTjBUTGtlTTlQYy1RcE5WV1ZVWE1haUN6Q3haRF9DeEFOeDNzZU5RX3NQSUs2QjVvcmxnNlBXcnRRU3NIRGYtTFVQcVJ5aWZyWDdKTFc3WDB2aENiTFN6enVGQS16ZmJHYkczeTM4LVc1SFBwdjV0N0R1WEhiSDgtcmNUcE1hMDJhbUs3eHd4YlRqcXRSbGdDY0otSnEyeGd5UTQzLTBSZXhQTmo3SG9IdG5zRjlOMVRtV1lFNkFmRXY3YVhtVEZhWGI1MjliTElwSmJteWRoZ280MzNweExsMGpCS083T2Y5V2RINjdfcGtwaHhONFZHYUVQZWc?oc=5",
+      "summary": "北水炒D乜｜淨流出39.42億元，買長飛光纖光纜沽盈富基金 - 香港經濟日報HKET"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-08T10:15:04+00:00",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE56VzVjRUZ2VWsyTzJrdUZVY0pKdkpZRDg4ZUotS25mZkF0WS1oSkxnamRnX3ZGWExsZU85ejROaEJnMTBRQnJxRTNhY2JQSmpLUHgybTN1dWlUc1lySHpuOUFWanNiRW1zZS1IN3U1Q0kzdw?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手賣出2.5萬股，成交價$228.0，涉資570萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-03T02:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxON25OdEJHQ3l1SDZZVFRSaUFJbnRDSl9JdUJ6VURhNjhJTEhaQXdCUGNCV0pNeDJsTVkyWDVDejM1ODdyeWM4N2dvSTkxWW9ka3N6UVFjbzQ4cGV1VFQ0Vy1waXpaVHhpU1JtNWFoajYxdmI1NE1uUVRkTjhVdDV2RVVXNl9vMDRs?oc=5",
+      "summary": "長飛光纖光纜(06869.HK)漲逾13% 大摩升目標價至230元 高盈利預期已反映 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-08T01:51:19+00:00",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5DWGg5OHYzdGt1NVBKSDMxYUdSTllRM1BhQlBtQVZoUFJoelRUVC1US2czTU11V3REbUtEWFIteElGdC1jT2xBbGtQamZvc1N1b0s3d1VJNTRsUkJvOFB1NVhCRG91N25WcUQ2RVRVd3E?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手賣出6.55萬股，成交價$222.4，涉資1.457千萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-09T12:16:13+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi3wJBVV95cUxNX2lKV0tVM2tkODdpbFF0TndwWUFuUGxFbGIxWFpTYkR5TzJWSnN2YjNJbkpjTWtyZ245Unh1c0pFSWNYbm9kS0VzNTR3VVBUaC1naXVMUlhjMXRsMjdRVVhUUWlKeWFhMTJYX1pzR3VFT1AzZVFObU5JN1NXcmFFaVRVNjdva3hFbkZWekJkMHEyVXBfa1RpUk1qZkJSbDVJb1lkVnVib2pCMnRSMThYY2lrU3g3ZC14TXAzaHRFd0FPNmtnN0tjNHB6MWlHcFdWd0NXV0JVQTg1dnZYbDdNWnEzZVpybkR3ajlEQkhVOGhmUXNubVY0SkxpdTJmb2luX2IyeURST09ObWhSQTY4NzFXMERHSjcxamRyaHQ1TGM4RXpKdEtoc0FEOEZCcndYMm1wdXNWdWdXVlVlR2d6Z3R5SEFtVllNdmpJakE5eWsyNDA1VkxWYkJvMEtPY3c?oc=5",
+      "summary": "麥格理: 長飛光纖光纜50天綫上告升 留意購28163、購29158 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-09T23:06:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE40OVJWd1VXRW5UX2N2anl1dEV0SWNYR3JONUd1Q2xyNDMtODh2V1c5WGUyOWNST2FmYkUybW0yV1MtQTBnN1gyck5aWlR0bmJwbV8teDBMb3NKdw?oc=5",
+      "summary": "光纖巨頭再籤億級大單 中國光纖光纜廠商開始系統性出海 - Moomoo"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-12T09:34:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE5pdFNxSXFMRTNHaUdjeXEyTUZwS2QtbDlRN3R3U1NheFVGVEdEZWYzQ2NSblhhNWozLWRFYmhlcHBMTnVlMnBZNmRXR1VSb2FHeFE?oc=5",
+      "summary": "北水減倉港股超39億港元，淨買入長飛光纖光纜近9億港元，淨賣出阿里巴巴近13億港元 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-05-29T02:42:53+00:00",
+      "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE5JV1RWdHEyU2txLUdxS192V2JoVEdtMzhMWHdLM2o4V0llVzFHcVNEZ3pudnZBbEc4d1FGZ2lwczc1bVprZGlzQkwzbFRMWGpqVzhBZHVxaHFyMU04V0VXMDQ4ak5feVdaTTVEN1lLTG84WTQ?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手買入3.8萬股，成交價$213.6，涉資811.68萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-09T03:59:18+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1NZWY1OWlnSGJFLUhneTZ6azdkTDR3S1dULXVEalQ1OFR1dkc0TV82WE01bHNZZUR4OHJBNGFPcXVYRU51OWJQNkVfY3FTNjh1ZkszeExOMTR3ekxnbmNhRnp0cGswZw?oc=5",
+      "summary": "港股異動 | 長飛光纖光纜漲超4%，康寧簽下亞馬遜數十億美元大單，光纖出海打開增量空間 - hstong.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-03T07:58:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE05SXZYa29IaHFTeTBPSnRCdHZWbjRNRUFxcDJGeU1TX0xGWGI3UkVIY3ZKd0FtQUVrVDNOS1VkZ3NCNHdSRG1VWDlLclVJZGc3ZzgxS2d1MTNiOW1ZbjJyelZtMGxGQ05hWmtWd1dWSmZINGs?oc=5",
+      "summary": "【專家分析】長飛光纖食正光通訊條水 - Now 財經"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-09T23:21:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOQm1XN2tKMENFSmp0a3lTSU9ZeHAwaWNpVXJLRVJDLUwzUWllQjgzYnNlS3JzVWtOSHRmejBYeG0wUGhwT2hyUXVrOHFEbHFMTk5URXQ2V1VLbW9hdFZYT3dIME1zcklNaXpSMi15NUZWUTB3WUVycjJGbUg1dHYwUkk0eTl1VVpzazY1MGl0eTlLVzJmUjhGcTdfSWZyOWlkSGh6THpaLWI?oc=5",
+      "summary": "光纖巨頭再籤億級大單，國產光纖光纜廠商系統性出海（附概念股） - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-03T02:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5LbnFtdjdEY1UwOEw4RE5TdlhkdFZ1d3JJSnUzbm1WQVMxNWlLNXNmUGxKaFFvdU4xRU9HcjVZclpHQkd4WWpIbnY5NDVFS3ZCejlHbTB3eTR5c1IzZDV0dmZiaWdUa1N5WUpDOEdn?oc=5",
+      "summary": "長飛光纖光纜(06869.HK)漲逾13% 大摩升目標價至230元高盈利預期已反映- 財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-10T02:10:20+00:00",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOblBDN3lNM01FY0hfQi0wbHhwT2x5aTR0dkc1Y1JsdUdqeVBaYWltWWEyNmdIUWtiNUluckR2VDQzSWVzT0g0UTRwUmllNXdXUVlJaWdvb1M3NEV5dFJ3MUFNRnFrY0NRYmlaSi1QUEd5Wkd4cFNxM0FOQTdCcG8zQXhsTlFaR1R4am41VDRVM1FBS0RGSTctb0l2Mkw?oc=5",
+      "summary": "A股長飛光纖股價創歷史新高 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-04-29T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOcWVSbG5OX2EzNjBWUUQtQi0wNTRjb2UxYjZjOXlnUi1kTENSMW5zM0IzZWJ3QkNHRnU0TDB4SWpYMm10VkFyWFlITFNFcVZKdXZmM28zUTU3VnAxckhRbVRndW5GOVU2WTY5cUFzS09Va3RJcHZzTjJRX2Rxc0xiaUlheDA2a3N3bjdsME9SM05CeDNmQlBV?oc=5",
+      "summary": "《業績》長飛光纖光纜(06869.HK)首季淨利潤4.95億人民幣 增長226.4% - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-02T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxPdUhjb3BDZ1czblhKUldVTGRfT3hOTDFDdmh2d3RIV1F1ZF9wY05PclVpM01NMWhoWjAtZjF1ZW4tSHZ5TkJINmRNZ2ZQTXMwTm95SnAzczJzRGdUTUNqYzg2bGc0b1BVb1k5UEZNVjUxZ1lQTE41MEY2ZzV4XzJud2FuRlVnRG9kNVJWOEQ0ZWJfWWExX2ZqQ2NwM3ZuQQ?oc=5",
+      "summary": "長飛光纖光纜(06869.HK)漲逾13% 大摩升目標價至230元高盈利預期已反映Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-03T02:26:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNV1lyOWttZXJKUjhRRW1NSHU5WlNMaGd2blF3dzRsMm9uakV0ZFdTWjg5Q1FxVHNfLXM3WTc5RXp3RFFMWTRQbVJ1NE84VXJONXJsdG9nYTExcUloTDNLaHBFbjFvNDNFVWtVblEwbkxONmhUYjVPQ0JiQkFQQWxnTmxpWEZaMXFPbElySTdIUlhrLTFT?oc=5",
+      "summary": "港股異動丨邁威爾引爆光通信狂歡，長飛光纖光纜漲超12%財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-05-11T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE1sdXEwblkyY1ozaWE0T1M2UVhvazA1T2JMZ0J2VkZoYUc0ZW43T0lPejQ0VUhiWDlzQjIzVTc5amd2YTV6SEIxazc2SzlKbmwtN3UzSW1kQUFSMlduS2xXYzVwTzZnbGR1bHBMcERfSjVkck00c09YQmNQNVI?oc=5",
+      "summary": "長飛光纖(06869.HK)連漲四日再破頂 獲高盛升目標價至290元 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-05-26T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQSWZvTVBVcnJRc3VQd1hhaEF4QzZEVFh5SWpJTC04Um9BMDB0LVRHWlptb1FtN3BzMU1NNkRRWVViTWpZM2R1TGZZYVFmTlNNckRsczVOb2xzcnN0WTNCX0t6eGphNDJBOGxHZzNTaW5sdkVUZl9tNXA2eVpBS1I0a1dscVk5bEFwUE45ei1hN1k2UDNx?oc=5",
+      "summary": "《AI》長飛光纖光纜(06869.HK)出現「死亡交叉」技術圖表形態 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-05-11T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE43bXNRYnlwd0o3SkYyYjlXX1AwVTV5bE93c21VR3VVZldMV1p0cWtyRkJIdE9WZldUU1RiUUI3eGZBakJRSHEzeGptOVlNbVNGaUIxU2g3Y1RFSkVJczZrdndzcHdJcnh1LTZGZWtWaFM?oc=5",
+      "summary": "長飛光纖(06869.HK)連漲四日再破頂 獲高盛升目標價至290元 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-09T02:12:35+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPVjlhdl9za2JGWmxPaFBJd1FIYWo4NmRlaGVyYW83Smppa1kyLTdPYk0zbDJwSy1HSS1Kay12NlZPdXQxVmpYOVBBWldPTUd6VmVuZjBuYm92UW5wdmtQcnl6RmtpRVRRLXlXZF9MR3M2SzBXMFozdWZyZlZIdWpDNFQzZk9jNF9hN3d4NUcyTE9LSERXUnkxaFUwZlJ4MjlXN0pr?oc=5",
+      "summary": "早盤異動 | 長飛光纖光纜漲超4%，AI需求帶動光棒價格飆升 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-04T10:53:26+00:00",
+      "url": "https://news.google.com/rss/articles/CBMimAJBVV95cUxQOHhGZkRSZ0NEdmxmNkFtVzd0VHBlWDlMSVJtM2s0cG5CSlVQWVJlUWxrVXdhYjBVaTNSaURXTDFJVWlvOUZIYjhpTmctN0FUX1VNU0JyVGhIaUtvODZza2EwN3VaQ0xmRi1Qb28xWkhWUTRrZXFuekNOMGt1MXoyZU1DbnpYVWtiRXBsNEh2WVc5YW50MG9kSjZrcGh2SGhyZlVPNHZDRUVJSXVjcjNDelY5Xy1aaHMyVGdLcFRiRXZudU94bHZDRk9OcldHSGxycXdXeHlwSEJFWlNMVDlSdXhxQUhSWVZIa1ZjM3U4SldEXzVvQW1DejdCaDU5VHFvTGNSeERCZFdVdlF2Q2kxRV9PX3hiYl9S?oc=5",
+      "summary": "長飛光纖光纜(06869) 海外監管公告-其他 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-05T06:16:22+00:00",
+      "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE45N050bVdKNFdWRm9DSXJJRFQyTThaSTJZQmwyekszSzhPMXhjM1g2Y05Lb2tzblhvNy13UzFsXzVkalNHSU5YeXhBdERVTndDZmY1VWQ0QlFfM01wV2N1eXZDZndJcWx0Nl9kZzUyOFg0VWs?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手賣出2.6萬股，成交價$247.0，涉資642.2萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-03-29T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNYkItSDlFdk9ha3g4STR4N0JkUElJQkcwYjMySWQ3TGVsMTFRVmxyN3JqQXJwSGM2WkdaQV9BQXNjZk1nN29xU2FvRTN2TmxqSEJkc0FxNklWLXFNZWNlQmxwREdENVV6c0o1NVI4dTBzUUpjSjkwWnhKTFh5UTVNVkFKb243Zw?oc=5",
+      "summary": "長飛光纖光纜(06869)多賺20%海外業務的收入增47.8% 曾漲17% - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-09T02:48:45+00:00",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1FRFprc1hBa0tsYXJobks5Yl92eExIbkJDdEdSZnplc05zX2owRHU5eDRwazhscXBieHdCYmZsXzZOYnJ4STBmdldtbU12TU94ODl5b0t2Znk0TGctemdMeDd1TmMxU09iWENMUV83bXA?oc=5",
+      "summary": "港股異動| 長飛光纖光纜(06869)漲超4% 康寧簽下亞馬遜數十億美元大單光纖出海打開增量空間作者智通財經 - Investing.com 香港 - 股市報價& 財經新聞"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-01-28T08:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMikANBVV95cUxQMXVzWTdlbkp1QjdTaGRxd1Jia01YSnVLMkNVS1R6alBlQkRuNV9KMHpLcFFKMWVlLTdtc0VBQUgxMmF0N1BsR2dvblpiME1aaVJlQjROV0w3SlFSWGNZQ2p4VmZsZHJSMGhEeHotaWMtQjNuSzMxMWo5b24tWnZ1Wmh4UVFPanlkdThBc0w0czRiN2RMUV9HdzNpcVVyZHhZRWlCbHluVjZ0ZGR4YUxTRE1NNlZzZnBDc3FONG1Qamg2R292a2VaVElxck5zdkRtMmxuZW9scHNsRVRrVS1hdFZacmZmR0IyNERMWktuQmNyd0RWTzJrc25XeGhoT3JIeEJqWjcxV3BHM2tZaDMzZjY0UDBPUkctQm1lUWRCNDdfc05ZWkVxdEpXcU9zcUNBNXJad2VwMWw3cEE4cmZrcmxGZU5NY3BHZ0VYajVzUW52YjM5Ukc5WUNTT0txbWRCVXY3LUZnVWpldHdfUjFVTjBXRXExbVNhT3lOaGpzRGNZQ2o3bVM4X2pyRGpJX1Zf?oc=5",
+      "summary": "長飛光纖光纜：AI數據中心爆發需求 空芯光纖領跑｜彭偉新 - hk01.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-09T06:10:01+00:00",
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxONE5LaklheEN5S01wenZUZW9vVklySUlRZk43X1BRbmFSdlVVVkhCcjNObmthenRlcmpiMng1N1lQNm10MWZmd0xyanVOT3kwcGh4MEhoejBjSDY5RzFjSzZaa1pjLTBpWkpfYnB1RGlFM25ESTNGaDNFbE9WajJxWDIwYWt1ZlRSV2MyQ3h1SzFNSlhSbC02ZXVLLUhkZTJRWFQ4WThhZFZ2NUx4Z2o4WmlvOFg?oc=5",
+      "summary": "熱門板塊速睇：港股光通信走勢強勁，長飛光纖光纜領升 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-05-29T05:31:25+00:00",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE5NcEJabjVIVnlFRUw3ZlVGYVlVa09teTVoQ19yaEVhUWxwVUF0S2FVZEo2U3E2bjhnT2NYbVNEWnNaQWRhVEFkamxsMFRPUE5MbWdIVmttTXVUMk9wTU5RR2ZmdmlyNGpUeUF5NWhaU0FvUQ?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手買入2.7萬股，成交價$238.0，涉資642.6萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-04-30T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE8xODNRN3ZkOTljYXJhUGtmeXhONXEwYVQ3Q3paNDduRVhqeEZMcUJtOFhmdTU5dU1NWVB1VXpBVTBqVFg3bHY3YTA1YUxGZ1h6eW1zWkdfNmxnQ1RVV3g1OVBSSzFEYzRZbjM2R0g1Zw?oc=5",
+      "summary": "《大行》瑞銀：長飛光纖光纜(06869.HK)季績遜市場預期 但看好未來數季盈利增長 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-04T10:22:51+00:00",
+      "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOTWZsRFFpODVQZW1yLU1VTElrb2tyd2NZck45dlFJRVdodHNfUUxRMGswZS1mWUtSTjhnVGk5UFhvd3Nva3l3OEdJVjdxM25IYkJVZzI5RUtjSGU2eDl0cG1XUkVNUXBhRjhKaENZRm0xS0hEdDA0SkoyS0tBRlJZWTFUa01ZY2hIWmFISVN4NDFhaHhGdl8ydXh0ZVlObGt0MlBGR2FnbDlSd3VIS0tQeA?oc=5",
+      "summary": "長飛光纖光纜(06869)A股股票交易異常波動 不存在應披露而未披露的重大信息 - Moomoo"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-04T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1WVlltNUFLbkV4ZzRYSmw3bkRvbkNMbFFlTWFUSnpaQzlhdlV1SXg4a204ME9EOV81T1d3emRBN1l2QVFteFF0MFY4cTE0bWdYMnZPRnotVHVKUG5GMm5kbS1MQS1JZw?oc=5",
+      "summary": "長飛光纖光纜(06869) 月報表 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-05T05:55:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOY0Q0VVU3VkJWVjlBbVVYTktXRW0xVGNqekx6NmhsQkxlaEstTHg0eFdzQ3BNVXoxRXRkeTZrbXZjZEZpcGkxVGItbzBjQmJIOUZENDVQU19fWGN0SllPM05mZ0tCNnlBRFZDaDNWS2xfZnpOczBhbm83QVY3VERaUkQzM2Frc2dEWXpR?oc=5",
+      "summary": "長飛光纖光纜(06869)出現大手賣出2.6萬股，成交價$247.0，涉資642.2萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-04-09T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiV0FVX3lxTFBZdUxvZWtzQUJsU3UyMF9yYU5TLWRremlXZ1VaUGVyNWVpN252MWxwWmV1eUtDdnpYNlJhZ0dOakdqS0o4Xy01M1FfT0VQNDhqYnF0RTVrYw?oc=5",
+      "summary": "智譜、長飛光纖光纜破頂！繼續擁抱強勢股？ - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-05T03:10:24+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE9lT0ZBUnF1d2M4YkxFMG5rbjEtYmdXcGVhXzBEejhXNnh5cG9nU2pOeVpKcVVXVXVyNkxpMG11RkJfVjBQeF9hemxQREtrTnZ0T3pvTEhTZ0ZrMTF0TmpVampxcw?oc=5",
+      "summary": "【輪證泰度】創新醫藥股份逆市造好 長飛光纖再升8% - Now 財經"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-04-02T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQN2Q3ek5rdmp6QllUX3h5U19Rbkk4cWxaX0IzT05VSVdoMGJSajhpb0VoZExVU3RjMnhrMnpnSXRUT1FVMGtLN3lrYmM4UEYyb3dHYUw5VThEQmd5VWk1MTNtVWZGcDBfV2psWXpuMHR1em9SZlhwbzYtMUJSelpYYWsyVEpkN3R4WkRwbmRMOGFQTVk?oc=5",
+      "summary": "A股異動丨光纖價格“瘋漲”！光纖光纜板塊集體爆發：長飛光纖持續創出歷史新高財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-04-29T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE1jYTM4N2IwSVgwRjh1RjJ2aVVTcmFxOGE2eGg0MlA2V25KRm5OOWtLcW1qektPenNBQ0xsT2hWcldSR3dtV0hlcUNwOXdZdnk2b1FJWjc0dFRBTWMzaHlYSl9UcEdxaFNjWmc?oc=5",
+      "summary": "長飛光纖光纜(06869.HK)績後挫逾13% 首季純利升近2.3倍財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-03-27T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE9qSUpBZVNhTHNONkRWM1hLMm1Ec0o3UnExQlllOEFYTmZnNGExVnJNWlRkdVdjU3JtUWRLcnhUM2NpcnFqVGNlcmJMWXIwNTNBVkdjVkNrTktoOEN2WHRkamtrZkJwcndvZWtBYTFYaw?oc=5",
+      "summary": "長飛光纖光纜去年多賺逾兩成 上市以來首次毛利率突破30% - 香港電台新聞網"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-04T08:45:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9TQmJLQ0hYUnlVc1hDU1hRbTRuMUN1T0NJWU4wUHhIYmdQMk1jdmtPR19vTnlURkVZSk96V3Z4SU1TalJUWXVZSy1WMVZMMEVnV2hRcTltemZRaHVCNFZkR3gyMDVRZw?oc=5",
+      "summary": "長飛光纖光纜(06869) 股東周年大會通告 / 股息或分派 / 暫停辦理過戶登記手續或更改暫停辦理過戶日期 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-04-29T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPWGNZQW1FQzNSTjBZekFqZGxWNmFJX05yWUJuTTZ1RE56T3ZNV212c2ZFVmZ2WHJtRUctdFR4SnNGWW1VeXBQeDEtalFzSGdkdnBfVWUtMlkzUS1wT2VSVjltM2R0OHFFNFlsQk9WN3RVYkhwdDdzNUZMYmh0cUJOc0J5OA?oc=5",
+      "summary": "長飛光纖光纜(06869.HK)績後挫逾13% 首季純利升近2.3倍 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-04-29T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOSlo5eTZ5dEl4SmlmT3lKaWxqQ29UWGNwY3FVQmJtUnJlRTd3UFZyN3Y2RXRmTEl2YWMtM3RsQnZDeS1CN21QYzNnV1VtQmluWDZibDlJTDVnMHNLT1o0b3hqS213bkVKUnZGZHgzckZobWVJakc5aXdwblFWOHcwVmhPejg?oc=5",
+      "summary": "《業績》長飛光纖光纜(06869.HK)首季淨利潤4.95億人民幣增長226.4%財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-04-29T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNRkx6NTVMNUN4dU5mdzJsZmplYWI1VHF1UEhuMEJiMXJyNWlpR2I3Y0h6WEw0LXZ0N3g4MGpfbHpXWjlaYTVoNzhCRkVpRE55VkdEZVcyV3d0b1huMXVYZEx0ZkhERzJuT25DZXVTYkNsMG9uZHV3ckJ4Z0MwQmNFWXZiOUtaMjQ?oc=5",
+      "summary": "長飛光纖光纜(06869)首季多賺226% 股價回吐15%財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-05T02:42:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMixgJBVV95cUxPSXUzM3I1c3loNWJQMHc5bHl4UnhZUnlzeDNnbFN1V3NfQ0V2LXktX1FReVlIWkhnbzRUd1llOFRfaU5RQjBUR0Q0NEMxVzh6VGJqckRkWFFQYllST1l4WVN1ZTlneGZ4N1V2N0ZMb2QyZHNLUUtLSkEwVzFjazRmc0hlcV9vSzJJRFh3Q2JvNjRrMEdJeUVuVmFockJ1VldsdVBRZEdfcl9oSXdrd29DVzVUMHFEaGQybDRpYldEVXlJeTJfX2VSazVfS2gwTy1VbHRpZWttczRWdWxlVlVBYzVXRmdRbTNTb1poLXpqOUxVdEt6TFcyck1GeHdmWDU1RVFxc0FmR0t2R3dnYWQ1aHBiWUtQSFRuS0lTNHRuckZrakJJOTgtalhuTEFSeWM2YUp5X1QzLUE3Wjh2RDNjbnlsVFNKdw?oc=5",
+      "summary": "長飛光纖光纜 海外佈局進入收穫期：訂單排期延伸至2028年｜目標價300元 - 香港財經時報HKBT"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-04-30T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPV2RfdDQ0Q0hyazBSd3AxUHE4aV92Z2dtd1dYVTJsemdIV0VZS2wyWnpZN0JTWVc4al8yeFRwVE9MWGJ5VmVvbU15M01MQ25URWdvTGtHelNlLTVYYnFoaVBiRDJKQWNva0ppMHFDWTZ0eXpuaERjQUdTdnhBaUFXQ2tkdmVHQ3dmM3dEczdLVHphdnpLZ0E?oc=5",
+      "summary": "《大行》野村大幅上調長飛光纖(06869.HK)目標價至266元評級「買入」財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-03-24T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9Ndnl2aFdRRE9nZFZxMzlXQkl4NkN6UjhaUW5FempHakNuVlJQbE5nQVJKT01ISm1HeGpoanFPYlhGdkJhR3V0TThxeEhuZDdtZDhWa2xpY01hdS1ONTNpZ3Vkd0JvVTRCUUhXU1QyVm9wSDZMWHc?oc=5",
+      "summary": "成交額超54億港元 長飛光纖光纜大漲13.09% - 香港商报"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-03-05T08:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxObW56ZmdiRFAyYXZoYmVpNks0YTZYN2ZsUUF5Nkk0UjhPOG1mYXRUZXZ0VHZ5M2JOZnVpMUp0dEJsY01oZjBYRDRUVVpmRFJUTng2ZjZEUG85THJIR2tVcUxSVXBld2FYSkpYMGI4M0NsVjQ1ZGlIdWVuZjd4RndydQ?oc=5",
+      "summary": "研報掘金丨國泰海通：予長飛光纖“增持”評級，目標價293.87元 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-03-19T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE42SFp3TlZiQW9raFRCMTc2emRNeF80WVFHRGlWQ1BkcW9XaEQwQ1pwUDFvWXJTZXRHSnphZ1RhdW5xd0VwZVJkbVQwQjZ4dkdOVVlVd3VVdVh4eU5GeDFLeUVLU2hjMXd6dTQtc1J3?oc=5",
+      "summary": "港股光通信概念股走強，長飛光纖光纜漲近10% - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-04T05:06:48+00:00",
+      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNaHI2dkJ6cXJWU2tienZqQlpMZDJMVi1GdW01emdmc29BTjhENXlJYnJBcE1IalNQV1B3VTZfN19WOFZhSnYwZmZrNnJQeGZ0VjdqVVFMbHZPcko3RFZyeE5EV1RpMC0yVGVvTjJ4cEdjZWlScGcyc1Riejh2VkNXTV9ZZGF4OGRzWV9mdU9mLVF4UQ?oc=5",
+      "summary": "陸光纖光纜訂單排至明年 光纖預製棒自研擴產成關鍵 - 台視全球資訊網"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-03-19T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxNRF9WTHR4cGc2S3VFY3pFT2VqTWxwVXJWbFRYQ0JMS1RxYkZ6UXd5MXlZN29XeDJraGxucEVEUkxkYUJtY2YxRWVCOTNCYXRrU2ZkLWRjemZXUUNKNFQ1Wk5pVXVWNGVsN1VwejhqbzA1TjRxSHRyLWdhTFRPM2tsWjdLZw?oc=5",
+      "summary": "港股光通信概念股走強，長飛光纖光纜漲近10%財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-04-09T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE91R0NtLVZVdlJVR3B4NGFsc09XV2FrR25jUU84Y2Y1UHQ3eE9iRWNiaVlvRkwwbkl1aG96dHlZMExnM1V5Qms5clU2YnVHSndUaXc?oc=5",
+      "summary": "智譜、長飛光纖光纜破頂！繼續擁抱強勢股？ - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-04T00:26:19+00:00",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPVE1PZ1BYLWd2czl2aTFCVF9leGMxVlpvVXNxYzdxc3NlZkR2NHhWUjZBZEJFX0hMdnAydzZUWkRPRlQ4eXJNZTdlWW9OUTdSQWtkX0lUaGxUUEpMOVY4UVBralltcERNNW5COHFIeFVhSjhUdnY5dE4xLWVBWUxWY3FTS2RWLWVRNk0yTUd2SHhPOXNBeW9HLVZOMjZ1SUE?oc=5",
+      "summary": "小K播早報|國內光纖光纜訂單排至2027年 豆包計劃推出專業版 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-02-10T08:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE5OWVhRcWo3RjNSX2loeVJiblZsZ3pDMUprYlItQkhJY0k3cDNmNXJQRkN1UWdYRmJHajdrMk0ycFJuMHlFZ2xReGxjeEptalRhVTRLSVVIcTFzUGZxWGRxMjVQV0YxLVN5M2lSaUN0b1VLc3BQTUo4?oc=5",
+      "summary": "【投資觀察】長飛光纖光纜進入盈利上行周期- 投資 - 香港文匯網 - 香港文匯網"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-05-18T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMikwNBVV95cUxNM1gtT3oxZ19qRWNkY3NpR1FoR3gxWmUxYW5HLUJHcVFzSE40NmNMYzYyelNGcDJiVWMtSUNYczVmVGpUTGx5aHR0dkdiRngtVF9UemZwOHVaNXB5RndlUi1vMzBTNElVQ2ZGWmt1OGZxaGlCbGFjcDJnZzdwUUMtcFR5enJteVB6Nm1UN094SjF1OGJ4OVN1VjFSYkQ1YldCX3J6Y1VfTldCNk5pRzFRanhLMHF6RFhiQThIb3dKSkZMemdkZzJkd1lZcnR4UkhRLTQzSnktOHVabHVpWHF3N0pTdGI2Ukc0YlFFQ1psRElGcEszdjdBS0ZiUDdJeDRjN21ReXMwcnd5NWlTUUF3OHFpSEk2RWtELWhzLUEtc0g1b2lpU3lDT3BxenB3Y1JMbnZxNUV6cTQzYVBLcXlQSXltaTI2MUdyTkEzUE4yTHhnaGRmZmE5SkFGb2tqTUFSemR1MVhXOGdaeC16aFhENHZmX2xiT3ZDd2dLTEhOZm5xYnBXY3ZtZy1QdmF5dTJnTzlv?oc=5",
+      "summary": "長飛光纖光纜(06869) 海外監管公告-其他 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-04-30T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMipgJBVV95cUxOTlBVTEh6c0dUWjRlX2JqdlRtVzFUb0lIWGdVanVlZUhBR0RCNldKbmFvYkx1TndNVnNKNUt4UllMMXk2LXpuWHRLUXdOeWczeFhuM3JublhZZ3lYdlowYXhxazdGclFJci0xZzczbWNJaUhJaWJObXNPN0pyU1N3ckdsMnJnMFVNWVhWMndmYVZKOHF5OWQ4eWZjTF85R1RFN2xMamxMNEZRc1A0NWN0YVpCd3lVUmYtQU0wRlRpSWNTc0dMQk5GWlJUOXNWMFBxZ0tzR2JiSlhmZ1U5Nm51bXJzNnVKaXVfNGhQZnB1ZnZESkV2TE4taFlfY3NIeXYwOVlvbE5BMl9hdnZjaFVJN01nODlRRXp6Nng5c1prY3RZWUZlX2c?oc=5",
+      "summary": "異動股丨長飛光纖光纜績後挫逾一成 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-02-26T08:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPbXV2NTVMVGNjVkxPcjVhWHhFdXJaeDFfZWVLSUtlS1ZsV3FrSHJGNlFHUWRIaGRUbUpvYWlROXl6aUozTkRra3plX3U4YTlrU2s0N0lyN1VKQUVCSFNmdXczUEc2S3pKWVZGb3Y5MldVOXJ2TXBWSGk3X2FieDB2WlE5VGhoa1h6WUlxZE45R1dtTnNkLVJhWUNxNmlfbXUy?oc=5",
+      "summary": "商湯、長飛光纖光纜及禾賽抽高逾3%至7% 收市後將納入MSCI中國指數 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-03-14T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxOWmU0Xzl5dzQwZE5rbFpaeTY3emd4RGY5MUphb2htTFZONzVJTWtXUEZiTjVhMHJzRWdsU003aVREcENqNVltMXFFU2hGY0NIUmRnLUdCOFVTakUxclFrRGkxc3liaHZpX1F2WENnRnZFNEFWVlFrajNOaG15OENjc1VHSm81ZFZlZVVLV21R?oc=5",
+      "summary": "長飛光纖與合作伙伴共同設立中科創星-香港大學創投基金財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-02-22T08:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxPRERHcnJwYjB3Y2cwZnJuYkxmQ3VPUHkzWTliTjNSREJqaGc3SmFSRF9hdXdwdnFQNFVxQXRUTk9Yc0NBWC1oUVR6TlExY0ttMnM0V0tTOHF1UXJabGQxeFB5Vk5QMTdjWGJ4N19HcjdyRTFXTW9ZRmdfZF9BbVVsaXU2b0JfUWs?oc=5",
+      "summary": "長飛光纖光纜(06869)曾升19%破頂 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-04-27T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE5LalhvMGlRRkx6Y3hYR193Ylg0WFByZjNwY1JqcFZFTkdOREFTbnJCTkZPTGpSYUlKcXBKWTVfbUsyYUVDMmN4MlAyTkNnUnpuWEs3SEFUZWlmUVNramlUM29FN0I5NTFqd1E?oc=5",
+      "summary": "港股通訊概念股逆勢上升，長飛光纖光纜升超6% - TradingView"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-04-10T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTE44R0MxckJobWM4RVY3b2NxY0t4dGRxWEZ2X0dwd0FMVXJFSHVlUW05OG5xbXdQNHI0VDZNdFVDcF9NRXZWM3dfWk51bFRSRXhUNXpCM2NMMEFyc0hudFl6ZWxQWVQ2Q0ptcXEw?oc=5",
+      "summary": "【財經TOP SEARCH】長飛光纖坐過山車關美國事？ - Now 財經"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-05-12T02:54:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNdnBzNmhIQWVFdS1GdUxxaThrZi1VVDlRSE50M3ExN2lXQ0ZYd1JQNS1mcm9Wak01Z1VNaDhMRHIxc1o5YUtiVXJBTlhheGVxN1VSMzlEbi1CTS1MSDAzejRLRWhiUmxtU01FX0lWRXV6Vzd2VmFWeVNUODFNQlBQNHl5RUowSGoxU3g1TXZ3?oc=5",
+      "summary": "長飛光纖(06869.HK)連漲四日再破頂獲高盛升目標價至290元財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-02-27T08:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMilgNBVV95cUxOQUJWTTBJNDZlQXBDUU15R0ZsNmlqdzR6Qm1tWUh4NnFxQXNOOHVrUzJkQmxGZjNWVVExMTJEUHpjN2ZJYU9pYXRQNUdRMnJaN2pGUl8yYlVHb2Q0U0R1Z1huaHB1OTRLcmNKTy02YWtnc05hV2ZqWG5DbTNSdWl2bnpBbXRLVkZreHBsZDBwdE5KNG9OUlUzZk42cjVyQzFtcjgyVDIyRmJUeGpRRnMyc1RkdUYtZEZHbjFIZDlhU0RiX0ttWDMwV28xRUVzOFVsSHFjVW9LNF80V05tc2xKTjFHcTRSaUFXaG03cGNSQVNyMHc0RDB4eHBjT29ibE93b0x3b2I1enowd1VtNVhVNkMxWkFfSkIxaHJBd21ldmtBZEIzTkdEaDNSblI3SDhxMnp1RlpySGNYaDhtUTQ3dWVEVjlxMUFIMnFXWjBzS1RhS3VMaUpDd000Qm5lOUlnWHVpSHJQcUdnSzFyTlctSHRyWVJnY19OTXpuRXBZem0zX3RURVVDYkJlaGtVVWpTRWJDVHNB?oc=5",
+      "summary": "商湯、長飛光纖光纜及禾賽抽高逾3%至7% 收市後將納入MSCI中國指數 - Yahoo 財經"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-04-30T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPdmdTMTdDbjdvRjRvUXV5c2ZrLUxRSWM5TDhKT1AyWFhnTWhsVmJ4bDdGNXFFUjBUdnVrRFlyVGpGSlRWdVJXQ2lfUWhaYUZVbFM2M3d0MGtCZjlLQi04UmVVWVd0R3ZLRWNpc0pZRlktUlhjWW95MzBTczkzdW55TmxFaw?oc=5",
+      "summary": "《大行》瑞銀：長飛光纖光纜(06869.HK)季績遜市場預期但看好未來數季盈利增長財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-02-08T08:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1oMndHbmh6M3k2Zms2SjAtYXBxLWNDdjl0ZEZyemdQRllGdEU3ZDhpblBzX0pSWlJxRFJMc2xfZkQyeEVVd2pkd0FZaGFXWU9vTHJjMHVwQkJZRHhTRTFXbzU3NndXUlU3NlJUeFVHSnV4ZTNaNlVVclV0dm1JR2s?oc=5",
+      "summary": "《輪動華泰》長飛光纖愈升愈有公佈銷售數據泡瑪曾彈8%財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-07T03:13:07+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQazNVdnhXMk03dlpPa0h1Y0szMmltNVBnRllKYS12dkkxOW12WVNuQmplbjhGRXRoMFhqcXZ2cjRfRTNDOU9VSVFTYmtYVVFZSTZRYU1mUW5salA0dFBTU0cyUDVnQld6d2tCR2xSTXdueHVOYmN0UkxIUHFfM1Nqb3B3c0xkUXVpcEh6UmEtYXk5bk5UcjFieEl6VmNzS1hQRFI0?oc=5",
+      "summary": "早盤異動 | 長飛光纖光纜跌超4%，遭南向資金淨賣出 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-04-16T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE5yTHdNWTlkWVpJWFpjNDhPVUFkSW16XzdUT0tkNHdtMEphTXJURDN6SmdhOTlzZElMRVFOQWdxMllOd0haX0NSaWRvUHZoTTc3VTJHa1NBczhRM0E?oc=5",
+      "summary": "【槓桿致勝】想CALL長飛光纖點揀好？ - Now 財經"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-05-08T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTE02cDJPMEdTQmdOZ2JOekxZZG14STBmaFp2MjVTTVN1QU1GT1hORzVsQnVsSmptSW43bTdpdW5wRGU4RXpwNzJTTHkxR0Y5cGtPVmtPeXFNWEVyQjY3QTZWa1h4dl9rNndsdXhkdEtCdEFtelBLN0gwNA?oc=5",
+      "summary": "股價狂漲370%！長飛光纖光纜（06869.HK）踩上AI風口 - 財華網"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-04-09T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQSko4M3Z0RE5ya1djeXY3TVhvaTd3WGlYbGd3WWtaRUdlNHRlcE45ODZGeWJWZVI1dnpwbG15TVRsUl9CdUJLV0lORlYwSU81cjZVNUM2Z1NaX1BqelRCTzQyUDZDOFREUVEzQ2RJZVllQ3ktX1RxTm04TUVqbUk5SzFCX2VabkFvcjZ0VWNpUQ?oc=5",
+      "summary": "《港股》恒指半日升155點阿里漲2.8% 長飛光纖吐一成財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-02-10T08:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPeG1tV3YwbEZBUE01cGRwWjBmeWhLb3NzUDRFS0NRd0tQek11LWR0TnItcTM1djU5VzNLS1RvcWcxUGpEeENzMXU1MGZqQkkwdTdwY0g2WnFnN3RsSzM4N2FqMk1DaExhUDdBSTNsUHF3Vjg4TEktejNLSnlPT0lDU3NR?oc=5",
+      "summary": "MSCI中國指數成分股變更 納入長飛光纖(06869.HK)、禾賽(02525.HK)、小馬智行(02026.HK)及商湯(00020.HK) - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-05-29T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMizwJBVV95cUxQZE1SY1pmeXVsXzlsU3BGWGNhR3ZIbV9JTWNEVGdsS2hMTUdEZ0pMa0R3dHQteC1IQ3FsamlkeHAxbGtpMEFRT2FrWVdsbXNtUjE2T04zMEtEdDZBZkRTX01BdUhha0NGNmR5QS1GVlBZenV1RF9PbFNNNFpDcmdfV3JRTlJPbEFyVUdNZk5pZUUycjNWcmIyRjgyVzU1aUY5M0o5WFJLX3k5VTd6Z2VxOHhJV3llYnhLQjlVYkdaQkxJdWstUjI4aFBpMzlGVzl6WFMtUzI4NHdQd29NUnM2ZmxYYmZXeTZqV18taVBMU1MyUEloazhZcUZWbU95X256ak90ZnR0azBETThVU003bTMycmp0aEZvTzgwZzFFWFB1QTNqWk92Y0x4QXdxUFpjYUxrYV9xN2dCRFRxd0t2bWYwSkJpZUVteGluMllyZw?oc=5",
+      "summary": "交易所科技100 指數換馬加入滴普科技長飛光纖 - 巴士的報"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-03-05T08:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPb2FCVk1GWklSSW4ySmdTaWoxOTY3TFdUejV6c1JNX1JmeS1LS2d2MGl3UXVETlpsN25FMml3dW1rOU5paVIwT3NvcjBFWjljX0tjLTBmRF9vUF94OHBITGtWMXJvQ0NKUFhpbkc5VXhRcjB6QTQ3THpMVk8zbE13c0x6M3kybVRBS3RBdWJ2QnVTYUxj?oc=5",
+      "summary": "研報掘金丨國泰海通：予長飛光纖“增持”評級，目標價293.87元財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-06T03:20:46+00:00",
+      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxPMkdZbWNoeFNRNDBLOGgxd3FpQnBTWnBBc2lrSjR1Nl9Za3BuMXJJdmJYLXVqR2VvdGN3SXVudXRvTkdVN2JBXzk4R1VBRGE4bl84cHdLOW5jaXBZRXZ0THpGMkF5RkV2NTE5V2NYZ2QzeEZZcHg0Znh1ZTBpYW54dmE3V1pqeXdSaFRDa0kyeVpfTjZTMFdPOUhCUGtEa1NoOHVoWU8zQQ?oc=5",
+      "summary": "早盤異動 | 長飛光纖光纜跌超4%，遭南向資金淨賣出5.09億港元 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-06-04T10:22:51+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQXzdTdk45RXFzOEk4YWd5SmFSamlYc1ZVRlBYOEdtLXVvS05yM19SWU9saUtQUUZwSGZralNhdmdyRWNUSWtDQU0zTHlaNFphaVM4MElMZUtpQkpPY1JTWktSRzVXZnVFdzFGREpPWmkwbGI4MVhJSnRVak0xblZDczNlTktRNU11c2FWUVVJNk5HdDMwU21MTmZEQWpvalZXSUtGQjg1SWhWckNhdGlmZEZWWQ?oc=5",
+      "summary": "長飛光纖光纜(06869)A股股票交易異常波動 不存在應披露而未披露的重大信息 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2025-12-22T08:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTFBzcy1DQVJrWEg1ZkRpZmM2VDBhT3dXWDBwUVN6TnRCX0hSN19JdVpySE5FNHJZdndkcmxHdEZpNmpVVXg3WXFQb1ZzVXBlN2R3aE9Pa3NEeU03QWpzTDVTMkFIdktOTFVwLVJON3pWcw?oc=5",
+      "summary": "長飛光纖光纜：近期股價波動較大 存在市盈率過高風險 - 香港電台新聞網"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-05-13T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMipgJBVV95cUxQVDV3UHFXTkV3YnNWd0RUSDZQVnJwU2plUDh1WFlNejJwWXFHSXdEMDJHbXU5T2lxQnhzY1lzTzR5OVVlbXFORnZTWmtPZWVQM2JINXZQaXR2cUNHbmpTUEZDZmVVcm1BQkV5dFdmVVNSaFZ1dmxXZ2hVc08tTnozRjdQZk03ZXFGY0RZZFRIempFeVJOb1VhVk82d3Y5LTdCbUhsc2ktcmFMWi1zQlJOZEVZc2FYT0NnOVRJc0dGWVZsS3AxVzRuRTNEUXVUNFZVRTJhRGx4Uzk5Y0QzLTUzaDhhR244WUZOVVRUdUJ5d016QkxpX2V5SGVma2dONEFFbDgxbFZ0dzhBcUxaVktTcW5qeUlQakpIUGs1LXpUc2F6VUxpZ2c?oc=5",
+      "summary": "長飛光纖光纜A股獲納入MSCI新興市場指數 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2025-10-30T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5YS0x2SWZPcG8wWWNPQXRPQ3RBS0xRZ3VfbkI5QXpIbnFDVkdnV1hlWk1hcTl3SldGQ25yT1NWSUNkalNHNHJoZzR5ZUpHRVRqOUFOQjc1UmhOZWtSWGZxOWF6d0ZNd0pvaVVSNWpn?oc=5",
+      "summary": "《大行》瑞銀上調長飛光纖光纜(06869.HK)目標價至44元 維持「中性」評級 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 长飞光纤 6869.HK",
+      "time": "2026-02-26T08:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOOVlNcnE4U01BemxhRGpkQVZ5NkdCMkVlYVZsUXBoQnhzX2FobWVkelB6MVFXU1pZWlpBaDkzUDZYcllZSG9tSmVoM0xsVFZsYXZsc0NuSmg2S1pBRkQwcmFRN2ZGSmh5MWNtZjFaT1RMM3ZNUG9aM3oyeXIwVU1WVndn?oc=5",
+      "summary": "MSCI中國指數成份股盤後調整 長飛光纖光纜等4只新成份股上漲 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-09T08:51:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQTjdFaDhpTmpPWVVUUGlnVVJHLTZ4N1J2emFZSlVVZFV4MFh3MG5nRjZJUVBXMnRNQTlNVEhGWFpOdG41NFJnMmd6ekxPMFBQaUVMMGp2RS1Sd2pmcUxiV1hUWi05QkVaV3RybTdNX2Z1R0pramVVRGRjc3hscnJvWlVXSTE?oc=5",
+      "summary": "美圖(01357.HK)下周三舉辦影像節主打AI影像團隊或披露8款產品財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-10T08:30:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE56d3NsS25lSldEVFJKYlVKR0JHUGxMdTVoNV9rcDlnbXRyektRYVdHTEQtU2lhQ013ekoxNjhiSTBidW1heVJ5aXJuamJ0NUhkSWx6VGZ6VWhBVXBxMTREbFhJVTRCdS1sU214eDBRSEs?oc=5",
+      "summary": "美圖(01357.HK)將推AI時代美圖秀秀或美顏相機 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-12T08:08:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxQbk1rSWZMVmZpSUFDSGw1V0ZUeHh3ZVZhLTFiU0xuLUc1TlpYUmlRSGhITXdTaVl4ZERxTldvVVFCMmN1Y2VPajh0UVNFQ0cxYWZGLXRzQnBCemwyeTRLZGlEMWJnSjR4Q1liV3JjVFdWZmhLMXJzdnc3dEk3RHJldU9nS01ldw?oc=5",
+      "summary": "美圖公司(01357)出現大手賣出1.404億股，成交價$4.64，涉資6.515億 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-09T06:31:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPS3NKS3FDTFNpbU1xODUzRnZ6UkplZHhpcHhVQ09FYXd4Wk1FYUl5cjNWc0xmMFJkNkV0NGFkRFAtaXJYdnZfRE03MV9UUUtCZXp5ZmItSFd2dGxsU2wtVmJTYzlCSGQ1dlg5cFpyY1pwSE1qVFVCUUN4YXNFU2tyLUFyU1pzdkZmS3FkNVJqWTVkVm8zazVmeQ?oc=5",
+      "summary": "美圖公司漲超6%，6月影像節或有多款新品發佈 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-11T11:19:53+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi9wFBVV95cUxPUzdYWmlHcTVTZWp4LXpSTzlMek1RdkVJVE5jd2dOZTU4TDc3Rzk1RnBlRWJEWm52VHFTa3lRODR2Z0x0UjZCMVRjYXk2S0k2UmMxeEFZUDFtaC1OVkh5RGZ2Y0RqanBuX2E2UUg0bS1vbGt4UjhNcUVGUFhIMFZrbDMxTmRabVB5eXE0QS1lT2pSYzZTU3BXQ1l2MzNBOGQ5N2tBR096TWpiV1Y0SjV0MDBRaFFNbDI0Wjllb2FGMjVpOFJYbTZPc2xOaURTVVZwbVp2bTQ0TjVJakl4YWhMQ1VBS3JlUTFvQXpHNDU3WnBSWURzUlJB?oc=5",
+      "summary": "「阿耳忒彌斯」繞月飛行任務的美圖 - DW.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-09T08:51:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTFAySTQtVFNrNmhwY0haMUNJb1RoYm9wTUptT0NKLUxwSEF4UDI4WkhJR3c3SVBVd3NzODdBTTRwWWptaU5UbmVxYzF2ZTN6MVc0bkc5YXU0WldpMTRZOGZGTkE4QnpVSEplNzl3bzdB?oc=5",
+      "summary": "美圖(01357.HK)下周三舉辦影像節主打AI影像團隊或披露8款產品- 財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-27T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQOGt2UXpoQXBndWl5TkNCU29aMTJ4NWxJN2Uza21saHgwTGlhcG1ldjk2c28tR1N5V29jc3h0cXhzbmpyU3p5eGJ2SG9JWlJwTmUxT1hQU1RtU2VIM29oUHhZS1poZFl4dDIwRUJEMENFN3BKSXZhME5uX0NZclh3Rjk4S3B4NzJMMEpEYWdSWG1Fbndt?oc=5",
+      "summary": "《AI》美圖公司(01357.HK)出現「死亡交叉」技術圖表形態 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-10T02:35:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQV0wzVjJXdU1UcFc2UWVWVkoxMDZjSkRsaVRtYzBzdGIyMmNzUk5YdlBNQTBMM29JVGN1Tmt6clgzSkxXVkd2UHptQXhKSzhuM2s5eWF4d2xtdU9kSXlud3NaanZyTHRtTDR3R0dZemotTS0wOHJhRXF4RnRoVTVBREJjTDhrNTFYRURz?oc=5",
+      "summary": "美圖公司(01357)出現大手賣出75萬股，成交價$4.7，涉資352.5萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-09T05:32:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxOcFgzMEZFVjdVSlBER0FrZUZldHFzUUFaWW03cXNmbFM4djdPOW9iMnM4VUhaRGRRRk5mQVowbkt3S0JsaWVZRWJiNmFGWFh4b3dJNm94R0VCM21SUlVYZmlyaURYWHRoX05IUURhbUJ2aUxWdWhCeks4M243OXRIV1ROdw?oc=5",
+      "summary": "美圖公司(01357)股價上升5.042%，現價港幣$5.0 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-08T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMijwNBVV95cUxPU25PMTBPR1dlRS1ibng3ajhvMU16RTMyc2k0cEpRdGY2SW9ENElxSWJUbnh0UG9UTkxOZHk5UFQxZFVNTkg4YzJ0SDBMeE9seHgzS3N2aF9aRlMxZl8zUy1SUG1hSHpIMjR5N0gydkd1eGdpWU1VMGFnUjN4NWZTMkhZUEozUmo2ZXpaV0g4dDNONmxuZGNVNjRQSWJTR1JOSUVtd3ZpVlYta3dFeWs2UG5YNUpzY3JRVWhIaFo4RjhIMmFlSHdIQzV1cTFNVGZLWk05OFpIbVJXUEEtODRDd2kySXpjZjUwa2FuOWdoRVYwRkJ6UEh5TzZvdTU2cklpZlpZRW9uVGJ3LWEzZW5TUHJwSDZrUUZudlJIbUJYWWNKTWk4azhXOV9MSk1TM0xEc3RFbzBFVHBuNkF2VHNXd09NQ0tKUV9BZ2xIcDltY2RPNldNenJLTlg0ZUZ3ZS0zc1hKUHh4ZUktaG9mVlZxcGhjU3BIclRubDJuTTRZRFlYRWhlZ19zNTA0SmFxUFU?oc=5",
+      "summary": "美圖首季數據強勁：AI殺不死反成護城河，阿里換股價現值博率 - Yahoo 財經"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-31T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxOYVUzUTNkN1RMMzVsR2JxcHUzOUtIcG9fUFhtd0hTMkFaV1FGQkpUcXl3d0xXbHV6M2dRYW9rd0FLRFVwdlRJdnhCVlluZ3BSelhTTV9wUmhLWXhXNDlLcDNTYlcxQWZQRG1HMk0tYzBmZmxac0I4ekV6NUJLbUZobGVPVQ?oc=5",
+      "summary": "港股AI應用股集體走強：美圖漲超23%，金蝶國際漲超20%，中國軟件國際漲超16% - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-31T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNU3AtZnNsdWZHZHh3cF9FODFxUkdvUGpRcmdndXFsWHFrTndiRUhXVFc5cEhGY2hrTlZReUZ2OWxDTkdhWm9zOTNRczZDWnRtVm9VcHFxMUdPSTk0YW91NGlMQzhNeDZPZFdvOEJESlpJM0FZdFNMUTd6a0swUEpaa0hvRlA?oc=5",
+      "summary": "《輪動華泰》金蝶美圖狂飆18% 美團今晚出業績 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-07T20:14:37+00:00",
+      "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTFB4b3ZHSzdhUW9fcEZMRmthZTVjNk1yaDFtanMyaE5tX2d3MmxUaVRvcG5ZYWQ1aGNKN29ta1BRWjhHQ2FfVGNuMDJTQXV0NEVkLVpHcmxTbWljRzVaTHdGZ0gweXg0d3c4a2E2dHI5S0ljZU9IZ3Mw?oc=5",
+      "summary": "俄總統顧問：美圖退出烏問題談判- 國際 - 香港文匯網 - 香港文匯網"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-09T05:32:24+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE9pU01vdzFXN2h6VDRuOG5DczdoRXlaUEk5dVpPamw5OFlBbzU4NE5nNzVOQ0NHSThyOVh0OEpvSC10blZVRDRocTdFdXE5cVFUck4ta0k1WGpWZw?oc=5",
+      "summary": "美圖將舉辦2026影像節 主打 「AI 影像團隊」 - Moomoo"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-05T04:43:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQQXhaWnNPZlN0OC01MWRoNXlnRmFRN3FpWXBtbTJoNEpXTDgtd2E3ZEdwakc0NnNVSHJoWU12eUNaNldETWQyRmxWS2FzRTZUWDd1NVM0cS1ycjlyLVktblBMbUJrWEdnaGNfQVdlM0NWbmNsNUF6XzVsRzBZVGU3bmptOUhfeXNhQVA4eUNTbFRadk0?oc=5",
+      "summary": "《AI》美圖公司(01357.HK)出現「黃金交叉」技術圖表形態 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-08T02:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOaFljdFNjVG45MVA3SHRVUEVndXRYVHdBRU5FeGYxSENWZjAxMHljeTZfMVJuWktPMmhjc2VJZ2NBNXBLTmRvampKNEI1Tk4zT3RzS1d6WDlORUNVZS1aaHBjQ1B0X3F0elZpd0RfU3l5eGc3QkJIbVBzTlZyWTVmWE5CaV9rTExRUVVv?oc=5",
+      "summary": "美圖公司(01357)出現大手買入150萬股，成交價$4.84，涉資726萬 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-01T03:13:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOYzlWaWdpcGJzZmM5Q1hNdTBEcnI3Sk1ycEQtM3lkMVdKQ0JrTmQ0RjVGUDc4MjVQQi1melFRLW9PdnVwV3dkTUVncEVjREVvbnRLLXZHU21HZ1NsUnRsYkFVZjNtS2o4SjVFaUFfak5GTEd3N0dsbGVVellZajc1amdB?oc=5",
+      "summary": "港股異動丨美圖公司飆升近20%，旗下AI應用4月收入同比增長45% - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-03T08:57:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE9EUlFxMG9vMTA0cUJjcWxreXE0N05KNG81cE40eGEzN0ZzQ0RwUUlTRzZjMVBTWi1HYXk4bU1uVHh0ejdha1VpMHFROGhRVGlnX1Y1Vm1tU1MwTmphZlplMGFrWGIzV0RlRHVocXRrTQ?oc=5",
+      "summary": "美圖設計室與WPS Office合作 內嵌AI設計進入主流辦公生態 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-03T08:57:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPLXVlbDRKNkc3c29NU3MyV3ZGSjFOZ2hiS2lVanMtejc2cllpenIwNjd2S1hGdTY2d0ZVYzVCS0VjWFhKOFh4VndKTzZVSmtVeXI4d2ZPbDJDekNMbTB5dXg3aXotM0RJU0Q0LVBYcGJRdlJOUTdzcFBkZE1oUE9GRlROalI5dEtONVZycGE0M2p2UHBmU2c?oc=5",
+      "summary": "美圖設計室與WPS Office合作內嵌AI設計進入主流辦公生態財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-09T05:56:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPSFRfYVc0NDdxTURUd21Od2ljNUtRVDhyUXRGMndCR21jaS1ZdXdPMnBOWGlEd2xTRmNTVmRraThGTXV4VFNFWllaMWtwTGtiRkE4eDY0cDMzWUgxTnRTYWh2czlESnlVUS1hb3dod3ZDZUdsM0xiVzRMb1VpOUNWMk4yVi1fMUJ0S3VnaEpyaHc4MExwMkZPOTFBVQ?oc=5",
+      "summary": "美圖公司股價上揚，美圖影像節將於下週舉辦，公司生產力Agent進展加速 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-31T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNQk9RaWpOSnZERWw4dm1vZW1JaGswZEQ1bjNDUmJ2NHZvb19SYmtTSC1CT3NaVFBsRFF5N2RGb0dVRlVTdjJLc1FyUUp4R1pRd0Frb1FjZ29GNHRTN1hMeWNla2VSX1FIVlB5ZHViU0IyVFB0NDVILUJ5R0ZWLVFVZDViZUF1d0R0OWFodEVaLUc3MG90cWd3aGtB?oc=5",
+      "summary": "港股AI應用股集體走強：美圖漲超23%，金蝶國際漲超20%，中國軟件國際漲超16% - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-31T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPMnBwT1B1NFM1cHFWNjJXUkpkSkJxZGJzeEhPWDFjMVQzTG1mM2VUbEtRbFY1TTJVT1NKUF92SXlLa2ZlYWRVUzlLNjlka3FpSUtGQ2F5V056YVoteFRVSzBScXlGUTFUZ0doT1JDcFYzZm9mM2dZb2VOeVBITUQtSWNfSQ?oc=5",
+      "summary": "港股異動丨美圖公司飆升近20%，旗下AI應用4月收入同比增長45%財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-08T08:05:07+00:00",
+      "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE5pdTd5MEZ5ZVo1YkttT2U4R1N6b3g0VXA1c2tVb1Vmb3B1Y2FPa0o1WXAxYkc2SVFEY2JfOEFCenZpZndrdTZXZDVkRUxMOWV1QXNNYXg4RDF6eDNFMDdXa19LMW9SbDg2bHNFeXpjZE11aHlkODJqaDB2Tmc?oc=5",
+      "summary": "俄總統顧問：美圖退出烏問題談判 - 香港文匯網"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-03T08:57:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxNOHlIcjA3X1NMZmxtMTRrdFNYWE1FS3VtWHhPQTA3Vkwxbm1meG82Njd1Rmp5ZGtzazl2eHhqdy14TkxndURrTkRQNFgyUUkxenpoRWZCcDFNcVlKOVZZbzJEMDRyek9DUGhoU3U2VFZvLXExVDl6N2QwR1FLbG5DTzQ0QQ?oc=5",
+      "summary": "美圖設計室與WPS Office合作 內嵌AI設計進入主流辦公生態 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-09T02:01:57+00:00",
+      "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQa2N2MTRhOEhSMDFuN1lMeEFIcE13QXN4Yll2Zy1SNVN5MjRWY1lRZk5lME1IZXhUdlFCQWNsckl5UVVTYS1qMEU3ZjJseWUxMWEwVVZFQkR0Mm5nOWxWd0VnRlpZRWxpUHJwX01rWUhZZ09qelY3UVd2UXBCaTFpRXZTU0RZUHpyZWJNSWpkRlNnVUpidHh6VDFnNXJrMmFkVzVEMA?oc=5",
+      "summary": "早盤異動 | 美圖公司漲超2%，海外收入同比增42% - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-31T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQOXYyUEw1bEY0MkpzYjJEUjlqdEItRFdJV2tpRGx5OHY0WHJ6dXAtUjFpZzB5WEtaUkhtS2JERDkzYnUySW1QQ0RXNGZ2T2paSVRMd1RRTGNGcGRpM28tRVRPSVhUaXlqaWU4b2Vzb1Y5NDc3YTRpWTVfWVBVcnFkTzVNZ0hKUU55bE4xV0xlclZ6cW8w?oc=5",
+      "summary": "港股AI應用股集體走強：美圖漲超23%，金蝶國際漲超20%，中國軟件國際漲超16%財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-03T08:57:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPUkxRNGhkM1NQVzJlOUhxMEtLQ1dTWV9UcHpia0NlTHBYQTNPNmlETTVXQkFQdFhGc3NURzEwenJrcUl4WmMtTE0wWVFoZmw4OW5qazBYWGJGZGdIYTdLRlFibDUwWE5tTHZXMFNDSTM5VVZLRU5GZWJ1WW1JbVA4cFNn?oc=5",
+      "summary": "美圖設計室與WPS Office合作 內嵌AI設計進入主流辦公生態 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-03T08:57:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5kSklZUVh0ZkpQQThrQWt2azhkOVBVdGVfRVl2RlNhMnNtS1JMak5JNzF5MmxiZHl3cUFMeENWelRMS0EzNk5BUElMTFpjRDJQeHFpZExZNEI0V0pOUlg0cFhoZUpreXJfakxvT1VB?oc=5",
+      "summary": "美圖設計室與WPS Office合作內嵌AI設計進入主流辦公生態- 財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-03T09:36:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE02TkNoSE5wMWEzVmJHeWRfM21SOHduQjRlWmJ0Uy16ei1uQVB1SUpBY0p4Y3NGTFZOT0ZZT2c5RHNiS2JDQVpLLXY2VzYtcXdjZ2Z3MG9COUJEMWxWZXVoVXNIaHVHZw?oc=5",
+      "summary": "美圖公司(01357) 月報表 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-07T22:18:45+00:00",
+      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNcHpvaFJJQi0wQjd2M1VVOGNmSlBaZXRSaU5GU1lOd0NXZkxfNm4tMm5QaFo1TDNnUEhGTGxNWkd4aEJ1MFZDTF94RDBXQVhQZGhsSzFnYkNTQk5rNUx1cGstVER3N2pva2FWSVFMeWdROE5KVF9oZGpaUUpWWVRxT2dsUDJKZDEwZ0hhUGE1dw?oc=5",
+      "summary": "俄稱美圖退出烏問題談判 對其能力不抱幻想 - on.cc東網"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-18T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQemtKY3Q0U1FaQTlER2hmZGp2M1ZHRkJ4S0Q1UjdjaHZINzd4OEhHeFNEMjJsQ1BEQlMtaTNPSjYwWHhfV0kxdm4xWHkyQ29MN2VYZEtpQ29MM21FVnZyN04zcVpmQTlDT3piTnlRd0tCQkw2Nm9hc2NMQlJxNFRJMXE3Wk4?oc=5",
+      "summary": "美圖(01357.HK)升逾5% 高盛：AI整合支持付費收入 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-05T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE5Xbm1rVzBzYWJlMkpSd29YYnYwZERqRXRYN2hVNG1lNGlJdE1OWjE0aldLdU9XcUxfY0ZkbjBjMURLSlpaWmwzM1lJc3I1dTZVUjZfMDEtRTIzdE9TeURGSXBUWWxRQQ?oc=5",
+      "summary": "美圖公司(01357) 股東周年大會的結果 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-07T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi1gJBVV95cUxQMXRXSkd0RzBNU2JyZXV1eFJ3NFN6QjZPdGFzeDktY3J0bjA3SGk2aWt2MWJQaU1ndF9NZFZkdzdlSnN4RG1SQjRGVWV3dlZmZ0hGZnNhbEZIODBMaWxsUUVwQk1MaG9lenhDM2J5emhNeDFTLWE1WGxTVjU3MHBzYmRHRE1DVjdvM1MzanNsblAtaGJPWlRLOVVWckV1dU9PQ2hpb1BXOFlrR3otQ19Za1dPWFNPZlRfaV9XYVQ0aFpZUGVSbE84Y3dBU0h1M1B2VXd5dTlVaV91WUw0cUlHamk2VTJJb3FmTWF1ZWVNR3FOUnVDbS1KQmVUQXdKbTd0LUU5QlFQSUp4NHpSejJlc3ZGMmhsUkhoRGF3MEdzSTBWa3NCOHB4SlRUMl92aFNnRVgzbXFRQmVWZXZhUEdRSkJUMWtxckRUd3RXV2E0VVoxUzVzVHc?oc=5",
+      "summary": "美圖單周大升近28%！Warren AI熱點解讀：AI訂閱業務強勢爆發 - Yahoo 財經"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-12T13:08:01+00:00",
+      "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPZmk2X3dBVXFxRlU2UG5mVlJRTmdqeFY5SE42SEJjcHdUMTFsZ2xUV3ZpNlB5Ymh1UU1xZDA2N19LNkpoOFJ1QU9GODJGLTI5b3NTOGNrSVFmaGRtc25wSEYyQ21oOWhjZlZLbE5pWXdGQkdzUkhTR21pd2QxY2t1Uw?oc=5",
+      "summary": "全台首創48公尺環形LED螢幕 綠美圖漫遊洞 探索沉浸式感官場域 - 今周刊"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-09T07:35:48+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE41U1g5d2ZTOU9PQ1hWVWRyN0ZDemh0bGNyQXpWWjFpTF9qQWs2czFTXy1pTmxBR0xnak0wODI2T0RncDBpSkI2MG5LV3FuSXE2eG9DNUtYVQ?oc=5",
+      "summary": "Largan Precision Accused of Unauthorized Use of AI Image Inspection Software - OECD AI Policy Observatory"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-03-27T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPX1lQeWhqU2J5SjFFeWl0VU1JU2txUXlYTEt2TmM2NEJnU2JmeHpJRk5UTDRRZWtIYlBQdlByMmFiMmJ2YWhjcC1sNzdtaFhaekh6bEhTRU5NUkd3SWk0Y0FtdkFneFo5VVBEYU9JV0daWlRXbFJaRXJrQWN1MF9TTHZHSGw?oc=5",
+      "summary": "《業績》美圖公司(01357.HK)全年經調整後淨利潤按年升64.7% 派末期息0.05港元 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-13T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOSUdscnQ1bGNVcUtSaGU5UFotUFItZ0RYVkRXUVo5LWttWnpTRFNSTUVFcGkwRmlLOTU5U1pYOGF3alNER0xtSFJTQS1RV0hmbl9xMkNKM093VEo1M1B1NUFwMHpDWkpLN1RudWdPdDJaTWc0N2FYMDBCelBSOTZIREhxcUNqREdaNWpnZlhvbWwxQ2hT?oc=5",
+      "summary": "《AI》美圖公司(01357.HK)出現「趨勢逆轉」技術圖表形態 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-05T10:30:18+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxNUkRLbzN0SXZSM1d4SElMZUpqSlV3bXhiUERmcldLa3JQNDg4VWdJaE91Nk40NWwtbWZOQk9GZFFtYzQycWZkNUlhQjF2SnpBNXNhYVNjbVZRX21qNjkxQk1QNkV2NDVQd3RvTDQ2dDBYaU1xSHN1SnBuVWxaMmR6cFhVTWoweUhlOHFWSFkzd0xpY3h3anhMcy0zT0tDclJhZks4THdvLUN6TFdLeWVwcjR4RzREUi15WGVNa3RDN1NTVE92ZWNuZkh5WFNqQXI3OFk3dQ?oc=5",
+      "summary": "美圖公司(01357) 憲章文件 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-08T05:10:08+00:00",
+      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQT2hGVHJrQ19OZmJtMkxoNzRPYlFoUEpkT1ZSZFBYM1ZKSE0tUmR2UXVEUTM4dGJZbDV3VHZyQmRpLW9OT0o4bldjUWI5X0RUMXVJa0o3UkVzc0hSQ1lyTmhVRHN6b3JMRl9uUHBWME1XZmEyODd4b3RJejNUUjdBVUxLNjU3Rmo0NFpFLVRLNmNqU012aG13SDBRQU95QkdRMzBGOGlxNHZSVVpa?oc=5",
+      "summary": "早盤異動 | 美圖公司跌近3%，獲中信證券看好AI升級 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-07T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE0wbkxPazg2NzNQUDRaQWkwNV9QNXRnbEFyWWdIWjg5aGM3XzVxWG16U183V3dobUxEMGYwdlFfd01uYWVlUk9UMDFUYXZSWldnOEFmUk54WjZ0d21Lem4tczVMbXJQTmE4c2d1R3Rvbw?oc=5",
+      "summary": "美圖(01357.HK)揚一成 里昂：首季數據支持估值 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-01T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE11eFk5ZnNrNDFrczNVb2N3WDQydXc2c0hBczJISkVWLTVYUzVCNU56LUFSMDc3ZlVpUHNoYXBSUXVmaWMzQ2JXZ2JTd0txVFcyWVVFcGFXUmt5dGtJOUww?oc=5",
+      "summary": "【輪證泰度】金蝶美圖狂飆18% 美團今晚出業績 - Now 財經"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-12T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiigJBVV95cUxOS2dwalVwNFczTk9LRC11R3dIcG82UDhnRktaLS1tUmp1RFM5eHR5M3ZDTFpXb3pXaXotUGVDNEJOU2VtOC12ZVZkcFZrekRnYTI1cWVpTWt3QWQtRUtjRV9HYll0Z0tYY0xKcTlVekRoLUswXzRCdV85TVBvSS0yaUpEdG5vbTliRWtmWDktTzZzSmNtZFBIY19jQkpzT2FaSTJwS0Noa0lTbS1DRXBOa3Y3ZVNkMjJUb0RqVXpaREJVTm91bjVpRDVHNUlfRDRTZXFsbTBmZHBjWnRwMEVrQ2hZTjBWZE9UZ0NCWFp2eTBxR2JCanlBMGp0c09jQTlTVW82Y1hOUjU5UQ?oc=5",
+      "summary": "AI生產力需求爆發 美圖加速商業化 - Yahoo 財經"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-05T10:38:18+00:00",
+      "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQdGJNR2IzNWUwQjR4dTBmaXRLLU9HQlROZjJlQWd5am5XVzFacjdfcmZGQlJmSTFTa09jeGZUQXMxcENWSC1tLVNfSm44bDdxTlVwRHl5NnJCZWo1ZGxvallrMG5kbmk3YVM5Z2xlc3pSWWt5SE9lUTRjSUE1N3dldWYwUHVYanE1WlJwSUFESjlNSW1VVWw2TVFvVzNzNjJjVkxjclNabUFsRVZVZV83aGNRZkVLR2RwRWYzRktwSjA1ZUtUSmRxbEhoMnY?oc=5",
+      "summary": "美圖公司(01357) 憲章文件 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-05T10:51:26+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTFBkaWRpRkhnaUlDY2VDN2RFMFQzN0lWTXlvekI3VDYyQTdrZGZMVllUaHhDMlVqWW44UmNYQi05YkRIdVJsNGpFOEp4aTc2bUJkN3hlZWRKMEM?oc=5",
+      "summary": "台中新秘境：歡迎光臨綠美圖「驚奇市場」！ - TiBE 台北國際書展"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-23T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi3ANBVV95cUxOU1RBTWZNNVp0Q0JoZVJOSnpjVTlwYm5jdG1OWE9MaFl1ZG1xeDdDOGhNZUZCTnNEbXByVWdTUGJNM2ItRkJIQzNuQ3FGUDNXMXJJQTU5YWMxRG5GeXpkTDcwaHNxell2QWY3MVZlWTJYWkhYbXVRcnVjOUp1RzBoSW9xX0dMaW5mWU5IQ0hQYUFqUnV0c1pUOXJaNy1zY1RvUXExTTNobDFMaVd1bWFvSy1LUFRXRzF3MU1OOEtxLUl3TTl4U2RSSVg3Y2FzWGtDNUJqbVViNWNoVVZzTUtSQWQ0WXBkbFpGQ3RKeHRGdXNqalN0NFlnXzBYRzlYX1BSS2dpVTgyLXdwbktiSU1MMFBVLUk1VkI1UkhLYmZRY2UxZTdlaXVnQU1MS0pSeDd1ZHA2UE9MS2hlcVZDNWVkOWdVWnR3bjJKZlRGVnA4QmUwekRocFkyTEdYRF9aNlh1d01TMXlmYXFaSy16ZXBRdHR4VDF3WFJYUlRubXg3bzZnWUpsVDd1c2FiQ1VCdEVpTWI3ZW5QeEhsXy1OSS1nakxWbXl4M2hFOS10YkxzRTY4TTB6THhXY1o3anA5cGMtdUdZbk5YTFRNU241aVVVaVhzUkNuc0dxSjRjRQ?oc=5",
+      "summary": "無名天使3D重播｜郭羨妮素顏晒少女肌遭網民質疑美圖 本尊霸氣反擊：原圖直出 - TVB"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-03-29T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi3AJBVV95cUxNT0V1V0tCVFlWUTVBQ0JpS19wQU1XX3ExUHdoYmlNdjdsVUx0OVB0enZ6enJ0QUQzbkUtcUR0S1N5TkhYNkQ0MGl4S2tRVjVNNHJSS0hWTlF6ekJteUVkSTVkX2ZfQmdvNU0wUmZrM3lGNy1wZmoza2J3bjd2Y2Y1a0Q5NWtFMEF5X3JnTzR3ckw2TTVXRGJTdm94VXlWX0ZyUWZ4LVptemZraF9pT3FfNEIzYV9oWEVFYWx0ci1IUGM3QUJ1ZVkyQ3REQk9pTGNNcWhZaGlwaktsRkZBMXNkVUFSVS12bjdMb1BkRXd4emV1a0JNaUJ6OXZoam5teGdPN1BNc0xPWkNOeWktZDFVQ2NJeENjcURjT1Q4V1VZVjlfaERDb2ItSmpBVGNzQXE4aG1jZmc1Mldoa3JNOVRWYVc3ZVdLbTJJb25pMWRKVWRLTHY2Nmd6bU9lVGk?oc=5",
+      "summary": "美圖藉AI賦能屢創盈利佳績 積極接入OpenClaw催化新商機 - Yahoo 財經"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-07T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPendXWF9wMUJTU045a0czaU1PTDBXYWp0TXBsOXBUTUZvWUJmaEoxdnpjS0dSdFNnSDI4X29VUFhFWTVfMWZNa1NkY21adjBRZzdEYTd6X2dRdU9xNjBmNlpHSEdFVG80aDRTZDhXRG42aVIyOUdnUWtpRG55VWNIazFvYw?oc=5",
+      "summary": "《大行》高盛維持美圖(01357.HK)「買入」評級 AI代理整合帶動需求 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-07T03:52:52+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTFBjYUNrcG45ZmN2aGxrVXpEMHAzRWd6dEtfMHNxQkF0U25hSEU2UjBLeEFjaVlfcmx4eEFobS0yVHQ0V0VQUnNjUXk4aFBKWlhQ?oc=5",
+      "summary": "綠美圖漫遊洞探索沉浸式感官場域| 雜誌 - UDN"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-26T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE5KMG5uUTZlcTdPcEpzVjg3ODFhLXlubVdfUXR3TkJuTnlJWThVS25lNnhZNHdScUFBVmxMMkxLS052al9hTXpxdk1PUnhFSlhyTDVhbFU4TTVnZklvdF9z?oc=5",
+      "summary": "【建築搜奇】臺中綠美圖 - Now 財經"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-07T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPd3dIZ0lxaVFjcFlOVnZ0MjRONEtmc1dHcnV1TjhuX0ZiYURLSllTVjJNeGc0aEFmNXZhc3pKdVhWTkRkSWhSd21tQVdQc0ZaNXVsS05uZEFLclFKUEJjVXBnaTFwSVNDU0JtUHlKVDEwZi1tcTY3ZWhyVHBMLU54Xy13?oc=5",
+      "summary": "美圖公司漲超16%，2026Q1數據證偽“模型吞噬”敍事 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-01T01:39:26+00:00",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOZ1BrYndURW05QXBxUkhiWmJYRmVmbVhsVWNUd1JleVd2SFBvLVJiUWU1aUJ1Y1N4R0hkdlpLMjk2YlJ1ZkNJQUlKLWx6NzhfalZjc2JiaUZNcEdjZXhmd2lTM2MtV0lNSklfaktBT1lxOEZTVUM1cTNnajFleVM4M2tXLWNIZ0pEYkU0bFFSSXh4NGxkMlppTzljcHg?oc=5",
+      "summary": "港股異動 | 美圖公司(01357)早盤漲超15% 4月美圖旗下應用的海外總收入預計增長超四成 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-05T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPSjNMZGFFS1R3aWlSSklFY2pnQVFIcWxFUGo4Z0hnVGZBY3lSUXhXSnlaMDcxa0c0YzFFc1JQUWVMOF90ZnI5dzRQVHRCVHVLYUItZGFJSlpRSmZCSW14SXItWVh0U2FOeDZYQXpyNkp4VFFKQUdGMEdkVWZRQi1NU1ppVGo?oc=5",
+      "summary": "美圖公司(01357.HK)首季付費訂閱用戶數按年增30.2% AI生產力應用ARR升56.2% - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-10T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTFBHcno4NWJJa0QwUzNlTmljbEl3bGV1RG5LZ045OGhOZmpFa1BVa1ozTmNWUlJGanh1ZHQ3MVhvZXFaSi0waU5pSExpVjBuWV9IdGNocENvM0RyWTJpZ3dOTllUbFJJUDZWSDV2YzJR?oc=5",
+      "summary": "美圖AI驅動高增，商業化與全球化雙輪齊飛 評論 - 評論內容Commentary Content - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-29T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE81ai1jOW5nTXRVeEFRMXVrR3NiaVA0TFQ4X1JLUllGOVRlN0pYdnNJZVRsUUFOdFdqaVZrRzd6aHlKTEhvYll6TDdhSUNuOWZ6bUFwcFJ2Z1JQSnpFNlF3aEpR0gFnQVVfeXFMTmY4clBzQ200MkZlWnVlOXY4b3dWZ2hKVFlGelM2VmxiTjVoNVVNTVNiWDluVl9WOEpMQmdkY3Fab3ItVDRxelY1Tmx2WDJNcVBIYXhWZkpHemRxZkV2TThkVERBc0IzZw?oc=5",
+      "summary": "MUJI進駐臺中綠美圖！以空間改造打造另一種展館的停留體驗 - 500輯"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-04T12:50:20+00:00",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBvYjI1ekUtWktHVjNVemxqOGRJUTh6R29VX1NsSVhvajlEY2R3OHd5cGVTQ1R6dUhFYnVNckc0TGhpMkF5czYtY2xZMS1jNzlPemVSOWU5azRSU0lBMzktUGNCcVNUdHlEQ20yRWEtM1c?oc=5",
+      "summary": "摩根大通增持美圖公司(01357)2774.7萬股 每股作價約4.41港元 作者 智通財經 - Investing.com 香港 - 股市報價& 財經新聞"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-03T09:01:32+00:00",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE9tRFdzZHB4R09jaWNpaTZKbmpqdEhFYTcyRXZ1eGFYNF9zWWowNmhBNmdrMXF3WGNEMFRucXJISE5CY0k4ZEJzYmZiVFVTOVR2WTRiQ2YwbmVmOHpYQndsVDZ6UUZObEdma0ZON3FEeWU?oc=5",
+      "summary": "東方證券：維持美圖公司(01357)“買入”評級 目標價6.24港元 作者 智通財經 - Investing.com 香港 - 股市報價& 財經新聞"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-06T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMitwRBVV95cUxOc0gxU2Fyc1dSbU5vMk1td0ZkN1V4cGJqVHA3Wmtna3VjX0hlVWRTVTBKS0lrc0Yzc2VSVFg3dHo3QW5nRjdDWk8wR0dtY2RJT3E2UXlUcWJnNU9UckdpcmNjTjR0b1Z4eTRWT3VfSEdOaVJvT09YaXg0bkJLWGZxTHFGQzloLUFlNUpfMG1iY180cUMtZk9rZGtvbExHRzh6S2FWV0xEVXpxUWk1aHJNR29sOW43XzlBN1pxRFV5c1VBSEVoZmRld2o0bVQzd0pnZW9YSXhzSzQzb0kyZi1GWDMzWmljR1gwYUNWVXFNSnZBZ2Rza0lldm0tM3EyZmdUM1AzYUl6UWljdHZWaThaM2l4YmN6OGNWd2pNT3RHLWZNRHdXaHBSNXh3TXRvSDBpTGt3M3E2THhfUGxuLW95Yzg1dndUY2lTd05wMTZ6dW1yVlk0eDVOWmotd1dxQlNJQjh2eG44dzhtWW8zZ1Y4VjJIN2JYZnh1UXlBWGFQbTBKRHUwSTNqOWgxLTB2VEN3UUltUk5wd1I2RlYtekdsdVcxajlGSkN2T3p4WmtuU1YtenVFYUZFalYyaEd1WHEwalR3SWk3SGdrZzZpaUU1YWJtOGFzUUVxbXlsbmYtcS1tLXE1NE9yQ1BTVTVLSGw2cXI2ekg1enZpbzltcnlqblFJMmhGSXJHRUhGekNaWFhoLVJscGNadUVuS0swYmxQcFBwOGhTWTlyRm1PZk9tQl9qUTVrTFk?oc=5",
+      "summary": "【1357】美圖公司股價曾升18% 首季付費訂閲用戶數增長三成至逾1790萬影像與設計產品收入增長34% - 香港經濟日報HKET"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-12T03:39:49+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE05QWhDM0NwdWlDNzdSWklJUWtMYUV6aE4zSmxpbzV5Y0F4d0M2Z3BsSG1BVWN5MzFQRlZyd3lSbE8zRGdYbTFmbDdlQ0d6eEdvVHc?oc=5",
+      "summary": "AI能畫出豪宅美圖，卻算不出浴室裡的「隱形魚缸」？法院鑑定委員揭老屋翻修最大盲點 - 民眾新聞網"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-03-30T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiVkFVX3lxTFBQajVqaW02RjJPUEpvTmxjdlh1bTBvWnZMU2lOcXNmQ3JvdHdqODBrYmItMloxUkJfZ2tRbDBZWlRpdDRROWdsZ0Z0OEtzWndfWTFmR2F3?oc=5",
+      "summary": "2025年海外月活破億，美圖全球化故事如何續寫？ - 經濟導報"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-01-04T08:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi_AFBVV95cUxNSW53Y0dhZlg1YlhOZWhPX0ZaTXFMZjN1eThSTXNjaEZWSllnUWd1Ni03Sm5ybm9oSTlKSDNYRkpBbWhNdVNPSXNEYVlYUGw5MWtRMmtjejd6MzhSMXh3c1d4eFlXa2ZFSVFldnNuOEdNRm9FSVA3aW81WlFacW41Tmxmbi1FNndZT1dJeXhjU0FhTmxaT0hlM1EtNHV3ZXZoYkNxd1RZTDJZa2FDU0FKS3lJRkg5UkliWVdiaDAyVi0zWWlpRlVVMXpISm52ajVLbWNuR2VaOXkxcFdWVGRRM2trblFGcF9xcjBNQVVqbHgxMFRuOVNIUVRWdzQ?oc=5",
+      "summary": "【醒晨推介】李澤銘推介美圖公司 - Yahoo 財經"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-30T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE8zN21BTVFoOXZRcFlSeVhZblBlTjN0MWdLTzd2Nm92LVM4MFRPWlo5am1GNEVMWFFHUjZHRFJkekFabWxPZXFuSEJZZU82b2syQ3c?oc=5",
+      "summary": "LIFE經典／無印良品進駐臺中綠美圖 打造「安靜空間」 - ETtoday新聞雲"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-06T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE9FWWVWQTFZaXFwZE5CQ2ZtS2Fka0VlaHpNbjlodDh1ckVyaE8ta1ZJWVVpTkpSN2R3akxNVGhydWxnV3pKcHlEeVVzMkR1U0RrUXR1S3RhSUxGLUE?oc=5",
+      "summary": "【專家分析】AI仍有機搶走美圖用戶 - Now 財經"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-07T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMipwJBVV95cUxPWlhEQW5pTDdnQnNjVnB0bW15RWJNVVRwSzc4X1prcDJvYUVlTE9fUmpYUkRLc2ZELUhxUVEzc2VUaEtJcS1KT2JhRFlobWtnVGNJZWJMYzJuWWw3Y2FZLVpZN09wZmM1Z0RncElFd3FfNmJQdlY1UURjXzh0Uk5pNFRYckVxYzJ1QUNTNFlRVWtUejBFdFkzTktBTXhYclQ5UUItUEtBTDhxVXZUNGVLd1VEVHZRTFlaY2lSZ0JTYVNHLXhNdHVFYzJvd0YyTTctTktPeVZTR0cxRzVtTzhTbERNVjdFdEpFUG9oazJEWVNZSUp4MjJNSTdlUEN2cXAwQW1fWjdfWHhoSVhBT2xOU3NXMW5LaWhOYUtuSlZzYV8xbGJ5R0Fj?oc=5",
+      "summary": "聞風至 - 美圖季績強勁值博 | 鮮股落鑊 - 星島頭條"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-06T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE5ET2FCQWlpRG9zOFE1OC0yUmxYeWR6RjBBcUpqcko2WnFrd0UwaVYzUG1IWVBxQVdBWjMyOTIzUTdlQk40V29ZVWI1VGd5cUl4NEJiblFpQ3VnOWM?oc=5",
+      "summary": "【財經TOP SEARCH】美圖短線有機彈上5.8元 - Now 財經"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-02-08T08:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi3AJBVV95cUxPZXB5aE9Id2tPX3pweEhFeXREb1BoYlNvRXlaM05DZGNKb3dQekh6R1ByM0RkQk9QY1hGbWNBNkpjR1J5Uy03VUtFMHpBOV9xLVpOMWxjaW1tY3Q2MGZQUWlvc09iQ2MteFU4enNNRlg1TkJsd2gtMFJpRndHenhqSFBWdzYwNVo0WFl0cUxvd1F4d2lRUzJ1SzhrM1FEd0hPUjNoOWlaaVJXRDJfR2REbjNnTm1QZThPWkl4cHIyN1JkNGExUUFsU3VScWcxV0FrSGZnelNKdFBncXlsRkEtWDlqR1NibGJLY05xUkE5SjNWYmFvVzlSMmw0TmJZUUkyaFhyTTEwWG9MeGE3TFg2UXc5SzdhYVN0eGF6dmFLZUhNMDV5Y2xQSDhkMC1hVURoNHVaeW1qWmJNNF9JcDdGTE9xWjlWSDJqV2VUeGNDY3A2Q01MdHdrVUtYN3M?oc=5",
+      "summary": "簡訊：影像產品增長迅猛 美圖預告核心盈利大增長 - Yahoo 財經"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-05T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFB6cnFnNVZkOVJJc3BNRzhOam9UcVptRXAtN3hRMUg4Vlp5NWtHeWItVHo0QzFKak96SXVhUlRJdkZOcGgwSXlVZl9mM2JpcVlpaVI1UDVQODB0bm8?oc=5",
+      "summary": "【何車評股】獲阿里持CB利好 美圖睇7.2元 - Now 財經"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-05T10:18:56+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPWUI4eDJnb2dTWDRGa2pPRGVKZmhJeXFQRG50QVlWbi1SaVozMUhINlBBRm1wenloTS1pYWg0UUNhTHNxNl9OLWJYel8xRHI4VGJsc3J6UEtyWWVIQS1GU3FzRnBCX254YnJubEFaMTllUXF5a0FfSXJ3Q1p5ZnBxanJWZUdxUzlsOGRsdGhOTmc2T0RCUUxEVTNFbXQxSWhnVzJ3?oc=5",
+      "summary": "美圖公司：第四份經修訂及重述組織章程細則 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-03T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMizwJBVV95cUxQVTJUR3I1dTlwNTZGbDdyekxUSXlNUHFVYnJMNWJiWThxekxaMjJJOUV4bVllaTNZRzVVaUt6dm15SW9TRmJUMXliZmUxaE9uWlh1OWp2SnVpamItbDVudzdtaFNHcWVYTEtwUFZmVzVNV29IU1BUOVJHbUJocVJNS08wWGlnWW03cnpyenlOMkI4ZkFQRWVJNEZHdUVtVXZyTFBBWDc0eWFkaVh4OXdWRzlNQ05ZVG1OMi1QQkRHTWhpckxzNFpkWGI5V1VZSVpEQlpLMDNQblBMcmtoa3pmanllc2I2RUNrcGg1VGJORGZheTVKd0MtVHNtT0Y0cTloZW9kS1BOOGhHdnlhLVIwV2d6VXNxZFVMVFl0cFlLX29jRXRvcWREbmtpNHFIU3RLZElsempGUGRyd2dKOTZkUVVLQjdVZ0FOVEdaYlZRUQ?oc=5",
+      "summary": "🔥女生們衝！美圖秀秀這個隱藏神功能直接把我變美100倍！ - U Lifestyle"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-04T09:10:01+00:00",
+      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxONnhDWnBIX2hCaUdHWWRkV3BvcFJDR1h2czdVSkwtbkRVWFlTcGFISlpQc2xZZ1dKNllVY0JPclRNYnJTQ2RRa3ZFUHZnSUN4RHJWVWItWWpya3ptMHVWR2VEZVU3N2pYZl9CYnBZNDlKdm5yTEhxWW9qYUdCQTBTR1VaZWMwd2x2U0hteTVTMzY1TExWUnkyREpIY2o4a0Q0SWNCUTkzT05lRmwzRWpz?oc=5",
+      "summary": "美圖公司(01357.HK)獲摩根大通增持2,774.7萬股普通股股份，價值約1.22億港元 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-05T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE9HR25OQ3NHOWVtTXdfWG5TTWF2dDMxTVBkb01MNzVCSU1QSEw2UDNEaGNNRWthd0x0N2JwVFlkMkMyV1NaVklGeTF2eFdXYzVIZHhLWk94MHBTa0NiZ3ZZNlcwenBZNGcxS1EwUnhSYk5GdlA4ajJrU2JYTmQ?oc=5",
+      "summary": "美圖公司(01357.HK)升逾一成 首季付費訂閱用戶數增30.2% - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-29T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE5SMzZ4ODNkeThtaVE5d0VzNGl2UVE3R2k2S280Y3BjOWxOeTRsbHV4OHJHVW5tRDJZUldHN2tYTHFvWEZYWnp2WkNOUTdlNngyRHZEd2RNOWFRNzQ40gFiQVVfeXFMT1NKVi1DQUF5WEFseXdDdnlfNmJaeEVTZ3NlNDQzd0t1MVhQWG1QOEhfM1JJaUhvbzNxRUw1dm14eTg5V29lZU9VYjZyOVEzQWFWVmtWQmVKamU4WG5IdDRzUFE?oc=5",
+      "summary": "「MUJI RENOVATION空間改造企劃」進駐臺中綠美圖！兩處設計更貼心 - 經濟日報"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-07T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNMG8xV0ZnVHJmZ0pMbHA2MURhOUp6WFVkSVk0SVRfcXN1WmRQLUhhU1lpTmZpeU9uck8yWnBWQUxYM2h2UmQ0ZjlPWkpjT0NfMUtvb00xM29HSnJtLThSNTBMRnh1WEMwOFQyS2RaeGVFckt1Zk4xX0dZWHNlYzZHM29PclEtZEdoWUZfUkdyOA?oc=5",
+      "summary": "美圖(01357.HK)揚一成里昂：首季數據支持估值Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-27T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE5kYUYtV1gxRWFYMDBJc2w5U2hFcEdvZThyNFBNX1hvakc2NzlUZUtDWDdGcnV1bHVYZnRSeEp1WmJMbXN5UEtfdlZValZVY0ZXQ19JVkZfdmlvZTVCb2pESdIBZkFVX3lxTE9JamtEM19SNy1EV2ZSNktjenV4NTJBeE5lLWkzeFdCdGY1QTZBWEFuYklIdDJsdVotdXhOZm80UTZteUhzT3dteEltRlR0YjRmVmhRbTh3RnRpUXBmUzdWV1pkZGZrQQ?oc=5",
+      "summary": "台中綠美圖引進MUJI 日系「安靜空間」 並備有兒童紓壓玩具 - 自由藝文網"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-12T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOaFZzdmNjazNwWG1NMkRYWExXUEFUSjM3bnVaZHF3ajhhbERibnNMQ2dRY0JHZjVySkxnR0xBTzZRRk9XZXZaYlVXQTljeGoxZWw2QnZoQlFhYXdqY0hsUDkwenpBRTVaM1ZMUEllTFczV0pZNU51RGtmcFpZaldWMTl4Vjl2bkg1eDVBTTY2UzB0Y3pqU0RWZmJMeENhSHdCcV92UVU0UXdiLXhPcGFXbVNB?oc=5",
+      "summary": "美圖有望重拾升軌 - 香港經濟日報HKET"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-04-14T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5lSDZobEk5NVZuOG5INHF0SHUxUnVZSW9VcTlwUXdxUUVTRTZrMDVKbXIzX0tIdHAzakI5QnBPZ0FLcjg0b3FuWWI3eDJ3d2ZtNVFEckFjeFJmbDhYWFBhdkUwMDd2ZEFPX08zVENB?oc=5",
+      "summary": "《大行》里昂削美圖(01357.HK)目標價至7元 上調今明兩年經調整盈測 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-06-03T07:03:50+00:00",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNRy1xVkl2WUctSnc4b1JPY0VWdVNUT210MkRqVE9INjV4ZXhvbkVrNXlrTVF5M01MWDdmRjdySFdOTUdyUjFiR3ZBVkl4Uk9wVU1sRFFkbVdZMUt0aVI4TTlNU004VklVNTdzZXhuNWdJV1dwVVY4Nm9Qd2tUMXhFaDczWEJUUWxkRFpHajBHbEJ4VWQtd25CeWJrRzZ5azFidF8zSHhR?oc=5",
+      "summary": "美圖設計室與WPS Office達成合作 內嵌AI設計進入主流辦公生態 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-02-16T08:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxOQWMwRmxaTHJsVnpMZ01venhidDZXYXZGY1BmMXR6cE5QMjZLUHJjWXBtUnRSZUwyZkl3RVpBMnNzT2dJSnJYSEt6VjNQMk91Q0EwRVNXclZJN3ZWTVVUV0dyUk1oRDZUZzFNOHdLZE9DZk01THFBNmhPUnlsVXVEa3NpZw?oc=5",
+      "summary": "美圖宣佈回購321.7萬股，自2020年以來首次回購股票 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-03-27T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE95LW5INkdWYTZmWXozZW1UYXhIVjAySjJfUUxYQkdRVFppTVlDTG9oRzF0RWFKZXplYUpaVUFVWkVDYjNQMU4zZE5WUTJmZVY1enI3c3UzQmFuMGUtLU5DZ3NSdVhQWmZ1RDliQ1dpRFRRcmt4cWc?oc=5",
+      "summary": "淨利大增逾六成四達9.65億元 美圖用AI完成變革 - 香港商报"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-03-25T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE9OZDhwbTNQUlJWYW1tZmp4aW9uckIxQW40dzJOeVpDLU93TnAwTC1EVjJ3T0FlZUZQbktZZktCQkZaOVdEaGR4N1loY0RTX1dVS2dqRzNzdjIxM0c2Y2hScU5GcEVrSUZybnlpcmZsUQ?oc=5",
+      "summary": "美圖(01357.HK)短暫停牌 部分網絡論壇帖文提及業績未公開信息 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-03-26T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi8AJBVV95cUxPUnRSMVlhUTg3VlVXdHhad0hGbFo4dGdCcUNoUUx2WXBXc1gyc2pYRUZ1MUNRczRuS3h0cFNTYWxoYlV3Sl9nYmppX0pvQkw1MVpkcG4yTkg2Tl8yUWZ0MV9xcG1VU2RseG5mZjBpc2VCblkxcDMxZmx5cmltcHhvcFdBQ3R2SmhUQ2ZDbXZRakt3Z0FRSHdLWlI1TlV2cWR6bVh5LXg2cWJEUk5Oa0JxYmNuN05KVWVVWjQ5TUhGVjhiLW1RaGI5b1Bfb0V6Q3RyQllOS3RXZFVOUm1hUUtFay1mZlA2TEJybDNHQkZ3NDBwTVNUaWtwbjVqdUtaTnZTSVlpV3ViLUdBeVIwVGs2T0RMTFF6RVZqVmRZU3Qxbng1TmdRcG5wejI1Q01PdVF5VXFtVlhBSmFiWHBLZFAzRG9fQ19reFVnQlYxbl9raU1UYTY3LWljNUZIRGxKZGE0bTEwX3BUdVhHMUd3cW90Yw?oc=5",
+      "summary": "【美圖秀秀母企】美圖今早停牌 年度業績疑提前泄露 - 香港經濟日報HKET"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-08T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMimANBVV95cUxNaGdxS29xMzBObVdEVWNiaDdjQ3o5YkdLNEFHYzJRQ0lhLXBGeTZCMUlzZmV1cnpWY0lXUmUtVzhXczlsX254cjU2dzY1eDNSQzNZOVcxbUxYLUJXNWJTRWJBNnpwN2FjV1RFV1U1SVc4Rlg1VmdQVHJFa2twU3dyM3g1S1JIZzdGYW90cmd4S0Z3UDdNdzgzMVZNZXE3WVFpOUp1c0tpNWN2ZV9ZbjlLTG8zVzFpU2pPVFNya0VfMDhHNWxJSlAxeE44cVU1RkZIRzIxTTN5U0ctdzdGRHpxenVqY1EtSW5yUkJfLW5ldlFnMXl5aTBPdXUyOU5BaGxVd2ZtRXVFejRGX0xqMlVtQmY0Z2gxWkZmZDg3eGVqVF9tQWx5MjlSQzJMM29FWWVtUTJudkdMTnhJdVoxelRsV0FkOFloSExpNlhYT0V3NFN3VDlfb2hIek5DcHB6SDVBT2FUWVgwZWZMTU1kLVoxWVFERmNNN2x3RFJEODNxbGtHNWYzeXhUbEx0QnZJeF9TcHp0X2hUWlY?oc=5",
+      "summary": "異動股｜美圖逆市升7%，高盛看好付費用戶數量持續增長籲買入 - 香港經濟日報HKET"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-03-25T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTFBHUGhneWU3S0hjeW51dm5vaGNabHhHVlBQajhsd2VRRjV3aXVIVUNqeGZ3RnBTQ2l1MmliNHZFeUdxekk1LUU0T3IxaUw0WlkySngwUjFiVWpsVnYzcUZzbjFJM1oxUGdmMVRwendDSTlWMWxid2l4d293NkJaN0E?oc=5",
+      "summary": "美圖(01357.HK)今早短暫停牌未悉原因財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-03-27T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi_AJBVV95cUxPOWF1a3luQ2JiMWpiZE5qR2MzUWdod2U1Z1V5U3UyQlJCMkIxRlV5b01FS1JXeV8waG1VaWJNT2NsODkyZmJvX2c0empYcGEzM0Nlc3p3ZV9sVlJJeHZyUWEzY3lSZXRDajZaQ2FDQ0VoZWd4MzlOaURYd3JqUUZKRE1JY1dtRlZFSEowOTVpSVhqN1NxTmRkQzl1WFBhcUE1T1htRklGYUg0VGtmVzRSLS1vbmM2U2NUVUx4RGtTcDcxb0ZlLTBLdENVWkRnUkdaeTZiaXJnYXA5ejg3ZF9iQnp5bUhMUXlpVDBaMlVxT3pnaWxyWXJHQ0dmdzIway1ITzZZVnF0Wk1YNnFNVGd5SjVwNHpXZEQzemVKNllpRkVvMGtsaG1HQnFiUmtSUzZOajl0eWp4Zk94RzRjcEJUTmZXaWI2N1FnaHVvUzNUam1UNkFrQmt4WVRnaDk5Mkc2WXppNFRWR0dURlJPaXB4M0l0QjREaHJaemo3dw?oc=5",
+      "summary": "1357業績丨美圖去年經調整盈利增65% - 信報網站"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-19T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE9GYVZCdHVMQkl2cXhZdHVRQ1VGQV9yemFDcTVWZDA1Y0JpMTFTU2RfRHY0Y0U3clZ0RkppX0NrRUY3T1pJcF9VOVJqZWNELW56RXRpMmw3YTFjNldTZFgyUkRhSEE5NjlUckFWVHlRU00?oc=5",
+      "summary": "高盛：維持美圖公司(01357)“買入”評級 目標價14.3港元 作者 智通財經 - Investing.com 香港 - 股市報價& 財經新聞"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-06T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE16TzZIS1hRVjZsVWNCV0hMU1hLdjlCUnhMWXBIMzJseEllSmpCMVFOTHdPLU4zcllXQjQxTzAtcmtjUWNLMEI5UEh4TlpWX1UzNmhiUXQ4ZEFZcUpLdnNtd2UtOVIycmVtLWFiUWRYOWJueThrRnJr?oc=5",
+      "summary": "美圖公司稱第一季核心業務收入同比增長34.3%，AI生產力應用增56.2% - TradingView"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-22T14:00:59+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi7wJBVV95cUxPQkdOY2dqaEZwQWs0cXpmSTltWThYYVdUX1RiMGo5RVl5UDJIaFdoSVRyRWRNdzBuRjdKeV9ZTWN0cHpXU25CQ3ZGdW42VWxXalUxSDl0QnBmd2xEQ1FYd3YzMXNBZGlwVVpQd3FzVWlLM1BXbWxtZlI5VmlhUDduVE41a094ckhrWWpQRXVPRFFVRnlmWU5UY2dsTG9NUEZZX2xiQjExOFczX19ETFJGbjAxV2lqNVljdnU3cDRBX3JMTHlfV2w1bksyZ1c1NDQ1aDBLZlphZ2hRUlpER3FPOFV5NmpkcWRuUWxBQXFPcnJYZnhyMi1nUmtON1gzMS1ZUWlSdW1sYll5b19vc3JORXhBMjJHVi1GZHBzam91RHNDX010eWVFdUl6VncxR0JINkNiSUJ5ZnZISFpXOWhzeGpoak14aHA3Q0g5VVpGa3FKV0xZaHotc282enRRUnAwVk1jbVdTd19lRV93VzJV?oc=5",
+      "summary": "郭羡妮晒素顏自拍照靚到被質疑有美圖 本尊回覆： 原圖直出 - 巴士的報"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-06T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxOYXc0b3RONXBzMThWaHVqNHpUNlpnbUdnYlp1OWYzVnlDZU9URFhwaEduZ2dqT3hqaU5nUHh5YnVWWlpiZTBtY18wVHRPN05Na01GS0F0VW5fSGtRdXJBelZhOHdrbVBqWWJpY04xUGJDT1A4SU02SmVMN0prT2x2MkkwT2lUOUFEYzVqR28xNA?oc=5",
+      "summary": "美圖公司首季付費訂閲用戶數增長3成 影像與設計產品收入增34% - on.cc東網"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-19T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE1McU9lbmVUQTN4bjNhaVlFOGt4bm1RSFJxbEwxZHJTaEl1Z0MtVVZtd3dLdThYMnAzMTk5R21LT180WTcwMTQ0UTZMcGQ1OEp0bXMwNTVpSXZKNVhEWFJnM9IBZkFVX3lxTE1IOG9fVXJwb0h2ZlRkSzZGWk9BUFdhU3NKblVRdnhyRFhPVTVPS0ZFdVlJdk9YNmhTVzZaa3BIbFphNEk1Y1lrRnNPNk50YVducU1lVjd3UzFFejZ4ZGxxOFdsc2RqQQ?oc=5",
+      "summary": "台中綠美圖掛大紅字被譏「中國高鐵站」 市府回應「是藝術」 - 自由藝文網"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-03-26T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMijANBVV95cUxPSFUwTjRJWW1ORzRUYW1XWmtzSU1HRHFubENDUzBBd2Uwb2RRLW0xVklmZUFCTWNTNVBBcmUtQloteVBzRlk2YmYwRlNFQ1VsWElmOURTTkI3aHVyQzJlMTcwaWFmeUhLbGZIb1E3ay1kRDczQWJGSnVpVFlFVEFZbk1WajlGYW1uck82aEw1T1pkb3dxTE1peGtMS05RLXlFc3Vqa2dDamE5bmFyc0I1R0NOcVUzTHh6Zkp1Y2g2V0doNTZ5dTl1Yk1TeDJSWC1KMndUQUo5dzhCSFZtWFAyVkZ1bUlIVFZSaWtuN2lMWVh4MFhvSjY1M0NsVVBpNjYzTngxakpRUWxVOUswS3p2U3BGaGc0S1VISE5RaFFzMHBNeUx2MjVaYi03MVc3Ul96TG1XZ1doaTV6SWlDR2ttMU5lYmFkamx1dzR2NThYSlpnSmx2dURlUlpnekdvUS1QU2pFblV4RXZZeDB3cXNlX0t4Y3NKSFJyaUkza0JSb2FTcHVPQmVwanIzT3I?oc=5",
+      "summary": "美圖停牌 公布去年業績前夕 財務資訊於網上論壇流出 - hk01.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-03-25T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOVHBvZ1M0NHBuZGpOY3BIS2thSmhjNThKVi1zSUtidWxhS045TVV4dTVVNFFaYTNUX285SkhwOGdWTUl4VzhUb3EtaTNrb0QtM2h6Zkd1XzYwdERleE1kWW1SVVA4V2NlT0FiNFpvQnZHQXlybEhLOVJwb3M4MVlOakJGV0c?oc=5",
+      "summary": "美圖公司(01357)停牌待明日公布業績 注意到網上有未公開信息 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-03-27T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMioAJBVV95cUxQUm1QVnByNlM2Y0dUcGJBQ2c2SlFqLVduZC1Bd2k4UU1vNlExbjBHdWE1ME1aVTh0WHpBLVNBcDFBUUhBOTl2em9TejBKMGpqUFNMYVB2T1c3ZGhCbUY2TjRpMDhQQ1JzRUpzYTh1eUVsSW03ZXdydjJmN2RGNXVNeERiVFBNcklpaFY4NlRfbzh1R2Y5d01EVERJNHRUX3l4ZWlhWXMxZ3R3WEY4M0pEZEMxQllOTDA3OVRIUzVTZHJyX2JvYzQyZHZHcl93U2RpdjZ0b1F1eGdlZF9mMS1KRmlNazZCUGFiUE5LTTktZUNLY0RtSU1BU1AxNjB0TV9jVzRKVVlNRElEdzZnclRvbTdhZW14d2t3ZEJ1ZXRIUHM?oc=5",
+      "summary": "美圖:大模型取代所有應用屬市場誤解 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-11T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5JdmpYaXRmbkJ4d3FNalpBWnFaNTZpNlRsQ1FqRFduSXhFQmEyRV83WkVybEsxcHN3OFc4dUFkcG5CZTJqemQtRG9ObVVHay1lSzlqNkxWTnBWaWFBZmYycmdiMG80QndMemlGMVVjcU8?oc=5",
+      "summary": "港股異動| 美圖公司(01357)再漲超5% 首季影像與設計收入增速強勁3月AI生產力應用ARR爲5.8億作者智通財經 - Investing.com 香港 - 股市報價& 財經新聞"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-03-25T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOZWcxamczbnYyclJKYk5zcmtiOFdGMXlVYTVUYUNwZUpaUVlhU21nZUdHQ0UwQTZ0akI3VVBMek94aVdNbVBucEhPa25IeWwwVkxRSDNWcE9QOThSR1FwcGJmbm1sRDF5WjVxcng1SFA2V2pJdFQ5UEhwRFo4QWo1czBn?oc=5",
+      "summary": "美圖公司(01357)停牌待明日公布業績 注意到網上有未公開信息 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-03-20T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiwAJBVV95cUxPZmJHMUVwVEE2UlhpaktNajVKRnVTSEFncTdIV0RMRDFVeGpzRGtPVF9va1BDLUMzcjRHZ2NDZDd1OTJXcU1EVlNZMTU1RFZ4djEyU2VuSUl5NUFYWjk4X2l5bWJtZWtKNF9hbDRLWEN6eU9mLVZGYmVNeFVuRjAzNU9DYmRvZ2pBRjhTNUFnUENjOEZNT3JqQ3FIWWs2bXI2NDdxYUxXdElMMF9PNFhIYW5ScnhMUnJGUXk0bllWQXRBUUI5OTI4LWdSc01KaFU3RTdUVFNoZmd1eWI5RUJDaFo3RW4zOGdqZUFWTDgwX3RvbEpEZmtaTzdaYklkWTkwQWJtMkhNampsdDhZSXBkMzBNT28xNnhHUHdnNDhpTXMyNmFNUlp5bF9sZzRIRXdObmYzMVJ5NTEyd3BuSEpEYw?oc=5",
+      "summary": "聞風至 - 阿里加持 美圖看高一線 | 鮮股落鑊 - 星島頭條"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-06T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi-AJBVV95cUxNTWJGcnp3b05rdmhTVW8xM3dvTkthTDJhZmdLemxJNzgwTHFNYlBVNmVXeGd3VGJyRjdnUHZUaWNlR2N5SEVockZSUUFGVExWX0JEdllaTlFOQTFtLUxUeUlra2JsaTM5eUZNam5weHZBQ1lQVHQzVG9FQUR3ZmVqMHFndmM5QjFMaEtuSFZ5NEVTaGpDbWZNcjI2S2dJam1SVjdCeWd2bTVLUnFJa2pqN2dqSlF5bzRUYllXZXJjTE90X0tETEk3a2hqMXRXaTl1ZndicVE3d1ltNTBiMFFFMlVGenVvT0Z0NEdoSTItVzhjTzR6WUp3QzRwUDlYVHIzMWtfbmRKdERuMlI2UjM5dlVvRzJLX1FqeXRKRHY4V214WW53eXVLdTRXeG9fMUN5ZXdDTXVwSnJROHFoZkF3TzJtZk53WVBNejRPSnFteG1XV1I1Y3NxNWpNR1V1QTVxaUZQU0VhWXBIN1AtcDVJeklBYWNKZk5E?oc=5",
+      "summary": "異動股｜美圖升近半成，受惠AI賦能首季核心業務收入升34% - 香港經濟日報HKET"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-04-08T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE51X29LNHhrR2t4bjFNa25xMGVsRlVnb29jR0NoaHBGeG01Q1RCYTdSRFFnTDk1UGxGWlJoM1dubkF0ek4yQk1uZlJkbFRMMDhycVFmOVR3?oc=5",
+      "summary": "漫遊綠美圖解鎖關卡 開啟數位解謎新體驗 | 大媒體 - LINE TODAY"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-05-19T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE5QckdkdEY3Nk0zWm5VZHNPZm1NSDNLUGhuMjVHOGJrUF84c3o2bVZpSFYxVEd6MTV0RnJtWDEybVBTQU5zR3ROYQ?oc=5",
+      "summary": "台中綠美圖 公園 圖書館及美術館 三合一 - peopo.org"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-02-08T08:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi2wJBVV95cUxNT3NxdGVqZmlPQ3ZmNnRqbDdVWEp1VnBkeXA1ejBTWVlfdHBTZkVNSjBxNHlLVEVZUnIxbHdDTnRkMGF1SDFVM3J6TmpGMTlKLVA4NGpNM292NHRiaHdfWFNhN3ZKSXZnUGZUMUpIVDh2ZlVJN3M5Rk5uQmQzOU5aamJvenpXbmQ1WDJfNDZTZnZZU3pENVM0X2EyRjc4ZEQ0aFJnMjNwNzNUWUdvUkN0NFM5MGhjemxYdURxVFVoOVE4QVg5bDVvVDh2cURsUTVRMnpyblBfZURSaXJpdDVJQjBZTHV1MjZVOUJQaUxrUnJEVTBJU0JfOW1FZzBVUnRGLURua2pUSEVBSnpyU0xtLTFVenpxNDUxdWE1OTRuRm9fUDBKV1lSOHNiMHRGQ3pLTzZrSnFEM09hcFNmSENURnpBUURfazI5Sk8tSHlEeFZVX2JQclh3RTlzWQ?oc=5",
+      "summary": "美圖公司︰預計2025年度經調整純利按年增長60%至66% - hk01.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-03-27T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOZlZKcDI2YXlNaDhlR05fQllRQUlOMm1vTV9uSEprUE9sYkp3N2VJZ29JaG1kOTRiWml5ME8zbnNCUWpJdVNMUE9XSmxSeU1SemRjbUhrRWxlWnd6SXRtOWV3c0ZkNDJ0TDdGNzd6eTI3YUZ5Z29CRzRkZjFEVUtiU29xaXQ?oc=5",
+      "summary": "美圖CFO顏勁良：2026年起，美圖公司將按季度更新核心業務運營指標財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 美图 1357.HK",
+      "time": "2026-03-26T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTFBwRkJqZG5CY3czN2lOMHJxbU11TFBTTzhIVm9uT1hXQ3hHLXFGdWtPVUVtTzRWRnViMW5oZld3WFZ2OTQ1OVhJVWNDTVU5R1dNOUNDVjFkaFpqdw?oc=5",
+      "summary": "業績提前泄露？「修圖鼻祖」美圖緊急停牌，此前預告淨利最高漲66% - Moomoo"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-11T10:29:59+00:00",
+      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBGUVZLZVpzeVZYY0hfWkRQMXk0U1NDdXV4R3pvVEF0eThyME5tWi01endhUkRRdE5GNmgwUGo0Vjc2Z1pfVlp5QTRmd1Y2eDZuNmZxRXZyOFFJZnR6VnNVaXNYNDVCXzlTMzhiN3RtemxhbHBNdUlaY01NWQ?oc=5",
+      "summary": "香港商報•港股科技指數6月10日運行回顧 - 香港商报"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-12T05:54:07+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi0wJBVV95cUxNTWI0UFV0MDdtVFJGS2hqeTB5SDY0UWtQZDZoOElWV3ZyOTBOUEhzV0kxd2xUV0ZzMm5NYXFCNkxWNTNYRFRibFpnMDZBM3VhYVJiVUVXd0xQeDdtektINTNuZm5NSi1JdWxqa0cxMUJwbWFtMGNvVzV3dWRMTWluWEhpVUwtZVFiTURQNGNaTW1EWURneF9oWWduWnVXMVg3dGdRZ0xXR2U0c1JxUmVUdG5oblNSS1l2WlJ0MkpFTTItNUIxQXdYcU5IZ3dOTnBDbmxpcXRCQWFVTEdVMVRUMktUSjlVT3FzZzV0eG5ZZFZRclhNNVlpOF9CMzJyTTRWeW1EYzVWdWhTaFZBbWR4enoydHJfd3g3MVdiSk5NVUJnZ0ZpR3VkbGRMeGJ2eWdBWkYzdE9DVTMwN0tLUXB2cjl0cUlkOVR0bE51MURPUWtoZ0k?oc=5",
+      "summary": "Ａ恒生科技備兌(03589) 交易所買賣基金的交易資料 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-12T04:15:11+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE9xQmtrbHE1clFoTnlQS25MekxUNXpCZUI4SXBfek9lSHhNQTZHUXZpQTBfQnRmekt4dXNxQU53eVVxTVp6UWdIbm5KZVZQcVY3WUpkLUVISXo4ZHEzTWV0NW9odw?oc=5",
+      "summary": "港股科技指數6月11日運行報告-香港商报 - 香港商报"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-12T09:11:08+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1qYnBZaTM3MHBzZ2pYM0pVMlFHeGRubUJiQlBjQl9DNlVEY2MxckZzYUx0MERsdU92ZDNjZkl6Y0FIVjZWME9SVGRtXzFsb0hGRzRraDMzWkR0VXBUM0Z1WGkxd3c0QQ?oc=5",
+      "summary": "ETF主力盘点|恒生科技ETF华泰柏瑞(513130)6月12日主力资金净流出1.78亿元，近2天合计流出3.77亿元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-10T07:20:59+00:00",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNVmVhR3NLdWxjRU5QZl9jSXFVT0tDM1l1WnJyT2xLbVZDMHRYRnBQWWxpQ2FGM3REb2VUa1RIdW91R1AyLXRVdi1mRThyek1fcmhZVWFnUEs3Y3JIVVZQLXBPXzlOVGhOcVAzWUVIRjQyMlB5U3VRM3NxZTF4Q2ZYZGNWVE54MEpPZmlhZ2hwZUtNMHY2NFhiZ041LXNFOVdoQ3dDcmV6dkgySlVXRDNvM2x3?oc=5",
+      "summary": "$恒生指數 (800000.HK)$ $恒生科技指數 (800700.HK)$ $國企指數 (800100.HK)$ 企業紛紛傳出回購好乎合熊市初期特徵。 - Moomoo"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-09T05:38:29+00:00",
+      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE02bnpFWUJRTzRyVmc1NXpzZWFlVUxkSGt5X0gwemI2dFdXSEt4UzNkcTdYeUdfY1dWejh6dVVlaXk1YXVBb09sUjl6LWJYZzlWeWozQTg1akh5T0k0ejAza2FkZC1mTWo4ckV3empiY2dfajJSZUdjc1c3NA?oc=5",
+      "summary": "香港商報•港股科技指數6月8日運行回顧 - 香港商报"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-12T02:05:40+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi0wJBVV95cUxQM1d3bG1yNUxKdHJoWEpSdVd2Q3E3bDZhU2NLS0lWSGdLc0lyeGhyRExrWUtLVVAySmcyNGNsMXpxUkluSFZ3ejVaMTRYUHZpT0Z5MUV1dV9ZdTU5OXpxclNnQWlrTkNNNGVYZm12RURoQWRqbHVCdE5JT0dtRnpHQV9uaHQ2RTZibVk4NlNka1NHY2ZBVjk3MTZTS29lOUgzY3dfZ3kyV1lBaUttQjNfQmcwckF5V2tRNXR0TW1XVlQ3S2N2Y3NPMTk4cnNTRlRtMERULXhVbTBMejU5eG5ub25FaFZ1SEJiT2N5eUMtaUpndDkxT3h1a3BJUHhYTUZ3U1RydUNwVElHbGlKRi1hNUpzYXZvRGVYdG5yUER0aUVEckFVNlUwd2NLYktaR3BzbWgwdnZoVlNQekVDS2M4aS1neEhpeGNoMWQxMEx2bHRhRk0?oc=5",
+      "summary": "恒生科技ＥＴＦ(03032) 交易所買賣基金的交易資料 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-08T12:25:46+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE1xRWlrZk9kUFV2aTV6c2pTSUZVa1ZXUk1QUFpSajQ4ZXRRSVoxaENhMzZxN1NHWHl0Ylc4Q2ZjNXpTRi1DTHFlNjM4bzVmdUlFM0JMME55d2VHamhfdGRHeWowYw?oc=5",
+      "summary": "港股科技指數6月5日運行回顧-香港商报 - 香港商报"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-12T05:31:23+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9sQzFyT2lvUHA5cXF5X1BaOUxwdnBVQUNBRVhjdnVUUU1EY3F4ZEUyV2p3YndXQjRSbDhOc09HWlJaT0J6UTRDcE1XMkZzVXlOejJxWVlOQ2ZLZjdZbklEakt5bFBFZw?oc=5",
+      "summary": "南方恒生科技(03033.HK)盘中涨1.62%，换手率11.03% - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-12T03:41:48+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE4yOGVrZ2wtd2tmYkNDNVBVRnpqWHctejZEZklRT1RBMmdHVFVTSTdnaXUwMWJCZmJMT1BuaU92WGpWUVAtM0RWVHFib3NJLVFSbHdlZVZ2ay1wOUVBMEc1VzM2dS1aZw?oc=5",
+      "summary": "ETF资金盘点|恒生科技ETF华泰柏瑞(513130)6月11日净流出2.87亿元，连续13天累计流出39.97亿元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-11T17:00:57+00:00",
+      "url": "https://news.google.com/rss/articles/CBMizAJBVV95cUxPVU1jdVgwTlRONDRXV19DWWE4M0R0V2xxQjkyQ3B0OFpucWRpdGRpVGI3SEdXeVJZOTRENm50Y1ZwT0FQdlVVcVRoZ1QtVHNpX1FrQ0wya2pCZkRNWkZIRzNXOW1nd0N2MVQ5UVg1ZlZnWnRXdFc3OVVReHd1OFBUVFhfOTdVWWk0b1huelBrYjJGTklVV0FQd3FEdU9KbnNlTFlxR1RVMUl6Mm1kZ1lDTGVtdjZBRF9fWnA1NVNzMGR6RHpPQ0dDWjl3Z0RRbE16ZzdoVVhSLUs2OTZDSTNRQVVCTmUtVTdXM3BOTXUtQ1BoS3RTQ2tkSmdESHBoOGFWOWtTcmdRVENRNjVSUFEwNlY2S0tpNlF3dlhYcHRHQnZZbjh2WWtranFMY213ZjZHa1BHR2FmLUlMaDlzTER2ZlAxVWF3ejY0akp0Zw?oc=5",
+      "summary": "招商恒生科技(03423) 交易所買賣基金的交易資料 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-12T10:58:45+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxQalRtMU5zdjA5RHltdGlySURsa1Q5UnNfcWJzMU9pUENfYThrTGxyMVlBM2NQMnlWT25GUlpvc2JXLWlPU2F0VGJrNFN2QXEzeU5fTjdPRjE5cGJRMGdvaFhyY0RNX0hGY2ExMGtHQVVjUW1wU0VFRHdlVnhUQVBqWHFqWkEwcW1WeXZGNTFMN2liVFh2SDZXR1dPc1RDMVB6dlluSzVZOXRnT0xxZUZvclRLdkJOVXlfU0RIdTF4Ump6Y0xNVDMwWGVWOGp3ZzR0eFZxVWFUTjJHVGdnZVA5aWI0TlpSa3I4cWkwNWxVOVIwRjU5?oc=5",
+      "summary": "交易所買賣基金的交易資料 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-10T05:16:46+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiVkFVX3lxTFB3ODNMSkhuQlg2QVVKY18zeF90N05OMFpDREN0Q0NTNjBucWIxaEdnYjNtN2xFZkY3U09iUjVJSTJFY3NvUTJsRTE5Y0FzT2h4b3JVMUhn?oc=5",
+      "summary": "恒生科技指數跌破4700點創今年4月8日以來新低- 老虎證券 - Tiger Brokers"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-31T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxOYVUzUTNkN1RMMzVsR2JxcHUzOUtIcG9fUFhtd0hTMkFaV1FGQkpUcXl3d0xXbHV6M2dRYW9rd0FLRFVwdlRJdnhCVlluZ3BSelhTTV9wUmhLWXhXNDlLcDNTYlcxQWZQRG1HMk0tYzBmZmxac0I4ekV6NUJLbUZobGVPVQ?oc=5",
+      "summary": "港股AI應用股集體走強：美圖漲超23%，金蝶國際漲超20%，中國軟件國際漲超16% - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-01T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE91ZnF0dHNnQzVDZjBpblJIWkVGVG52N3ctYzNrSzFyaEF2eXVDR2Ztei0wdnFKMGEwUnB1aXlfWHFsUDl4R1ZrR21keE9qNDRXbmpqQm4zZUtNcFk0NnZiRUNDNC1WM2J6d040SXpHd3JfUlZXbWVVcTlwRQ?oc=5",
+      "summary": "【股市風向標】多家公司漲超20% 港股AI應用股繼續強勢 - 香港商报"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-10T09:41:30+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9TRXdncGFFaGF6YXd5bFZTcGdsRlV0cXNwejgwNUVvRVl0eDZSdURjNnV2Z2JQZnYwNjJybW9WTlRrbl91eTZkWXp5NkgzNTF5Nk5DcU5ldUFUQnB6ZGNzbFl3ZGk3Zw?oc=5",
+      "summary": "ETF主力盘点|恒生科技ETF大成(159740)6月10日主力资金净流出1.75亿元，居可比基金第一 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-01T09:56:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE1ZNEpkV0tkTFM0bkpCSU42dlJWdHlydUdoWkFhM1JxXzkySFZpV2dlQW9HcVd3djd1WnRaNVpfY2VQLWd2dFMtV2lqTnBZbkJFTFNHRVFBN1lUN1MzSkNHbW5GTlpSR0l2dWVHMkdsQ2ZxX2pjNHNMZ0I1OA?oc=5",
+      "summary": "香港商報正式發布「港股科技指數」 聚焦硬科技與真創新打造港 - 香港商报"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-02T06:24:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTFA0LXNzemNyYWdwUmpwUHRRSk5jSUhkX203MDlrU2t6ZF9uekdpaHIxQnloNHIyamxuNVZ4QzNGQWtvX3dmNWtEWkNtODBYVFQ5cEExS1VEX0F5d09fMXpabGpEOFFVM3gxOWQtQWVSMnN2TElkS0Q2Sk9QZw?oc=5",
+      "summary": "「ATM」發力 恒生科技指數漲超4% - 香港商报"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-01T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiogNBVV95cUxQa0pxNlIxTERibzR1djQ4ZDRvb2hHOVlReWI4YThMV2xZTnFhaW9yd05GNVdvM09wbDA3VzcwQ0laa3BHTFhFbVNtQW9YSmZTTm5xNTdmRUY0cjNzaGk0Njc0LUVsSFBPeFpJWVdiMkZGck9IZzdlV09QWDlOWTZScG5GbG9kZW94Y0hXS2NQWmY2OVRTV3IyTHRoTTlqWXp3c011bl9UeFh5MVR5YU9sZFJ0N2Mtd2pDWGFJbU42X0NDMmU0RTR1djVIWVd5aFhJR0R1VmQ4b1JJSHVVQi1WZVFGVVZHWEJhSjhySlYtbXJoMmluWGM5bTh6bjNSV25vdzRGdERYMXhrVzZWZmthZDF1eGZvU0lmMzN2TUl2eDZFLVhXbmVtcmxGT3RfSnh2UThmVHpscEUxbzVjOGpKWUxNUjZGaU5tYTEwRFdJVVIwbXNTSDFWZV9NTUR0cE95eGVBXzhIWE5pRVlIQVB0Y0NqOVNpOFVtT0hGbVpnaDRxQjkzS0ctU2lqb3UzTThCZUc1M054NnVBYUFORXN1ell3?oc=5",
+      "summary": "恒科指站上5000點，港股科技拉升聯想系大升！英偉達GTC連發重磅產品 - Yahoo 財經"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-01T23:02:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxObmxHUWM3U3cycXdQSnloUEljNWd2U3dzUXowVkM0NDBiTFRtazM2OU9QX1JzWGhkVUlZalNWdUItNTNQSFFRbFd0WFJOWmpyc0VmU2IwMjBjbUI2eWlkSkFWOXF2X2tjU2p3eS1JT0pxWEVBVWlPeXY4bERqN0NJWnR6aw?oc=5",
+      "summary": "3家港股AI企業正在“回A”輔導，“A+H”持續擴容 - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-02T01:28:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBvSXo3MjkwRlBqX21xQThsY2VMcmVNYXhhd1FDVjgyYVR2X0hlTXJ5RU13LXlLVVpqZkMwajRZZTB2SFBSR3AyMXp2djhPcUJaYTgwblhfeFFqUXJpeUs5Wm1VdWpJbERkWDRuY2gwUDg5bkd3S3FralI3VQ?oc=5",
+      "summary": "港股開盤：恒生指數低開0.01%，恒生科技指數高開0.62% - 香港商报"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-22T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiiANBVV95cUxNdU41RUwzQkpEVXJfcTdGMk5lbXdhUnU2LU84YUFyLS1ZVmdCUks2TlUxTUx1a1dDNUZ0UGFjT0JzYnM2UU50VnF2bnd4cmN0aW1Ucl83UG5PSHcyYXNGWEtHY183Vi1oVmh5OV9xcVBoajl5VlRLTVMtX3VVT2licVppdmxoUlJ3SnFncUJXOGJiT3dGMkwyWm9ZSWRvS1VLQ3pMQlR3a21zajMtWTA2blg5UnFrTGVjS1ZWRDVQR25CM194NnpsTUdzemthU1pSaFpNSkhTc0NJRnlLSXhCUWpfLU1PcndXUi03c3I3c2VhajFLMTU3NzJhWDhIYXVTMzZSanFPM0xidnNlVEJHMS1DbkxFNmhSLWVzRl9GX1dxX1U0UlV3UFAwNlptcndka3V4MTEyVHFCRGVXZjdsYjNsclRJTHhjSl9aVkdENk1pbWNpYXUyR2NZb2hyRFNrYzR5Mk1QUEp5djdJYnZndFUxRFRCdWdqcDgwSVRMLXJOUzkzQXRPYw?oc=5",
+      "summary": "MiniMax和智譜將加入香港恒生科技指數 有望吸引南向資金流入 - Yahoo 財經"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-09T06:21:28+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBId05nR3ptbDd0b3d5aGpJWFpremYzbUloZW9fUUcydkwweEt3TWo0Mkxac0J0eDZ3ZktPR0M3dEl1OVhmRVJCZE1iZ2VUSEswNDg1LVdQT2kzTVRDTGowRWVCSWVMUQ?oc=5",
+      "summary": "华夏恒生科技(03088.HK)盘中上涨1.49%，最新单位净值6.047港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-09T12:18:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE56My1VT1VxTEZSNW1XZmRtQ1NIY3EySWgzRU1qUnpQQ1ZScVR6S1VxTHBrQ0IwaV9RaWFmRXFNdjdiQ3NScGJfLTlKYjY5Wkp6Z05ibGpCbEIwOEZZQ1ljNGhFWUI0Zw?oc=5",
+      "summary": "交易所買賣基金的交易資料 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-12T03:58:23+00:00",
+      "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNekZ4cUtfbXF0VW0xV1JNOTRxd3ZpU1k4Rl9iR3p4NzNlc3B1bWtoTk42WU5rOFZ4NUd3WHU0UGxneDhGNlBPR1NyVzZPaW1zT0ZzMjdzaDJHa3NLcGhJU0l3WnFNU0FpLWJGQU84b21wSndYb3kwSWMtU0ZJZ3JVNFEyMlp0RThmZ1UxWUw2UnVCNXNnd3VNcmFwZw?oc=5",
+      "summary": "早盤異動 | 智譜漲超3%，獲納入恒生科技指數 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-08T04:10:17+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9oZ21NdE43NUoxaGNNVEk0LXZBcXJ1dzVlcEhWbGtvelVlaGdRZzF6eGdyaF9hcWpNMHNtS21ZQlY1YU1PUTFYYm5SZnZHSm1CeXlFTUVTTXhBcV9hYTlSdEZnWVlzUQ?oc=5",
+      "summary": "正式纳入恒生科技指数、智谱(2513.HK)逆势上涨近5%，大模型概念股开启不同配置通道 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-08T05:41:55+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE5VSmZrWU1lZ1B2M3hIOERHdnAwTkZYVkVtcUVJMHBlemhxb3R6a1J3UDU5RDJWSndaUlo5SGpJdmRWdnVwSWhiS2xkNjVlRmpjdllrOC1IZndhNnNDZThrRXBEdjFNUQ?oc=5",
+      "summary": "招商恒生科技(03423.HK)盘中跌2.91%，平均价8.542港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-10T06:00:01+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPTWxSWW0xRWVFdloxLWJSRTB1WERyb1Q5YkVLNmtmcmY1aTdhYVM3QmhuMlFKOU1Sa25hY2lhZXBCZWpzQW9RN0d5YlBLbERrcENmelpsUDhnMVFwVjU3NUdzcXVZS3duUFlDMVJ0dDNjNGYxV1BlUjU5YlM5MzhCSkVSeDZDUXFub182QUxrQ1pwcTNlQUZiWFZQdHQzdGNyX3ZPdGhjS0gtZGM?oc=5",
+      "summary": "熱門板塊速睇：港股AI次新股走勢疲弱，智譜領跌 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-02T08:46:19+00:00",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE5rZ0EzMWFmQzBoRWdjdWNzZjhTSExSTGZuTUxwV0FERE5pT3IxVHRyYnlNYUl2enFXTVpRLTVzMEVONlgxQW5rcWxQLWpNWWdqYW1NWmtTNFQ3ZDYxSHhmR3ZXOFRuSmFQaTY0c25zT3hYQQ?oc=5",
+      "summary": "港股收評：恒生指數漲2.52%，恒生科技指數漲4.72% - 香港商报"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-28T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOeUpFQWRWckIwWDV5dGRfMXdmT3JnRkZZYmd4TW05R1dxMWFvcXpHYTRxLUQ4V1Q4Ul9DeFpiWGZ5aDkxZXBMNFZUSjFvWEE3QTU5RVBVN0E1SlB0ZGtXNUQyV0JHV3dQMDJob0tiMFBMVUtkVlZaLUdCM21nNDQ5YXNacUFxSW9vQ0JOdzdRQ1hReVdsWVA2Tw?oc=5",
+      "summary": "港股AI應用股走強，中國軟件國際漲超4% - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-26T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE5hZk84VTM2ZWJZaEJlMmhxMnMyYnZJRXFlcUhhR0laN3dIMVVWVUwwWFZtM2tNNENBRjlYaDUzSVh2RTdqU3VtTU5fcDV0UkIyLXYwQmpqclIxNFRxX3pWMnB1VzN6NVJpV2V2NW1VM1ZxOXpyTmpmMDg1VQ?oc=5",
+      "summary": "港股收評：恒指平收 恒生科技大漲 - 香港商报"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-10T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiSEFVX3lxTFBZRU5UVHlEQl9oMHZMNGpBYnBEYTI3M1lMaFdFbXFBQWtQLWFYZ1E4Z3FSb25fajZkMkZRbUVtVDd6Q3dqOW9FZQ?oc=5",
+      "summary": "港股“AI雙雄”劇烈震盪 - 鉅亨號"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-09T07:06:03+00:00",
+      "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxObzZYb29OYXA3Q3k0X0c3ZEc0azMtYjlvbzFKZWN3aTRNa1VSMGJNaWo5Q3UyTG5hUHRmZ29OcVd2U3ZMbUVfeXBjcFU5Y1ExS0htY2ZEWXJrZmJvUGtFTGhoMXJjOGhvY1FwaWlTNWFvYjQ1YkQ4b2llNjMwQkZBOUhhZ3VjZ18zc0RLaER0V3FmNG1BYmdXdTg3bmtuZw?oc=5",
+      "summary": "外圍情緒帶動港股AI硬件概念反彈 產業鏈漲價預期依然高漲 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-09T07:06:03+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPZ0NMZ2d4OHVxQnNYS0d6ak8xV19lYTdacG9UOU9pRmNEeXNfNzRFZ01vRlFvZ0dvQWN2QldLMlVWNUcwczZtd1h4eVUxaG9ia25aOE8yRGhYdndUQ200VDdpdE1acGoyclZxbEpKZU9VU25aZE1kMkQzaGxFMkl2Q3RsRjZZQkFGTEMtNGdVQkhOX0U3YkNhNmVrLWMxWjNZN1E?oc=5",
+      "summary": "外圍情緒帶動港股AI硬件概念反彈 產業鏈漲價預期依然高漲 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-02T16:14:01+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE1uQURNbXFNcTlzQzM1ZktiSDhmektFb3B1anVfdF9lUTVWNW8yZlBPQXA1dWE2dGlYNm9jWGgyU1dCZndtbkM4Q1JzWDYyRE9JYWZRSE51TjN3dw?oc=5",
+      "summary": "港股「AI大模型雙雄」都要回A股上市 股價大漲十倍的魅力是什麼？ | 陸股透視 | 兩岸 - 經濟日報"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-02T07:02:53+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiswJBVV95cUxNeVpwZUZnbDA3cGd2bmhfWXRzQWEwOWRUUEZ0eFJaeDFuSWQ0U0JuUWtZdFdYcVh1QWF5b1ljd091RExzT001c3ctUHZQdW5RekpaSG9GVTJNdUtENnFwY1c2QVRJelp0LWFIUzhyd2xvQWpfdExSdS1yU3RuUVFjSDhWMDkwN3BmWTR3dmc0ZTkzWERPZ3lmS2wyUEFSNkNpRXIyeHNaWGExQktOT0l6SnpKNXEtSnZsbTlPWkh4Z2hpUl84TlNnMnQ3WHViOEdFd2JPdmo5WXM5am1xNkd2bzFJZllOTzJaR1B2aks2VUd5YW5rYTNyaEtpb3lNVEdiWThqMWttTlVQd0pCOUpPY3VuTGk0YTBEUzBHS3pURFMxTkgwb1Q4aUkwVWRWQXZFTVpV?oc=5",
+      "summary": "恒生科技指數(800700)股票股價, 市值, 即時行情, 走勢圖, 財報 - Moomoo"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-29T07:30:38+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiR0FVX3lxTE1fVnNEeXcxSnJaWkJaSUVYTzhGdWtHd2lGYUd5Z19OWjhVb3ZPQzE0MTlidUxFekY2RFpLcnZqUE1QMGZBd3l3?oc=5",
+      "summary": "低費率的恒生科技ETF易方達(513010)年內流入87億，機構：港股反彈，緊盯四大信號！ - SL886 財經網"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-03T07:40:05+00:00",
+      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxONS0ycWJmMEh4bjdpMmdxelpMbzJiRVY0aW04blBKZ2tQOWYzRUluLXZndjI2RVZXUUhjQVhYV0dHQ3p0YWI0Vk5PTF9YOUlQS0xfcDJDXzlaRUxZSTVuYnVwV3BIdVJkRnp0dFJvZ1RyazFwX0t5STU2R1phNjNwdWNRRmsteDZzTkR2Wl83dzY5RVBXcFB6S3hyV1VUSldmakxla2Y5T1ZOUmIzQkE?oc=5",
+      "summary": "華創證券策略：恒生科技尋底，估值錨在哪裏？ - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-28T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQRjFTZkd1QU4yb28yYV9NNzk0WW9rWHo1Uk15WTFtc2NWSXBzUjh4VFlWQ2dhc1VVMlhTRm1Sbl9rLUFRbjl5T3BmS2hLdGRqSlRaeGZSNkM3SVlNMGNnekNfM2FCLWpKbzFCN0V1TDdIajI2UG5jR3NTd3M3eG8wemFlaw?oc=5",
+      "summary": "港股AI應用股走強，中國軟件國際漲超4% - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-02T05:30:51+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiTkFVX3lxTE9DUXRKRFlVUEVDV1BRVjdlY1M3bGl1WnZzSjlBb3VkVC00X2ExdkFLb2VrWXpVdFZuamJGM3cycVNTY3JJMTJZRFRSOFBSUQ?oc=5",
+      "summary": "港股科網股全線爆發 恒生科技指數漲超4% - 觀點網"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-08T05:50:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNY1h0dGlSeWVaTXNyYTVuQjM0eUVvUV9rck8yUVdDRWNQN1VhcEE0a01LSWJZdUdMQV9qeEFvODNaZmNPelJBZ3JUN1pCamoxRF9kR3FVNllZUmhZbGh0OWpHTGdhZXV6NlF4TkczU0FsRTZYQjBlMnpiQ2I5anJRZG4zUnFkQlhtRUt2cU44T0I1X1NfcXlHRU1FcmFGczZLMy0w?oc=5",
+      "summary": "熱門板塊速睇：港股AI次新股走勢疲弱，MINIMAX-W領跌 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-04T10:09:37+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxQQjVpYzhqOG9kcTRDQVRVU2M3ZndxS1FRZi00UU96Y2FzNEZVbGtxc0ZMcmJ4VmhGYkVudmduMkZaS3NrYW9xWkhYS2I1NzBCZ2VQeUZJMEMxM25XQTJDWHI5eHJrM043cElsRENxanRnTkRCcV82YWdTZ0VGUjhkdk9NVHJrQzdtRDBsTG1JUkdtSkZ3bWp2WDJITjByM3d6ZWo0ZlExbDV0WTRUeHRIQUwyN0xuZDRzcDl3MkNsS2JONThVbHZob3RwRWU2RDZQUTJZUmRrNG9DQlk?oc=5",
+      "summary": "南方恒生科技(03033) 月報表 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-29T05:33:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNRWtDbTFzYldnUEhoYTdqTlNOWGdwQUE3aTRyUWZTalhfLWl0d1dSSllFODJKaUlMU1ZZRHpMdVZUOVpQcmhtOFhLbS0wb0hjVWJ0SEZKWDdQMzNnNEVRQmtzeWpmQUY1WFloMUNTYmU5SERjY1BRT01FRUlqUy1TOVVpRHI2MVlhWld2S0taU3B3c1I1?oc=5",
+      "summary": "港股AI應用股走強，中國軟件國際漲超4%財經新聞Financial News - AASTOCKS.com"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-04T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxNQ1pSVERRRTlTTUdJN3JLRDVWQnVpUDRkZUJQQWxSVmZNOWItcXRyalJ3SE0xblNGODlOUy03NVlfLTBsbFVSMmRvenhjZmFEVUtNaWdIQmxyblRJNGE1WDBOWS1aMHZxSW9zOUxlUFQ0ZXhkajhxcVdCd3JDWW1KaXVWMkxSWm9Ha043ZVZwd21EbFZCZm5DRW44LTRuQ2lCVkNDX0lnd3R5LW4xX25IdnFrSTlWcU5rRGVtamJtZ2FCNkhCcnlZUHUyTEtuOEU1NWIxWG5sc00?oc=5",
+      "summary": "招商恒生科技(03423) 月報表 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-02T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQT2FJdW9xZkV4Rjl4TUZPOXRTWjF5TXlrZlhSUlZ6V2s3bWphMWhpVWhyNnZwTUprSjVhNzRobjhya0VYRVJnT3loeWVKaThpc3RUWjc5cGlYYXNBYjlIWHBlZzlTb1duSlZrc1Ayc2ZrX0FYN0FoWHRLVUQzVkpZWlB0a2RqTkpjbHBLSTFFZ3ZIZw?oc=5",
+      "summary": "罕見！騰訊單日暴漲超10%，港股科技股已否極泰來？ - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-05T02:13:23+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE5qdEVKWVFpZjNTZkdpNzFrUkF6N0k4MUxSYWxqSVpnemdsZEp0RFlCb2tweS1Tank2ZkVvT0htR0k2a0JUZTc3SV9KY3REZ0FuREZnYWowSVlZUksyZENDWHZzS0pXZw?oc=5",
+      "summary": "英偉達發佈新模型，物理AI產業化浪潮來襲！港股AI應用股表現強勁，五一視界一度漲超10% - hstong.com"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-31T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE5OMDNTMDlpZUg3MmlJdHI2ajZoNk1mdDJJX2dRT2dyVVduQWhPRS1XRUdZYzZmbUtXVEZPUmlPRG9pMjZEQ3gzY2tnaVhXdjRBMUxCWll5Tzdud9IBX0FVX3lxTE54aDY0UmJZUVF1cHhsYmpnZG9WZFRiR05SVTJvc0Y0SVkwdDh5amx3bHRENlFMY0xZeWU1Z3F3dG1Ib2UzbnNEeHAxS3lMMWdKaFpGRVc5RFVIc05Wc200?oc=5",
+      "summary": "港股 AI 模型雙雄拚 A 股上市 稀宇科技有望跟上智譜腳步 - 經濟日報"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-26T14:51:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE54R2c2U2pvTi1DTG1vckJ4aFBHaC1HcXQxR0dyQ2JidUd3RFlyNXJiUFgxVEVqRm1QM1NEZTZUek9iX0ozd3dqSXlqVXczRG5iU3NGY0I3N1R3Q1hsbmxCU0M2bkwyQQ?oc=5",
+      "summary": "Ａ恒生科技備兌(03589) 交易所買賣基金的交易資料 - 信報網站"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-03T09:21:03+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1hVGRUSFZVZDFWTmQ3eTZVZVE3em10U1VIYW1wRFA2cVhaUjhHZFVKZ3ktQXp4ZXVWWnVHVjM5dEhJSXdQNFBKODBRV09KdExsd2NQdkxlUTFRdUx0dGx4YW5oZVdtUQ?oc=5",
+      "summary": "港股ETF日报：5G半导体领涨港股！恒生科技生物医药集体重挫超2.7%-20260603 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-05T13:49:46+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE5zQkcwZEY0MGN3ZEU1UGxhelZfYXNyWlh1WkFoRzJha21KNmxQcUs5MjJydW5DSGFuYVhKcHNOS3VmWEdsbm5uRDJsRl8yZEtlQnRMOFRwRFF3bWZ3dl9xU1ZhNlBDZw?oc=5",
+      "summary": "港股新经济指数基本情况跟踪：恒生科技指数下跌1.8% - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-28T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE8zM3BnajFKZWRJMDhGejNIdVJPek1oRy1DVmRFLTlTMkJuc215akV1bHZsUXhLdmtRS0FZYkxuZTBpSllSLVhId0ZneG9DSnB2emVjNG14b3lhSXBUWnBrR24xb3ctamQ5azRPQQ?oc=5",
+      "summary": "萬咖壹聯受邀出席2026全球商報經濟論壇 參與港股科技指數發布並榮膺四項大獎 - 香港商报"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-26T05:44:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTE5fakRvMWZLRk5POHpYM1ZIU0xyTG5oX1JEcUotLTNOQjAtYlJ6TEMyVWVOdm9tV2pocktfSi1ETFJiaDNJOGFtMGRubEVPMXBnY0tNanRXUktqcXRRWnk1SjlKM0VoeGdQMU1R?oc=5",
+      "summary": "港股AI應用股拉昇，MINIMAX、迅策升超6% - TradingView"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-02T07:00:01+00:00",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE43cGFveDQ5SncyX1NDb3dHeFA5VE1OWU84QmQyS3ZHT2VGamNMdzg2THFyVWdCZ2Zld0lJcUZGczF6NUdvQ0JJZGNsaWFZRW56Y091YkNQV3JJaGNrei1laDhzYjdzR2xWR0hfVFRWMU4?oc=5",
+      "summary": "恒科指站上5000點，港股科技拉升聯想系大升！英偉達GTC連發重磅產品 作者 Investing.com - Investing.com 香港 - 股市報價& 財經新聞"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-18T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBmZGpuU0FjODB4Xy1wcUdTTlY0REFlaEF2UWg3WDVlcGliXzhRTkM3ZzJhM3RyZ1BZY2tDcENueWNQZXB3R3dCWFNHMUxOYkhNMXpReG01UDg4Y0F4bHhTWDN4QUlIQQ?oc=5",
+      "summary": "Ａ恒生科技備兌(03589) 股息或分派（公告表格） - 信報網站"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-22T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE13YWNRbTI5b05RWF93M2lvamxwZzA1VDZnSVJrb3MtTW12WGIyRDRKSnl1WUFtSmRjTWtZZnVmQkVMVUZxdVp6N0U3Z0dRRFdGTDdYeG9BaGV1UFk5UlJCMkxTWURDbGMzMk15cWJkQlU?oc=5",
+      "summary": "股價飆升20%！港股AI龍頭迎來價值重估 MiniMax(00100)指數納入預期持續走強 作者 智通財經 - Investing.com 香港 - 股市報價& 財經新聞"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-24T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE56bUhQMWRsVVc3UmRCQk1Ub2wxaTRiVi1IMDhrQjlpT05rUzBoem1Zb29YWDdyakllTWdGWl9WdDNROEZRXzlyMHZ3eEhXVE8wOGF2d0d4MGZVUTktNXVwc3J6bVh2MFhLSDNkZUZzRlo?oc=5",
+      "summary": "國信證券：A股、港股科技資產存在結構性差異 短期業績A股科技或繼續跑贏 作者 智通財經 - Investing.com 香港 - 股市報價& 財經新聞"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-03T09:40:35+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9aTEpKdVVEZzktZjBVMWVPUXlJRjlTMTJhcG1GWkZiRVpJenktNWFZVXFzNGNhX21lV3hpMjFHRVgtcEo3YW84T3dzSVc2UTZvYnl4QXVNS0VKM2pOZEVibVVpSzNPZw?oc=5",
+      "summary": "ETF主力盘点|恒生科技ETF大成(159740)6月3日主力资金净流出1.07亿元，居可比基金前3 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-02T04:19:08+00:00",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPdnluWVpiSVM3N3F5blFMOGgtWnhydV9LRHExRGc1TTdWMWdVTWtwTkYtWk5QeGdOVVpfM2xsNncyUUZhc1VIVXU0S1pxT0dodGFNZnlGQnhnR0pnYW1ndGlxMXZDMHBLbGw3b2RlOHhRaUp2T3BsZGFrdlA5WHl1cnUxYlJnSUdlTGVreXZVWEktQ1hX?oc=5",
+      "summary": "港股科技指數早盤飆漲3.48% 騰訊美團領銜科網巨頭強勢反彈 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-28T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE9sTkNrZkNGRjdvY1hJQUNfNE1ROXhpOFBMQldLWGplVjZTbHF1S3lHVFpNZTQ0aUIxeG51cXV4MHFMb3dEbDFzbHF6UC1vNHBfVmd5RXg0QVZaTFMwMTYwbzYtaw?oc=5",
+      "summary": "萬咖壹聯受邀出席2026全球商報經濟論壇 參與港股科技指數發布並榮膺四項大獎 - 香港商报"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-29T03:11:29+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9nR0VLaGZXVVh2ZlAycm40YjNBNDF6UmhMZkpNWHZoRUhiYUR4WUJLUXE3UGtaRHR5LTBQUXg5QjFHYVFUWk8yNFkyOU52cTR1WFVtR1NsV0ZKWS1FMUE0MmM2N0Uwdw?oc=5",
+      "summary": "安硕恒生科技(03067.HK)下跌0.49%，最新价10.230港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-27T02:22:05+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE5FTmlMNFg3MnZqWC1OdEQ0TTBEMGRPdVc2UUtmeTN2SkRMM2J3ME5Hd0lLZGt6REp1aS13bzJLbDF6TjdqX3RoRjU3QnVjdk02dVhUVVFGa0RYMEJiQjNRdDdCOHEzUQ?oc=5",
+      "summary": "南方恒生科技(03033.HK)上涨0.95%，最新价4.886港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-21T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQblFQOEtRM295d1lrTGpITTRyNWgxejRvaklfUzFua3ZiRVIwRW9vNXBMNWI5WklTVGhJOVJJYmNHOVE3TVhMTk9xQjlmQmN5TENEalJ6d1QtbzN4ZGZ6bDlGWk5kQ2tpVHJEZE1JVE4wRjVQNkxVaEVOcEZRVVBvUEk3QVhEZHlSdHduUUdzaw?oc=5",
+      "summary": "張曦嵐：恒生科技指數走勢仍然反覆偏淡 - on.cc東網"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-27T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE00dmZXbk40Vndvd0l6RGZxcXVKVDl1RDZ4VjVIT3Z2UzlzUWNTMFBmQnQ2dm9CZFVEcTE5YnZzWm1janZpcnZiN21IUU80WXUyQTZxOVRHWmg4RERXYlcwTmFBRFFwdw?oc=5",
+      "summary": "GlobalX恒生科技(02837.HK)下跌0.50%，最新价6.005港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-27T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9tRHdweHlrZTdGYkhmXzA3czF2ZmdITkt6bDNXWXJLLUlkSzFMaTJLYWd2NnJ0aEs2WGZZekgwcVhycHRQOU5ucDgwNWE2amhheVd5akI0QjN5WUpqQmdtZUdTYTRJUQ?oc=5",
+      "summary": "华夏恒生科技(03088.HK)下跌0.48%，最新价6.195港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-04-23T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMivgNBVV95cUxQaGJRaWZzb2puV1JmQzZRMTRFX0JOOTFpRTJFb09jejhNUDh4emphUVk2dmVxR1pxbnNBVHFKbFRWNC1Gc2hnQ2sxZTdIcGhkMmo0MWczVnk4bXVzOGJJaDR3cGgxRVV4VjltN1hlbmhYYUtWQjFHR3d0NUc5aDUwTHBJWGV2MVo3SWFyeTVoLVVFdURqamF0R1JFckhrUWI0OEo0VHhCUG01Mzl6Y1lGSkg3OXhRQW1OeDlHcWtyZ0RVV2ZQNU1CM1R0TnEyVUplRG5fZ1VWY1FkRVRIbThmQjJMdFRVcUdXY3ZINmNZZklyNTRTa0xvTXdQdGFicDFhMVppYUdzTHVjb0xFWXQ0T2QzQndObGExV2NubkpKLVdtdmJGZlFpVE9xZ3FFTklFZWExZlJfNENPY3lpZXY1RnlaUGthWGV3MFo1TGlUdTNkSlUtQi1LaWhRMWc0N1ZZVGhmQ3R4amxOdi1xN2hDbWtWZGRvS3hTVHYtaVpHWjdvdGNyc2tpRHFXcXl2VUpwSGNmZDA4dzJfNzRRNjB1Nmg4amdHZ2tuWTI1MW9wM1NqWTYycVVhWEQ3VWg0UQ?oc=5",
+      "summary": "中國創業板大幅跑贏恒生科技指數 市場「追光」偏好引科技股冷熱分化 - Yahoo 財經"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-22T07:01:29+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE53RG5oQUdQSHdiQWdrbXM1Sm5BQXdTbVZVWnhBR0RiN1ZIN0VCLXdudER2SWNwN2Y4RVJ1U0tLUWF5ekpEcVpySm0xMzNuQnRpTV9tam9OTm1XTWVERHFVZjEtdk9mZw?oc=5",
+      "summary": "南方恒生科技(03033.HK)：涨2.23%，成交额67.16亿港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-27T02:22:45+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBYcFFOTzVPd1hmcHNvRzBRV3pwUHZtdTJSVU5LUFRQU1RZb010OTZMRmItZEFyek5QYlUtUERDclJEOTZMeHdpSkg0MG1oel9DWGZHMzAtR2E0YnNUU2oyQk5FVGZSdw?oc=5",
+      "summary": "GlobalX恒生科技(02837.HK)上涨0.66%，最新价6.145港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-26T01:50:19+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1wTERZblZxN1Z1Z1JXak5sR25zQ1ZSRnRmNHZyay1fUFA4VG5jSHBlRXplZGJza0pBQzlVYlgzdFNEZEZ3QnFYV3JGRlM4THBlWEsybzZCTGx6LTM1bmZrb0Ezc2w4Zw?oc=5",
+      "summary": "华夏恒生科技(03088.HK)上涨0.73%，最新价6.230港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-29T05:22:10+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE00czVlT3pGM0FlcW9UZy1UNWloM1NLVUFvMERuMVBMYjVUVHM5ZzNRRDl1a2QtUFVYbUNsUnB2RUkxTXAzSzZzYmRTOVRxQy1UUUNlR2U3cEg3QWdBUFNCb3FyR08yZw?oc=5",
+      "summary": "GlobalX恒生科技(02837.HK)上涨1.25%，最新价6.090港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-29T16:25:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNcDMybTVCb08zWkhjei1ISUpLcWxzbkkxUi0yQWxQX2phY3dod1NmWWl2U3lQMlJnUTJfeEo5WkZLTlBVWURRc3JJaW40RXdjVTVaRWt0NlVjcHBkZzVrV0piZ3pULTllbE1LbUt1Zy1LNk9HaV9QN2sxLWpiMnpPOTFLYWx1NjFOakZzTFlzbGZBSFUwcFRSNVpvRDdZSWMwdXdxblFCMmk?oc=5",
+      "summary": "解構AI新股產業鏈 - 香港經濟日報HKET"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-25T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBUT2Q0QWtkWnprb1RKVmJ1dVNoYzZFbUVhOUVFcE8zc3NNRW5mVExXWnQ3WWdrZUpCNGNlY0hPUXNNUWd3alVxaGp2VUpJcVo5WTNGYy1TclNkRHdybXlFTDJ1eHZDZw?oc=5",
+      "summary": "南方恒生科技(03033.HK)上涨2.48%，最新价4.874港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-22T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE5tMEFKbGZoN2RyeEZzZm00Z2J3cjBhWG12dmlvRlcwSXhlSm42d1ZnanotdEZiY0pmTHlwbHJFQjhUdGZkWlNlbHU4ZFFybWM3U1JjdnR3MU1HQldPOXdpZzA2MGNKQQ?oc=5",
+      "summary": "华夏恒生科技(03088.HK)上涨1.98%，最新价6.185港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-29T03:02:35+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBlLWJCbkdZTUJpWjhoaUhRN1RBZEZabWY5RmZvTHFNd2FTU3R4NTA0Q0t6WHQ3T3pXSkM3RHZ6ek4yNGhBZzR1MDRJRnliZW9vdjdqOFY0UHFranVIQnFJTGsyLWlJZw?oc=5",
+      "summary": "招商恒生科技(03423.HK)上涨0.23%，最新价8.750港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-06-05T05:30:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNMDUwMTNtN09yU3dCSVBnWmxQVkd6WmxwRHE5V1dMVWJmN1JQc2htRWRCWGtPU1Y5VVdaa2dHbGNCRVJOalZPV25LUUZHYlIzWWxnbUhjY2gtUzhtalk1RVN4VS0zUGFUUFNkWG9IVEVacGFHc3VoOHk5clJ6SEhIZm1BcGZyUTEyOFpSQlZBMkRUTmh2eTAtRnhXNFpyME5kWkxR?oc=5",
+      "summary": "熱門板塊速睇：港股AI次新股走勢疲弱，MINIMAX-W領跌 - 富途牛牛"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-22T02:21:29+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE5zZFAzVGllVW1CZ0dBTUM1WDlhU3V6bHctTGZCQ1FRUWltQ2IxQUVxOXVIMlFwY3pHVXhyQTZqMldfM0FKVkJ1Y0luSmdpcmtJbVJvZ3R1aG9pVWJNQnRvX0NWa3NjQQ?oc=5",
+      "summary": "华夏恒生科技(03088.HK)上涨1.15%，最新价6.135港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-21T02:03:12+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE13ZmdzdFVCTnJqMWhnWk01MUtFOWZlSFpNTC1aX3ZodjhPU1BiVkludnp2cjg1QUhsUDR6MkFqRjRialdvNlBwNXhKclVaQmdDelBsekpxVEV4bzhNT1l6N0NzZWJpZw?oc=5",
+      "summary": "华夏恒生科技(03088.HK)上涨1.13%，报6.250 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-21T08:50:07+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9sY1JuMlZxZ0JkNVhudHA1YzNLZ3FwX0RmdkNTNE5HQTZZdjFEc3otQ1VOZTFKTUI1Q1duMWRBRUFLUzFMbjdkS2xUbXhqMEFpY3RXNEliLUxKaUZqVWVMMnctNnJ6UQ?oc=5",
+      "summary": "恒生科技ETF(03032.HK)收跌2.02%，最新价4.752港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-20T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE12N3ZIN0JiSDFoUFA5SEt6aVBUVG5oSlR1VEpHVUJ1Rmw5VXlLU1N0YlBhRlNDT3hoU2ZCZjlvRWZFcm9uaC1QbGs3bWlScDhWdmN5b2wzMllnTzVjZ19KTDBMcHNEUQ?oc=5",
+      "summary": "恒生科技ETF(03032.HK)上涨1.07%，报4.902 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-13T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMipgNBVV95cUxQVFlnU0Y4QklJemM5VVloclRNT0tneVI2RTNJSWllM0xjV0c4RUdUTjYxRlBMeTJUUTc1NVJWcVRqT25lbTFEdXJnOGRuRkhnSENpQ0NYakZsQnVaazhzWEFEeXJqNVhUTG03X0xnNzJxMXVuMFp1SmFucTYwOFVlMjZBTXZSOEJYNUZ1V212R1pOQ1FEMkFOYkdvWV9mREZPdXRLeEFqT1F1bWpPWmFINk4wbjBCUTcxc1llZE0wUENqN053cnpzOE8yWktSaU9XUFNkUWtqNXpTX0tlWkpYU0loeE9YZGRYZjZxdDNucVQ3UHBhWkpjSmVucVhvb1J1QmlMRUhkTVN5dzFtbWVaWE5CV3NLTDBjN0xQcm5tLWc0OVVqX0ZxUWFlYmNTQWppNGpaUEt2SmJHU0p1Q0o2d21kc0lXTWZmUU54SFh4M3Jjam9OQnc1Vnk5VzZoNEpXWGFhdVZ5eDJpOVVWd3plMjB1d0tnTGZsamFHWFRlS3lSWEp0WjV1RVFQMThMcTdHclI2dm1RRGloWW1oUEFLNUVCY0Nudw?oc=5",
+      "summary": "恒生科技指數創兩月新高！阿里財報炸場，蔚來新車+銷量雙重暴擊 - Yahoo 財經"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-20T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBtVEIyUXVNOV9rZDRxcFRRSXpsSnRiV0RybGFXMTZ1TEE0MnZqZFlHTVJRbHAyQW1OMXhCUDIxMHI1RFVVc1BOUDllN3oyc05xRFhnSl9nOGQ1NURQSjBVN0xhdVRrUQ?oc=5",
+      "summary": "南方恒生科技(03033.HK)下跌1.30%，报4.708 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-19T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE5wXzQ2VUl2X0k5akdpS3FreXpOcGdKbGJTRjR6d3NCTGpaWkdQaXFaeXdmWWtuRnlpWXZKemdGNEVyamRUT0p3Mm1Ta1BOdUxVTUVSWlkxVmhUQi1MY0premxubXNZZw?oc=5",
+      "summary": "南方恒生科技(03033.HK)下跌0.04%，报4.758 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-21T08:20:21+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9HQVM5c1NYcWFRRVluN3FYakN6bmpSeWxieE1KSkZzeXFJWFFGdkZpQ0RiSVhOazNieFdvblFPa3R5RUNEQUgwREZNd1MxbUdEa3IzcHY2a2NpNVlfUUZuRllqRWJJZw?oc=5",
+      "summary": "GlobalX恒生科技(02837.HK)下跌2.00%，收盘价5.875港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-21T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1lQkhkQVNGckxEZ05yZkN0bGxXdE1EWDBPMEZvY3pyckVUekNDNzNLSXNEQWFRanFyVy04NkpJWEFuNm5RVkcya3AtUWdJUWUtYUh6NUhlTWd5M29rZHpWRXZWMG9DQQ?oc=5",
+      "summary": "招商恒生科技(03423.HK)收跌2.01%，最新价8.545港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-19T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9xejd6TTVXUFR6LU9XclMtOHZFMnZIeHA1YmFBTk9XdXk0VlpNdTJpWjFUZXU0RXc3TF9BS293RV9LOG9aMEgwVm5MTG51NVFsbUlYZTRDNlRSWWNJMWpoWHlJNm05UQ?oc=5",
+      "summary": "恒生科技ETF(03032.HK)上涨0.40%，报8.710 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-13T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMinwJBVV95cUxNbU5jYmtMek1PSDAyMFhWMUlRcHMxY29XTHdHOTk0ZnZxSUVwTl9MaFhscTd4SGVWSEl6eFA2Ung5bzI3MFZvczE4bmJzczFxVEJrMG1RUlZ1dWNlTWNneEJMbXZtN05uWEt0MEg1QW52N0sxdVB6U2NpYkpiRUV1cDZicTNmajg0M3ZNTHpuVUNzMkFjNHVPU1h3S04zU0JISl85cmYxd3lEODVlaEI0cWlZTEIxVVNhN1F4dFdnWVFxam1PR2VGbnNoYkh3UTRjUk84ZFZVWnh0VzFPZjNjeFp0Q1ZLaXp4S0FmTEhGMHliaWV4QUF1WTRMZkc3bV9BbjZsVGlFb2tjV3dZU0lSWHA0aFlWdWtIdEJneUJ0NA?oc=5",
+      "summary": "【今日IPO】港股 AI 概念沸腾 智谱等个股狂飙 - Yahoo 財經"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-19T02:10:22+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBmUmtUcm5Bbk91T3FGTW5xSDJyckdyMTg5WjdxRTNZbTVSMFVXalJjRndSXy1lSS1sNmRWMm51M1VFT3l0NnJQeU9JWTZaQThCNm9jYWJtSkNybG1vNEhKMkZNazJUZw?oc=5",
+      "summary": "安硕恒生科技(03067.HK)上涨0.20%，报10.190 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-18T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9CZVdyYzZ1NktoY1V0YTJHR0F3bE80YnMxZ00xdWpxbV9zWk51NThtVlJUWDZfNmoyUDBGMGZQT2pxZGZYanI0RVBrT01UOW9YY0czR3V0Ym8xaWRRZWM1OHFidzVXdw?oc=5",
+      "summary": "GlobalX恒生科技(02837.HK)下跌2.13%，报5.960 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-21T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1tREh4bGJzcGtUZFRqeDRUWEtiVW9tUktJTTJPM3pmSWN0eDFFUFdxMXRpbFdDU3NxcnpBYnl6c3ZOWndxblh2OGpRSmFNTnc2RVFINUphTkNHOF9qTW5JbGhnYzBjdw?oc=5",
+      "summary": "华夏恒生科技(03088.HK)收跌1.86%，最新价6.065港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-18T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBiWmxKMllDZDY3SEJJbGxHSjNBcVFmUEVRRWVCVFFLU1dJRHJZQzJuLXZRQW9ZbFkxRXFOVndTc1pHMWxTb3g3b0lQVlB3ckE2UU9vSVYzNHZCSG0wR2dPNDQyVElhUQ?oc=5",
+      "summary": "华夏恒生科技(03088.HK)收跌2.07%，最新价6.145港元 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-22T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE0weWwybGZfX1pEVWYxUXhBM01xc0l2LW5fWUJTcVQ0ZExYaWg1bTYzdWw0SnFuTkFoS1JQT0JMY1h6WXN1dmRkUWg2ck5MNG1BLXVQVGUzR3h5Z2xYMDJJYS1KSWM1UTVwODZ6Ug?oc=5",
+      "summary": "三大科技指數全線走高，南方基金旗下恆生科技ETF南方(520570)標的指數收漲超2% - hstong.com"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-15T09:03:14+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiTkFVX3lxTFBCS2FteTlmaW5NZUdoVUFVX2YwWE9CMDY1ZkM0Nk85ZEZvcmczbFhJc1Z1dnBWMV9NeXFtY3JyTVhwblRBMERYaWJBVGo1UQ?oc=5",
+      "summary": "5月15日恒指收跌1.62% 恒生科技指數跌2.66% - 觀點網"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-18T06:52:45+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE44WVhQbWo3b0NzTGNMQl9sTEFxYTlyV1VtRW45Y3FmeFA2WUdFdWNwNFlOcEVJN1hGMmxJanVtZWMyQUZ3OTliZlpPdmZsakV0elFJMGg3TmF6OEZ3bXlvYXRVSWxLZw?oc=5",
+      "summary": "华夏恒生科技(03088.HK)下跌2.31%，报6.130 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-18T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9TY1dWblktZE1XRURvTHFyZHoxUVVTc1E3NGpvSER4bDNNNjRkZWl2czlpTUFzU3NCVTJhRklRbHllWGpjVk1aSm1hbERXQTBYQ3dmaXRUdmQ2SjRzRFRoU2RSVnZkUQ?oc=5",
+      "summary": "安硕恒生科技(03067.HK)上涨0.39%，报10.210 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-04-09T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiR0FVX3lxTE5HNkw0MHJkZzVaNnM2dUlSQ0o1QUdoRWptM1lFU1ZQRVJ4Wm9JMFlBU2lPUHotLW5IenNCOWxEb19TR01FejZR?oc=5",
+      "summary": "壓了這麼久，恒生科技要“動”了？ - SL886 財經網"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-17T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBqdnUwOHdBWENwaEJRcHIzZ0RBZVcwYVdLZVl3TE0tQ3Z5dTdGSHpKMzJOeDFoM2pnamVaMEgyNEdTQ1dKbzJKMEV5U014MW1JRzRCVnF6eDEwTVZsSG1jZzBvNXBlZw?oc=5",
+      "summary": "恒生科技ETF(03032.HK)下跌2.32%，报4.808 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-18T03:20:43+00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBKVzZibzFWSXc1Zmh4MzI4aUhISVZvRzA2X1g5WFRnOXJqdHVUYkNmVkF3S2pjVGtXOG9kYTR1aHFJeXMwN2NNYXd3ai1HYko1cnp1cTNzU2xLU0J6MTR5VjdDRVZFQQ?oc=5",
+      "summary": "招商恒生科技(03423.HK)下跌2.32%，报8.645 - FX168财经"
+    },
+    {
+      "source": "news:Google News - 港股科技",
+      "time": "2026-05-12T07:00:00+00:00",
+      "url": "https://news.google.com/rss/articles/CBMi9gNBVV95cUxNQUV3WmtWZnhLWXBiMW1uSDY5MGhfMWtWZHJXNVNxZzY5ME9uRUh5RmNiTTdVZ09QZ0tpTmdObE1meWZpOU40NnlGbVZaZlY0SWc3cGhzSzhPdG9DeUpWU0VkcE1WZFBFWF9PLV9lYUVWT1FYS3VMNmRzRU9hNEcwS0dkcHNfMVhNeHpPekdSZ3pEaUs4UWtCR3hleWZybXBZZ0JUNWZaUGNuRFBZT1EzQXF3T3dEcHphYzVtU3p5ZDktQ2NFZl80RWt1bGE5ek5YMzFTSGk0WE9aMmh4SmdWZGVkWGExWTZrQ0VKZFUza1ppLWEzSW9lRGlzSXJuSXA2RjFMVS1INzRIVHdLMTdmekVpTnF1dVlmTUpNcm9SdExNQlVCYVRudGtPZXZEX3VvM0k4Q2pwVGtqaTdwVk84Sk1Wd1A1RGVaVndjdjZ1VmtvTzRvdEVSZG9zUExYTl9KTjF4Q1hFRlMtVmNGaVlLajFZdVJfU0ktYTRPZmhKcUNQNGFySVZBV0d3SXY0UGNkVWZRU05wZTdjZW9KZFkxekZsQjRZQU4zbTlBRm9ZUDlVeFBMWElwZVA1MUF3LTU1REpzUS1jQ1g0am11WHhfcGE4d2NXYTMxRDlTZHhGaTRFcnhWUC1oZWZYWWJ5ZThTLURtRVdB?oc=5",
+      "summary": "恒生科技ＥＴＦ(03032) 交易所買賣基金的交易資料 - 信報網站"
+    }
+  ]
+}
