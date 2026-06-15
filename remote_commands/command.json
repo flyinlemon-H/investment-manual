@@ -1,7 +1,7 @@
 {
-  "command": "none",
-  "created_at": "",
-  "status": "idle",
-  "secret": "",
-  "command_id": ""
+  "command": "build-html",
+  "created_at": "2026-06-15T11:25:00",
+  "status": "pending",
+  "secret": "kaka13git2026",
+  "command_id": "test-001"
 }
