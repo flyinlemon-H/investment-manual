@@ -24,7 +24,7 @@ from social_collector.summary import build_social_summary
 DEFAULT_CONFIG = Path("config/app_config.json")
 DEFAULT_RSS_CONFIG = Path("config/rss_sources.json")
 DEFAULT_NEWS_CONFIG = Path("config/news_sources.json")
-DEFAULT_MANUAL_FILENAME = "投资作战手册_V11.0.html"
+DEFAULT_MANUAL_FILENAME = "投资作战手册_V11.1.html"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -203,7 +203,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--manual-dist-dir", help="Override manual_dist_dir from config/app_config.json.")
     parser.add_argument("--dry-run", action="store_true", help="Collect and validate, but do not copy files to the manual dist folder.")
     parser.add_argument("--allow-empty", action="store_true", help="Allow copying when the generated social_posts.json has zero posts.")
-    parser.add_argument("--open-manual", action="store_true", help="Open dist/投资作战手册_V11.0.html after validation and copy succeed.")
+    parser.add_argument("--open-manual", action="store_true", help="Open dist/投资作战手册_V11.1.html after validation and copy succeed.")
     return parser
 
 
