@@ -2,7 +2,7 @@ const STORAGE_KEY='portfolio_manual_v502_network_price_20260610';
 const OLD_KEYS=[];
 const seedStocks=[];
 const DEFAULT_CODES={zijin:'2899.HK',xiaomi:'1810.HK',meitu:'1357.HK',fii:'601138.SS',dp:'605499.SS',huaqin:'603296.SS'};
-let state={stocks:[],updatedAt:null},currentTab='dashboard',editingId=null,detailStockId=null,formType='holding',tempBuy=[],tempSell=[];
+let state={stocks:[],updatedAt:null},currentTab='dashboard',editingId=null,detailStockId=null,detailSubView='',formType='holding',tempBuy=[],tempSell=[];
 const uid=()=>Math.random().toString(36).slice(2,10);
 const fmt=(n,d=2)=>Number(n||0).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
 const fmtMaybe=(n,d=2)=>(n===null||n===undefined||n===''||isNaN(Number(n)))?'—':fmt(Number(n),d);
