@@ -17,6 +17,16 @@ function ensureAnalysisOverviewTab(){
   tabs.appendChild(btn);
 }
 
+function ensureEditCenterTab(){
+  const tabs=document.querySelector('.tabs');
+  if(!tabs||tabs.querySelector('[data-tab="edit"]'))return;
+  const btn=document.createElement('button');
+  btn.className='tab';
+  btn.dataset.tab='edit';
+  btn.textContent='编辑';
+  tabs.appendChild(btn);
+}
+
 function ensureToolsTab(){
   const tabs=document.querySelector('.tabs');
   if(!tabs||tabs.querySelector('[data-tab="tools"]'))return;
@@ -29,6 +39,7 @@ function ensureToolsTab(){
 
 ensureAnalysisOverviewTab();
 ensureExecutionLogTab();
+ensureEditCenterTab();
 ensureToolsTab();
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{detailStockId=null;detailSubView='';currentTab=t.dataset.tab;render()}));
 document.getElementById('addBtn').addEventListener('click',()=>openModal(null));
