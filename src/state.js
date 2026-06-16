@@ -14,10 +14,10 @@ const ANALYSIS_WEIGHTS={macro:.10,industry:.15,company:.20,financials:.20,valuat
 const INVESTMENT_STYLES=['growth','value','cyclical','resource','dividend','etf','watchOnly'];
 const BUY_AGGRESSIVENESS=['conservative','normal','aggressive'];
 function clampNumber(v,min,max,fallback=0){const n=Number(v);if(!isFinite(n))return fallback;return Math.max(min,Math.min(max,n))}
-const DATA_FRESHNESS_FIELDS=['priceUpdatedAt','valuationUpdatedAt','newsUpdatedAt','socialUpdatedAt','financialUpdatedAt','technicalUpdatedAt','personalViewUpdatedAt','comprehensiveReviewUpdatedAt'];
+const DATA_FRESHNESS_FIELDS=['priceUpdatedAt','valuationUpdatedAt','newsUpdatedAt','socialUpdatedAt','financialUpdatedAt','technicalUpdatedAt','personalViewUpdatedAt','comprehensiveReviewUpdatedAt','etfAnalysisUpdatedAt'];
 function todayDate(){return new Date().toISOString().slice(0,10)}
 function normalizeDateOnly(value){const d=normalizePriceDate(value);return d||''}
-function defaultDataFreshness(){return {priceUpdatedAt:'',valuationUpdatedAt:'',newsUpdatedAt:'',socialUpdatedAt:'',financialUpdatedAt:'',technicalUpdatedAt:'',personalViewUpdatedAt:'',comprehensiveReviewUpdatedAt:''}}
+function defaultDataFreshness(){return {priceUpdatedAt:'',valuationUpdatedAt:'',newsUpdatedAt:'',socialUpdatedAt:'',financialUpdatedAt:'',technicalUpdatedAt:'',personalViewUpdatedAt:'',comprehensiveReviewUpdatedAt:'',etfAnalysisUpdatedAt:''}}
 function normalizeDataFreshness(v){
   const src=(v&&typeof v==='object')?v:{};
   const out=defaultDataFreshness();
@@ -220,6 +220,50 @@ function normalizeValuationReview(v){
     negativePoints:arr(src.negativePoints||src.negatives),
     riskFlags:arr(src.riskFlags||src.risks||src.riskPoints),
     actionHint:String(src.actionHint||src.suggestedAction||'')
+  };
+}
+function defaultEtfAnalysis(stock={}){
+  return {
+    symbol:String(stock.code||stock.symbol||''),
+    updatedAt:'',
+    indexName:'',
+    indexValuationLevel:'',
+    historicalPercentile:null,
+    industryTrend:'',
+    macroView:'',
+    constituentQuality:'',
+    liquidityView:'',
+    trackingRisk:'',
+    conclusion:'',
+    keyPoints:[],
+    riskFlags:[],
+    actionHint:'',
+    score:null,
+    confidence:'low'
+  };
+}
+function normalizeEtfAnalysis(v,stock={}){
+  const src=(v&&typeof v==='object')?v:{};
+  const arr=x=>Array.isArray(x)?x.map(i=>String(i??'').trim()).filter(Boolean):String(x||'').split(/\n|,|，/).map(i=>String(i||'').trim()).filter(Boolean);
+  const nullableNumber=x=>{const n=Number(x);return isFinite(n)&&n>=0?n:null};
+  const confidence=String(src.confidence||'low').trim();
+  return {
+    symbol:String(src.symbol||stock.code||stock.symbol||''),
+    updatedAt:normalizeDateOnly(src.updatedAt)||String(src.updatedAt||''),
+    indexName:String(src.indexName||''),
+    indexValuationLevel:String(src.indexValuationLevel||''),
+    historicalPercentile:nullableNumber(src.historicalPercentile),
+    industryTrend:String(src.industryTrend||''),
+    macroView:String(src.macroView||''),
+    constituentQuality:String(src.constituentQuality||''),
+    liquidityView:String(src.liquidityView||''),
+    trackingRisk:String(src.trackingRisk||''),
+    conclusion:String(src.conclusion||''),
+    keyPoints:arr(src.keyPoints),
+    riskFlags:arr(src.riskFlags||src.risks),
+    actionHint:String(src.actionHint||''),
+    score:nullableNumber(src.score),
+    confidence:['low','medium','high'].includes(confidence)?confidence:'low'
   };
 }
 function valuationMetricSignal(label,current,low,mid,high){
@@ -877,6 +921,7 @@ function normalizeStockAnalysis(stock){
   stock.priceHistory=normalizePriceHistory(stock);
   stock.technicalData=normalizeTechnicalData(stock.technicalData);
   if(!stock.technicalData.symbol)stock.technicalData.symbol=String(stock.code||stock.symbol||'');
+  stock.etfAnalysis=normalizeEtfAnalysis(stock.etfAnalysis,stock);
   stock.analysisFramework=normalizeAnalysisFramework(stock.analysisFramework,stock);
   stock.allocationDecision=normalizeAllocationDecision(stock.allocationDecision,stock);
   stock.analysisScore=calculateAnalysisScore(stock.analysisFramework);
