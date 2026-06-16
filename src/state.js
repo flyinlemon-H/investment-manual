@@ -166,10 +166,20 @@ function normalizeTechnicalData(v){
     lastUpdated:String(src.lastUpdated||'')
   };
 }
-const VALUATION_FIELDS=['pe','pb','ps','dividendYield','revenueGrowth','profitGrowth','historicalPeLow','historicalPeMid','historicalPeHigh','historicalPbLow','historicalPbMid','historicalPbHigh','historicalPsLow','historicalPsMid','historicalPsHigh'];
+const VALUATION_FIELDS=['pe','pb','ps','dividendYield','revenueGrowth','profitGrowth','historicalPeLow','historicalPeMid','historicalPeHigh','historicalPbLow','historicalPbMid','historicalPbHigh','historicalPsLow','historicalPsMid','historicalPsHigh','marketCap','peTtm','forwardPe','evEbitda','historicalPercentile'];
 function defaultValuationData(stock={}){
   return {
+    symbol:String(stock.code||stock.symbol||''),
+    updatedAt:'',
+    currency:'',
+    marketCap:null,
+    peTtm:null,
+    forwardPe:null,
     pe:0,pb:0,ps:0,dividendYield:0,revenueGrowth:0,profitGrowth:0,
+    evEbitda:null,
+    historicalPercentile:null,
+    peerComparison:'',
+    valuationConclusion:'',
     historicalPeLow:0,historicalPeMid:0,historicalPeHigh:0,
     historicalPbLow:0,historicalPbMid:0,historicalPbHigh:0,
     historicalPsLow:0,historicalPsMid:0,historicalPsHigh:0,
@@ -180,12 +190,37 @@ function defaultValuationData(stock={}){
 function normalizeValuationData(v){
   const src=(v&&typeof v==='object')?v:{};
   const out=defaultValuationData();
-  VALUATION_FIELDS.forEach(k=>out[k]=clampNumber(src[k],0,Number.MAX_SAFE_INTEGER,0));
+  out.symbol=String(src.symbol||'');
+  out.updatedAt=normalizeDateOnly(src.updatedAt)||String(src.updatedAt||'');
+  out.currency=String(src.currency||'');
+  ['marketCap','peTtm','forwardPe','evEbitda','historicalPercentile'].forEach(k=>{
+    const n=Number(src[k]);
+    out[k]=isFinite(n)&&n>=0?n:null;
+  });
+  ['pe','pb','ps','dividendYield','historicalPeLow','historicalPeMid','historicalPeHigh','historicalPbLow','historicalPbMid','historicalPbHigh','historicalPsLow','historicalPsMid','historicalPsHigh'].forEach(k=>out[k]=clampNumber(src[k],0,Number.MAX_SAFE_INTEGER,0));
+  if(!(out.pe>0)&&out.peTtm>0)out.pe=out.peTtm;
   out.revenueGrowth=clampNumber(src.revenueGrowth,-Number.MAX_SAFE_INTEGER,Number.MAX_SAFE_INTEGER,0);
   out.profitGrowth=clampNumber(src.profitGrowth,-Number.MAX_SAFE_INTEGER,Number.MAX_SAFE_INTEGER,0);
+  out.peerComparison=String(src.peerComparison||'');
+  out.valuationConclusion=String(src.valuationConclusion||src.valuationSummary||'');
   out.valuationNote=String(src.valuationNote||'');
-  out.lastUpdated=String(src.lastUpdated||'');
+  out.lastUpdated=normalizeDateOnly(src.lastUpdated)||out.updatedAt||String(src.lastUpdated||'');
+  if(!out.updatedAt&&out.lastUpdated)out.updatedAt=out.lastUpdated;
   return out;
+}
+function defaultValuationReview(){
+  return {summary:'',positivePoints:[],negativePoints:[],riskFlags:[],actionHint:''};
+}
+function normalizeValuationReview(v){
+  const src=(v&&typeof v==='object')?v:{};
+  const arr=x=>Array.isArray(x)?x.map(i=>String(i??'').trim()).filter(Boolean):String(x||'').split(/\n|,|锛?/).map(i=>String(i||'').trim()).filter(Boolean);
+  return {
+    summary:String(src.summary||src.valuationSummary||''),
+    positivePoints:arr(src.positivePoints||src.positives),
+    negativePoints:arr(src.negativePoints||src.negatives),
+    riskFlags:arr(src.riskFlags||src.risks||src.riskPoints),
+    actionHint:String(src.actionHint||src.suggestedAction||'')
+  };
 }
 function valuationMetricSignal(label,current,low,mid,high){
   const warnings=[];
@@ -836,6 +871,8 @@ function normalizeStockAnalysis(stock){
   stock.aiReviews=normalizeAiReviews(stock.aiReviews);
   stock.analysisInputs=normalizeAnalysisInputs(stock.analysisInputs);
   stock.valuationData=normalizeValuationData(stock.valuationData);
+  if(!stock.valuationData.symbol)stock.valuationData.symbol=String(stock.code||stock.symbol||'');
+  stock.valuationReview=normalizeValuationReview(stock.valuationReview);
   stock.financialData=normalizeFinancialData(stock.financialData);
   stock.priceHistory=normalizePriceHistory(stock);
   stock.technicalData=normalizeTechnicalData(stock.technicalData);
