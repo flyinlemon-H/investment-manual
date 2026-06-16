@@ -2001,7 +2001,7 @@ function copyFinancialSearchPrompt(){
 function financialSignalPanel(stock){
   const fd=normalizeFinancialData(stock.financialData);
   const sig=calculateFinancialSignal(stock);
-  return `<div class="card" style="margin-bottom:14px"><div class="card-title">财务自动评分 <button class="link-btn" data-detail-action="edit-financial" style="float:right">编辑财务数据</button></div><div class="dash" style="margin:0"><div><div class="card-num">${fmtMaybe(sig.financialScore,1)}<span style="font-size:13px;color:var(--ink3)"> / 10</span></div><div class="card-note">状态 ${esc(financialStatusLabel(sig.financialStatus))}</div></div><div><div class="card-title">报告期</div><div class="card-note">${esc(fd.reportPeriod||'—')} · ${esc(fd.currency||'—')}</div></div><div><div class="card-title">增长 / 利润率</div><div class="card-note">收入 ${fmtMaybe(fd.revenueGrowth,1)}% · 利润 ${fmtMaybe(fd.profitGrowth,1)}% · 净利率 ${fmtMaybe(fd.netMargin,1)}%</div></div><div><div class="card-title">更新时间</div><div class="card-note">${esc(fd.lastUpdated||'—')}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>摘要：</b>${esc(sig.financialSummary)}<br><b>信号：</b><br>${(sig.signals||[]).slice(0,3).map(esc).join('<br>')||'—'}<br><b>提醒：</b><br>${(sig.warnings||[]).slice(0,3).map(esc).join('<br>')||'—'}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-financial-search-prompt">复制财报查找 Prompt</button><button class="btn ghost small" data-detail-action="import-financial">导入财务JSON</button><button class="btn ghost small" data-detail-action="apply-financial">应用到九模块财务评分</button></div></div>`;
+  return `<div class="card" style="margin-bottom:14px"><div class="card-title">财务自动评分 <button class="link-btn" data-detail-action="edit-financial" style="float:right">编辑财务数据</button></div><div class="dash" style="margin:0"><div><div class="card-num">${fmtMaybe(sig.financialScore,1)}<span style="font-size:13px;color:var(--ink3)"> / 10</span></div><div class="card-note">状态 ${esc(financialStatusLabel(sig.financialStatus))}</div></div><div><div class="card-title">报告期</div><div class="card-note">${esc(fd.reportPeriod||'—')} · ${esc(fd.currency||'—')}</div></div><div><div class="card-title">增长 / 利润率</div><div class="card-note">收入 ${fmtMaybe(fd.revenueGrowth,1)}% · 利润 ${fmtMaybe(fd.profitGrowth,1)}% · 净利率 ${fmtMaybe(fd.netMargin,1)}%</div></div><div><div class="card-title">更新时间</div><div class="card-note">${esc(fd.lastUpdated||'—')}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>摘要：</b>${esc(sig.financialSummary)}<br><b>信号：</b><br>${(sig.signals||[]).slice(0,3).map(esc).join('<br>')||'—'}<br><b>提醒：</b><br>${(sig.warnings||[]).slice(0,3).map(esc).join('<br>')||'—'}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-financial-search-prompt">复制财报查找 Prompt</button><button class="btn ghost small" data-detail-action="import-financial">导入财报/财务JSON</button><button class="btn ghost small" data-detail-action="apply-financial">应用到九模块财务评分</button></div></div>`;
 }
 function renderAnalysisOverview(){
   state.stocks.forEach(normalizeStockAnalysis);
@@ -3039,7 +3039,7 @@ function ensureFinancialImportModal(){
   el=document.createElement('div');
   el.className='modal-bg';
   el.id='financialImportModal';
-  el.innerHTML=`<div class="modal"><h2>导入财务JSON</h2><div class="modal-sub">仅导入 financialData，不覆盖九模块 financials。应用到九模块需另点按钮确认。</div><div class="form-row"><label>粘贴 JSON</label><textarea id="financialImportText" style="min-height:240px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"financialData\":{\"revenue\":0,\"revenueGrowth\":0}}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="financialImportCancelBtn" type="button">取消</button><button class="btn" id="financialImportSaveBtn" type="button">导入财务数据</button></div></div>`;
+  el.innerHTML=`<div class="modal"><h2>导入财报/财务 JSON</h2><div class="modal-sub">支持 financialData、financialReview，或“财报查找 Prompt”返回的完整 JSON。不会覆盖九模块 financials，应用到九模块需另点按钮确认。</div><div class="form-row"><label>粘贴 JSON</label><textarea id="financialImportText" style="min-height:260px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"financialData\":{\"revenue\":0,\"revenueGrowth\":0},\"financialReview\":{\"summary\":\"...\"},\"sources\":[]}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="financialImportCancelBtn" type="button">取消</button><button class="btn" id="financialImportSaveBtn" type="button">导入财报/财务数据</button></div></div>`;
   document.body.appendChild(el);
   el.addEventListener('click',e=>{if(e.target.id==='financialImportModal')closeFinancialImportModal()});
   document.getElementById('financialImportCancelBtn').addEventListener('click',closeFinancialImportModal);
@@ -3058,18 +3058,63 @@ function closeFinancialImportModal(){
   const modal=document.getElementById('financialImportModal');
   if(modal)modal.classList.remove('show');
 }
+function normalizeFinancialDataImportPayload(parsed){
+  const src=(parsed&&parsed.financialData&&typeof parsed.financialData==='object')?parsed.financialData:{};
+  return normalizeFinancialData({
+    ...src,
+    reportPeriod:src.reportPeriod||parsed.reportPeriod||'',
+    currency:src.currency||parsed.currency||'',
+    financialNote:src.financialNote||[parsed.reportType,parsed.announcementDate,parsed.companyName].filter(Boolean).join(' · '),
+    lastUpdated:src.lastUpdated||new Date().toISOString()
+  });
+}
+function normalizeFinancialReviewImportPayload(parsed){
+  const src=(parsed&&parsed.financialReview&&typeof parsed.financialReview==='object')?parsed.financialReview:null;
+  if(!src)return null;
+  const review={...src};
+  if(!Array.isArray(review.riskPoints)&&Array.isArray(review.riskFlags))review.riskPoints=review.riskFlags;
+  if(!Array.isArray(review.negativePoints)&&Array.isArray(review.riskFlags))review.negativePoints=review.riskFlags;
+  if(Array.isArray(parsed.sources))review.sources=parsed.sources;
+  if(parsed.reportType||parsed.reportPeriod||parsed.announcementDate){
+    review.reportMeta={reportType:parsed.reportType||'',reportPeriod:parsed.reportPeriod||'',announcementDate:parsed.announcementDate||''};
+  }
+  return normalizeAiReviewPayload('financialReview',{financialReview:review});
+}
 function importFinancialJson(){
   const stock=state.stocks.find(x=>x.id===detailStockId);
   if(!stock)return;
+  const original={
+    financialData:JSON.parse(JSON.stringify(stock.financialData||{})),
+    aiReviews:JSON.parse(JSON.stringify(stock.aiReviews||{})),
+    dataFreshness:JSON.parse(JSON.stringify(stock.dataFreshness||{}))
+  };
   let parsed;
   try{parsed=extractFirstJsonObject(document.getElementById('financialImportText').value)}catch(e){alert('导入失败：JSON 无法解析。');return}
-  if(parsed&&typeof parsed==='object'&&parsed.financialReview){alert('导入失败：当前内容是 financialReview。请使用“财务数据提取” Prompt 生成 financialData，或在 AI Review 导入区选择“财报复核”导入。');return}
-  if(!parsed||typeof parsed!=='object'||!parsed.financialData||typeof parsed.financialData!=='object'){alert('导入失败：必须包含顶层 financialData 对象。请确认使用的是“财务数据提取” Prompt，而不是“财报复核分析” Prompt。');return}
-  stock.financialData=normalizeFinancialData({...parsed.financialData,lastUpdated:parsed.financialData.lastUpdated||new Date().toISOString()});
-  touchDataFreshness(stock,'financialUpdatedAt');
-  saveState();
-  closeFinancialImportModal();
-  render();
+  try{
+    if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))throw new Error('JSON 必须是对象。');
+    const hasData=parsed.financialData&&typeof parsed.financialData==='object'&&!Array.isArray(parsed.financialData);
+    const hasReview=parsed.financialReview&&typeof parsed.financialReview==='object'&&!Array.isArray(parsed.financialReview);
+    if(!hasData&&!hasReview)throw new Error('未识别 financialData 或 financialReview。请粘贴财务数据提取、财报复核，或财报查找 Prompt 返回的 JSON。');
+    if(hasData)stock.financialData=normalizeFinancialDataImportPayload(parsed);
+    if(hasReview){
+      stock.aiReviews=normalizeAiReviews(stock.aiReviews);
+      const review=normalizeFinancialReviewImportPayload(parsed);
+      if(!review)throw new Error('financialReview 格式不正确。');
+      stock.aiReviews.financialReview=review;
+    }
+    touchDataFreshness(stock,'financialUpdatedAt');
+    saveState();
+    closeFinancialImportModal();
+    render();
+    if(hasData&&hasReview)alert('财报查找 JSON 已导入：financialData 与 financialReview 已更新。九模块评分未自动修改。');
+    else if(hasData)alert('financialData 已导入。九模块评分未自动修改。');
+    else alert('financialReview 已导入。未包含 financialData，财务自动评分不会变化；如需评分，请再导入 financialData。');
+  }catch(err){
+    stock.financialData=original.financialData;
+    stock.aiReviews=original.aiReviews;
+    stock.dataFreshness=original.dataFreshness;
+    alert('导入失败：'+(err&&err.message?err.message:String(err)));
+  }
 }
 function importFinancialIntegratedJson(){
   const stock=state.stocks.find(x=>x.id===detailStockId);
