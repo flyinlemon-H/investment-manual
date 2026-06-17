@@ -175,7 +175,7 @@ function defaultValuationData(stock={}){
     marketCap:null,
     peTtm:null,
     forwardPe:null,
-    pe:0,pb:0,ps:0,dividendYield:0,revenueGrowth:0,profitGrowth:0,
+    pe:null,pb:null,ps:null,dividendYield:null,revenueGrowth:0,profitGrowth:0,
     evEbitda:null,
     historicalPercentile:null,
     peerComparison:'',
@@ -197,7 +197,11 @@ function normalizeValuationData(v){
     const n=Number(src[k]);
     out[k]=isFinite(n)&&n>=0?n:null;
   });
-  ['pe','pb','ps','dividendYield','historicalPeLow','historicalPeMid','historicalPeHigh','historicalPbLow','historicalPbMid','historicalPbHigh','historicalPsLow','historicalPsMid','historicalPsHigh'].forEach(k=>out[k]=clampNumber(src[k],0,Number.MAX_SAFE_INTEGER,0));
+  ['pe','pb','ps','dividendYield'].forEach(k=>{
+    if(src[k]===null||src[k]===undefined||src[k]==='')out[k]=null;
+    else out[k]=clampNumber(src[k],0,Number.MAX_SAFE_INTEGER,0);
+  });
+  ['historicalPeLow','historicalPeMid','historicalPeHigh','historicalPbLow','historicalPbMid','historicalPbHigh','historicalPsLow','historicalPsMid','historicalPsHigh'].forEach(k=>out[k]=clampNumber(src[k],0,Number.MAX_SAFE_INTEGER,0));
   if(!(out.pe>0)&&out.peTtm>0)out.pe=out.peTtm;
   out.revenueGrowth=clampNumber(src.revenueGrowth,-Number.MAX_SAFE_INTEGER,Number.MAX_SAFE_INTEGER,0);
   out.profitGrowth=clampNumber(src.profitGrowth,-Number.MAX_SAFE_INTEGER,Number.MAX_SAFE_INTEGER,0);
@@ -348,6 +352,79 @@ function calculateValuationSignal(stock){
   valuationScore=Number(normalizeAnalysisScoreValue(valuationScore).toFixed(1));
   const valuationStatus=valuationScore>=7.5?'positive':(valuationScore>=5?'neutral':'negative');
   const valuationSummary=valuationScore>0?base.summary:'缺少估值数据，无法自动判断。';
+  if(!valuationScore&&!warnings.length)warnings.push('缺少估值数据，无法自动判断');
+  return {valuationScore,valuationStatus,valuationSummary,signals,warnings,usedMetric:valuationScore>0?used:''};
+}
+function valuationMetricSignal(label,current,low,mid,high){
+  const warnings=[];
+  if(!(current>0)||!(low>0)||!(mid>0)||!(high>0)||!(low<=mid&&mid<=high)){
+    warnings.push(`${label} 数据或历史区间不足，无法按历史区间评分`);
+    return {score:0,summary:'',signals:[],warnings};
+  }
+  if(current<=low)return {score:9,summary:`当前 ${label} 低于历史低位，估值处于低估区间`,signals:[`${label} ${current} <= 历史低位 ${low}`],warnings};
+  if(current<=mid)return {score:8,summary:`当前 ${label} 低于历史中位数，估值处于合理偏低区间`,signals:[`${label} ${current} <= 历史中位数 ${mid}`],warnings};
+  if(current<=high)return {score:6,summary:`当前 ${label} 低于历史高位，估值处于合理偏高区间`,signals:[`${label} ${current} <= 历史高位 ${high}`],warnings};
+  return {score:4,summary:`当前 ${label} 高于历史高位，估值偏贵`,signals:[],warnings:[`${label} ${current} > 历史高位 ${high}`]};
+}
+function valuationConclusionSignal(vd,vr){
+  const text=[vd.valuationConclusion,vd.valuationNote,vr.summary,vr.actionHint,(vr.riskFlags||[]).join(' ')].map(x=>String(x||'')).join(' ');
+  if(/无法判断|无法评估|资料不足|数据不足/.test(text))return {score:null,summary:'估值资料不足，无法根据结论评分',signals:[],warnings:['估值结论为无法判断']};
+  const rules=[
+    {re:/明显高估|严重高估/,score:2,summary:'估值结论显示明显高估'},
+    {re:/高估/,score:3,summary:'估值结论显示高估'},
+    {re:/合理偏贵|估值偏贵|偏贵|不属于低估/,score:4.5,summary:'估值结论显示合理偏贵'},
+    {re:/合理偏低/,score:7,summary:'估值结论显示合理偏低'},
+    {re:/明显低估|深度低估/,score:8.8,summary:'估值结论显示明显低估'},
+    {re:/低估|估值偏低/,score:8,summary:'估值结论显示低估'},
+    {re:/合理|中性|公允/,score:6,summary:'估值结论显示合理'}
+  ];
+  const hit=rules.find(x=>x.re.test(text));
+  if(hit)return {score:hit.score,summary:hit.summary,signals:[`估值结论：${String(vd.valuationConclusion||vr.summary||'已导入估值结论').slice(0,80)}`],warnings:[]};
+  if(vd.historicalPercentile!==null&&vd.historicalPercentile!==undefined&&isFinite(Number(vd.historicalPercentile))){
+    const p=Number(vd.historicalPercentile);
+    if(p<=20)return {score:8.5,summary:'历史估值分位较低，估值偏便宜',signals:[`历史估值分位 ${p}%`],warnings:[]};
+    if(p<=40)return {score:7,summary:'历史估值分位处于偏低区间',signals:[`历史估值分位 ${p}%`],warnings:[]};
+    if(p<=60)return {score:6,summary:'历史估值分位处于中性区间',signals:[`历史估值分位 ${p}%`],warnings:[]};
+    if(p<=80)return {score:5,summary:'历史估值分位偏高',signals:[`历史估值分位 ${p}%`],warnings:['估值分位偏高']};
+    if(p<=90)return {score:4.5,summary:'历史估值分位较高，估值合理偏贵',signals:[`历史估值分位 ${p}%`],warnings:['历史估值分位较高']};
+    return {score:3.5,summary:'历史估值分位很高，估值偏贵',signals:[`历史估值分位 ${p}%`],warnings:['历史估值分位很高']};
+  }
+  return {score:null,summary:'未找到可直接映射的估值结论',signals:[],warnings:[]};
+}
+function calculateValuationSignal(stock){
+  const vd=normalizeValuationData(stock&&stock.valuationData);
+  const vr=normalizeValuationReview(stock&&stock.valuationReview);
+  const allWarnings=[];
+  let used='PE';
+  let base=valuationMetricSignal('PE',vd.pe,vd.historicalPeLow,vd.historicalPeMid,vd.historicalPeHigh);
+  allWarnings.push(...base.warnings);
+  if(!base.score){
+    used='PB';
+    base=valuationMetricSignal('PB',vd.pb,vd.historicalPbLow,vd.historicalPbMid,vd.historicalPbHigh);
+    allWarnings.push(...base.warnings);
+  }
+  if(!base.score){
+    used='PS';
+    base=valuationMetricSignal('PS',vd.ps,vd.historicalPsLow,vd.historicalPsMid,vd.historicalPsHigh);
+    allWarnings.push(...base.warnings);
+  }
+  const mapped=valuationConclusionSignal(vd,vr);
+  const hasMapped=mapped.score!==null&&mapped.score!==undefined;
+  let valuationScore=hasMapped?mapped.score:(base.score||0);
+  const signals=hasMapped?[...mapped.signals,...base.signals]:[...base.signals];
+  const warnings=hasMapped?[...mapped.warnings,...allWarnings]:(base.score?[...base.warnings]:allWarnings);
+  if(hasMapped)used='valuationConclusion';
+  if(valuationScore>0){
+    if(vd.profitGrowth>=30){valuationScore+=1;signals.push(`利润增速 ${vd.profitGrowth}% >= 30%，估值评分上调`)}
+    if(vd.revenueGrowth>=30){valuationScore+=.5;signals.push(`收入增速 ${vd.revenueGrowth}% >= 30%，估值评分小幅上调`)}
+    if(vd.profitGrowth<0){valuationScore-=1;warnings.push(`利润增速 ${vd.profitGrowth}% < 0，估值评分下调`)}
+    if(vd.revenueGrowth<0){valuationScore-=.5;warnings.push(`收入增速 ${vd.revenueGrowth}% < 0，估值评分小幅下调`)}
+    if(vd.dividendYield>0)signals.push(`股息率 ${vd.dividendYield}%`);
+    if(vd.valuationNote)signals.push(`人工备注：${vd.valuationNote}`);
+  }
+  valuationScore=Number(normalizeAnalysisScoreValue(valuationScore).toFixed(1));
+  const valuationStatus=valuationScore>=7.5?'positive':(valuationScore>=5?'neutral':'negative');
+  const valuationSummary=valuationScore>0?(hasMapped?mapped.summary:base.summary):'缺少估值数据，无法自动判断。';
   if(!valuationScore&&!warnings.length)warnings.push('缺少估值数据，无法自动判断');
   return {valuationScore,valuationStatus,valuationSummary,signals,warnings,usedMetric:valuationScore>0?used:''};
 }
