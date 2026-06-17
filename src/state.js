@@ -222,6 +222,47 @@ function normalizeValuationReview(v){
     actionHint:String(src.actionHint||src.suggestedAction||'')
   };
 }
+function defaultSentimentReview(stock={}){
+  return {
+    symbol:String(stock.code||stock.symbol||''),
+    updatedAt:'',
+    importance:'medium',
+    conclusion:'',
+    newsSummary:'',
+    marketMood:'',
+    institutionalView:'',
+    fundFlowView:'',
+    sectorHeat:'',
+    positivePoints:[],
+    negativePoints:[],
+    riskFlags:[],
+    sourceQuality:'low',
+    confidence:'low',
+    actionHint:''
+  };
+}
+function normalizeSentimentReview(v,stock={}){
+  const src=(v&&typeof v==='object')?v:{};
+  const arr=x=>Array.isArray(x)?x.map(i=>String(i??'').trim()).filter(Boolean):String(x||'').split(/\n|,|锛?|；/).map(i=>String(i||'').trim()).filter(Boolean);
+  const enumValue=(value,allowed,fallback)=>allowed.includes(String(value||'').trim())?String(value||'').trim():fallback;
+  return {
+    symbol:String(src.symbol||stock.code||stock.symbol||''),
+    updatedAt:normalizeDateOnly(src.updatedAt)||String(src.updatedAt||''),
+    importance:enumValue(src.importance,['low','medium','high'],'medium'),
+    conclusion:String(src.conclusion||src.summary||''),
+    newsSummary:String(src.newsSummary||''),
+    marketMood:String(src.marketMood||src.sentiment||''),
+    institutionalView:String(src.institutionalView||''),
+    fundFlowView:String(src.fundFlowView||''),
+    sectorHeat:String(src.sectorHeat||''),
+    positivePoints:arr(src.positivePoints||src.positives),
+    negativePoints:arr(src.negativePoints||src.negatives),
+    riskFlags:arr(src.riskFlags||src.risks||src.riskPoints),
+    sourceQuality:enumValue(src.sourceQuality,['low','medium','high'],'low'),
+    confidence:enumValue(src.confidence,['low','medium','high'],'low'),
+    actionHint:String(src.actionHint||src.suggestedAction||'')
+  };
+}
 function defaultEtfAnalysis(stock={}){
   return {
     symbol:String(stock.code||stock.symbol||''),
@@ -917,6 +958,7 @@ function normalizeStockAnalysis(stock){
   stock.valuationData=normalizeValuationData(stock.valuationData);
   if(!stock.valuationData.symbol)stock.valuationData.symbol=String(stock.code||stock.symbol||'');
   stock.valuationReview=normalizeValuationReview(stock.valuationReview);
+  stock.sentimentReview=normalizeSentimentReview(stock.sentimentReview,stock);
   stock.financialData=normalizeFinancialData(stock.financialData);
   stock.priceHistory=normalizePriceHistory(stock);
   stock.technicalData=normalizeTechnicalData(stock.technicalData);
