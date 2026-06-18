@@ -4524,9 +4524,12 @@ function sentimentReviewPanel(stock){
 }
 function ensureSentimentImportModal(){
   let el=document.getElementById('sentimentImportModal');
-  if(el)return el;
+  if(el){
+    el.classList.add('import-layer');
+    return el;
+  }
   el=document.createElement('div');
-  el.className='modal-bg';
+  el.className='modal-bg import-layer';
   el.id='sentimentImportModal';
   el.innerHTML=`<div class="modal"><h2>导入新闻 / 情绪 JSON</h2><div class="modal-sub">支持 sentimentReview、shortTermSentiment、recentCatalyst、eventExplanation、longTermLogic 或 informationCompleteness。导入后不会自动修改配置决策或当前操作建议。</div><div class="form-row"><label>粘贴 JSON</label><textarea id="sentimentImportText" style="min-height:280px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"recentCatalyst\":{\"todayCatalyst\":\"...\"},\"eventExplanation\":{\"canExplainTodayMove\":false}}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="sentimentImportCancelBtn" type="button">取消</button><button class="btn" id="sentimentImportSaveBtn" type="button">导入</button></div></div>`;
   document.body.appendChild(el);
