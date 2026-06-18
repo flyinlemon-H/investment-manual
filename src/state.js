@@ -121,11 +121,51 @@ function defaultTechnicalData(stock={}){
     technicalSummary:'',
     riskFlags:[],
     actionHint:'',
+    cyclePosition:'unclear',
+    cycleSummary:'',
+    pricePosition:{
+      lookbackDays:null,
+      high:null,
+      low:null,
+      currentPercentile:null,
+      distanceToCycleHighPct:null,
+      distanceToCycleLowPct:null
+    },
+    supportZones:[],
+    holdHint:'',
+    addHint:'',
+    reduceHint:'',
     supportPrice:0,
     resistancePrice:0,
     trendNote:'',
     lastUpdated:''
   };
+}
+const TECHNICAL_CYCLE_POSITIONS=['low_base','early_uptrend','mid_uptrend','high_level_rebreakout','high_level_overextension','distribution_risk','downtrend','unclear'];
+function normalizePricePosition(v){
+  const src=(v&&typeof v==='object')?v:{};
+  const nullableNumber=x=>{const n=Number(x);return isFinite(n)?n:null};
+  const nullableNonNegative=x=>{const n=Number(x);return isFinite(n)&&n>=0?n:null};
+  return {
+    lookbackDays:nullableNonNegative(src.lookbackDays),
+    high:nullableNonNegative(src.high),
+    low:nullableNonNegative(src.low),
+    currentPercentile:nullableNumber(src.currentPercentile),
+    distanceToCycleHighPct:nullableNumber(src.distanceToCycleHighPct),
+    distanceToCycleLowPct:nullableNumber(src.distanceToCycleLowPct)
+  };
+}
+function normalizeSupportZones(v){
+  const arr=Array.isArray(v)?v:[];
+  return arr.map(item=>{
+    const src=(item&&typeof item==='object')?item:{};
+    const range=Array.isArray(src.range)?src.range.map(n=>Number(n)).filter(n=>isFinite(n)):[];
+    return {
+      range:range.slice(0,2),
+      type:String(src.type||''),
+      actionHint:String(src.actionHint||'')
+    };
+  }).filter(item=>item.range.length||item.type||item.actionHint);
 }
 function normalizeTechnicalLevelArray(x){
   const raw=Array.isArray(x)?x:String(x||'').split(/\n|,|，/);
@@ -142,6 +182,7 @@ function normalizeTechnicalData(v){
   const nullableNumber=x=>{const n=Number(x);return isFinite(n)&&n>=0?n:null};
   const fallbackSupport=clampNumber(src.supportPrice,0,Number.MAX_SAFE_INTEGER,0);
   const fallbackResistance=clampNumber(src.resistancePrice,0,Number.MAX_SAFE_INTEGER,0);
+  const cyclePosition=TECHNICAL_CYCLE_POSITIONS.includes(String(src.cyclePosition||''))?String(src.cyclePosition):'unclear';
   return {
     symbol:String(src.symbol||''),
     price:nullableNumber(src.price),
@@ -160,11 +201,161 @@ function normalizeTechnicalData(v){
     technicalSummary:String(src.technicalSummary||''),
     riskFlags:arr(src.riskFlags),
     actionHint:String(src.actionHint||''),
+    cyclePosition,
+    cycleSummary:String(src.cycleSummary||''),
+    pricePosition:normalizePricePosition(src.pricePosition),
+    supportZones:normalizeSupportZones(src.supportZones),
+    holdHint:String(src.holdHint||''),
+    addHint:String(src.addHint||''),
+    reduceHint:String(src.reduceHint||''),
     supportPrice:fallbackSupport,
     resistancePrice:fallbackResistance,
     trendNote:String(src.trendNote||''),
     lastUpdated:String(src.lastUpdated||'')
   };
+}
+function defaultTechnicalReview(stock={}){
+  const td=normalizeTechnicalData(stock.technicalData);
+  return {
+    updatedAt:'',
+    inputCoverage:{
+      hasRecentKline:false,
+      hasCycleKline:false,
+      cycleDataSource:'none',
+      warning:''
+    },
+    shortTermTechnical:{
+      lookbackDays:120,
+      price:td.price,
+      priceUpdatedAt:td.priceUpdatedAt||'',
+      ma5:td.ma5,
+      ma10:td.ma10,
+      ma20:td.ma20||null,
+      ma60:td.ma60||null,
+      trendStatus:td.trendStatus||'',
+      supportLevels:td.supportLevels||[],
+      resistanceLevels:td.resistanceLevels||[],
+      technicalSummary:td.technicalSummary||td.trendNote||'',
+      riskFlags:td.riskFlags||[],
+      actionHint:td.actionHint||''
+    },
+    cycleTechnical:{
+      lookbackDays:500,
+      cyclePosition:td.cyclePosition||'unclear',
+      cycleSummary:td.cycleSummary||'',
+      cycleHigh:td.pricePosition&&td.pricePosition.high!==undefined?td.pricePosition.high:null,
+      cycleLow:td.pricePosition&&td.pricePosition.low!==undefined?td.pricePosition.low:null,
+      currentPercentile:td.pricePosition&&td.pricePosition.currentPercentile!==undefined?td.pricePosition.currentPercentile:null,
+      distanceToCycleHighPct:td.pricePosition&&td.pricePosition.distanceToCycleHighPct!==undefined?td.pricePosition.distanceToCycleHighPct:null,
+      distanceToCycleLowPct:td.pricePosition&&td.pricePosition.distanceToCycleLowPct!==undefined?td.pricePosition.distanceToCycleLowPct:null,
+      lastCycleUpdatedAt:'',
+      dataSource:'none'
+    },
+    priceActionEvent:{
+      detected:false,
+      type:'',
+      changePct:null,
+      volumeStatus:'',
+      needsNewsExplanation:false
+    },
+    finalTechnicalConclusion:td.technicalSummary||'',
+    holdHint:td.holdHint||'',
+    addHint:td.addHint||'',
+    reduceHint:td.reduceHint||''
+  };
+}
+function normalizeTechnicalReview(v,stock={}){
+  const src=(v&&typeof v==='object')?v:{};
+  const legacy=normalizeTechnicalData(stock.technicalData);
+  const stSrc=(src.shortTermTechnical&&typeof src.shortTermTechnical==='object')?src.shortTermTechnical:{};
+  const cySrc=(src.cycleTechnical&&typeof src.cycleTechnical==='object')?src.cycleTechnical:{};
+  const covSrc=(src.inputCoverage&&typeof src.inputCoverage==='object')?src.inputCoverage:{};
+  const eventSrc=(src.priceActionEvent&&typeof src.priceActionEvent==='object')?src.priceActionEvent:{};
+  const nullableNumber=x=>{const n=Number(x);return isFinite(n)?n:null};
+  const cyclePosition=TECHNICAL_CYCLE_POSITIONS.includes(String(cySrc.cyclePosition||src.cyclePosition||legacy.cyclePosition||''))?String(cySrc.cyclePosition||src.cyclePosition||legacy.cyclePosition):'unclear';
+  return {
+    updatedAt:String(src.updatedAt||legacy.lastUpdated||''),
+    inputCoverage:{
+      hasRecentKline:Boolean(covSrc.hasRecentKline||stSrc.price||legacy.price),
+      hasCycleKline:Boolean(covSrc.hasCycleKline),
+      cycleDataSource:String(covSrc.cycleDataSource||cySrc.dataSource||'none'),
+      warning:String(covSrc.warning||'')
+    },
+    shortTermTechnical:{
+      lookbackDays:nullableNumber(stSrc.lookbackDays)??120,
+      price:nullableNumber(stSrc.price)??legacy.price,
+      priceUpdatedAt:normalizeDateOnly(stSrc.priceUpdatedAt)||legacy.priceUpdatedAt||'',
+      ma5:nullableNumber(stSrc.ma5)??legacy.ma5,
+      ma10:nullableNumber(stSrc.ma10)??legacy.ma10,
+      ma20:nullableNumber(stSrc.ma20)??(legacy.ma20>0?legacy.ma20:null),
+      ma60:nullableNumber(stSrc.ma60)??(legacy.ma60>0?legacy.ma60:null),
+      trendStatus:String(stSrc.trendStatus||legacy.trendStatus||''),
+      supportLevels:normalizeTechnicalLevelArray(stSrc.supportLevels&&stSrc.supportLevels.length?stSrc.supportLevels:legacy.supportLevels),
+      resistanceLevels:normalizeTechnicalLevelArray(stSrc.resistanceLevels&&stSrc.resistanceLevels.length?stSrc.resistanceLevels:legacy.resistanceLevels),
+      technicalSummary:String(stSrc.technicalSummary||legacy.technicalSummary||legacy.trendNote||''),
+      riskFlags:normalizeStringArray(stSrc.riskFlags&&stSrc.riskFlags.length?stSrc.riskFlags:legacy.riskFlags),
+      actionHint:String(stSrc.actionHint||legacy.actionHint||'')
+    },
+    cycleTechnical:{
+      lookbackDays:nullableNumber(cySrc.lookbackDays)??500,
+      cyclePosition,
+      cycleSummary:String(cySrc.cycleSummary||src.cycleSummary||legacy.cycleSummary||''),
+      cycleHigh:nullableNumber(cySrc.cycleHigh)??(legacy.pricePosition&&legacy.pricePosition.high!==null?legacy.pricePosition.high:null),
+      cycleLow:nullableNumber(cySrc.cycleLow)??(legacy.pricePosition&&legacy.pricePosition.low!==null?legacy.pricePosition.low:null),
+      currentPercentile:nullableNumber(cySrc.currentPercentile)??(legacy.pricePosition&&legacy.pricePosition.currentPercentile!==null?legacy.pricePosition.currentPercentile:null),
+      distanceToCycleHighPct:nullableNumber(cySrc.distanceToCycleHighPct)??(legacy.pricePosition&&legacy.pricePosition.distanceToCycleHighPct!==null?legacy.pricePosition.distanceToCycleHighPct:null),
+      distanceToCycleLowPct:nullableNumber(cySrc.distanceToCycleLowPct)??(legacy.pricePosition&&legacy.pricePosition.distanceToCycleLowPct!==null?legacy.pricePosition.distanceToCycleLowPct:null),
+      lastCycleUpdatedAt:normalizeDateOnly(cySrc.lastCycleUpdatedAt)||'',
+      dataSource:String(cySrc.dataSource||covSrc.cycleDataSource||'none')
+    },
+    priceActionEvent:{
+      detected:Boolean(eventSrc.detected),
+      type:String(eventSrc.type||''),
+      changePct:nullableNumber(eventSrc.changePct),
+      volumeStatus:String(eventSrc.volumeStatus||''),
+      needsNewsExplanation:Boolean(eventSrc.needsNewsExplanation)
+    },
+    finalTechnicalConclusion:String(src.finalTechnicalConclusion||legacy.technicalSummary||''),
+    holdHint:String(src.holdHint||legacy.holdHint||''),
+    addHint:String(src.addHint||legacy.addHint||''),
+    reduceHint:String(src.reduceHint||legacy.reduceHint||'')
+  };
+}
+function technicalDataFromReview(review,stock={}){
+  const r=normalizeTechnicalReview(review,stock);
+  const st=r.shortTermTechnical;
+  const cy=r.cycleTechnical;
+  return normalizeTechnicalData({
+    ...(stock.technicalData||{}),
+    symbol:String(stock.code||stock.symbol||''),
+    price:st.price,
+    priceUpdatedAt:st.priceUpdatedAt,
+    timeframe:'daily',
+    ma5:st.ma5,
+    ma10:st.ma10,
+    ma20:st.ma20,
+    ma60:st.ma60,
+    trendStatus:st.trendStatus,
+    supportLevels:st.supportLevels,
+    resistanceLevels:st.resistanceLevels,
+    technicalSummary:st.technicalSummary||r.finalTechnicalConclusion,
+    riskFlags:st.riskFlags,
+    actionHint:st.actionHint,
+    cyclePosition:cy.cyclePosition,
+    cycleSummary:cy.cycleSummary,
+    pricePosition:{
+      lookbackDays:cy.lookbackDays,
+      high:cy.cycleHigh,
+      low:cy.cycleLow,
+      currentPercentile:cy.currentPercentile,
+      distanceToCycleHighPct:cy.distanceToCycleHighPct,
+      distanceToCycleLowPct:cy.distanceToCycleLowPct
+    },
+    holdHint:r.holdHint,
+    addHint:r.addHint,
+    reduceHint:r.reduceHint,
+    lastUpdated:r.updatedAt
+  });
 }
 const VALUATION_FIELDS=['pe','pb','ps','dividendYield','revenueGrowth','profitGrowth','historicalPeLow','historicalPeMid','historicalPeHigh','historicalPbLow','historicalPbMid','historicalPbHigh','historicalPsLow','historicalPsMid','historicalPsHigh','marketCap','peTtm','forwardPe','evEbitda','historicalPercentile'];
 function defaultValuationData(stock={}){
@@ -265,6 +456,184 @@ function normalizeSentimentReview(v,stock={}){
     sourceQuality:enumValue(src.sourceQuality,['low','medium','high'],'low'),
     confidence:enumValue(src.confidence,['low','medium','high'],'low'),
     actionHint:String(src.actionHint||src.suggestedAction||'')
+  };
+}
+function enumOr(value,allowed,fallback){
+  const v=String(value||'').trim();
+  return allowed.includes(v)?v:fallback;
+}
+function nullableNumberValue(value){
+  if(value===null||value===undefined||value==='')return null;
+  const n=Number(value);
+  return isFinite(n)?n:null;
+}
+function defaultLongTermLogic(){
+  return {
+    updatedAt:'',
+    validUntil:'',
+    investmentThesis:'',
+    coreDrivers:[],
+    fundamentalSupport:'',
+    longTermRisks:[],
+    logicStatus:'unclear',
+    confidence:'low',
+    nextReviewDate:'',
+    sourceSummary:''
+  };
+}
+function normalizeLongTermLogic(v,stock={}){
+  const src=(v&&typeof v==='object')?v:{};
+  const framework=(stock.analysisFramework&&typeof stock.analysisFramework==='object')?stock.analysisFramework:{};
+  const conclusion=(framework.conclusion&&typeof framework.conclusion==='object')?framework.conclusion:{};
+  return {
+    updatedAt:normalizeDateOnly(src.updatedAt)||String(src.updatedAt||''),
+    validUntil:normalizeDateOnly(src.validUntil)||String(src.validUntil||''),
+    investmentThesis:String(src.investmentThesis||stock.thesis||stock.notes||conclusion.summary||''),
+    coreDrivers:normalizeStringArray(src.coreDrivers||conclusion.buyRules),
+    fundamentalSupport:String(src.fundamentalSupport||''),
+    longTermRisks:normalizeStringArray(src.longTermRisks||conclusion.invalidationConditions),
+    logicStatus:enumOr(src.logicStatus,['valid','weakening','broken','unclear'],'unclear'),
+    confidence:enumOr(src.confidence,['high','medium','low'],'low'),
+    nextReviewDate:normalizeDateOnly(src.nextReviewDate)||String(src.nextReviewDate||''),
+    sourceSummary:String(src.sourceSummary||'')
+  };
+}
+function defaultRecentCatalyst(){
+  return {
+    analysisDate:'',
+    lookbackDays:7,
+    latestSourceDate:'',
+    hasTodayNews:false,
+    todayCatalyst:'',
+    recentEvents:[],
+    freshnessStatus:'unknown',
+    freshnessDays:null,
+    missingData:[],
+    confidence:'low',
+    actionHint:''
+  };
+}
+function normalizeRecentCatalyst(v,stock={}){
+  const src=(v&&typeof v==='object')?v:{};
+  const ai=normalizeAiReviews(stock.aiReviews);
+  const news=(ai.newsReview&&typeof ai.newsReview==='object')?ai.newsReview:{};
+  const freshness=normalizeDataFreshness(stock.dataFreshness);
+  const latest=normalizeDateOnly(src.latestSourceDate)||normalizeDateOnly(news.updatedAt)||freshness.newsUpdatedAt||'';
+  let days=nullableNumberValue(src.freshnessDays);
+  if(days===null&&latest){
+    const t=new Date(todayDate()).getTime();
+    const d=new Date(latest).getTime();
+    if(isFinite(t)&&isFinite(d))days=Math.max(0,Math.floor((t-d)/86400000));
+  }
+  let freshnessStatus=enumOr(src.freshnessStatus,['fresh','acceptable','stale','unknown'],'unknown');
+  if(!src.freshnessStatus&&days!==null)freshnessStatus=days<=3?'fresh':(days<=7?'acceptable':'stale');
+  return {
+    analysisDate:normalizeDateOnly(src.analysisDate)||String(src.analysisDate||''),
+    lookbackDays:Math.max(1,Math.floor(clampNumber(src.lookbackDays,1,365,7))),
+    latestSourceDate:latest,
+    hasTodayNews:Boolean(src.hasTodayNews),
+    todayCatalyst:String(src.todayCatalyst||''),
+    recentEvents:normalizeStringArray(src.recentEvents||news.attentionPoints||news.positivePoints),
+    freshnessStatus,
+    freshnessDays:days,
+    missingData:normalizeStringArray(src.missingData),
+    confidence:enumOr(src.confidence,['high','medium','low'],'low'),
+    actionHint:String(src.actionHint||'')
+  };
+}
+function defaultEventExplanation(){
+  return {
+    priceActionDetected:false,
+    priceActionType:'',
+    canExplainTodayMove:false,
+    explanationConfidence:'low',
+    explanation:'',
+    missingData:[],
+    warning:''
+  };
+}
+function normalizeEventExplanation(v,stock={}){
+  const src=(v&&typeof v==='object')?v:{};
+  const tech=normalizeTechnicalReview(stock.technicalReview,stock);
+  const recent=normalizeRecentCatalyst(stock.recentCatalyst,stock);
+  const pct=nullableNumberValue(stock.dailyChange??stock.changePct??tech.priceActionEvent.changePct);
+  const eventType=String(src.priceActionType||tech.priceActionEvent.type||'');
+  const volumeStatus=String(tech.priceActionEvent.volumeStatus||'');
+  const detected=Boolean(src.priceActionDetected||eventType.trim()||tech.priceActionEvent.detected||(pct!==null&&Math.abs(pct)>=7)||tech.priceActionEvent.needsNewsExplanation||/放量|异动|突破|涨停|跌停/i.test(volumeStatus));
+  const type=String(eventType||(pct!==null&&pct>=9.5?'涨停/大涨':(pct!==null&&pct<=-9.5?'跌停/大跌':(detected?'异常波动':''))));
+  const canExplain=src.canExplainTodayMove===undefined?(detected?Boolean(recent.hasTodayNews&&recent.todayCatalyst):false):Boolean(src.canExplainTodayMove);
+  const missing=normalizeStringArray(src.missingData);
+  if(detected&&!canExplain&&!missing.length)missing.push('当日新闻或公告','资金流/龙虎榜','板块异动原因');
+  const warning=String(src.warning||(detected&&!canExplain?'现有新闻无法充分解释当日异动，新闻结论应降权，操作层避免追涨并等待确认。':''));
+  return {
+    priceActionDetected:detected,
+    priceActionType:type,
+    canExplainTodayMove:canExplain,
+    explanationConfidence:enumOr(src.explanationConfidence,['high','medium','low'],'low'),
+    explanation:String(src.explanation||''),
+    missingData:missing,
+    warning
+  };
+}
+function defaultShortTermSentiment(stock={}){
+  const old=defaultSentimentReview(stock);
+  return {
+    updatedAt:'',
+    marketMood:'',
+    fundFlowView:'',
+    sectorHeat:'',
+    institutionalView:'',
+    riskFlags:[],
+    confidence:'low',
+    actionHint:'',
+    _fallback:old
+  };
+}
+function normalizeShortTermSentiment(v,stock={}){
+  const src=(v&&typeof v==='object')?v:{};
+  const old=normalizeSentimentReview(stock.sentimentReview,stock);
+  return {
+    updatedAt:normalizeDateOnly(src.updatedAt)||old.updatedAt||'',
+    marketMood:String(src.marketMood||old.marketMood||''),
+    fundFlowView:String(src.fundFlowView||old.fundFlowView||''),
+    sectorHeat:String(src.sectorHeat||old.sectorHeat||''),
+    institutionalView:String(src.institutionalView||old.institutionalView||''),
+    riskFlags:normalizeStringArray(src.riskFlags&&src.riskFlags.length?src.riskFlags:old.riskFlags),
+    confidence:enumOr(src.confidence||old.confidence,['high','medium','low'],'low'),
+    actionHint:String(src.actionHint||old.actionHint||'')
+  };
+}
+function defaultInformationCompleteness(){
+  return {news:'unknown',fundFlow:'unknown',technical:'unknown',valuation:'unknown',overall:'unknown',missingItems:[],warning:''};
+}
+function completenessLevel(v){return enumOr(v,['high','medium','low','unknown'],'unknown')}
+function normalizeInformationCompleteness(v,stock={}){
+  const src=(v&&typeof v==='object')?v:{};
+  const rc=normalizeRecentCatalyst(stock.recentCatalyst,stock);
+  const st=normalizeShortTermSentiment(stock.shortTermSentiment,stock);
+  const tech=normalizeTechnicalReview(stock.technicalReview,stock);
+  const vd=normalizeValuationData(stock.valuationData);
+  const vr=normalizeValuationReview(stock.valuationReview);
+  const missing=normalizeStringArray(src.missingItems);
+  const news=src.news?completenessLevel(src.news):(rc.latestSourceDate||rc.recentEvents.length?'medium':'low');
+  const fundFlow=src.fundFlow?completenessLevel(src.fundFlow):(st.fundFlowView?'medium':'low');
+  const technical=src.technical?completenessLevel(src.technical):(tech.shortTermTechnical.price||tech.shortTermTechnical.trendStatus?'high':'low');
+  const valuation=src.valuation?completenessLevel(src.valuation):((vd.valuationConclusion||vr.summary||vd.peTtm||vd.pe||vd.pb)?'medium':'low');
+  if(news==='low'&&!missing.includes('新闻/公告'))missing.push('新闻/公告');
+  if(fundFlow==='low'&&!missing.includes('资金流'))missing.push('资金流');
+  if(technical==='low'&&!missing.includes('技术面'))missing.push('技术面');
+  if(valuation==='low'&&!missing.includes('估值'))missing.push('估值');
+  const lows=[news,fundFlow,technical,valuation].filter(x=>x==='low').length;
+  const highs=[news,fundFlow,technical,valuation].filter(x=>x==='high').length;
+  const overall=src.overall?completenessLevel(src.overall):(lows>=2?'low':(highs>=3?'high':'medium'));
+  return {
+    news,
+    fundFlow,
+    technical,
+    valuation,
+    overall,
+    missingItems:missing,
+    warning:String(src.warning||'')
   };
 }
 function defaultEtfAnalysis(stock={}){
@@ -1036,10 +1405,17 @@ function normalizeStockAnalysis(stock){
   if(!stock.valuationData.symbol)stock.valuationData.symbol=String(stock.code||stock.symbol||'');
   stock.valuationReview=normalizeValuationReview(stock.valuationReview);
   stock.sentimentReview=normalizeSentimentReview(stock.sentimentReview,stock);
+  stock.longTermLogic=normalizeLongTermLogic(stock.longTermLogic,stock);
+  stock.recentCatalyst=normalizeRecentCatalyst(stock.recentCatalyst,stock);
+  stock.eventExplanation=normalizeEventExplanation(stock.eventExplanation,stock);
+  stock.shortTermSentiment=normalizeShortTermSentiment(stock.shortTermSentiment,stock);
+  stock.informationCompleteness=normalizeInformationCompleteness(stock.informationCompleteness,stock);
   stock.financialData=normalizeFinancialData(stock.financialData);
   stock.priceHistory=normalizePriceHistory(stock);
   stock.technicalData=normalizeTechnicalData(stock.technicalData);
   if(!stock.technicalData.symbol)stock.technicalData.symbol=String(stock.code||stock.symbol||'');
+  stock.technicalReview=normalizeTechnicalReview(stock.technicalReview,stock);
+  stock.technicalData=technicalDataFromReview(stock.technicalReview,stock);
   stock.etfAnalysis=normalizeEtfAnalysis(stock.etfAnalysis,stock);
   stock.analysisFramework=normalizeAnalysisFramework(stock.analysisFramework,stock);
   stock.allocationDecision=normalizeAllocationDecision(stock.allocationDecision,stock);
