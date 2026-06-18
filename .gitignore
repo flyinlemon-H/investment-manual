@@ -16,6 +16,8 @@ Thumbs.db
 *.old
 *_report.json
 dist/投资作战手册_V*.html
+dist/social_posts.json
+dist/social_summary.json
 投资作战手册_V*.html
 投资作战手册-V*.json
 !dist/投资作战手册_V12.1-Codex.1.html
