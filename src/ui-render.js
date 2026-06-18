@@ -293,6 +293,28 @@ function financialQualityLine(fd){
   else if(fd.operatingCashFlow!==null&&fd.operatingCashFlow!==undefined&&String(fd.operatingCashFlow)!=='')parts.push(`经营现金流 ${fmtMoney(fd.operatingCashFlow)}`);
   return parts.join('，')||'财务指标待补充';
 }
+function financialMetricLine(fd){
+  const items=[];
+  const pct=(label,v)=>{if(v!==null&&v!==undefined&&String(v)!=='')items.push(`${label} ${Number(v)>=0?'+':''}${fmtMaybe(v,2)}%`)};
+  pct('营收同比',fd.revenueGrowth);
+  pct('净利润同比',fd.profitGrowth);
+  pct('毛利率',fd.grossMargin);
+  pct('净利率',fd.netMargin);
+  pct('ROE',fd.roe);
+  if(fd.operatingCashFlow!==null&&fd.operatingCashFlow!==undefined&&String(fd.operatingCashFlow)!=='')items.push(`经营现金流 ${fmtMoney(fd.operatingCashFlow)}`);
+  pct('资产负债率',fd.debtRatio);
+  return items.join(' · ')||'关键财务指标待补充';
+}
+function logicRealizationText(f,fd){
+  const review=f.financialReview||{};
+  const positives=normalizeStringArray(review.positivePoints).filter(x=>/(收入|营收|利润|现金流|服务器|AI|算力|兑现|增长)/i.test(String(x))).slice(0,4);
+  const base=review.growthQuality||positives.join('；')||'逻辑兑现情况待补充';
+  const prefix=[];
+  if(fd.revenueGrowth!==null&&fd.revenueGrowth!==undefined&&String(fd.revenueGrowth)!=='')prefix.push(`收入${Number(fd.revenueGrowth)>=0?'+':''}${fmtMaybe(fd.revenueGrowth,2)}%`);
+  if(fd.profitGrowth!==null&&fd.profitGrowth!==undefined&&String(fd.profitGrowth)!=='')prefix.push(`利润${Number(fd.profitGrowth)>=0?'+':''}${fmtMaybe(fd.profitGrowth,2)}%`);
+  if(Number(fd.operatingCashFlow)>0)prefix.push('现金流显著改善');
+  return `${prefix.length?prefix.join('，')+'。':''}${formatChineseText(base)}`;
+}
 function fundamentalSummaryForPrompt(stock){
   const f=fundamentalAnalysis(stock);
   return {
@@ -2538,10 +2560,12 @@ function fundamentalAnalysisPanel(stock){
   const valuationLevel=inferValuationLevelLabel(f);
   const combined=fundamentalCombinedJudgement(companyQuality,valuationLevel);
   const financialLine=financialQualityLine(fd);
+  const financialMetrics=financialMetricLine(fd);
+  const logicRealization=logicRealizationText(f,fd);
   const financialReviewSummary=(f.financialReview&&f.financialReview.summary)||f.financialSummary||'—';
   const valuationReviewSummary=(f.valuationReview&&f.valuationReview.summary)||vd.valuationConclusion||f.valuationSummary||'—';
   const missingText=f.missing.length?' · '+f.missing.map(esc).join('、'):'';
-  return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--teal)"><div class="card-title">基本面分析</div><div class="dash" style="margin:0"><div><div class="card-title">公司质量</div><div class="card-num" style="font-size:22px">${esc(companyQuality)}</div><div class="card-note">${esc(financialLine)}</div></div><div><div class="card-title">估值水平</div><div class="card-num" style="font-size:22px">${esc(valuationLevel)}</div><div class="card-note">PE ${vd.peTtm===null?fmtMaybe(vd.pe,2):fmtMaybe(vd.peTtm,2)} · PB ${fmtMaybe(vd.pb,2)} · 分位 ${vd.historicalPercentile===null?'—':fmtMaybe(vd.historicalPercentile,1)+'%'}</div></div><div><div class="card-title">综合判断</div><div class="text" style="max-width:none;font-weight:800;color:var(--ink)">${esc(combined)}</div><div class="card-note">${missingText?missingText.slice(3):'财务与估值分开判断'}</div></div><div><div class="card-title">评分拆分</div><div class="card-note">财务质量 ${fmtMaybe(f.financialScore,1)} / 10</div><div class="card-note">估值吸引力 ${fmtMaybe(f.valuationScore,1)} / 10</div><div class="card-note">综合评分 ${fmtMaybe(f.score,1)} / 10</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>财务质量：</b>${esc(formatChineseText(financialReviewSummary))}<br><b>估值结论：</b>${esc(formatChineseText(valuationReviewSummary))}<br><b>财务风险：</b>${financialRisks}<br><b>估值风险：</b>${valuationRisks}<br><span class="muted">说明：估值偏贵会降低“估值吸引力”，但不会直接把公司质量判断降为“一般”。</span></div><div class="card-note" style="margin-top:8px">财报 ${esc(fd.lastUpdated||'—')} · 估值 ${esc(vd.updatedAt||vd.lastUpdated||'—')}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-fundamental-prompt">复制基本面分析 Prompt</button><button class="btn ghost small" data-detail-action="import-fundamental-json">导入基本面 JSON</button></div></div>`;
+  return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--teal)"><div class="card-title">基本面分析</div><div class="dash" style="margin:0"><div><div class="card-title">公司质量 / 财务质量</div><div class="card-num" style="font-size:22px">${esc(companyQuality)}</div><div class="card-note">${esc(financialLine)}</div></div><div><div class="card-title">逻辑兑现情况</div><div class="text" style="max-width:none">${esc(logicRealization)}</div></div><div><div class="card-title">估值水平</div><div class="card-num" style="font-size:22px">${esc(valuationLevel)}</div><div class="card-note">PE ${vd.peTtm===null?fmtMaybe(vd.pe,2):fmtMaybe(vd.peTtm,2)} · Forward ${fmtMaybe(vd.forwardPe,2)} · PB ${fmtMaybe(vd.pb,2)} · 分位 ${vd.historicalPercentile===null?'—':fmtMaybe(vd.historicalPercentile,1)+'%'} · 股息 ${vd.dividendYield===null||vd.dividendYield===undefined?'—':fmtMaybe(vd.dividendYield,2)+'%'}</div></div><div><div class="card-title">综合判断</div><div class="text" style="max-width:none;font-weight:800;color:var(--ink)">${esc(combined)}</div><div class="card-note">${missingText?missingText.slice(3):'公司质量和价格吸引力分开判断'}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>财务质量：</b>${esc(formatChineseText(financialReviewSummary))}<br><b>关键财务指标：</b>${esc(financialMetrics)}<br><b>估值结论：</b>${esc(formatChineseText(valuationReviewSummary))}<br><b>财务风险：</b>${financialRisks}<br><b>估值风险：</b>${valuationRisks}<br><b>评分拆分：</b>财务质量 ${fmtMaybe(f.financialScore,1)} / 10 · 估值吸引力 ${fmtMaybe(f.valuationScore,1)} / 10 · 综合评分 ${fmtMaybe(f.score,1)} / 10<br><span class="muted">说明：估值偏贵会降低“估值吸引力”，但不会直接把公司质量判断降为“一般”。</span></div><div class="card-note" style="margin-top:8px">财报 ${esc(fd.lastUpdated||'—')} · 估值 ${esc(vd.updatedAt||vd.lastUpdated||'—')}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-fundamental-prompt">复制基本面分析 Prompt</button><button class="btn ghost small" data-detail-action="import-fundamental-json">导入基本面 JSON</button></div></div>`;
 }
 function etfIndexAnalysisPanel(stock){
   const a=etfAnalysisSummary(stock);
@@ -4522,7 +4546,10 @@ function longTermLogicPromptText(stock){
     '【当前系统已有信息】',
     JSON.stringify(ctx,null,2),
     '',
-    '请重点整理：投资主线、核心驱动、财务验证、长期风险、逻辑有效性、下次复核日期。',
+    '长期逻辑只回答“为什么长期持有”，不要写成财报分析或估值分析。',
+    '请重点整理：investmentThesis、coreDrivers、longTermRisks、logicStatus、confidence、validUntil、nextReviewDate、sourceSummary。',
+    '不要要求输出独立“财务验证”模块，不要把营收、利润、现金流、PE、PB 等数字作为长期逻辑页的主要展示内容。',
+    '财报数字只能作为 sourceSummary 或 fundamentalSupport 中的辅助证据；核心输出应是产业逻辑、公司逻辑和长期风险。',
     '请使用中文输出自然语言字段；枚举字段可以使用英文固定值。',
     '只输出严格 JSON，不要 Markdown，不要解释文字。',
     JSON.stringify(schema,null,2)
@@ -4747,19 +4774,6 @@ function longLogicDriverCards(drivers){
   if(!arr.length)return '<div class="alert">核心驱动待补充。</div>';
   return `<div class="long-logic-driver-grid">${arr.map(x=>`<div class="long-logic-driver">✓ ${esc(x)}</div>`).join('')}</div>`;
 }
-function longLogicFinancialVerification(text){
-  const raw=formatChineseText(text||'').trim();
-  if(!raw)return '<div class="alert">逻辑验证待补充。</div>';
-  const items=[];
-  const add=(label,pattern)=>{if(pattern.test(raw))items.push(label)};
-  add('营收增长',/(营收|收入|营业收入).{0,16}(增长|同比|提升|增加|增速|高增)/);
-  add('净利润增长',/(净利润|归母|利润).{0,16}(增长|同比|提升|增加|增速|高增)/);
-  add('现金流改善',/(现金流|经营现金流|自由现金流).{0,18}(改善|转正|增长|同比|充沛|健康|净额)/);
-  if(items.length){
-    return `<div class="long-logic-verify-status">✓ 已验证</div><div class="long-logic-driver-grid">${items.map(x=>`<div class="long-logic-driver">✓ ${esc(x)}</div>`).join('')}</div><div class="text long-logic-muted-text">${esc(raw)}</div>`;
-  }
-  return `<div class="long-logic-verify-status">✓ 已记录</div><div class="text long-logic-muted-text">${esc(raw)}</div>`;
-}
 function longLogicChangeText(l){
   if(!l||!(l.investmentThesis||l.coreDrivers.length||l.fundamentalSupport||l.longTermRisks.length))return '待补充长期逻辑档案。';
   if(l.logicStatus==='valid')return '当前逻辑有效；未保存上次状态用于自动对比。';
@@ -4776,7 +4790,7 @@ function longTermLogicPanel(stock){
   const status=longLogicStatusText(l.logicStatus);
   const confidence=zhConfidence(l.confidence)||'—';
   const risks=normalizeStringArray(l.longTermRisks).map(formatChineseText).filter(Boolean);
-  const detailedLogic=`<div class="text" style="max-width:none"><b>投资主线：</b><br>${esc(formatChineseText(l.investmentThesis||'—'))}<br><br><b>来源摘要：</b><br>${esc(formatChineseText(l.sourceSummary||'—'))}</div>`;
+  const detailedLogic=`<div class="text" style="max-width:none"><b>投资主线：</b><br>${esc(formatChineseText(l.investmentThesis||'—'))}<br><br><b>来源摘要：</b><br>${esc(formatChineseText(l.sourceSummary||'—'))}${l.fundamentalSupport?`<br><br><b>补充证据：</b><br>${esc(formatChineseText(l.fundamentalSupport))}`:''}</div>`;
   const body=has
     ?`<div class="long-logic-memo">
       <div class="long-logic-hero">
@@ -4790,7 +4804,6 @@ function longTermLogicPanel(stock){
       </div>
       <section class="long-logic-section"><div class="card-title">核心结论</div><div class="long-logic-thesis">${esc(longLogicThesisExcerpt(l.investmentThesis))}</div></section>
       <section class="long-logic-section"><div class="card-title">核心驱动</div>${longLogicDriverCards(l.coreDrivers)}</section>
-      <section class="long-logic-section"><div class="card-title">逻辑验证</div>${longLogicFinancialVerification(l.fundamentalSupport)}</section>
       <section class="long-logic-section"><div class="card-title">与上次相比</div><div class="long-logic-change">${esc(longLogicChangeText(l))}</div></section>
       ${longLogicDetailsBlock(`长期风险（${risks.length}项）`,risks.length?`<ul>${risks.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'<div class="text">暂无长期风险记录。</div>')}
       ${longLogicDetailsBlock('详细内容',detailedLogic)}
