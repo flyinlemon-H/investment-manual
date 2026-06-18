@@ -4485,7 +4485,7 @@ function valuationAnalysisPanel(stock){
   const completeness=getValuationCompleteness(vd);
   const valNum=(v,d=2)=>v===null||v===undefined||v===''||!(Number(v)>0)?'—':fmtMaybe(v,d);
   const levelText=completeness.level==='complete'?'较完整':(completeness.level==='partial'?'部分完整':'缺失');
-  return `<div class="card" style="margin-bottom:14px"><div class="card-title">估值分析</div><div class="dash" style="margin:0"><div><div class="card-title">估值结论</div><div class="text" style="max-width:none">${esc(formatChineseText(vd.valuationConclusion||'暂无估值结论'))}</div><div class="card-note">更新：${esc(vd.updatedAt||vd.lastUpdated||'—')} · ${esc(vd.currency||'—')}</div></div><div><div class="card-title">当前市值</div><div class="card-num" style="font-size:20px">${vd.marketCap===null?'—':fmtMoney(vd.marketCap)}</div><div class="card-note">历史分位 ${vd.historicalPercentile===null?'—':fmtMaybe(vd.historicalPercentile,1)+'%'}</div></div><div><div class="card-title">估值指标</div><div class="card-note">PE TTM ${vd.peTtm===null?valNum(vd.pe,2):valNum(vd.peTtm,2)} · Forward PE ${valNum(vd.forwardPe,2)}</div><div class="card-note">PB ${valNum(vd.pb,2)} · PS ${valNum(vd.ps,2)} · EV/EBITDA ${valNum(vd.evEbitda,2)} · 股息率 ${vd.dividendYield===null||vd.dividendYield===undefined?'—':fmtMaybe(vd.dividendYield,2)+'%'}</div></div><div><div class="card-title">完整度</div><div class="card-note">${esc(levelText)} ${completeness.score}%</div><div class="card-note">缺失：${esc(completeness.missingFields.join('、')||'—')}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>已有字段：</b>${esc(completeness.completedFields.join('、')||'—')}<br><b>同行业对比：</b>${esc(vd.peerComparison||'—')}<br><b>估值摘要：</b>${esc(formatChineseText(vr.summary||vd.valuationNote||'—'))}<br><b>估值风险：</b>${risks}<br><b>操作提示：</b>${esc(formatChineseText(vr.actionHint||'—'))}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="import-valuation-json">导入估值 JSON</button></div></div>`;
+  return `<div class="card" style="margin-bottom:14px"><div class="card-title">估值分析</div><div class="dash" style="margin:0"><div><div class="card-title">估值结论</div><div class="text" style="max-width:none">${esc(formatChineseText(vd.valuationConclusion||'暂无估值结论'))}</div><div class="card-note">更新：${esc(vd.updatedAt||vd.lastUpdated||'—')} · ${esc(vd.currency||'—')}</div></div><div><div class="card-title">当前市值</div><div class="card-num" style="font-size:20px">${vd.marketCap===null?'—':fmtMoney(vd.marketCap)}</div><div class="card-note">历史分位 ${vd.historicalPercentile===null?'—':fmtMaybe(vd.historicalPercentile,1)+'%'}</div></div><div><div class="card-title">估值指标</div><div class="card-note">PE TTM ${vd.peTtm===null?valNum(vd.pe,2):valNum(vd.peTtm,2)} · Forward PE ${valNum(vd.forwardPe,2)}</div><div class="card-note">PB ${valNum(vd.pb,2)} · PS ${valNum(vd.ps,2)} · EV/EBITDA ${valNum(vd.evEbitda,2)} · 股息率 ${vd.dividendYield===null||vd.dividendYield===undefined?'—':fmtMaybe(vd.dividendYield,2)+'%'}</div></div><div><div class="card-title">完整度</div><div class="card-note">${esc(levelText)} ${completeness.score}%</div><div class="card-note">缺失：${esc(completeness.missingFields.join('、')||'—')}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>已有字段：</b>${esc(completeness.completedFields.join('、')||'—')}<br><b>同行业对比：</b>${esc(vd.peerComparison||'—')}<br><b>估值摘要：</b>${esc(formatChineseText(vr.summary||vd.valuationNote||'—'))}<br><b>估值风险：</b>${risks}<br><b>操作提示：</b>${esc(formatChineseText(vr.actionHint||'—'))}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-valuation-lookup-prompt">复制估值查找 Prompt</button><button class="btn ghost small" data-detail-action="import-valuation-json">导入估值 JSON</button></div></div>`;
 }
 function fundamentalAnalysisPanel(stock){
   const f=fundamentalAnalysis(stock);
@@ -5077,7 +5077,7 @@ function ensureAiAnalysisImportModal(){
   let el=document.getElementById('aiAnalysisImportModal');
   if(el)return el;
   el=document.createElement('div');
-  el.className='modal-bg';
+  el.className='modal-bg import-layer';
   el.id='aiAnalysisImportModal';
   el.innerHTML=`<div class="modal"><h2>导入AI分析JSON</h2><div class="modal-sub">只会写入当前股票的 analysisFramework，不会覆盖持仓、价格、计划、操作记录或社媒数据。</div><div class="form-row"><label>AI 返回 JSON</label><textarea id="aiAnalysisJsonText" style="min-height:320px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"analysisFramework\":{...}}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="aiImportCloseBtn" type="button">取消</button><button class="btn" id="aiImportSaveBtn" type="button">导入分析</button></div></div>`;
   document.body.appendChild(el);
@@ -5574,7 +5574,7 @@ function ensureTechnicalJsonImportModal(){
   let el=document.getElementById('technicalJsonImportModal');
   if(el)return el;
   el=document.createElement('div');
-  el.className='modal-bg';
+  el.className='modal-bg import-layer';
   el.id='technicalJsonImportModal';
   el.innerHTML=`<div class="modal"><h2>导入技术面 JSON</h2><div class="modal-sub">支持 V12 technicalReview 或旧版 technicalData。日常只导入近期K线时，会保留上次500日周期位置。</div><div class="form-row"><label>粘贴 JSON</label><textarea id="technicalJsonImportText" style="min-height:280px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"technicalReview\":{\"inputCoverage\":{\"hasRecentKline\":true,\"hasCycleKline\":false},\"shortTermTechnical\":{\"price\":26,\"ma5\":25.8,\"supportLevels\":[25]},\"finalTechnicalConclusion\":\"...\"}}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="technicalJsonImportCancelBtn" type="button">取消</button><button class="btn" id="technicalJsonImportSaveBtn" type="button">导入技术面数据</button></div></div>`;
   document.body.appendChild(el);
@@ -5840,7 +5840,7 @@ function ensureValuationImportModal(){
   let el=document.getElementById('valuationImportModal');
   if(el)return el;
   el=document.createElement('div');
-  el.className='modal-bg';
+  el.className='modal-bg import-layer';
   el.id='valuationImportModal';
   el.innerHTML=`<div class="modal"><h2>导入估值 JSON</h2><div class="modal-sub">支持 valuationData、valuationReview 或估值查找 Prompt 返回的完整 JSON。不会自动修改配置决策、目标仓位或当前操作建议。</div><div class="form-row"><label>粘贴估值 JSON</label><textarea id="valuationImportText" style="min-height:280px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"valuationData\":{\"peTtm\":12,\"pb\":1.8},\"valuationReview\":{\"summary\":\"...\"},\"sources\":[]}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="valuationImportCancelBtn" type="button">取消</button><button class="btn" id="valuationImportSaveBtn" type="button">导入估值 JSON</button></div></div>`;
   document.body.appendChild(el);
@@ -5916,7 +5916,7 @@ function ensureAllocationDecisionImportModal(){
   let el=document.getElementById('allocationDecisionImportModal');
   if(el)return el;
   el=document.createElement('div');
-  el.className='modal-bg';
+  el.className='modal-bg import-layer';
   el.id='allocationDecisionImportModal';
   el.innerHTML=`<div class="modal"><h2>导入配置决策 JSON</h2><div class="modal-sub">导入后只写入 allocationDecision，不会自动修改持仓、成本、目标仓位或最大仓位。</div><div class="form-row"><label>粘贴 allocationDecision JSON</label><textarea id="allocationDecisionImportText" style="min-height:300px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"allocationDecision\":{\"conclusion\":\"...\",\"recommendedTargetWeight\":5,\"capitalAllocationView\":\"conditional\"}}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="allocationDecisionCancelBtn" type="button">取消</button><button class="btn" id="allocationDecisionSaveBtn" type="button">导入配置决策</button></div></div>`;
   document.body.appendChild(el);
@@ -6002,7 +6002,7 @@ function ensureFinancialImportModal(){
   let el=document.getElementById('financialImportModal');
   if(el)return el;
   el=document.createElement('div');
-  el.className='modal-bg';
+  el.className='modal-bg import-layer';
   el.id='financialImportModal';
   el.innerHTML=`<div class="modal"><h2>导入财报/财务 JSON</h2><div class="modal-sub">支持 financialData、financialReview，或“财报查找 Prompt”返回的完整 JSON。不会覆盖九模块 financials，应用到九模块需另点按钮确认。</div><div class="form-row"><label>粘贴 JSON</label><textarea id="financialImportText" style="min-height:260px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"financialData\":{\"revenue\":0,\"revenueGrowth\":0},\"financialReview\":{\"summary\":\"...\"},\"sources\":[]}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="financialImportCancelBtn" type="button">取消</button><button class="btn" id="financialImportSaveBtn" type="button">导入财报/财务数据</button></div></div>`;
   document.body.appendChild(el);
@@ -6027,7 +6027,7 @@ function ensureFundamentalImportModal(){
   let el=document.getElementById('fundamentalImportModal');
   if(el)return el;
   el=document.createElement('div');
-  el.className='modal-bg';
+  el.className='modal-bg import-layer';
   el.id='fundamentalImportModal';
   el.innerHTML=`<div class="modal"><h2>导入基本面 JSON</h2><div class="modal-sub">支持只含财报、只含估值，或同时包含 financialData / financialReview / valuationData / valuationReview 的 JSON。不会覆盖九模块评分、配置决策或操作建议。</div><div class="form-row"><label>粘贴基本面 JSON</label><textarea id="fundamentalImportText" style="min-height:280px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"financialData\":{},\"financialReview\":{},\"valuationData\":{},\"valuationReview\":{}}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="fundamentalImportCancelBtn" type="button">取消</button><button class="btn" id="fundamentalImportSaveBtn" type="button">导入基本面数据</button></div></div>`;
   document.body.appendChild(el);
@@ -6108,7 +6108,7 @@ function ensureEtfAnalysisImportModal(){
   let el=document.getElementById('etfAnalysisImportModal');
   if(el)return el;
   el=document.createElement('div');
-  el.className='modal-bg';
+  el.className='modal-bg import-layer';
   el.id='etfAnalysisImportModal';
   el.innerHTML=`<div class="modal"><h2>导入 ETF 分析 JSON</h2><div class="modal-sub">支持 {"etfAnalysis": {...}} 或 etfAnalysis 对象本体。只写入当前 ETF 的 etfAnalysis，不会修改目标仓位、配置决策或当前操作建议。</div><div class="form-row"><label>粘贴 ETF 分析 JSON</label><textarea id="etfAnalysisImportText" style="min-height:280px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"etfAnalysis\":{\"indexName\":\"\",\"conclusion\":\"\"}}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="etfAnalysisImportCancelBtn" type="button">取消</button><button class="btn" id="etfAnalysisImportSaveBtn" type="button">导入 ETF 分析</button></div></div>`;
   document.body.appendChild(el);
@@ -6750,6 +6750,51 @@ function longTermLogicPanel(stock){
     :'<div class="alert">待补充长期逻辑。</div>';
   return `<div class="card" style="margin-bottom:14px"><div class="card-title">长期逻辑</div>${body}<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-long-term-logic-prompt">复制长期逻辑整理 Prompt</button><button class="btn ghost small" data-detail-action="import-sentiment-json">导入长期逻辑 JSON</button></div></div>`;
 }
+function handleDetailAction(action,stock){
+  const s=stock||state.stocks.find(x=>x.id===detailStockId);
+  if(!action)return;
+  if(action==='refresh'&&s)refreshOnePrice(s.id);
+  if(action==='long-logic')openLongLogicModal();
+  if(action==='edit'&&s)openModal(s.id);
+  if(action==='ai-assistant')openAiAssistant();
+  if(action==='financial-source')openFinancialSourceAssistant();
+  if(action==='valuation-source')openValuationSourceAssistant();
+  if(action==='ai-prompt')openAiAnalysisPrompt();
+  if(action==='ai-import')openAiAnalysisImport();
+  if(action==='ai-strategy-import')openAiAssistantTask('strategy');
+  if(action==='edit-inputs')openAnalysisInputsEditor();
+  if(action==='template')openAnalysisTemplateModal();
+  if(action==='edit-strategy')openStrategyEditor();
+  if(action==='view-allocation-detail')openAllocationDecisionDetail();
+  if(action==='copy-allocation-prompt')copyAllocationDecisionPrompt();
+  if(action==='import-allocation-json')openAllocationDecisionImportModal();
+  if(action==='copy-technical-prompt')copyTechnicalAnalysisPrompt();
+  if(action==='import-technical-json')openTechnicalJsonImportModal();
+  if(action==='copy-full-add-discussion-prompt')copyFullAddDiscussionPrompt();
+  if(action==='copy-trade-plan-prompt')copyTradePlanPrompt();
+  if(action==='import-trade-plan-json')openTradePlanImportModal();
+  if(action==='copy-fundamental-prompt')copyFundamentalPrompt();
+  if(action==='import-fundamental-json')openFundamentalImportModal();
+  if(action==='copy-etf-analysis-prompt')copyEtfAnalysisPrompt();
+  if(action==='import-etf-analysis-json')openEtfAnalysisImportModal();
+  if(action==='copy-sentiment-prompt')copySentimentSearchPrompt();
+  if(action==='copy-recent-catalyst-prompt')copyRecentCatalystPrompt();
+  if(action==='copy-short-term-sentiment-prompt')copyShortTermSentimentPrompt();
+  if(action==='copy-long-term-logic-prompt')copyLongTermLogicPrompt();
+  if(action==='import-sentiment-json')openSentimentImportModal();
+  if(action==='edit-technical')openTechnicalDataEditor();
+  if(action==='import-history')importPriceHistoryCsv();
+  if(action==='update-technical-history')updateTechnicalFromHistoryForDetail();
+  if(action==='apply-technical')applyTechnicalSignalToAnalysis();
+  if(action==='edit-valuation')openValuationDataEditor();
+  if(action==='copy-valuation-lookup-prompt')copyValuationLookupPrompt();
+  if(action==='import-valuation-json')openValuationImportModal();
+  if(action==='apply-valuation')applyValuationSignalToAnalysis();
+  if(action==='edit-financial')openFinancialDataEditor();
+  if(action==='copy-financial-search-prompt')copyFinancialSearchPrompt();
+  if(action==='import-financial')openFinancialImportModal();
+  if(action==='apply-financial')applyFinancialSignalToAnalysis();
+}
 function ensureLongLogicModal(){
   let el=document.getElementById('longLogicModal');
   if(el)return el;
@@ -6762,8 +6807,7 @@ function ensureLongLogicModal(){
   el.addEventListener('click',e=>{
     const btn=e.target.closest&&e.target.closest('[data-detail-action]');
     if(!btn)return;
-    if(btn.dataset.detailAction==='copy-long-term-logic-prompt')copyLongTermLogicPrompt();
-    if(btn.dataset.detailAction==='import-sentiment-json')openSentimentImportModal();
+    handleDetailAction(btn.dataset.detailAction);
   });
   document.getElementById('longLogicCloseBtn').addEventListener('click',closeLongLogicModal);
   return el;
