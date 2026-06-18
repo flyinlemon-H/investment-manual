@@ -4637,12 +4637,74 @@ function detailAdvancedToolsArchivePanel(s){
   const body=`${collectionPanel(s)}${technicalAnalysisFlowPanel()}${financialAnalysisFlowPanel()}${unifiedPromptPanel(s)}${comprehensivePackagePanel(s)}${aiReviewImportPanel(s)}${detailToolsPanel(s)}`;
   return collapsibleCard('高级工具与旧流程',body,false,'默认折叠。旧版 Prompt、信息采集、AI Review 导入和维护工具都保留在这里。');
 }
+function longLogicStatusText(value){
+  return {valid:'有效',weakening:'减弱',broken:'失效',unclear:'不明确'}[value]||value||'不明确';
+}
+function longLogicStatusIcon(value){
+  return value==='valid'?'✓':(value==='weakening'?'!':(value==='broken'?'×':'?'));
+}
+function longLogicThesisExcerpt(value){
+  const raw=formatChineseText(value||'').replace(/\r/g,'\n').trim();
+  if(!raw)return '待补充核心结论。';
+  const byLine=raw.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  if(byLine.length>1)return byLine.slice(0,4).join('\n');
+  const parts=raw.replace(/([。！？；;])/g,'$1\n').split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  const excerpt=(parts.length?parts.slice(0,4).join(''):raw);
+  return excerpt.length>180?excerpt.slice(0,180)+'…':excerpt;
+}
+function longLogicDriverCards(drivers){
+  const arr=normalizeStringArray(drivers).map(formatChineseText).filter(Boolean);
+  if(!arr.length)return '<div class="alert">核心驱动待补充。</div>';
+  return `<div class="long-logic-driver-grid">${arr.map(x=>`<div class="long-logic-driver">✓ ${esc(x)}</div>`).join('')}</div>`;
+}
+function longLogicFinancialVerification(text){
+  const raw=formatChineseText(text||'').trim();
+  if(!raw)return '<div class="alert">逻辑验证待补充。</div>';
+  const items=[];
+  const add=(label,pattern)=>{if(pattern.test(raw))items.push(label)};
+  add('营收增长',/(营收|收入|营业收入).{0,16}(增长|同比|提升|增加|增速|高增)/);
+  add('净利润增长',/(净利润|归母|利润).{0,16}(增长|同比|提升|增加|增速|高增)/);
+  add('现金流改善',/(现金流|经营现金流|自由现金流).{0,18}(改善|转正|增长|同比|充沛|健康|净额)/);
+  if(items.length){
+    return `<div class="long-logic-verify-status">✓ 已验证</div><div class="long-logic-driver-grid">${items.map(x=>`<div class="long-logic-driver">✓ ${esc(x)}</div>`).join('')}</div><div class="text long-logic-muted-text">${esc(raw)}</div>`;
+  }
+  return `<div class="long-logic-verify-status">✓ 已记录</div><div class="text long-logic-muted-text">${esc(raw)}</div>`;
+}
+function longLogicChangeText(l){
+  if(!l||!(l.investmentThesis||l.coreDrivers.length||l.fundamentalSupport||l.longTermRisks.length))return '待补充长期逻辑档案。';
+  if(l.logicStatus==='valid')return '当前逻辑有效；未保存上次状态用于自动对比。';
+  if(l.logicStatus==='weakening')return '逻辑减弱，需要提前复核。';
+  if(l.logicStatus==='broken')return '逻辑失效，需要重新评估持仓理由。';
+  return '首次建立长期逻辑档案。';
+}
+function longLogicDetailsBlock(title,body,open=false){
+  return `<details class="long-logic-details"${open?' open':''}><summary>${esc(title)}</summary><div class="long-logic-details-body">${body}</div></details>`;
+}
 function longTermLogicPanel(stock){
   const l=normalizeLongTermLogic(stock.longTermLogic,stock);
   const has=Boolean(l.investmentThesis||l.coreDrivers.length||l.fundamentalSupport||l.longTermRisks.length);
-  const status={valid:'有效',weakening:'减弱',broken:'破坏',unclear:'不明确'}[l.logicStatus]||l.logicStatus||'不明确';
+  const status=longLogicStatusText(l.logicStatus);
+  const confidence=zhConfidence(l.confidence)||'—';
+  const risks=normalizeStringArray(l.longTermRisks).map(formatChineseText).filter(Boolean);
+  const detailedLogic=`<div class="text" style="max-width:none"><b>投资主线：</b><br>${esc(formatChineseText(l.investmentThesis||'—'))}<br><br><b>来源摘要：</b><br>${esc(formatChineseText(l.sourceSummary||'—'))}</div>`;
   const body=has
-    ?`<div class="dash" style="margin:0"><div><div class="card-title">逻辑状态</div><div class="card-num" style="font-size:20px">${esc(status)}</div><div class="card-note">置信度 ${esc(zhConfidence(l.confidence))}</div></div><div><div class="card-title">更新时间</div><div class="card-note">${esc(l.updatedAt||'—')}</div><div class="card-note">有效至 ${esc(l.validUntil||'—')}</div></div><div><div class="card-title">下次复核</div><div class="card-note">${esc(l.nextReviewDate||'—')}</div></div></div><div class="text" style="max-width:none;margin-top:12px"><b>投资主线：</b>${esc(formatChineseText(l.investmentThesis||'—'))}<br><br><b>核心驱动：</b>${l.coreDrivers.map(formatChineseText).map(esc).join('；')||'—'}<br><br><b>财务验证：</b>${esc(formatChineseText(l.fundamentalSupport||'—'))}<br><br><b>长期风险：</b>${l.longTermRisks.map(formatChineseText).map(esc).join('；')||'—'}<br><br><b>来源摘要：</b>${esc(formatChineseText(l.sourceSummary||'—'))}</div>`
+    ?`<div class="long-logic-memo">
+      <div class="long-logic-hero">
+        <div class="long-logic-status-badge">${longLogicStatusIcon(l.logicStatus)} ${esc(status)}</div>
+        <div class="long-logic-meta-grid">
+          <div><span>置信度</span><strong>${esc(confidence)}</strong></div>
+          <div><span>有效期</span><strong>${esc(l.validUntil||'—')}</strong></div>
+          <div><span>下次复核</span><strong>${esc(l.nextReviewDate||'—')}</strong></div>
+          <div><span>更新</span><strong>${esc(l.updatedAt||'—')}</strong></div>
+        </div>
+      </div>
+      <section class="long-logic-section"><div class="card-title">核心结论</div><div class="long-logic-thesis">${esc(longLogicThesisExcerpt(l.investmentThesis))}</div></section>
+      <section class="long-logic-section"><div class="card-title">核心驱动</div>${longLogicDriverCards(l.coreDrivers)}</section>
+      <section class="long-logic-section"><div class="card-title">逻辑验证</div>${longLogicFinancialVerification(l.fundamentalSupport)}</section>
+      <section class="long-logic-section"><div class="card-title">与上次相比</div><div class="long-logic-change">${esc(longLogicChangeText(l))}</div></section>
+      ${longLogicDetailsBlock(`长期风险（${risks.length}项）`,risks.length?`<ul>${risks.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'<div class="text">暂无长期风险记录。</div>')}
+      ${longLogicDetailsBlock('详细内容',detailedLogic)}
+    </div>`
     :'<div class="alert">待补充长期逻辑。</div>';
   return `<div class="card" style="margin-bottom:14px"><div class="card-title">长期逻辑</div>${body}<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-long-term-logic-prompt">复制长期逻辑整理 Prompt</button><button class="btn ghost small" data-detail-action="import-sentiment-json">导入长期逻辑 JSON</button></div></div>`;
 }
