@@ -24,7 +24,8 @@ from social_collector.summary import build_social_summary
 DEFAULT_CONFIG = Path("config/app_config.json")
 DEFAULT_RSS_CONFIG = Path("config/rss_sources.json")
 DEFAULT_NEWS_CONFIG = Path("config/news_sources.json")
-DEFAULT_MANUAL_FILENAME = "投资作战手册_V12.0-B.html"
+DEFAULT_MANUAL_FILENAME = "投资作战手册_V12.1-Codex.1.html"
+LATEST_MANUAL_FILENAME = "投资作战手册_latest.html"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -142,6 +143,7 @@ def main(argv: list[str] | None = None) -> int:
         shutil.copy2(posts_path, manual_dist_dir / config["posts_filename"])
         shutil.copy2(summary_path, manual_dist_dir / config["summary_filename"])
         copied = True
+        _copy_latest_manual(manual_dist_dir, warnings)
         if args.open_manual:
             _open_manual(manual_dist_dir / DEFAULT_MANUAL_FILENAME, warnings)
 
@@ -203,7 +205,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--manual-dist-dir", help="Override manual_dist_dir from config/app_config.json.")
     parser.add_argument("--dry-run", action="store_true", help="Collect and validate, but do not copy files to the manual dist folder.")
     parser.add_argument("--allow-empty", action="store_true", help="Allow copying when the generated social_posts.json has zero posts.")
-    parser.add_argument("--open-manual", action="store_true", help="Open dist/投资作战手册_V12.0-B.html after validation and copy succeed.")
+    parser.add_argument("--open-manual", action="store_true", help="Open dist/投资作战手册_V12.1-Codex.1.html after validation and copy succeed.")
     return parser
 
 
@@ -697,6 +699,18 @@ def _coverage_source(raw_post: dict[str, str]) -> str:
 def _shorten(value: str, limit: int) -> str:
     cleaned = " ".join(value.split())
     return cleaned if len(cleaned) <= limit else cleaned[: limit - 1] + "..."
+
+
+def _copy_latest_manual(manual_dist_dir: Path, warnings: list[str]) -> None:
+    source = manual_dist_dir / DEFAULT_MANUAL_FILENAME
+    target = manual_dist_dir / LATEST_MANUAL_FILENAME
+    if not source.exists():
+        warnings.append(f"manual file not found, skipped latest copy: {source}")
+        return
+    try:
+        shutil.copy2(source, target)
+    except OSError as exc:
+        warnings.append(f"failed to update latest manual: {exc}")
 
 
 def _open_manual(path: Path, warnings: list[str]) -> None:

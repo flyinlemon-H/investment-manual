@@ -130,9 +130,12 @@ def build_html(root: Path) -> list[str]:
     dist_dir = root / "dist"
     dist_dir.mkdir(parents=True, exist_ok=True)
     output_path = dist_dir / f"投资作战手册_{version}.html"
+    latest_path = dist_dir / "投资作战手册_latest.html"
     output_path.write_text(html, encoding="utf-8")
+    latest_path.write_text(html, encoding="utf-8")
     print(f"built: {output_path}")
-    return [str(output_path)]
+    print(f"built latest: {latest_path}")
+    return [str(output_path), str(latest_path)]
 
 
 def detect_version(root: Path, html: str) -> str:
