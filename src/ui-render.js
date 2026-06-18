@@ -4667,7 +4667,35 @@ function closeSentimentImportModal(){
   const modal=document.getElementById('sentimentImportModal');
   if(modal)modal.classList.remove('show');
 }
-function importSentimentReviewJson(){
+function ensureLongTermLogicImportModal(){
+  let el=document.getElementById('longTermLogicImportModal');
+  if(el){
+    el.classList.add('import-layer');
+    return el;
+  }
+  el=document.createElement('div');
+  el.className='modal-bg import-layer';
+  el.id='longTermLogicImportModal';
+  el.innerHTML=`<div class="modal"><h2>导入长期逻辑 JSON</h2><div class="modal-sub">仅用于导入 longTermLogic。长期逻辑只回答“为什么长期持有”，不会修改新闻、情绪、基本面、配置决策或当前操作建议。</div><div class="form-row"><label>粘贴长期逻辑 JSON</label><textarea id="longTermLogicImportText" style="min-height:280px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"longTermLogic\":{\"investmentThesis\":\"...\",\"coreDrivers\":[],\"longTermRisks\":[],\"logicStatus\":\"valid\",\"confidence\":\"medium\"}}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="longTermLogicImportCancelBtn" type="button">取消</button><button class="btn" id="longTermLogicImportSaveBtn" type="button">导入长期逻辑</button></div></div>`;
+  document.body.appendChild(el);
+  el.addEventListener('click',e=>{if(e.target.id==='longTermLogicImportModal')closeLongTermLogicImportModal()});
+  document.getElementById('longTermLogicImportCancelBtn').addEventListener('click',closeLongTermLogicImportModal);
+  document.getElementById('longTermLogicImportSaveBtn').addEventListener('click',importLongTermLogicJson);
+  return el;
+}
+function openLongTermLogicImportModal(){
+  const stock=state.stocks.find(x=>x.id===detailStockId);
+  if(!stock)return;
+  const modal=ensureLongTermLogicImportModal();
+  document.getElementById('longTermLogicImportText').value='';
+  modal.classList.add('show');
+  setTimeout(()=>document.getElementById('longTermLogicImportText').focus(),50);
+}
+function closeLongTermLogicImportModal(){
+  const modal=document.getElementById('longTermLogicImportModal');
+  if(modal)modal.classList.remove('show');
+}
+function importSentimentPayloadFromText(text,options={}){
   const stock=state.stocks.find(x=>x.id===detailStockId);
   if(!stock)return;
   const original={
@@ -4680,7 +4708,7 @@ function importSentimentReviewJson(){
     dataFreshness:JSON.parse(JSON.stringify(stock.dataFreshness||{}))
   };
   let parsed;
-  try{parsed=extractFirstJsonObject(document.getElementById('sentimentImportText').value)}catch(e){alert('导入失败：JSON 无法解析。');return}
+  try{parsed=extractFirstJsonObject(text)}catch(e){alert('导入失败：JSON 无法解析。');return}
   try{
     if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))throw new Error('JSON 必须是对象。');
     let changed=false;
@@ -4722,13 +4750,15 @@ function importSentimentReviewJson(){
       stock.informationCompleteness=normalizeInformationCompleteness(parsed.informationCompleteness||parsed,stock);
       changed=true;
     }
+    if(options.onlyLongTerm&&!looksLikeLongTerm)throw new Error('未识别 longTermLogic。请粘贴包含 longTermLogic 的 JSON，或直接粘贴长期逻辑对象。');
     if(!changed)throw new Error('未识别到可导入字段。请粘贴包含 sentimentReview、shortTermSentiment、recentCatalyst、eventExplanation、longTermLogic 或 informationCompleteness 的 JSON。');
     normalizeStockAnalysis(stock);
     saveState();
-    closeSentimentImportModal();
+    if(options.closeLongTerm)closeLongTermLogicImportModal();
+    else closeSentimentImportModal();
     refreshLongLogicModalIfOpen();
     render();
-    alert('新闻/情绪资料已导入。建议重新生成配置决策。');
+    alert(options.successMessage||'新闻/情绪资料已导入。建议重新生成配置决策。');
   }catch(err){
     stock.sentimentReview=original.sentimentReview;
     stock.shortTermSentiment=original.shortTermSentiment;
@@ -4739,6 +4769,12 @@ function importSentimentReviewJson(){
     stock.dataFreshness=original.dataFreshness;
     alert('导入失败：'+(err&&err.message?err.message:String(err)));
   }
+}
+function importSentimentReviewJson(){
+  importSentimentPayloadFromText(document.getElementById('sentimentImportText').value);
+}
+function importLongTermLogicJson(){
+  importSentimentPayloadFromText(document.getElementById('longTermLogicImportText').value,{onlyLongTerm:true,closeLongTerm:true,successMessage:'长期逻辑已导入。'});
 }
 function detailResultsArchivePanel(s,cp){
   const fundamentalDiagnostics=s.type==='etf'?etfIndexAnalysisPanel(s):`${financialSignalPanel(s)}${valuationAnalysisPanel(s)}${valuationSignalPanel(s)}`;
@@ -4809,7 +4845,7 @@ function longTermLogicPanel(stock){
       ${longLogicDetailsBlock('详细内容',detailedLogic)}
     </div>`
     :'<div class="alert">待补充长期逻辑。</div>';
-  return `<div class="card" style="margin-bottom:14px"><div class="card-title">长期逻辑</div>${body}<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-long-term-logic-prompt">复制长期逻辑整理 Prompt</button><button class="btn ghost small" data-detail-action="import-sentiment-json">导入长期逻辑 JSON</button></div></div>`;
+  return `<div class="card" style="margin-bottom:14px"><div class="card-title">长期逻辑</div>${body}<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-long-term-logic-prompt">复制长期逻辑整理 Prompt</button><button class="btn ghost small" data-detail-action="import-long-term-logic-json">导入长期逻辑 JSON</button></div></div>`;
 }
 function handleDetailAction(action,stock){
   const s=stock||state.stocks.find(x=>x.id===detailStockId);
@@ -4842,6 +4878,7 @@ function handleDetailAction(action,stock){
   if(action==='copy-recent-catalyst-prompt')copyRecentCatalystPrompt();
   if(action==='copy-short-term-sentiment-prompt')copyShortTermSentimentPrompt();
   if(action==='copy-long-term-logic-prompt')copyLongTermLogicPrompt();
+  if(action==='import-long-term-logic-json')openLongTermLogicImportModal();
   if(action==='import-sentiment-json')openSentimentImportModal();
   if(action==='edit-technical')openTechnicalDataEditor();
   if(action==='import-history')importPriceHistoryCsv();
