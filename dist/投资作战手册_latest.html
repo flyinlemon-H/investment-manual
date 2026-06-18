@@ -3792,7 +3792,7 @@ function shortTermCatalystPanel(stock){
   const body=has
     ?`<div class="dash" style="margin:0"><div><div class="card-title">分析日期</div><div class="card-note">${esc(rc.analysisDate||'—')}</div><div class="card-note">回看 ${fmtInt(rc.lookbackDays)} 天</div></div><div><div class="card-title">最新来源</div><div class="card-note">${esc(rc.latestSourceDate||'—')}</div><div class="card-note">${esc(freshnessLabel)}${rc.freshnessDays!==null?` · ${fmtInt(rc.freshnessDays)}天`:''}</div></div><div><div class="card-title">今日新闻</div><div class="card-note">${rc.hasTodayNews?'有':'无'}</div><div class="card-note">${esc(formatChineseText(rc.todayCatalyst||'—'))}</div></div><div><div class="card-title">新闻解释充分性</div><div class="card-note">${esc(explanationLabel)}</div><div class="card-note">${esc(formatChineseText(ev.priceActionType||'—'))}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>近期事件：</b>${rc.recentEvents.slice(0,5).map(formatChineseText).map(esc).join('；')||'—'}<br><b>缺失信息：</b>${rc.missingData.concat(ev.missingData||[]).slice(0,5).map(formatChineseText).map(esc).join('；')||'—'}<br><b>可信度：</b>${esc(zhConfidence(rc.confidence))}<br><b>操作提示：</b>${esc(formatChineseText(rc.actionHint||'—'))}</div>`
     :'暂无短期新闻催化资料；如出现涨停、跳空、放量异动，建议补充新闻解释。';
-  return `<div class="card" style="margin-bottom:14px"><div class="card-title">短期新闻催化</div>${body}${staleWarning}${eventWarning}<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-recent-catalyst-prompt">复制短期新闻催化 Prompt</button><button class="btn ghost small" data-detail-action="import-sentiment-json">导入新闻/催化 JSON</button></div></div>`;
+  return `<div class="card" style="margin-bottom:14px"><div class="card-title">短期新闻催化</div>${body}${staleWarning}${eventWarning}<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-recent-catalyst-prompt">复制短期新闻催化 Prompt</button><button class="btn ghost small" data-detail-action="import-recent-catalyst-json">导入新闻/催化 JSON</button></div></div>`;
 }
 function shortTermSentimentPanel(stock){
   const st=normalizeShortTermSentiment(stock.shortTermSentiment,stock);
@@ -3806,13 +3806,13 @@ function shortTermSentimentPanel(stock){
   const body=has
     ?`<div class="dash" style="margin:0"><div><div class="card-title">情绪重要性</div><div class="card-num" style="font-size:20px">${sentimentImportanceText(ctx.importance)}</div><div class="card-note">动态判断</div></div><div><div class="card-title">市场情绪</div><div class="card-note">${esc(formatChineseText(st.marketMood||'—'))}</div></div><div><div class="card-title">板块热度</div><div class="card-note">${esc(formatChineseText(st.sectorHeat||'—'))}</div></div><div><div class="card-title">资金流 / 机构</div><div class="card-note">${esc(formatChineseText(st.fundFlowView||'—'))}</div><div class="card-note">${esc(formatChineseText(st.institutionalView||'—'))}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>风险：</b>${zhList(st.riskFlags).slice(0,5).map(esc).join('；')||'—'}<br><b>置信度：</b>${esc(zhConfidence(st.confidence))}<br><b>操作提示：</b>${esc(formatChineseText(st.actionHint||'—'))}</div>`
     :`<div class="alert">${esc(missing)}</div>`;
-  return `<div class="card" style="margin-bottom:14px"><div class="card-title">短期情绪 / 资金</div>${body}<div class="card-note" style="margin-top:8px">更新时间：${esc(st.updatedAt||'未更新')}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-short-term-sentiment-prompt">复制短期情绪资金 Prompt</button><button class="btn ghost small" data-detail-action="import-sentiment-json">导入情绪资金 JSON</button></div></div>`;
+  return `<div class="card" style="margin-bottom:14px"><div class="card-title">短期情绪 / 资金</div>${body}<div class="card-note" style="margin-top:8px">更新时间：${esc(st.updatedAt||'未更新')}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-short-term-sentiment-prompt">复制短期情绪资金 Prompt</button><button class="btn ghost small" data-detail-action="import-short-term-sentiment-json">导入情绪资金 JSON</button></div></div>`;
 }
 function informationCompletenessPanel(stock){
   const info=normalizeInformationCompleteness(stock.informationCompleteness,stock);
   const label={high:'高',medium:'中',low:'低',unknown:'未知'};
   const chip=(name,value)=>`<span class="chip ${value==='low'?'warn':(value==='high'?'role':'tag')}">${esc(name)} ${esc(label[value]||value||'未知')}</span>`;
-  return `<div class="card" style="margin-bottom:14px"><div class="card-title">信息完整度</div><div class="chips">${chip('新闻',info.news)}${chip('资金流',info.fundFlow)}${chip('技术',info.technical)}${chip('估值',info.valuation)}${chip('整体',info.overall)}</div><div class="text" style="max-width:none;margin-top:10px"><b>缺失项：</b>${info.missingItems.slice(0,8).map(formatChineseText).map(esc).join('；')||'—'}${info.warning?`<br><b>提醒：</b>${esc(formatChineseText(info.warning))}`:''}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="import-sentiment-json">导入信息完整度 JSON</button></div></div>`;
+  return `<div class="card" style="margin-bottom:14px"><div class="card-title">信息完整度</div><div class="chips">${chip('新闻',info.news)}${chip('资金流',info.fundFlow)}${chip('技术',info.technical)}${chip('估值',info.valuation)}${chip('整体',info.overall)}</div><div class="text" style="max-width:none;margin-top:10px"><b>缺失项：</b>${info.missingItems.slice(0,8).map(formatChineseText).map(esc).join('；')||'—'}${info.warning?`<br><b>提醒：</b>${esc(formatChineseText(info.warning))}`:''}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="import-information-completeness-json">导入信息完整度 JSON</button></div></div>`;
 }
 function positionPlanPanel(stock){
   const nearest=nearestDetailPlan(stock);
@@ -6715,18 +6715,58 @@ function ensureSentimentImportModal(){
   el=document.createElement('div');
   el.className='modal-bg import-layer';
   el.id='sentimentImportModal';
-  el.innerHTML=`<div class="modal"><h2>导入新闻 / 情绪 JSON</h2><div class="modal-sub">支持 sentimentReview、shortTermSentiment、recentCatalyst、eventExplanation、longTermLogic 或 informationCompleteness。导入后不会自动修改配置决策或当前操作建议。</div><div class="form-row"><label>粘贴 JSON</label><textarea id="sentimentImportText" style="min-height:280px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"recentCatalyst\":{\"todayCatalyst\":\"...\"},\"eventExplanation\":{\"canExplainTodayMove\":false}}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="sentimentImportCancelBtn" type="button">取消</button><button class="btn" id="sentimentImportSaveBtn" type="button">导入</button></div></div>`;
+  el.innerHTML=`<div class="modal"><h2 id="sentimentImportTitle">导入新闻 / 情绪 JSON</h2><div class="modal-sub" id="sentimentImportSub">支持 sentimentReview、shortTermSentiment、recentCatalyst、eventExplanation 或 informationCompleteness。导入后不会自动修改配置决策或当前操作建议。</div><div class="form-row"><label id="sentimentImportLabel">粘贴 JSON</label><textarea id="sentimentImportText" style="min-height:280px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"recentCatalyst\":{\"todayCatalyst\":\"...\"},\"eventExplanation\":{\"canExplainTodayMove\":false}}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="sentimentImportCancelBtn" type="button">取消</button><button class="btn" id="sentimentImportSaveBtn" type="button">导入</button></div></div>`;
   document.body.appendChild(el);
   el.addEventListener('click',e=>{if(e.target.id==='sentimentImportModal')closeSentimentImportModal()});
   document.getElementById('sentimentImportCancelBtn').addEventListener('click',closeSentimentImportModal);
   document.getElementById('sentimentImportSaveBtn').addEventListener('click',importSentimentReviewJson);
   return el;
 }
-function openSentimentImportModal(){
+function sentimentImportModalCopy(kind='general'){
+  const map={
+    recentCatalyst:{
+      title:'导入短期新闻催化 JSON',
+      sub:'用于导入 recentCatalyst 和 eventExplanation。不会修改长期逻辑、配置决策或当前操作建议。',
+      label:'粘贴短期新闻催化 JSON',
+      placeholder:'{"recentCatalyst":{"todayCatalyst":"..."},"eventExplanation":{"canExplainTodayMove":false}}'
+    },
+    shortTermSentiment:{
+      title:'导入短期情绪资金 JSON',
+      sub:'用于导入 shortTermSentiment。不会修改配置决策或当前操作建议。',
+      label:'粘贴短期情绪资金 JSON',
+      placeholder:'{"shortTermSentiment":{"marketMood":"...","fundFlowView":"...","sectorHeat":"..."}}'
+    },
+    informationCompleteness:{
+      title:'导入信息完整度 JSON',
+      sub:'用于导入 informationCompleteness。不会修改新闻、情绪、配置决策或当前操作建议。',
+      label:'粘贴信息完整度 JSON',
+      placeholder:'{"informationCompleteness":{"news":"low","fundFlow":"unknown","technical":"high","valuation":"medium","overall":"medium","missingItems":[]}}'
+    },
+    general:{
+      title:'导入新闻 / 情绪 JSON',
+      sub:'支持 sentimentReview、shortTermSentiment、recentCatalyst、eventExplanation 或 informationCompleteness。导入后不会自动修改配置决策或当前操作建议。',
+      label:'粘贴 JSON',
+      placeholder:'{"sentimentReview":{"conclusion":"..."},"sources":[]}'
+    }
+  };
+  return map[kind]||map.general;
+}
+function openSentimentImportModal(kind='general'){
   const stock=state.stocks.find(x=>x.id===detailStockId);
   if(!stock)return;
   const modal=ensureSentimentImportModal();
-  document.getElementById('sentimentImportText').value='';
+  const copy=sentimentImportModalCopy(kind);
+  const title=document.getElementById('sentimentImportTitle');
+  const sub=document.getElementById('sentimentImportSub');
+  const label=document.getElementById('sentimentImportLabel');
+  const text=document.getElementById('sentimentImportText');
+  if(title)title.textContent=copy.title;
+  if(sub)sub.textContent=copy.sub;
+  if(label)label.textContent=copy.label;
+  if(text){
+    text.value='';
+    text.placeholder=copy.placeholder;
+  }
   modal.classList.add('show');
   setTimeout(()=>document.getElementById('sentimentImportText').focus(),50);
 }
@@ -6947,6 +6987,9 @@ function handleDetailAction(action,stock){
   if(action==='copy-long-term-logic-prompt')copyLongTermLogicPrompt();
   if(action==='import-long-term-logic-json')openLongTermLogicImportModal();
   if(action==='import-sentiment-json')openSentimentImportModal();
+  if(action==='import-recent-catalyst-json')openSentimentImportModal('recentCatalyst');
+  if(action==='import-short-term-sentiment-json')openSentimentImportModal('shortTermSentiment');
+  if(action==='import-information-completeness-json')openSentimentImportModal('informationCompleteness');
   if(action==='edit-technical')openTechnicalDataEditor();
   if(action==='import-history')importPriceHistoryCsv();
   if(action==='update-technical-history')updateTechnicalFromHistoryForDetail();
@@ -7014,7 +7057,7 @@ function renderStockDetail(){
   document.getElementById('summary').innerHTML=`标的详情 · <strong>${esc(s.name)}</strong> · ${esc(s.role||'—')} · ${esc(s.theme||'—')}`;
   document.getElementById('main').innerHTML=`${detailHeroPanel(s,mv,actual,deviation)}${currentActionPanel(s)}${technicalAnalysisPanel(s)}${shortTermCatalystPanel(s)}${shortTermSentimentPanel(s)}${informationCompletenessPanel(s)}${positionPlanPanel(s)}${decisionWorkflowPanel(s)}${detailResultsArchivePanel(s,cp)}${detailResearchArchivePanel(s,cp)}${detailAdvancedToolsArchivePanel(s)}`;
   document.getElementById('backToListBtn').addEventListener('click',closeStockDetail);
-  document.querySelectorAll('[data-detail-action]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.detailAction==='refresh')refreshOnePrice(s.id);if(b.dataset.detailAction==='long-logic')openLongLogicModal();if(b.dataset.detailAction==='edit')openModal(s.id);if(b.dataset.detailAction==='ai-assistant')openAiAssistant();if(b.dataset.detailAction==='financial-source')openFinancialSourceAssistant();if(b.dataset.detailAction==='valuation-source')openValuationSourceAssistant();if(b.dataset.detailAction==='ai-prompt')openAiAnalysisPrompt();if(b.dataset.detailAction==='ai-import')openAiAnalysisImport();if(b.dataset.detailAction==='ai-strategy-import')openAiAssistantTask('strategy');if(b.dataset.detailAction==='edit-inputs')openAnalysisInputsEditor();if(b.dataset.detailAction==='template')openAnalysisTemplateModal();if(b.dataset.detailAction==='edit-strategy')openStrategyEditor();if(b.dataset.detailAction==='view-allocation-detail')openAllocationDecisionDetail();if(b.dataset.detailAction==='copy-allocation-prompt')copyAllocationDecisionPrompt();if(b.dataset.detailAction==='import-allocation-json')openAllocationDecisionImportModal();if(b.dataset.detailAction==='copy-technical-prompt')copyTechnicalAnalysisPrompt();if(b.dataset.detailAction==='import-technical-json')openTechnicalJsonImportModal();if(b.dataset.detailAction==='copy-full-add-discussion-prompt')copyFullAddDiscussionPrompt();if(b.dataset.detailAction==='copy-trade-plan-prompt')copyTradePlanPrompt();if(b.dataset.detailAction==='import-trade-plan-json')openTradePlanImportModal();if(b.dataset.detailAction==='copy-fundamental-prompt')copyFundamentalPrompt();if(b.dataset.detailAction==='import-fundamental-json')openFundamentalImportModal();if(b.dataset.detailAction==='copy-etf-analysis-prompt')copyEtfAnalysisPrompt();if(b.dataset.detailAction==='import-etf-analysis-json')openEtfAnalysisImportModal();if(b.dataset.detailAction==='copy-sentiment-prompt')copySentimentSearchPrompt();if(b.dataset.detailAction==='copy-recent-catalyst-prompt')copyRecentCatalystPrompt();if(b.dataset.detailAction==='copy-short-term-sentiment-prompt')copyShortTermSentimentPrompt();if(b.dataset.detailAction==='copy-long-term-logic-prompt')copyLongTermLogicPrompt();if(b.dataset.detailAction==='import-sentiment-json')openSentimentImportModal();if(b.dataset.detailAction==='edit-technical')openTechnicalDataEditor();if(b.dataset.detailAction==='import-history')importPriceHistoryCsv();if(b.dataset.detailAction==='update-technical-history')updateTechnicalFromHistoryForDetail();if(b.dataset.detailAction==='apply-technical')applyTechnicalSignalToAnalysis();if(b.dataset.detailAction==='edit-valuation')openValuationDataEditor();if(b.dataset.detailAction==='copy-valuation-lookup-prompt')copyValuationLookupPrompt();if(b.dataset.detailAction==='import-valuation-json')openValuationImportModal();if(b.dataset.detailAction==='apply-valuation')applyValuationSignalToAnalysis();if(b.dataset.detailAction==='edit-financial')openFinancialDataEditor();if(b.dataset.detailAction==='copy-financial-search-prompt')copyFinancialSearchPrompt();if(b.dataset.detailAction==='import-financial')openFinancialImportModal();if(b.dataset.detailAction==='apply-financial')applyFinancialSignalToAnalysis()}));
+  document.querySelectorAll('[data-detail-action]').forEach(b=>b.addEventListener('click',()=>handleDetailAction(b.dataset.detailAction,s)));
   document.querySelectorAll('[data-collection-action="save"]').forEach(b=>b.addEventListener('click',saveCollectionInputs));
   document.querySelectorAll('[data-collection-prompt]').forEach(b=>b.addEventListener('click',()=>copyCollectionPrompt(b.dataset.collectionPrompt)));
   const copyFinancialIntegratedFromCollection=document.getElementById('copyFinancialIntegratedPromptFromCollectionBtn');
