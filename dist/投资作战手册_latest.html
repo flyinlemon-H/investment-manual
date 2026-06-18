@@ -2297,6 +2297,44 @@ function fundamentalAnalysis(stock){
     valuationReview:vr
   };
 }
+function inferCompanyQualityLabel(f){
+  const text=[f.financialSummary,(f.financialReview&&f.financialReview.summary)||'',(f.financialReview&&f.financialReview.growthQuality)||'',(f.financialReview&&f.financialReview.revenueTrend)||'',(f.financialReview&&f.financialReview.profitTrend)||''].join(' ');
+  if(/优秀|强劲|显著改善|高增长|大幅增长|质量较好|成长表现较强|基本面优秀/.test(text))return '优秀';
+  if(/较强|良好|稳健|改善|增长/.test(text))return '较强';
+  if(/偏弱|恶化|下滑|承压|亏损/.test(text))return '偏弱';
+  const score=Number(f.financialScore)||0;
+  if(score>=8)return '优秀';
+  if(score>=6.5)return '较强';
+  if(score>=5)return '一般';
+  return '偏弱';
+}
+function inferValuationLevelLabel(f){
+  const text=[f.valuationSummary,(f.valuationData&&f.valuationData.valuationConclusion)||'',(f.valuationReview&&f.valuationReview.summary)||'',(f.valuationReview&&f.valuationReview.actionHint)||''].join(' ');
+  if(/合理偏贵|偏贵|不属于低估|估值较高|分位较高/.test(text))return '合理偏贵';
+  if(/高估|明显高估|过高/.test(text))return '高估';
+  if(/低估|偏低|便宜|低位/.test(text))return '低估';
+  if(/合理|中性|公允/.test(text))return '合理';
+  const score=Number(f.valuationScore)||0;
+  if(score>=7)return '低估';
+  if(score>=5.5)return '合理';
+  if(score>=3.5)return '合理偏贵';
+  return '高估';
+}
+function fundamentalCombinedJudgement(companyQuality,valuationLevel){
+  if((companyQuality==='优秀'||companyQuality==='较强')&&(valuationLevel==='合理偏贵'||valuationLevel==='高估'))return '好公司，但不是便宜价格';
+  if((companyQuality==='优秀'||companyQuality==='较强')&&(valuationLevel==='低估'||valuationLevel==='合理'))return '公司质量较强，估值仍可接受';
+  if(companyQuality==='偏弱')return '公司质量偏弱，需先确认基本面修复';
+  if(valuationLevel==='高估')return '基本面可参考，但价格吸引力不足';
+  return '基本面中性，需结合技术面和配置决策复核';
+}
+function financialQualityLine(fd){
+  const parts=[];
+  if(fd.revenueGrowth!==null&&fd.revenueGrowth!==undefined&&String(fd.revenueGrowth)!=='')parts.push(`收入${Number(fd.revenueGrowth)>=0?'+':''}${fmtMaybe(fd.revenueGrowth,2)}%`);
+  if(fd.profitGrowth!==null&&fd.profitGrowth!==undefined&&String(fd.profitGrowth)!=='')parts.push(`利润${Number(fd.profitGrowth)>=0?'+':''}${fmtMaybe(fd.profitGrowth,2)}%`);
+  if(Number(fd.operatingCashFlow)>0)parts.push('现金流显著改善');
+  else if(fd.operatingCashFlow!==null&&fd.operatingCashFlow!==undefined&&String(fd.operatingCashFlow)!=='')parts.push(`经营现金流 ${fmtMoney(fd.operatingCashFlow)}`);
+  return parts.join('，')||'财务指标待补充';
+}
 function fundamentalSummaryForPrompt(stock){
   const f=fundamentalAnalysis(stock);
   return {
@@ -3789,7 +3827,10 @@ function decisionWorkflowPanel(stock){
   const planSummary=tradePlanSummaryText(stock);
   const techText=formatChineseText(techDecision.summary||td.actionHint||td.technicalSummary||'导入技术面 JSON 后生成短期辅助决策。');
   const techSummary=`<b>${esc(formatChineseText(techDecision.title||'观察'))}</b><br>${esc(techText)}${englishTextHint(techText)}<br><span class="muted">支撑：${(td.supportLevels||[]).slice(0,3).map(esc).join('、')||'—'} · 压力：${(td.resistanceLevels||[]).slice(0,3).map(esc).join('、')||'—'}</span>`;
-  const fundamentalSummary=`<b>${fmtMaybe(fundamental.score,1)} / 10 · ${esc(fundamental.conclusion)}</b><br>${esc(formatChineseText(fundamental.finalSummary))}<br><span class="muted">财务 ${fmtMaybe(fundamental.financialScore,1)} · 估值 ${fmtMaybe(fundamental.valuationScore,1)}${fundamental.missing.length?' · '+fundamental.missing.map(esc).join('、'):''}</span>`;
+  const fundamentalCompanyQuality=inferCompanyQualityLabel(fundamental);
+  const fundamentalValuationLevel=inferValuationLevelLabel(fundamental);
+  const fundamentalJudgement=fundamentalCombinedJudgement(fundamentalCompanyQuality,fundamentalValuationLevel);
+  const fundamentalSummary=`<b>公司质量：${esc(fundamentalCompanyQuality)} · 估值：${esc(fundamentalValuationLevel)}</b><br>${esc(fundamentalJudgement)}<br><span class="muted">财务质量 ${fmtMaybe(fundamental.financialScore,1)} · 估值吸引力 ${fmtMaybe(fundamental.valuationScore,1)} · 综合 ${fmtMaybe(fundamental.score,1)}${fundamental.missing.length?' · '+fundamental.missing.map(esc).join('、'):''}</span>`;
   const etfLayerSummary=`<b>${etfAnalysis.score===null?'—':fmtMaybe(etfAnalysis.score,1)+' / 10'} · ${esc(formatChineseText(etfAnalysis.conclusion))}</b><br>${esc(formatChineseText(etfAnalysis.summary))}<br><span class="muted">指数：${esc(etfAnalysis.indexName||'—')} · 估值：${esc(formatChineseText(etfAnalysis.indexValuationLevel||'—'))} · 分位：${etfAnalysis.historicalPercentile===null?'—':fmtMaybe(etfAnalysis.historicalPercentile,1)+'%'}</span>`;
   const valuationConclusion=String(valuationData.valuationConclusion||valuationReview.summary||'');
   const valuationState=valuationCompleteness(valuationData);
@@ -4535,7 +4576,14 @@ function fundamentalAnalysisPanel(stock){
   const vd=f.valuationData;
   const valuationRisks=zhList((f.valuationReview&&f.valuationReview.riskFlags)||[]).slice(0,3).map(esc).join('；')||'—';
   const financialRisks=zhList((f.financialReview&&(f.financialReview.riskPoints||f.financialReview.riskFlags))||[]).slice(0,3).map(esc).join('；')||'—';
-  return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--teal)"><div class="card-title">基本面分析</div><div class="dash" style="margin:0"><div><div class="card-title">基本面评分</div><div class="card-num">${fmtMaybe(f.score,1)}<span style="font-size:13px;color:var(--ink3)"> / 10</span></div><div class="card-note">${esc(f.conclusion)}${f.missing.length?' · '+f.missing.map(esc).join('、'):''}</div></div><div><div class="card-title">财务质量</div><div class="card-note">收入 ${fmtMaybe(fd.revenueGrowth,1)}% · 利润 ${fmtMaybe(fd.profitGrowth,1)}% · 现金流 ${fmtMoney(fd.operatingCashFlow)}</div><div class="card-note">评分 ${fmtMaybe(f.financialScore,1)} · ${esc(zhActionStatus(f.financialStatus))}</div></div><div><div class="card-title">估值水平</div><div class="card-note">PE ${vd.peTtm===null?fmtMaybe(vd.pe,2):fmtMaybe(vd.peTtm,2)} · PB ${fmtMaybe(vd.pb,2)} · 分位 ${vd.historicalPercentile===null?'—':fmtMaybe(vd.historicalPercentile,1)+'%'}</div><div class="card-note">评分 ${fmtMaybe(f.valuationScore,1)} · ${esc(formatChineseText(vd.valuationConclusion||f.valuationSummary||'—'))}</div></div><div><div class="card-title">更新时间</div><div class="card-note">财报 ${esc(fd.lastUpdated||'—')}</div><div class="card-note">估值 ${esc(vd.updatedAt||vd.lastUpdated||'—')}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>一句话：</b>${esc(formatChineseText(f.finalSummary))}<br><b>财务风险：</b>${financialRisks}<br><b>估值风险：</b>${valuationRisks}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-fundamental-prompt">复制基本面分析 Prompt</button><button class="btn ghost small" data-detail-action="import-fundamental-json">导入基本面 JSON</button></div></div>`;
+  const companyQuality=inferCompanyQualityLabel(f);
+  const valuationLevel=inferValuationLevelLabel(f);
+  const combined=fundamentalCombinedJudgement(companyQuality,valuationLevel);
+  const financialLine=financialQualityLine(fd);
+  const financialReviewSummary=(f.financialReview&&f.financialReview.summary)||f.financialSummary||'—';
+  const valuationReviewSummary=(f.valuationReview&&f.valuationReview.summary)||vd.valuationConclusion||f.valuationSummary||'—';
+  const missingText=f.missing.length?' · '+f.missing.map(esc).join('、'):'';
+  return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--teal)"><div class="card-title">基本面分析</div><div class="dash" style="margin:0"><div><div class="card-title">公司质量</div><div class="card-num" style="font-size:22px">${esc(companyQuality)}</div><div class="card-note">${esc(financialLine)}</div></div><div><div class="card-title">估值水平</div><div class="card-num" style="font-size:22px">${esc(valuationLevel)}</div><div class="card-note">PE ${vd.peTtm===null?fmtMaybe(vd.pe,2):fmtMaybe(vd.peTtm,2)} · PB ${fmtMaybe(vd.pb,2)} · 分位 ${vd.historicalPercentile===null?'—':fmtMaybe(vd.historicalPercentile,1)+'%'}</div></div><div><div class="card-title">综合判断</div><div class="text" style="max-width:none;font-weight:800;color:var(--ink)">${esc(combined)}</div><div class="card-note">${missingText?missingText.slice(3):'财务与估值分开判断'}</div></div><div><div class="card-title">评分拆分</div><div class="card-note">财务质量 ${fmtMaybe(f.financialScore,1)} / 10</div><div class="card-note">估值吸引力 ${fmtMaybe(f.valuationScore,1)} / 10</div><div class="card-note">综合评分 ${fmtMaybe(f.score,1)} / 10</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>财务质量：</b>${esc(formatChineseText(financialReviewSummary))}<br><b>估值结论：</b>${esc(formatChineseText(valuationReviewSummary))}<br><b>财务风险：</b>${financialRisks}<br><b>估值风险：</b>${valuationRisks}<br><span class="muted">说明：估值偏贵会降低“估值吸引力”，但不会直接把公司质量判断降为“一般”。</span></div><div class="card-note" style="margin-top:8px">财报 ${esc(fd.lastUpdated||'—')} · 估值 ${esc(vd.updatedAt||vd.lastUpdated||'—')}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-fundamental-prompt">复制基本面分析 Prompt</button><button class="btn ghost small" data-detail-action="import-fundamental-json">导入基本面 JSON</button></div></div>`;
 }
 function etfIndexAnalysisPanel(stock){
   const a=etfAnalysisSummary(stock);
