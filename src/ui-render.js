@@ -216,13 +216,23 @@ function sentimentReviewContext(stock){
     review
   };
 }
+function normalizeFinancialReviewObject(review){
+  if(!review||typeof review!=='object'||Array.isArray(review))return null;
+  const normalized=normalizeAiReviewPayload('financialReview',{financialReview:review});
+  if(!normalized)return null;
+  const hasText=String(normalized.summary||normalized.revenueTrend||normalized.profitTrend||normalized.marginTrend||normalized.cashFlowTrend||normalized.debtRisk||normalized.growthQuality||'').trim();
+  const hasList=['positivePoints','negativePoints','riskPoints'].some(k=>Array.isArray(normalized[k])&&normalized[k].length);
+  return hasText||hasList?normalized:null;
+}
 function fundamentalAnalysis(stock){
   const fd=normalizeFinancialData(stock.financialData);
   const finSig=calculateFinancialSignal(stock);
   const vd=normalizeValuationData(stock.valuationData);
   const vr=normalizeValuationReview(stock.valuationReview);
   const valSig=calculateValuationSignal(stock);
-  const finReview=normalizeAiReviews(stock.aiReviews).financialReview||null;
+  const directFinReview=normalizeFinancialReviewObject(stock.financialReview);
+  const legacyFinReview=normalizeFinancialReviewObject(normalizeAiReviews(stock.aiReviews).financialReview);
+  const finReview=directFinReview||legacyFinReview||null;
   const hasFin=hasFinancialData(fd);
   const hasVal=hasValuationData(vd)||hasValuationReview(vr);
   let score=0;
@@ -287,21 +297,21 @@ function fundamentalCombinedJudgement(companyQuality,valuationLevel){
 }
 function financialQualityLine(fd){
   const parts=[];
-  if(fd.revenueGrowth!==null&&fd.revenueGrowth!==undefined&&String(fd.revenueGrowth)!=='')parts.push(`收入${Number(fd.revenueGrowth)>=0?'+':''}${fmtMaybe(fd.revenueGrowth,2)}%`);
-  if(fd.profitGrowth!==null&&fd.profitGrowth!==undefined&&String(fd.profitGrowth)!=='')parts.push(`利润${Number(fd.profitGrowth)>=0?'+':''}${fmtMaybe(fd.profitGrowth,2)}%`);
+  if(Number(fd.revenueGrowth)!==0&&fd.revenueGrowth!==null&&fd.revenueGrowth!==undefined&&String(fd.revenueGrowth)!=='')parts.push(`收入${Number(fd.revenueGrowth)>=0?'+':''}${fmtMaybe(fd.revenueGrowth,2)}%`);
+  if(Number(fd.profitGrowth)!==0&&fd.profitGrowth!==null&&fd.profitGrowth!==undefined&&String(fd.profitGrowth)!=='')parts.push(`利润${Number(fd.profitGrowth)>=0?'+':''}${fmtMaybe(fd.profitGrowth,2)}%`);
   if(Number(fd.operatingCashFlow)>0)parts.push('现金流显著改善');
-  else if(fd.operatingCashFlow!==null&&fd.operatingCashFlow!==undefined&&String(fd.operatingCashFlow)!=='')parts.push(`经营现金流 ${fmtMoney(fd.operatingCashFlow)}`);
+  else if(Number(fd.operatingCashFlow)!==0&&fd.operatingCashFlow!==null&&fd.operatingCashFlow!==undefined&&String(fd.operatingCashFlow)!=='')parts.push(`经营现金流 ${fmtMaybe(fd.operatingCashFlow,1)}`);
   return parts.join('，')||'财务指标待补充';
 }
 function financialMetricLine(fd){
   const items=[];
-  const pct=(label,v)=>{if(v!==null&&v!==undefined&&String(v)!=='')items.push(`${label} ${Number(v)>=0?'+':''}${fmtMaybe(v,2)}%`)};
+  const pct=(label,v)=>{if(Number(v)!==0&&v!==null&&v!==undefined&&String(v)!=='')items.push(`${label} ${Number(v)>=0?'+':''}${fmtMaybe(v,2)}%`)};
   pct('营收同比',fd.revenueGrowth);
   pct('净利润同比',fd.profitGrowth);
   pct('毛利率',fd.grossMargin);
   pct('净利率',fd.netMargin);
   pct('ROE',fd.roe);
-  if(fd.operatingCashFlow!==null&&fd.operatingCashFlow!==undefined&&String(fd.operatingCashFlow)!=='')items.push(`经营现金流 ${fmtMoney(fd.operatingCashFlow)}`);
+  if(Number(fd.operatingCashFlow)!==0&&fd.operatingCashFlow!==null&&fd.operatingCashFlow!==undefined&&String(fd.operatingCashFlow)!=='')items.push(`经营现金流 ${fmtMaybe(fd.operatingCashFlow,1)}`);
   pct('资产负债率',fd.debtRatio);
   return items.join(' · ')||'关键财务指标待补充';
 }
@@ -310,8 +320,8 @@ function logicRealizationText(f,fd){
   const positives=normalizeStringArray(review.positivePoints).filter(x=>/(收入|营收|利润|现金流|服务器|AI|算力|兑现|增长)/i.test(String(x))).slice(0,4);
   const base=review.growthQuality||positives.join('；')||'逻辑兑现情况待补充';
   const prefix=[];
-  if(fd.revenueGrowth!==null&&fd.revenueGrowth!==undefined&&String(fd.revenueGrowth)!=='')prefix.push(`收入${Number(fd.revenueGrowth)>=0?'+':''}${fmtMaybe(fd.revenueGrowth,2)}%`);
-  if(fd.profitGrowth!==null&&fd.profitGrowth!==undefined&&String(fd.profitGrowth)!=='')prefix.push(`利润${Number(fd.profitGrowth)>=0?'+':''}${fmtMaybe(fd.profitGrowth,2)}%`);
+  if(Number(fd.revenueGrowth)!==0&&fd.revenueGrowth!==null&&fd.revenueGrowth!==undefined&&String(fd.revenueGrowth)!=='')prefix.push(`收入${Number(fd.revenueGrowth)>=0?'+':''}${fmtMaybe(fd.revenueGrowth,2)}%`);
+  if(Number(fd.profitGrowth)!==0&&fd.profitGrowth!==null&&fd.profitGrowth!==undefined&&String(fd.profitGrowth)!=='')prefix.push(`利润${Number(fd.profitGrowth)>=0?'+':''}${fmtMaybe(fd.profitGrowth,2)}%`);
   if(Number(fd.operatingCashFlow)>0)prefix.push('现金流显著改善');
   return `${prefix.length?prefix.join('，')+'。':''}${formatChineseText(base)}`;
 }
@@ -4143,9 +4153,10 @@ function applyFundamentalPayload(stock,parsed){
   if(!hasFinancialData&&!hasFinancialReview&&!hasValuationData&&!hasValuationReview)throw new Error('未识别 financialData、financialReview、valuationData 或 valuationReview。');
   if(hasFinancialData)stock.financialData=normalizeFinancialDataImportPayload(parsed);
   if(hasFinancialReview){
-    stock.aiReviews=normalizeAiReviews(stock.aiReviews);
     const review=normalizeFinancialReviewImportPayload(parsed);
     if(!review)throw new Error('financialReview 格式不正确。');
+    stock.financialReview=review;
+    stock.aiReviews=normalizeAiReviews(stock.aiReviews);
     stock.aiReviews.financialReview=review;
   }
   if(hasValuationData){
@@ -4163,6 +4174,7 @@ function importFundamentalJson(){
   if(!stock)return;
   const original={
     financialData:JSON.parse(JSON.stringify(stock.financialData||{})),
+    financialReview:JSON.parse(JSON.stringify(stock.financialReview||{})),
     aiReviews:JSON.parse(JSON.stringify(stock.aiReviews||{})),
     valuationData:JSON.parse(JSON.stringify(stock.valuationData||{})),
     valuationReview:JSON.parse(JSON.stringify(stock.valuationReview||{})),
@@ -4183,6 +4195,7 @@ function importFundamentalJson(){
     alert(`基本面 JSON 已导入：${parts.join('、')} 已更新。九模块评分、配置决策和操作建议未自动修改。`);
   }catch(err){
     stock.financialData=original.financialData;
+    stock.financialReview=original.financialReview;
     stock.aiReviews=original.aiReviews;
     stock.valuationData=original.valuationData;
     stock.valuationReview=original.valuationReview;
