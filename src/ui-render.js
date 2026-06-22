@@ -1752,15 +1752,20 @@ function shortTermCatalystPanel(stock){
   const ev=normalizeEventExplanation(stock.eventExplanation,stock);
   const today=todayDate();
   const sourceStale=rc.analysisDate===today&&rc.latestSourceDate&&rc.latestSourceDate!==today;
-  const has=Boolean(rc.todayCatalyst||rc.recentEvents.length||rc.latestSourceDate);
+  const has=Boolean(rc.todayCatalyst||rc.weeklyCatalysts.length||rc.monthlyCatalysts.length||rc.recentEvents.length||rc.latestSourceDate);
   const freshnessLabel={fresh:'新鲜',acceptable:'可用',stale:'偏旧',unknown:'未知'}[rc.freshnessStatus]||rc.freshnessStatus||'未知';
-  const explanationLabel=ev.priceActionDetected?(ev.canExplainTodayMove?'充分':'不足'):'无异动';
+  const level=ev.explanationLevel&&ev.explanationLevel!=='unknown'?ev.explanationLevel:(ev.priceActionDetected?(ev.canExplainTodayMove?'full':'none'):'unknown');
+  const explanationLabel={full:'催化解释充分',partial:'部分解释',none:'无法解释',unknown:ev.priceActionDetected?'未知':'无异动'}[level]||'未知';
+  const coverageLabel={high:'高',medium:'中',low:'低',unknown:'未知'}[rc.catalystCoverage]||'未知';
+  const levelWarning=level==='partial'
+    ?'<div class="alert" style="margin-top:8px">未发现明确当日公告，但近7天/30天存在相关催化，行情可部分解释。短线追涨仍需谨慎。</div>'
+    :(level==='none'?'<div class="alert" style="margin-top:8px">未发现足以解释行情的当天或近期催化，新闻层结论应降权。</div>':(level==='full'?'<div class="alert" style="margin-top:8px">存在明确催化，行情解释较充分。</div>':''));
   const staleWarning=sourceStale?'<div class="alert" style="margin-top:8px">分析日期为今天，但最新新闻来源不是今天。</div>':'';
-  const eventWarning=ev.priceActionDetected&&!ev.canExplainTodayMove?`<div class="alert" style="margin-top:8px">${esc(ev.warning||'行情异动缺少新闻解释，新闻结论应降权。')}</div>`:'';
+  const eventWarning=ev.priceActionDetected&&level==='none'?`<div class="alert" style="margin-top:8px">${esc(ev.warning||'行情异动缺少新闻解释，新闻结论应降权。')}</div>`:'';
   const body=has
-    ?`<div class="dash" style="margin:0"><div><div class="card-title">分析日期</div><div class="card-note">${esc(rc.analysisDate||'—')}</div><div class="card-note">回看 ${fmtInt(rc.lookbackDays)} 天</div></div><div><div class="card-title">最新来源</div><div class="card-note">${esc(rc.latestSourceDate||'—')}</div><div class="card-note">${esc(freshnessLabel)}${rc.freshnessDays!==null?` · ${fmtInt(rc.freshnessDays)}天`:''}</div></div><div><div class="card-title">今日新闻</div><div class="card-note">${rc.hasTodayNews?'有':'无'}</div><div class="card-note">${esc(formatChineseText(rc.todayCatalyst||'—'))}</div></div><div><div class="card-title">新闻解释充分性</div><div class="card-note">${esc(explanationLabel)}</div><div class="card-note">${esc(formatChineseText(ev.priceActionType||'—'))}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>近期事件：</b>${rc.recentEvents.slice(0,5).map(formatChineseText).map(esc).join('；')||'—'}<br><b>缺失信息：</b>${rc.missingData.concat(ev.missingData||[]).slice(0,5).map(formatChineseText).map(esc).join('；')||'—'}<br><b>可信度：</b>${esc(zhConfidence(rc.confidence))}<br><b>操作提示：</b>${esc(formatChineseText(rc.actionHint||'—'))}</div>`
+    ?`<div class="dash" style="margin:0"><div><div class="card-title">分析日期</div><div class="card-note">${esc(rc.analysisDate||'—')}</div><div class="card-note">回看 ${fmtInt(rc.lookbackDays)} / ${fmtInt(rc.monthlyLookbackDays)} 天</div></div><div><div class="card-title">最新来源</div><div class="card-note">${esc(rc.latestSourceDate||'—')}</div><div class="card-note">${esc(freshnessLabel)}${rc.freshnessDays!==null?` · ${fmtInt(rc.freshnessDays)}天`:''}</div></div><div><div class="card-title">催化覆盖度</div><div class="card-note">${esc(coverageLabel)}</div><div class="card-note">置信度 ${esc(zhConfidence(rc.confidence))}</div></div><div><div class="card-title">行情解释程度</div><div class="card-note">${esc(explanationLabel)}</div><div class="card-note">${esc(formatChineseText(ev.priceActionType||'—'))}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>当天催化：</b>${esc(formatChineseText(rc.todayCatalyst||'未发现明确当日公告或新闻'))}<br><b>最近7天催化：</b>${rc.weeklyCatalysts.slice(0,5).map(formatChineseText).map(esc).join('；')||'—'}<br><b>最近30天催化：</b>${rc.monthlyCatalysts.slice(0,6).map(formatChineseText).map(esc).join('；')||'—'}<br><b>近期事件：</b>${rc.recentEvents.slice(0,5).map(formatChineseText).map(esc).join('；')||'—'}<br><b>缺失信息：</b>${rc.missingData.concat(ev.missingData||[]).slice(0,5).map(formatChineseText).map(esc).join('；')||'—'}<br><b>操作提示：</b>${esc(formatChineseText(rc.actionHint||'—'))}</div>`
     :'暂无短期新闻催化资料；如出现涨停、跳空、放量异动，建议补充新闻解释。';
-  return `<div class="card" style="margin-bottom:14px"><div class="card-title">短期新闻催化</div>${body}${staleWarning}${eventWarning}<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-recent-catalyst-prompt">复制短期新闻催化 Prompt</button><button class="btn ghost small" data-detail-action="import-recent-catalyst-json">导入新闻/催化 JSON</button></div></div>`;
+  return `<div class="card" style="margin-bottom:14px"><div class="card-title">短期新闻催化</div>${body}${staleWarning}${levelWarning}${eventWarning}<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-recent-catalyst-prompt">复制短期新闻催化 Prompt</button><button class="btn ghost small" data-detail-action="import-recent-catalyst-json">导入新闻/催化 JSON</button></div></div>`;
 }
 function shortTermSentimentPanel(stock){
   const st=normalizeShortTermSentiment(stock.shortTermSentiment,stock);
@@ -1780,7 +1785,7 @@ function informationCompletenessPanel(stock){
   const info=normalizeInformationCompleteness(stock.informationCompleteness,stock);
   const label={high:'高',medium:'中',low:'低',unknown:'未知'};
   const chip=(name,value)=>`<span class="chip ${value==='low'?'warn':(value==='high'?'role':'tag')}">${esc(name)} ${esc(label[value]||value||'未知')}</span>`;
-  return `<div class="card" style="margin-bottom:14px"><div class="card-title">信息完整度</div><div class="chips">${chip('新闻',info.news)}${chip('资金流',info.fundFlow)}${chip('技术',info.technical)}${chip('估值',info.valuation)}${chip('整体',info.overall)}</div><div class="text" style="max-width:none;margin-top:10px"><b>缺失项：</b>${info.missingItems.slice(0,8).map(formatChineseText).map(esc).join('；')||'—'}${info.warning?`<br><b>提醒：</b>${esc(formatChineseText(info.warning))}`:''}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="import-information-completeness-json">导入信息完整度 JSON</button></div></div>`;
+  return `<div class="card" style="margin-bottom:14px"><div class="card-title">信息完整度</div><div class="chips">${chip('新闻',info.news)}${chip('催化',info.catalyst)}${chip('资金流',info.fundFlow)}${chip('长期逻辑',info.longTermLogic)}${chip('基本面',info.fundamentals)}${chip('技术',info.technical)}${chip('估值',info.valuation)}${chip('整体',info.overall)}</div><div class="text" style="max-width:none;margin-top:10px"><b>缺失项：</b>${info.missingItems.slice(0,8).map(formatChineseText).map(esc).join('；')||'—'}${info.warning?`<br><b>提醒：</b>${esc(formatChineseText(info.warning))}`:''}<br><span class="muted">说明：催化不足不等于整体分析失效，应结合长期逻辑、基本面、估值和技术面一起判断。</span></div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="import-information-completeness-json">导入信息完整度 JSON</button></div></div>`;
 }
 function positionPlanPanel(stock){
   const nearest=nearestDetailPlan(stock);
@@ -4611,23 +4616,28 @@ function recentCatalystPromptText(stock){
     collectionInputs:normalizeCollectionInputs(stock.collectionInputs),
     dataFreshness:normalizeDataFreshness(stock.dataFreshness)
   };
-  const schema={recentCatalyst:{analysisDate:todayDate(),lookbackDays:7,latestSourceDate:'',hasTodayNews:false,todayCatalyst:'',recentEvents:[],freshnessStatus:'fresh | acceptable | stale | unknown',freshnessDays:null,missingData:[],confidence:'high | medium | low',actionHint:''},eventExplanation:{priceActionDetected:false,priceActionType:'',canExplainTodayMove:false,explanationConfidence:'high | medium | low',explanation:'',missingData:[],warning:''}};
+  const schema={recentCatalyst:{analysisDate:todayDate(),lookbackDays:7,monthlyLookbackDays:30,latestSourceDate:'',hasTodayNews:false,todayCatalyst:'',weeklyCatalysts:[],monthlyCatalysts:[],recentEvents:[],freshnessStatus:'fresh | acceptable | stale | unknown',freshnessDays:null,catalystCoverage:'high | medium | low | unknown',missingData:[],confidence:'high | medium | low',actionHint:''},eventExplanation:{priceActionDetected:false,priceActionType:'',explanationLevel:'full | partial | none | unknown',canExplainTodayMove:false,explanationConfidence:'high | medium | low',explanation:'',missingData:[],warning:''},informationCompleteness:{news:'high | medium | low | unknown',catalyst:'high | medium | low | unknown',fundFlow:'high | medium | low | unknown',longTermLogic:'high | medium | low | unknown',fundamentals:'high | medium | low | unknown',technical:'high | medium | low | unknown',valuation:'high | medium | low | unknown',overall:'high | medium | low | unknown',missingItems:[],warning:''}};
   return [
     '你是一名谨慎的短期新闻催化复核助手。',
     '',
-    `请复核【${stock.name||'标的名称'}】（代码：【${stock.code||stock.symbol||'symbol'}】）最近 7 天的新闻、公告、板块异动和资金线索。`,
+    `请复核【${stock.name||'标的名称'}】（代码：【${stock.code||stock.symbol||'symbol'}】）当天、最近 7 天、最近 30 天的新闻、公告、板块异动和资金线索。`,
     '',
     '【当前系统已有信息】',
     JSON.stringify(ctx,null,2),
     '',
     '要求：',
-    '1. 重点关注当天/本周新闻、公告、涨停/跌停原因、板块异动、资金流、龙虎榜和缺失信息。',
-    '2. 必须判断新闻是否足以解释当日行情。',
-    '3. 如果 analysisDate 是今天但 latestSourceDate 不是今天，必须明确提示新闻未覆盖今天。',
-    '4. 如果涨停/跌停或单日涨跌幅超过 7%，但没有当天新闻解释，eventExplanation.canExplainTodayMove 必须为 false。',
-    '5. 操作提示避免追涨，应使用条件化表达。',
-    '6. 请使用中文输出自然语言字段；枚举字段可以使用英文固定值。',
-    '7. 只输出严格 JSON，不要 Markdown，不要解释文字。',
+    '1. 当天催化：当日公告、当日新闻、涨停/大涨原因、龙虎榜、资金流、板块异动。',
+    '2. 最近7天催化：本周公告、行业新闻、板块热度、资金变化、机构观点、相关产业链事件。',
+    '3. 最近30天催化：财报后市场反应、投资者关系活动、产品进展、订单/出货/产能信息、产业趋势、机构预期变化。',
+    '4. 不要只搜索当天新闻；当天新闻找不到，不等于上涨完全无法解释。',
+    '5. 如果 analysisDate 是今天但 latestSourceDate 不是今天，必须明确提示新闻未覆盖今天。',
+    '6. 如果涨停/跌停、单日涨跌幅超过 7%、放量突破或接近前高大涨，必须判断 eventExplanation.explanationLevel。',
+    '7. explanationLevel 规则：full = 当天公告/新闻/资金/板块事件可明确解释；partial = 无当天直接新闻，但最近7天或30天存在明确相关催化；none = 当天、7天、30天都缺乏有效解释；unknown = 信息不足。',
+    '8. catalystCoverage 用 high / medium / low / unknown 表示催化资料覆盖度。',
+    '9. 如果无当天公告但近30天存在 AI服务器、GB300、AI ASIC、CPO、800G 等明确产业催化，应给 partial，而不是 none。',
+    '10. 操作提示避免追涨，应使用条件化表达。',
+    '11. 请使用中文输出自然语言字段；枚举字段可以使用英文固定值。',
+    '12. 只输出严格 JSON，不要 Markdown，不要解释文字。',
     JSON.stringify(schema,null,2)
   ].join('\n');
 }
@@ -4797,10 +4807,10 @@ function importSentimentPayloadFromText(text,options={}){
     if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))throw new Error('JSON 必须是对象。');
     let changed=false;
     const looksLikeLongTerm=Boolean(parsed.longTermLogic||parsed.logicStatus||parsed.investmentThesis||parsed.fundamentalSupport||parsed.coreDrivers||parsed.longTermRisks);
-    const looksLikeRecentCatalyst=Boolean(parsed.recentCatalyst||parsed.analysisDate||parsed.todayCatalyst||parsed.recentEvents||parsed.latestSourceDate||parsed.freshnessStatus);
-    const looksLikeEventExplanation=Boolean(parsed.eventExplanation||parsed.priceActionDetected!==undefined||parsed.canExplainTodayMove!==undefined||parsed.explanationConfidence||parsed.explanation);
+    const looksLikeRecentCatalyst=Boolean(parsed.recentCatalyst||parsed.analysisDate||parsed.todayCatalyst||parsed.weeklyCatalysts||parsed.monthlyCatalysts||parsed.recentEvents||parsed.latestSourceDate||parsed.freshnessStatus||parsed.catalystCoverage);
+    const looksLikeEventExplanation=Boolean(parsed.eventExplanation||parsed.priceActionDetected!==undefined||parsed.canExplainTodayMove!==undefined||parsed.explanationLevel||parsed.explanationConfidence||parsed.explanation);
     const looksLikeShortTermSentiment=Boolean(parsed.shortTermSentiment||parsed.fundFlowView||parsed.sectorHeat||parsed.institutionalView);
-    const looksLikeInformationCompleteness=Boolean(parsed.informationCompleteness||parsed.missingItems||parsed.overall||parsed.news&&parsed.fundFlow);
+    const looksLikeInformationCompleteness=Boolean(parsed.informationCompleteness||parsed.missingItems||parsed.overall||parsed.news&&parsed.fundFlow||parsed.catalyst||parsed.longTermLogic||parsed.fundamentals);
     if(parsed.sentimentReview||(!looksLikeShortTermSentiment&&!looksLikeLongTerm&&!looksLikeRecentCatalyst&&!looksLikeInformationCompleteness&&(parsed.conclusion||parsed.marketMood||parsed.newsSummary||parsed.positivePoints))){
       const payload=parsed.sentimentReview||parsed;
       stock.sentimentReview=normalizeSentimentReview({...payload,symbol:payload.symbol||stock.code||stock.symbol||'',updatedAt:payload.updatedAt||todayDate()},stock);

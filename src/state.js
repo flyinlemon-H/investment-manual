@@ -502,12 +502,16 @@ function defaultRecentCatalyst(){
   return {
     analysisDate:'',
     lookbackDays:7,
+    monthlyLookbackDays:30,
     latestSourceDate:'',
     hasTodayNews:false,
     todayCatalyst:'',
+    weeklyCatalysts:[],
+    monthlyCatalysts:[],
     recentEvents:[],
     freshnessStatus:'unknown',
     freshnessDays:null,
+    catalystCoverage:'unknown',
     missingData:[],
     confidence:'low',
     actionHint:''
@@ -527,15 +531,23 @@ function normalizeRecentCatalyst(v,stock={}){
   }
   let freshnessStatus=enumOr(src.freshnessStatus,['fresh','acceptable','stale','unknown'],'unknown');
   if(!src.freshnessStatus&&days!==null)freshnessStatus=days<=3?'fresh':(days<=7?'acceptable':'stale');
+  const weeklyCatalysts=normalizeStringArray(src.weeklyCatalysts);
+  const monthlyCatalysts=normalizeStringArray(src.monthlyCatalysts);
+  const recentEvents=normalizeStringArray(src.recentEvents||news.attentionPoints||news.positivePoints);
+  const catalystCoverage=src.catalystCoverage?completenessLevel(src.catalystCoverage):(src.hasTodayNews&&weeklyCatalysts.length&&monthlyCatalysts.length?'high':(weeklyCatalysts.length||monthlyCatalysts.length||recentEvents.length?'medium':'low'));
   return {
     analysisDate:normalizeDateOnly(src.analysisDate)||String(src.analysisDate||''),
     lookbackDays:Math.max(1,Math.floor(clampNumber(src.lookbackDays,1,365,7))),
+    monthlyLookbackDays:Math.max(1,Math.floor(clampNumber(src.monthlyLookbackDays,1,365,30))),
     latestSourceDate:latest,
     hasTodayNews:Boolean(src.hasTodayNews),
     todayCatalyst:String(src.todayCatalyst||''),
-    recentEvents:normalizeStringArray(src.recentEvents||news.attentionPoints||news.positivePoints),
+    weeklyCatalysts,
+    monthlyCatalysts,
+    recentEvents,
     freshnessStatus,
     freshnessDays:days,
+    catalystCoverage,
     missingData:normalizeStringArray(src.missingData),
     confidence:enumOr(src.confidence,['high','medium','low'],'low'),
     actionHint:String(src.actionHint||'')
@@ -545,6 +557,7 @@ function defaultEventExplanation(){
   return {
     priceActionDetected:false,
     priceActionType:'',
+    explanationLevel:'unknown',
     canExplainTodayMove:false,
     explanationConfidence:'low',
     explanation:'',
@@ -561,13 +574,16 @@ function normalizeEventExplanation(v,stock={}){
   const volumeStatus=String(tech.priceActionEvent.volumeStatus||'');
   const detected=Boolean(src.priceActionDetected||eventType.trim()||tech.priceActionEvent.detected||(pct!==null&&Math.abs(pct)>=7)||tech.priceActionEvent.needsNewsExplanation||/放量|异动|突破|涨停|跌停/i.test(volumeStatus));
   const type=String(eventType||(pct!==null&&pct>=9.5?'涨停/大涨':(pct!==null&&pct<=-9.5?'跌停/大跌':(detected?'异常波动':''))));
-  const canExplain=src.canExplainTodayMove===undefined?(detected?Boolean(recent.hasTodayNews&&recent.todayCatalyst):false):Boolean(src.canExplainTodayMove);
+  const rawLevel=enumOr(src.explanationLevel,['full','partial','none','unknown'],'unknown');
+  const inferredLevel=rawLevel!=='unknown'?rawLevel:(detected?(recent.hasTodayNews&&recent.todayCatalyst?'full':((recent.weeklyCatalysts&&recent.weeklyCatalysts.length)||(recent.monthlyCatalysts&&recent.monthlyCatalysts.length)||(recent.recentEvents&&recent.recentEvents.length)?'partial':'none')):'unknown');
+  const canExplain=src.canExplainTodayMove===undefined?(inferredLevel==='full'):Boolean(src.canExplainTodayMove);
   const missing=normalizeStringArray(src.missingData);
   if(detected&&!canExplain&&!missing.length)missing.push('当日新闻或公告','资金流/龙虎榜','板块异动原因');
   const warning=String(src.warning||(detected&&!canExplain?'现有新闻无法充分解释当日异动，新闻结论应降权，操作层避免追涨并等待确认。':''));
   return {
     priceActionDetected:detected,
     priceActionType:type,
+    explanationLevel:inferredLevel,
     canExplainTodayMove:canExplain,
     explanationConfidence:enumOr(src.explanationConfidence,['high','medium','low'],'low'),
     explanation:String(src.explanation||''),
@@ -628,7 +644,10 @@ function normalizeInformationCompleteness(v,stock={}){
   const overall=src.overall?completenessLevel(src.overall):(lows>=2?'low':(highs>=3?'high':'medium'));
   return {
     news,
+    catalyst:completenessLevel(src.catalyst||src.catalystCoverage||rc.catalystCoverage),
     fundFlow,
+    longTermLogic:completenessLevel(src.longTermLogic),
+    fundamentals:completenessLevel(src.fundamentals||src.fundamental),
     technical,
     valuation,
     overall,
