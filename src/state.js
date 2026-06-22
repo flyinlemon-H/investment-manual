@@ -1213,16 +1213,28 @@ function normalizeAllocationScore(v){
 }
 function normalizeAllocationWeight(v){
   if(v===null||v===undefined||v==='')return null;
-  const n=Number(v);
+  const raw=typeof v==='string'?v.replace(/%/g,'').trim():v;
+  const n=Number(raw);
   return isFinite(n)?Math.max(0,Math.min(100,n)):null;
+}
+function firstPresent(src,keys){
+  for(const k of keys){
+    if(Object.prototype.hasOwnProperty.call(src,k)&&src[k]!==undefined&&src[k]!==null&&src[k]!=='')return src[k];
+  }
+  return undefined;
+}
+function normalizeAllocationStringArray(v){
+  if(Array.isArray(v))return normalizeStringArray(v);
+  if(typeof v==='string')return v.split(/\n|；|;/).map(x=>String(x||'').trim()).filter(Boolean);
+  return [];
 }
 function normalizeAllocationDimension(v){
   const src=(v&&typeof v==='object')?v:{};
   return {
-    conclusion:String(src.conclusion||''),
-    keyPoints:normalizeStringArray(src.keyPoints),
-    risks:normalizeStringArray(src.risks),
-    score:normalizeAllocationScore(src.score)
+    conclusion:String(firstPresent(src,['conclusion','summary','comment','view'])||''),
+    keyPoints:normalizeAllocationStringArray(firstPresent(src,['keyPoints','reasons','points','positivePoints'])||[]),
+    risks:normalizeAllocationStringArray(firstPresent(src,['risks','keyRisks','riskFlags','negativePoints'])||[]),
+    score:normalizeAllocationScore(firstPresent(src,['score','rating']))
   };
 }
 function defaultAllocationDecision(stock={}){
@@ -1254,28 +1266,37 @@ function defaultAllocationDecision(stock={}){
   };
 }
 function normalizeAllocationChoice(value,allowed,fallback){
-  return allowed.includes(value)?value:fallback;
+  const raw=String(value||'').trim();
+  const lower=raw.toLowerCase();
+  const aliases={
+    '低':'low','中':'medium','中等':'medium','高':'high',
+    '上调':'raise','提高':'raise','维持':'maintain','保持':'maintain','下调':'lower','降低':'lower','观察':'watch','观望':'watch','收缩':'reduce','减少':'reduce','未知':'unknown',
+    '适合':'suitable','适合配置':'suitable','有条件适合':'conditional','条件适合':'conditional','不适合':'unsuitable','不适合配置':'unsuitable','暂不适合':'unsuitable'
+  };
+  const mapped=aliases[raw]||aliases[lower]||lower;
+  return allowed.includes(mapped)?mapped:fallback;
 }
 function normalizeAllocationDecision(v,stock={}){
   const d=defaultAllocationDecision(stock);
   const src=(v&&typeof v==='object')?v:{};
-  const dims=(src.dimensions&&typeof src.dimensions==='object')?src.dimensions:{};
+  const dimsSrc=firstPresent(src,['dimensions','dimensionAnalysis','analysisDimensions']);
+  const dims=(dimsSrc&&typeof dimsSrc==='object')?dimsSrc:{};
   const out={
-    symbol:String(src.symbol||d.symbol),
-    updatedAt:String(src.updatedAt||''),
-    conclusion:String(src.conclusion||''),
-    recommendedWeightRange:String(src.recommendedWeightRange||''),
-    recommendedTargetWeight:normalizeAllocationWeight(src.recommendedTargetWeight),
-    recommendedMaxWeight:normalizeAllocationWeight(src.recommendedMaxWeight),
-    recommendedRole:String(src.recommendedRole||''),
-    targetAdjustment:normalizeAllocationChoice(src.targetAdjustment,['raise','maintain','lower','watch','reduce','unknown'],'unknown'),
-    capitalAllocationView:normalizeAllocationChoice(src.capitalAllocationView,['suitable','conditional','unsuitable','watch','unknown'],'unknown'),
-    confidence:normalizeAllocationChoice(src.confidence,['low','medium','high'],'low'),
+    symbol:String(firstPresent(src,['symbol','code','ticker'])||d.symbol),
+    updatedAt:String(firstPresent(src,['updatedAt','lastUpdated','date'])||''),
+    conclusion:String(firstPresent(src,['conclusion','summary','mainConclusion','allocationConclusion'])||''),
+    recommendedWeightRange:String(firstPresent(src,['recommendedWeightRange','weightRange','allocationRange','suggestedWeightRange'])||''),
+    recommendedTargetWeight:normalizeAllocationWeight(firstPresent(src,['recommendedTargetWeight','targetWeight','suggestedTargetWeight','targetAllocation'])),
+    recommendedMaxWeight:normalizeAllocationWeight(firstPresent(src,['recommendedMaxWeight','maxWeight','suggestedMaxWeight','maxAllocation'])),
+    recommendedRole:String(firstPresent(src,['recommendedRole','role','allocationRole','suggestedRole'])||''),
+    targetAdjustment:normalizeAllocationChoice(firstPresent(src,['targetAdjustment','targetAdjustmentView','targetAction']),['raise','maintain','lower','watch','reduce','unknown'],'unknown'),
+    capitalAllocationView:normalizeAllocationChoice(firstPresent(src,['capitalAllocationView','capitalView','newCapitalView','capitalAllocation']),['suitable','conditional','unsuitable','watch','unknown'],'unknown'),
+    confidence:normalizeAllocationChoice(firstPresent(src,['confidence','confidenceLevel']),['low','medium','high'],'low'),
     dimensions:{},
-    allocationReasons:normalizeStringArray(src.allocationReasons),
-    keyRisks:normalizeStringArray(src.keyRisks),
-    suggestedActions:normalizeStringArray(src.suggestedActions),
-    notes:String(src.notes||'')
+    allocationReasons:normalizeAllocationStringArray(firstPresent(src,['allocationReasons','reasons','keyPoints','mainReasons'])||[]),
+    keyRisks:normalizeAllocationStringArray(firstPresent(src,['keyRisks','risks','riskFlags','mainRisks'])||[]),
+    suggestedActions:normalizeAllocationStringArray(firstPresent(src,['suggestedActions','actions','actionItems','nextActions'])||[]),
+    notes:String(firstPresent(src,['notes','note','comment','memo'])||'')
   };
   ALLOCATION_DIMENSIONS.forEach(k=>out.dimensions[k]=normalizeAllocationDimension(dims[k]));
   return out;
