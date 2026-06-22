@@ -4652,7 +4652,7 @@ function valuationLookupPromptText(stock){
     valuationReview:hasValuationReview(vr)?vr:'暂无复核',
     dataFreshness:normalizeDataFreshness(stock.dataFreshness)
   };
-  const schema={valuationData:{symbol:'',updatedAt:'',currency:'',marketCap:null,peTtm:null,forwardPe:null,pb:null,evEbitda:null,dividendYield:null,historicalPercentile:null,peerComparison:'',valuationConclusion:''},valuationReview:{summary:'',positivePoints:[],negativePoints:[],riskFlags:[],actionHint:''},sources:[{title:'',url:'',dataCovered:[]}]};
+  const schema={valuationData:{symbol:'',updatedAt:'',currency:'',marketCap:null,peTtm:null,forwardPe:null,pb:null,ps:null,evEbitda:null,dividendYield:null,historicalPercentile:null,peerComparison:'',valuationConclusion:''},valuationReview:{summary:'',positivePoints:[],negativePoints:[],riskFlags:[],actionHint:''},sources:[{title:'',url:'',dataCovered:[]}]};
   return [
     '你是一名谨慎的上市公司估值分析助手。',
     '',
@@ -4678,7 +4678,8 @@ function valuationLookupPromptText(stock){
     '',
     '要求：',
     '- 不要编造缺失数据。',
-    '- 无法找到的数据填 null。',
+    '- 无法找到的数据填 null，不得填 0。只有真实数据为 0 时才允许填 0。',
+    '- 如果 PE TTM 极高、PB 极高，且缺少 Forward PE 支撑，应优先判断为“明显偏贵”或“高估风险较高”，不得仅写“合理偏贵”。',
     '- 每个关键估值数据尽量注明来源。',
     '- 请明确估值数据日期。',
     '- 请说明估值结论的置信度。',
@@ -4849,7 +4850,7 @@ function fundamentalPromptText(stock){
     dataFreshness:freshness
   };
   const schema={
-    financialData:{revenue:0,revenueGrowth:0,netProfit:0,profitGrowth:0,grossMargin:0,netMargin:0,roe:0,operatingCashFlow:0,freeCashFlow:0,debtRatio:0,eps:0,reportPeriod:'',currency:'',financialNote:'',lastUpdated:''},
+    financialData:{revenue:null,revenueGrowth:null,netProfit:null,profitGrowth:null,grossMargin:null,netMargin:null,roe:null,operatingCashFlow:null,freeCashFlow:null,debtRatio:null,eps:null,reportPeriod:'',currency:'',financialNote:'',lastUpdated:''},
     financialReview:{summary:'',revenueTrend:'',profitTrend:'',marginTrend:'',cashFlowTrend:'',debtRisk:'',growthQuality:'',positivePoints:[],negativePoints:[],riskPoints:[],confidence:'high|medium|low'},
     valuationData:{symbol:'',updatedAt:'',currency:'',marketCap:null,peTtm:null,forwardPe:null,pb:null,ps:null,evEbitda:null,dividendYield:null,historicalPercentile:null,peerComparison:'',valuationConclusion:''},
     valuationReview:{summary:'',positivePoints:[],negativePoints:[],riskFlags:[],actionHint:''},
@@ -4873,6 +4874,8 @@ function fundamentalPromptText(stock){
     '财务质量和估值吸引力必须分开判断。',
     '如果公司财务质量强但估值偏贵，应输出：',
     '“公司质量较强/优秀，估值合理偏贵；属于好公司但不是便宜价格。”',
+    '如果公司财务质量较强但估值明显偏贵，应输出：',
+    '“公司质量较强，但估值明显偏贵；属于好公司但安全边际较弱。”',
     '',
     '请基于我提供的资料和你能查到的公开来源，优先使用官方公告、交易所披露、公司投资者关系、Yahoo Finance、TradingView、财经网站估值页和可比公司数据。',
     '',
@@ -4881,19 +4884,22 @@ function fundamentalPromptText(stock){
     '',
     '【分析要求】',
     '- 提取或更新 financialData。',
+    '- financialData 中所有找不到的数值字段必须填 null，不得填 0。只有原文或可靠来源明确披露真实值为 0 时，才允许填 0。',
     '- 生成 financialReview，判断收入、利润、利润率、现金流、债务风险和增长质量。',
     '- 提取或更新 valuationData，关注 PE TTM、Forward PE、PB、PS、EV/EBITDA、股息率、当前市值、历史估值分位、同行业对比和估值结论。',
     '- 请逐项查找以下估值字段：1. 市值 marketCap；2. PE TTM peTtm；3. Forward PE forwardPe；4. PB pb；5. PS ps；6. EV/EBITDA evEbitda；7. 股息率 dividendYield；8. 历史估值分位 historicalPercentile；9. 同行业对比 peerComparison；10. 估值结论 valuationConclusion。',
-    '- 每个估值字段必须出现在 valuationData 中：找到就填写数值或文字；找不到就填 null；不要因为找不到某些字段就省略字段。',
+    '- 每个估值字段必须出现在 valuationData 中：找到就填写数值或文字；找不到就填 null；不要因为找不到某些字段就省略字段。不得用 0 表示缺失估值数据。',
     '- 对找不到的估值字段，必须在 valuationReview.riskFlags 中说明缺失原因，例如“缺少 PB，公开资料未找到可核验数据”。',
     '- 估值字段强制检查：请尽量查找并提取 PE TTM、Forward PE、PB、PS（如适用）、EV/EBITDA（如适用）、股息率、市值、历史估值分位、同行业对比、估值结论。',
     '- 如果无法获取某个估值字段，必须在 valuationData 中填 null 或空字符串，并在 valuationReview.riskFlags 中明确写出缺失字段。',
+    '- 如果 PE TTM 极高、PB 极高，且缺少 Forward PE 支撑，应优先判断为“明显偏贵”或“高估风险较高”，不得仅写“合理偏贵”。',
+    '- 财务质量和估值结论必须分开：财务质量强不等于估值有吸引力，估值偏贵也不等于公司质量偏弱。',
     '- 不要只输出 PE。如果只能找到 PE，也要在 valuationReview.summary 或 valuationReview.riskFlags 中说明“估值判断仅基于 PE，置信度较低”。',
     '- 生成 valuationReview，判断当前估值低估 / 合理 / 偏贵 / 高估 / 无法判断。',
     '- 如果是周期股或资源股，不要只看 PE；要结合商品周期、现金流和资本开支。',
     '- 如果是科技成长股，不要只看 PE；要结合收入增速、利润弹性、订单趋势、行业景气和 PEG。',
     '- 如果是 ETF，重点分析指数估值、历史分位、成分行业、股息率和宏观周期。',
-    '- 不要编造缺失数据；找不到的数值填 null 或 0，并在 review 中说明缺失。',
+    '- 不要编造缺失数据；找不到的数值必须填 null，并在 review 中说明缺失。只有真实数据为 0 时才允许填 0。',
     `- ${chineseOutputPromptRule()}`,
     '',
     '请先给简短可读结论，再输出可导入投资手册的 JSON。',
