@@ -1874,68 +1874,6 @@ function positionPlanPanel(stock){
   const fallback=`<div class="text" style="max-width:none"><b>最近计划：</b>${esc(main)}<br><b>计划摘要：</b>${esc(planSummary||'暂无明确仓位计划')}</div>`;
   return `<div class="card" style="margin-bottom:14px"><div class="card-title">仓位与加减仓计划</div>${tp?imported:fallback}${history}${tradePlanActionButtons(false)}</div>`;
 }
-function workflowDateText(dateStr){
-  const d=normalizeDateOnly(dateStr);
-  if(!d)return '未更新';
-  const days=freshnessDays(d);
-  return days===null?d:`${d} · ${days}天前`;
-}
-function workflowCard(title,question,summary,meta,buttons,accent='var(--line)'){
-  return `<div class="card" style="border-left:4px solid ${accent}"><div class="card-title">${esc(title)}</div><div class="card-note">${esc(question)}</div><div class="text" style="max-width:none;margin-top:8px">${summary}</div><div class="card-note" style="margin-top:8px">${esc(meta||'')}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap">${buttons}</div></div>`;
-}
-function decisionWorkflowPanel(stock){
-  normalizeStockAnalysis(stock);
-  const td=normalizeTechnicalData(stock.technicalData);
-  const techDecision=calculateTechnicalDecision(stock);
-  const fd=normalizeFinancialData(stock.financialData);
-  const fundamental=fundamentalAnalysis(stock);
-  const etfAnalysis=etfAnalysisSummary(stock);
-  const isEtf=stock.type==='etf';
-  const valuationData=normalizeValuationData(stock.valuationData);
-  const valuationReview=normalizeValuationReview(stock.valuationReview);
-  const reviews=normalizeAiReviews(stock.aiReviews);
-  const finReview=reviews.financialReview||null;
-  const ad=normalizeAllocationDecision(stock.allocationDecision,stock);
-  const strategy=normalizeStrategy(stock.strategy,stock);
-  const actionInfo=getLatestActionInfo(stock);
-  const nearest=nearestDetailPlan(stock);
-  const planSummary=tradePlanSummaryText(stock);
-  const techText=formatChineseText(techDecision.summary||td.actionHint||td.technicalSummary||'导入技术面 JSON 后生成短期辅助决策。');
-  const techSummary=`<b>${esc(formatChineseText(techDecision.title||'观察'))}</b><br>${esc(techText)}${englishTextHint(techText)}<br><span class="muted">支撑：${(td.supportLevels||[]).slice(0,3).map(esc).join('、')||'—'} · 压力：${(td.resistanceLevels||[]).slice(0,3).map(esc).join('、')||'—'}</span>`;
-  const fundamentalCompanyQuality=inferCompanyQualityLabel(fundamental);
-  const fundamentalValuationLevel=inferValuationLevelLabel(fundamental);
-  const fundamentalJudgement=fundamentalCombinedJudgement(fundamentalCompanyQuality,fundamentalValuationLevel);
-  const fundamentalSummary=`<b>公司质量：${esc(fundamentalCompanyQuality)} · 估值：${esc(fundamentalValuationLevel)}</b><br>${esc(fundamentalJudgement)}<br><span class="muted">财务质量 ${fmtMaybe(fundamental.financialScore,1)} · 估值吸引力 ${fmtMaybe(fundamental.valuationScore,1)} · 综合 ${fmtMaybe(fundamental.score,1)}${fundamental.missing.length?' · '+fundamental.missing.map(esc).join('、'):''}</span>`;
-  const etfLayerSummary=`<b>${etfAnalysis.score===null?'—':fmtMaybe(etfAnalysis.score,1)+' / 10'} · ${esc(formatChineseText(etfAnalysis.conclusion))}</b><br>${esc(formatChineseText(etfAnalysis.summary))}<br><span class="muted">指数：${esc(etfAnalysis.indexName||'—')} · 估值：${esc(formatChineseText(etfAnalysis.indexValuationLevel||'—'))} · 分位：${etfAnalysis.historicalPercentile===null?'—':fmtMaybe(etfAnalysis.historicalPercentile,1)+'%'}</span>`;
-  const valuationConclusion=String(valuationData.valuationConclusion||valuationReview.summary||'');
-  const valuationState=valuationCompleteness(valuationData);
-  const valuationHint=valuationState.status==='missing'
-    ?valuationState.message
-    :valuationState.status==='partial'
-      ?valuationState.message
-      :(/[偏贵高估]/.test(valuationConclusion)?'估值偏贵，新增资金配置需更谨慎。':'');
-  const sentiment=sentimentReviewContext(stock);
-  const sentimentHint=sentiment.hasReview?'':sentiment.missingHint;
-  const sentimentReview=sentiment.review;
-  const sentimentSummary=sentiment.hasReview
-    ?`<b>${esc(formatChineseText(sentimentReview.conclusion||'暂无情绪结论'))}</b><br>重要性：${sentimentImportanceText(sentiment.importance)} · 市场情绪：${esc(formatChineseText(sentimentReview.marketMood||'—'))} · 板块热度：${esc(formatChineseText(sentimentReview.sectorHeat||'—'))}<br><span class="muted">机构观点：${esc(formatChineseText(sentimentReview.institutionalView||'—'))} · 资金流：${esc(formatChineseText(sentimentReview.fundFlowView||'—'))}</span>${sentimentReview.riskFlags.length?`<br><span class="muted">风险：${zhList(sentimentReview.riskFlags).slice(0,3).map(esc).join('；')}</span>`:''}`
-    :`<b>${sentimentImportanceText(sentiment.importance)}重要性 · 暂无情绪/新闻复核</b><br>${esc(sentiment.missingHint)}`;
-  const sentimentButtons=`<button class="btn small" data-detail-action="copy-sentiment-prompt">复制情绪/新闻搜索 Prompt</button><button class="btn ghost small" data-detail-action="import-sentiment-json">导入情绪 Review JSON</button>`;
-  const sentimentMeta=sentiment.hasReview?`更新：${workflowDateText(sentimentReview.updatedAt)} · 来源质量 ${zhConfidence(sentimentReview.sourceQuality)} · 置信度 ${zhConfidence(sentimentReview.confidence)}`:`情绪重要性：${sentimentImportanceText(sentiment.importance)} · 未更新`;
-  const sentimentWeightHint=sentiment.importance==='high'
-    ?'情绪/新闻对该标的影响较高，已纳入配置判断。'
-    :sentiment.importance==='low'
-      ?'情绪/新闻为辅助参考，主要依据基本面、宏观和估值。'
-      :'情绪/新闻对短期市场反馈有中等参考价值。';
-  const allocSummary=`<b>${esc(formatChineseText(ad.conclusion||'暂无配置结论'))}</b><br>建议区间：${esc(ad.recommendedWeightRange||'—')} · 目标：${allocationPercentText(ad.recommendedTargetWeight)} · 最大：${allocationPercentText(ad.recommendedMaxWeight)}<br><span class="muted">新增资金：${esc(zhCapitalView(ad.capitalAllocationView))} · 目标调整：${esc(zhTargetAdjustment(ad.targetAdjustment))}</span>${valuationHint?`<br><span class="muted">${esc(valuationHint)}</span>`:''}${sentimentHint?`<br><span class="muted">情绪重要性：${sentimentImportanceText(sentiment.importance)} · ${esc(sentimentHint)}</span>`:''}`;
-  const capitalSummary=`<b>${esc(formatChineseText(actionInfo.text||'暂无明确操作，进入分析页复核'))}</b><br>${nearest?`最近计划：${nearest.p.action==='sell'?'减仓':'加仓'} ${fmtInt(nearest.p.shares)} @ ${fmtMaybe(nearest.p.price)}${nearest.g?(nearest.g.triggered?' · 已触发':` · 距触发 ${fmt(nearest.g.absPct,1)}%`):''}`:(formatChineseText(planSummary)||'暂无可执行资金计划')}<br><span class="muted">策略：${esc(zhStrategyRole(strategy.investmentStyle))} · 目标股数 ${fmtInt(strategy.targetShares)} · 偏好金额 ${fmtMoney(strategy.preferredBuyAmount)}</span>`;
-  const techButtons=`<button class="btn small" data-detail-action="copy-technical-prompt">复制技术面 Prompt</button><button class="btn ghost small" data-detail-action="import-technical-json">导入技术面 JSON</button>`;
-  const fundamentalButtons=`<button class="btn small" data-detail-action="copy-fundamental-prompt">复制基本面分析 Prompt</button><button class="btn ghost small" data-detail-action="import-fundamental-json">导入基本面 JSON</button>`;
-  const etfButtons=`<button class="btn small" data-detail-action="copy-etf-analysis-prompt">复制 ETF 分析 Prompt</button><button class="btn ghost small" data-detail-action="import-etf-analysis-json">导入 ETF 分析 JSON</button>`;
-  const allocButtons=`<button class="btn small" data-detail-action="view-allocation-detail">查看完整配置分析</button><button class="btn ghost small" data-detail-action="copy-allocation-prompt">复制配置决策 Prompt</button><button class="btn ghost small" data-detail-action="import-allocation-json">导入配置决策 JSON</button>`;
-  const capitalButtons=`<button class="btn small" data-detail-action="copy-full-add-discussion-prompt">与AI讨论 Prompt</button><button class="btn ghost small" data-detail-action="copy-trade-plan-prompt">生成操作计划 Prompt</button><button class="btn ghost small" data-detail-action="import-trade-plan-json">导入操作计划 JSON</button>`;
-  return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--seal)"><div class="card-title">五层决策流程</div><div class="card-note">日常按顺序走：技术面 → ${isEtf?'指数行业':'基本面'} → 情绪/新闻 → 配置决策 → 新增资金讨论。其余深度分析和旧工具已折叠到后面。</div><div class="dash" style="margin-top:12px">${workflowCard('1. 技术面','回答：现在是不是买点 / 卖点 / 等待？',techSummary,`技术更新时间：${workflowDateText(td.priceUpdatedAt||td.lastUpdated||normalizeDataFreshness(stock.dataFreshness).technicalUpdatedAt)}`,techButtons,'#3b82f6')}${isEtf?workflowCard('2. 指数行业','回答：指数、行业和宏观是否支持配置？',etfLayerSummary,`ETF分析更新时间：${workflowDateText(etfAnalysis.updatedAt||normalizeDataFreshness(stock.dataFreshness).etfAnalysisUpdatedAt)}`,etfButtons,'#10b981'):workflowCard('2. 基本面','回答：公司好不好，当前价格贵不贵？',fundamentalSummary,`财报 ${workflowDateText(normalizeDataFreshness(stock.dataFreshness).financialUpdatedAt||fd.lastUpdated)} · 估值 ${workflowDateText(normalizeDataFreshness(stock.dataFreshness).valuationUpdatedAt||valuationData.updatedAt||valuationData.lastUpdated)}`,fundamentalButtons,'#10b981')}${workflowCard('3. 情绪/新闻','回答：市场预期、板块热度、新闻和资金流是否支持？',sentimentSummary,sentimentMeta,sentimentButtons,'#8b5cf6')}${workflowCard('4. 策略配置','回答：这只标的值得配置多少？',`${allocSummary}<br><span class="muted">${esc(sentimentWeightHint)}</span>`,`配置更新时间：${ad.updatedAt?workflowDateText(ad.updatedAt):'未更新'} · 置信度 ${zhConfidence(ad.confidence)}`,allocButtons,'#d4a72c')}${workflowCard('5. 资金讨论','回答：今天这笔新增资金给不给它？',capitalSummary,`当前提示来源：${zhSource(actionInfo.source)||'—'}`,capitalButtons,'#ef4444')}</div></div>`;
-}
 const ALLOCATION_DIMENSION_LABELS={macro:'宏观',industry:'行业',company:'公司',financials:'财报',valuation:'估值',sentiment:'情绪',technical:'技术面'};
 const ALLOCATION_TARGET_LABELS={raise:'上调',maintain:'维持',lower:'下调',watch:'观察',reduce:'降低/收缩',unknown:'未知'};
 const ALLOCATION_CAPITAL_LABELS={suitable:'适合',conditional:'有条件适合',unsuitable:'不适合',watch:'观察',unknown:'未知'};
@@ -5187,7 +5125,7 @@ function renderStockDetail(){
   const actual=info&&info.actualPct!==null?info.actualPct:null;
   const deviation=info&&info.deviation!==null?`${info.deviation>=0?'+':''}${info.deviation.toFixed(1)}%`:'—';
   document.getElementById('summary').innerHTML=`标的详情 · <strong>${esc(s.name)}</strong> · ${esc(s.role||'—')} · ${esc(s.theme||'—')}`;
-  document.getElementById('main').innerHTML=`${detailHeroPanel(s,mv,actual,deviation)}${currentActionPanel(s)}${technicalAnalysisPanel(s)}${shortTermCatalystPanel(s)}${shortTermSentimentPanel(s)}${informationCompletenessPanel(s)}${positionPlanPanel(s)}${decisionWorkflowPanel(s)}${detailResultsArchivePanel(s,cp)}${detailResearchArchivePanel(s,cp)}${detailAdvancedToolsArchivePanel(s)}`;
+  document.getElementById('main').innerHTML=`${detailHeroPanel(s,mv,actual,deviation)}${currentActionPanel(s)}${technicalAnalysisPanel(s)}${shortTermCatalystPanel(s)}${shortTermSentimentPanel(s)}${informationCompletenessPanel(s)}${positionPlanPanel(s)}${detailResultsArchivePanel(s,cp)}${detailResearchArchivePanel(s,cp)}${detailAdvancedToolsArchivePanel(s)}`;
   document.getElementById('backToListBtn').addEventListener('click',closeStockDetail);
   document.querySelectorAll('[data-detail-action]').forEach(b=>b.addEventListener('click',()=>handleDetailAction(b.dataset.detailAction,s)));
   document.querySelectorAll('[data-collection-action="save"]').forEach(b=>b.addEventListener('click',saveCollectionInputs));
