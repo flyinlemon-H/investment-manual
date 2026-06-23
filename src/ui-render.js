@@ -40,9 +40,11 @@ const ZH_ENUM_MAP={
   macd_bearish_crossover:'MACD死叉风险',macd_bullish_crossover:'MACD金叉修复',momentum_weakening:'动能减弱',momentum_weaking:'动能减弱',near_short_term_resistance:'接近短期压力位',main_fund_outflow:'主力资金流出',price_below_ma20:'跌破MA20',price_below_ma60:'跌破MA60',support_breakdown:'跌破关键支撑',high_volatility:'高位波动加大',valuation_expensive:'估值偏贵',insufficient_data:'数据不足',
   near_previous_high:'接近前高',short_term_volatility:'短期波动加大',resistance_overhead:'上方压力明显',gap_risk:'跳空风险',trend_weakening:'趋势走弱',below_ma20:'跌破MA20',below_ma60:'跌破MA60',breakout_failure:'突破失败风险',volume_divergence:'量价背离',
   growth:'成长仓',core:'核心仓',watchOnly:'观察仓',core_resource_holding:'核心资源仓',defensive:'防御仓',satellite:'卫星仓',value:'价值仓',cyclical:'周期仓',resource:'资源仓',dividend:'高股息仓',etf:'ETF配置',
+  underweight:'低配',normal:'正常',overweight:'超配',heavily_overweight:'严重超配',
+  not_triggered:'未触发',reduce_watch:'减仓观察',review_required:'需要复核',protect:'保护利润',
   suitable:'适合配置',conditional:'有条件适合',unsuitable:'不适合配置',watch:'观察为主',
   raise:'上调',maintain:'维持',lower:'下调',reduce:'降低',
-  low:'低',medium:'中',high:'高',
+  low:'低',medium:'中',high:'高',none:'无',
   technicalDecision:'技术面辅助决策',technicalData:'技术面数据',allocationDecision:'配置决策',financialReview:'财报复核',valuationReview:'估值复核',manual:'手动',strategy:'策略',plan:'计划',
   positive:'偏正面',neutral:'中性',negative:'偏负面',keep:'保留',suspend:'暂停',active:'生效',inactive:'未生效',
   strongBuy:'强烈买入',buy:'买入',sell:'卖出',
@@ -2635,6 +2637,13 @@ function valuationAnalysisPanel(stock){
   const levelText=completeness.level==='complete'?'较完整':(completeness.level==='partial'?'部分完整':'缺失');
   return `<div class="card" style="margin-bottom:14px">${moduleTitleActions('估值分析','copy-valuation-lookup-prompt','import-valuation-json')}<div class="dash" style="margin:0"><div><div class="card-title">估值结论</div><div class="text" style="max-width:none">${esc(formatChineseText(vd.valuationConclusion||'暂无估值结论'))}</div><div class="card-note">更新：${esc(vd.updatedAt||vd.lastUpdated||'—')} · ${esc(vd.currency||'—')}</div></div><div><div class="card-title">当前市值</div><div class="card-num" style="font-size:20px">${vd.marketCap===null?'—':fmtMoney(vd.marketCap)}</div><div class="card-note">历史分位 ${vd.historicalPercentile===null?'—':fmtMaybe(vd.historicalPercentile,1)+'%'}</div></div><div><div class="card-title">估值指标</div><div class="card-note">PE TTM ${vd.peTtm===null?valNum(vd.pe,2):valNum(vd.peTtm,2)} · Forward PE ${valNum(vd.forwardPe,2)}</div><div class="card-note">PB ${valNum(vd.pb,2)} · PS ${valNum(vd.ps,2)} · EV/EBITDA ${valNum(vd.evEbitda,2)} · 股息率 ${vd.dividendYield===null||vd.dividendYield===undefined?'—':fmtMaybe(vd.dividendYield,2)+'%'}</div></div><div><div class="card-title">完整度</div><div class="card-note">${esc(levelText)} ${completeness.score}%</div><div class="card-note">缺失：${esc(completeness.missingFields.join('、')||'—')}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>已有字段：</b>${esc(completeness.completedFields.join('、')||'—')}<br><b>同行业对比：</b>${esc(vd.peerComparison||'—')}<br><b>估值摘要：</b>${esc(formatChineseText(vr.summary||vd.valuationNote||'—'))}<br><b>估值风险：</b>${risks}<br><b>操作提示：</b>${esc(formatChineseText(vr.actionHint||'—'))}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-valuation-lookup-prompt">复制估值查找 Prompt</button><button class="btn ghost small" data-detail-action="import-valuation-json">导入估值 JSON</button></div></div>`;
 }
+function positionManagementReviewPanel(stock){
+  const r=normalizePositionManagementReview(stock.positionManagementReview);
+  const has=Boolean(r.updatedAt||r.currentWeight||r.targetWeight||r.weightStatus!=='unknown'||r.profitProtectionStatus!=='unknown'||r.reduceWatchStatus!=='unknown'||r.summary||r.actionHint||r.riskFlags.length||r.notes);
+  if(!has)return `<div class="card" style="margin-bottom:14px"><div class="card-title">仓位管理与利润兑现</div><div class="alert">暂无仓位管理复核。</div></div>`;
+  const risks=r.riskFlags.length?`<ul style="margin:6px 0 0 18px;padding:0">${r.riskFlags.map(x=>`<li>${esc(formatChineseText(x))}</li>`).join('')}</ul>`:'—';
+  return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--gold)"><div class="card-title">仓位管理与利润兑现</div><div class="dash" style="margin:0"><div><div class="card-title">当前仓位</div><div class="card-num" style="font-size:20px">${fmtMaybe(r.currentWeight,1)}%</div><div class="card-note">更新：${esc(r.updatedAt||'—')}</div></div><div><div class="card-title">目标仓位</div><div class="card-num" style="font-size:20px">${fmtMaybe(r.targetWeight,1)}%</div></div><div><div class="card-title">仓位状态</div><div class="card-note">${esc(zhEnum(r.weightStatus)||'—')}</div></div><div><div class="card-title">利润保护 / 减仓观察</div><div class="card-note">${esc(zhEnum(r.profitProtectionStatus)||'—')} · ${esc(zhEnum(r.reduceWatchStatus)||'—')}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>摘要：</b>${esc(formatChineseText(r.summary||'—'))}<br><b>操作提示：</b>${esc(formatChineseText(r.actionHint||'—'))}<br><b>风险提示：</b>${risks}<br><b>备注：</b>${esc(formatChineseText(r.notes||'—'))}</div></div>`;
+}
 function fundamentalAnalysisPanel(stock){
   const f=fundamentalAnalysis(stock);
   const fd=f.financialData;
@@ -4656,7 +4665,7 @@ function longTermLogicPromptText(stock){
     allocationDecision:normalizeAllocationDecision(stock.allocationDecision,stock),
     dataFreshness:normalizeDataFreshness(stock.dataFreshness)
   };
-  const schema={longTermLogic:{updatedAt:todayDate(),validUntil:'',investmentThesis:'',coreDrivers:[],fundamentalSupport:'',longTermRisks:[],logicStatus:'valid | weakening | broken | unclear',confidence:'high | medium | low',nextReviewDate:'',sourceSummary:''}};
+  const schema={longTermLogic:{updatedAt:todayDate(),validUntil:'',investmentThesis:'',coreDrivers:[],industryDrivers:[],companyDrivers:[],portfolioDrivers:[],fundamentalSupport:'',longTermRisks:[],logicStatus:'valid | weakening | broken | unclear',confidence:'high | medium | low',nextReviewDate:'',sourceSummary:''}};
   return [
     '你是一名谨慎的长期投资逻辑整理助手。',
     '',
@@ -4669,14 +4678,26 @@ function longTermLogicPromptText(stock){
     '',
     '长期逻辑只回答“为什么长期持有”，不要写成财报分析或估值分析。',
     '',
-    '财务数据、估值数据和配置决策只作为背景材料，用于判断长期逻辑是否仍然有效，不要在 investmentThesis、coreDrivers 中展开财报数字、PE、PB、现金流等内容。',
+    '长期逻辑必须体现三层结构：',
+    '第一层：行业长期逻辑。回答为什么这个行业未来 3-10 年仍具备投资价值，例如 AI算力扩张、黄金避险需求、铜资源长期需求、消费升级、电动车渗透率提升等。',
+    '第二层：公司专属护城河。回答如果行业逻辑成立，为什么优先受益的是这家公司。禁止只写行业逻辑，必须提炼公司专属优势，例如技术壁垒、资源整合能力、全球布局、客户资源、品牌、生态、规模、成本、供应链、产品矩阵、平台效应、网络效应、运营效率。无法找到明确护城河时允许降低 confidence，禁止编造。',
+    '第三层：组合角色价值。回答为什么适合作为当前组合角色。核心仓强调长期核心配置价值，成长仓强调长期成长驱动力，观察仓说明逻辑成立但尚未达到核心配置条件，卫星仓说明主题暴露和收益弹性。',
     '',
-    'fundamentalSupport 字段只允许用 1-2 句话概括“已有财报对长期逻辑有辅助验证”，不得写成财务分析模块，不得列举大量财务指标。',
+    'investmentThesis 必须同时包含：行业逻辑、公司护城河、组合价值。不要只写行业趋势。',
+    '错误示例：“AI行业长期增长，公司受益。”',
+    '正确示例：“AI算力需求增长提供行业空间，公司依托服务器交付能力、供应链管理能力和客户资源持续受益，并作为组合中的AI成长仓提供长期成长弹性。”',
+    '',
+    '财务数据、估值数据和配置决策只作为背景材料，用于判断长期逻辑是否仍然有效，不要在 investmentThesis、coreDrivers、industryDrivers、companyDrivers、portfolioDrivers 中展开财报数字、PE、PB、现金流等内容。',
+    '',
+    'fundamentalSupport 字段只允许用 1-2 句话概括“已有财报对长期逻辑有辅助验证”，不得写成财务分析模块，不得列举收入、利润、PE、PB、现金流等大量财务或估值指标。',
     '',
     '请重点整理：',
     '- investmentThesis：长期投资主线',
-    '- coreDrivers：长期驱动因素',
-    '- longTermRisks：长期风险',
+    '- industryDrivers：行业驱动，只写行业长期逻辑',
+    '- companyDrivers：公司专属护城河，只写公司为什么优先受益',
+    '- portfolioDrivers：组合角色价值，只写它在当前组合中的作用',
+    '- coreDrivers：兼容字段，可合并 industryDrivers、companyDrivers、portfolioDrivers 的精简要点',
+    '- longTermRisks：长期逻辑失效风险，只保留行业需求下降、商品价格长期下行、技术路线变化、客户集中度、海外运营、资源储量等长期风险。禁止写跌破MA20、跌破MA60、MACD死叉、近期资金流。',
     '- logicStatus：逻辑状态',
     '- confidence：置信度',
     '- validUntil：有效期',
@@ -4853,7 +4874,7 @@ function ensureLongTermLogicImportModal(){
   el=document.createElement('div');
   el.className='modal-bg import-layer';
   el.id='longTermLogicImportModal';
-  el.innerHTML=`<div class="modal"><h2>导入长期逻辑 JSON</h2><div class="modal-sub">仅用于导入 longTermLogic。长期逻辑只回答“为什么长期持有”，不会修改新闻、情绪、基本面、配置决策或当前操作建议。</div><div class="form-row"><label>粘贴长期逻辑 JSON</label><textarea id="longTermLogicImportText" style="min-height:280px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"longTermLogic\":{\"investmentThesis\":\"...\",\"coreDrivers\":[],\"longTermRisks\":[],\"logicStatus\":\"valid\",\"confidence\":\"medium\"}}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="longTermLogicImportCancelBtn" type="button">取消</button><button class="btn" id="longTermLogicImportSaveBtn" type="button">导入长期逻辑</button></div></div>`;
+  el.innerHTML=`<div class="modal"><h2>导入长期逻辑 JSON</h2><div class="modal-sub">仅用于导入 longTermLogic。长期逻辑只回答“为什么长期持有”，不会修改新闻、情绪、基本面、配置决策或当前操作建议。</div><div class="form-row"><label>粘贴长期逻辑 JSON</label><textarea id="longTermLogicImportText" style="min-height:280px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"longTermLogic\":{\"investmentThesis\":\"...\",\"industryDrivers\":[],\"companyDrivers\":[],\"portfolioDrivers\":[],\"longTermRisks\":[],\"logicStatus\":\"valid\",\"confidence\":\"medium\"}}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="longTermLogicImportCancelBtn" type="button">取消</button><button class="btn" id="longTermLogicImportSaveBtn" type="button">导入长期逻辑</button></div></div>`;
   document.body.appendChild(el);
   el.addEventListener('click',e=>{if(e.target.id==='longTermLogicImportModal')closeLongTermLogicImportModal()});
   document.getElementById('longTermLogicImportCancelBtn').addEventListener('click',closeLongTermLogicImportModal);
@@ -4889,7 +4910,7 @@ function importSentimentPayloadFromText(text,options={}){
   try{
     if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))throw new Error('JSON 必须是对象。');
     let changed=false;
-    const looksLikeLongTerm=Boolean(parsed.longTermLogic||parsed.logicStatus||parsed.investmentThesis||parsed.fundamentalSupport||parsed.coreDrivers||parsed.longTermRisks);
+    const looksLikeLongTerm=Boolean(parsed.longTermLogic||parsed.logicStatus||parsed.investmentThesis||parsed.fundamentalSupport||parsed.coreDrivers||parsed.industryDrivers||parsed.companyDrivers||parsed.portfolioDrivers||parsed.longTermRisks);
     const looksLikeRecentCatalyst=Boolean(parsed.recentCatalyst||parsed.analysisDate||parsed.todayCatalyst||parsed.weeklyCatalysts||parsed.monthlyCatalysts||parsed.recentEvents||parsed.latestSourceDate||parsed.freshnessStatus||parsed.catalystCoverage);
     const looksLikeEventExplanation=Boolean(parsed.eventExplanation||parsed.priceActionDetected!==undefined||parsed.canExplainTodayMove!==undefined||parsed.explanationLevel||parsed.explanationConfidence||parsed.explanation);
     const looksLikeShortTermSentiment=Boolean(parsed.shortTermSentiment||parsed.marketMood||parsed.marketSentiment||parsed.sentiment||parsed.fundFlowView||parsed.fundFlow||parsed.fundFlowSummary||parsed.capitalFlow||parsed.moneyFlowView||parsed.sectorHeat||parsed.sectorMomentum||parsed.sectorHotness||parsed.themeHeat||parsed.industryHeat||parsed.institutionalView||parsed.institutionalOpinion||parsed.institutionalViews||parsed.brokerView||parsed.analystView||(parsed.actionHint&&parsed.confidence&&parsed.riskFlags));
@@ -4987,8 +5008,12 @@ function longLogicDriverCards(drivers){
   if(!arr.length)return '<div class="alert">核心驱动待补充。</div>';
   return `<div class="long-logic-driver-grid">${arr.map(x=>`<div class="long-logic-driver">✓ ${esc(x)}</div>`).join('')}</div>`;
 }
+function longLogicDriverSection(title,drivers,emptyText){
+  const arr=normalizeStringArray(drivers).map(formatChineseText).filter(Boolean);
+  return `<section class="long-logic-section"><div class="card-title">${esc(title)}</div>${arr.length?`<div class="long-logic-driver-grid">${arr.map(x=>`<div class="long-logic-driver">✓ ${esc(x)}</div>`).join('')}</div>`:`<div class="alert">${esc(emptyText||'待补充。')}</div>`}</section>`;
+}
 function longLogicChangeText(l){
-  if(!l||!(l.investmentThesis||l.coreDrivers.length||l.fundamentalSupport||l.longTermRisks.length))return '待补充长期逻辑档案。';
+  if(!l||!(l.investmentThesis||l.coreDrivers.length||l.industryDrivers.length||l.companyDrivers.length||l.portfolioDrivers.length||l.fundamentalSupport||l.longTermRisks.length))return '待补充长期逻辑档案。';
   if(l.logicStatus==='valid')return '当前逻辑有效；未保存上次状态用于自动对比。';
   if(l.logicStatus==='weakening')return '逻辑减弱，需要提前复核。';
   if(l.logicStatus==='broken')return '逻辑失效，需要重新评估持仓理由。';
@@ -4999,10 +5024,13 @@ function longLogicDetailsBlock(title,body,open=false){
 }
 function longTermLogicPanel(stock){
   const l=normalizeLongTermLogic(stock.longTermLogic,stock);
-  const has=Boolean(l.investmentThesis||l.coreDrivers.length||l.fundamentalSupport||l.longTermRisks.length);
+  const has=Boolean(l.investmentThesis||l.coreDrivers.length||l.industryDrivers.length||l.companyDrivers.length||l.portfolioDrivers.length||l.fundamentalSupport||l.longTermRisks.length);
   const status=longLogicStatusText(l.logicStatus);
   const confidence=zhConfidence(l.confidence)||'—';
   const risks=normalizeStringArray(l.longTermRisks).map(formatChineseText).filter(Boolean);
+  const industryDrivers=l.industryDrivers.length?l.industryDrivers:l.coreDrivers;
+  const companyDrivers=l.companyDrivers;
+  const portfolioDrivers=l.portfolioDrivers;
   const detailedLogic=`<div class="text" style="max-width:none"><b>投资主线：</b><br>${esc(formatChineseText(l.investmentThesis||'—'))}<br><br><b>来源摘要：</b><br>${esc(formatChineseText(l.sourceSummary||'—'))}${l.fundamentalSupport?`<br><br><b>补充证据：</b><br>${esc(formatChineseText(l.fundamentalSupport))}`:''}</div>`;
   const body=has
     ?`<div class="long-logic-memo">
@@ -5015,8 +5043,10 @@ function longTermLogicPanel(stock){
           <div><span>更新</span><strong>${esc(l.updatedAt||'—')}</strong></div>
         </div>
       </div>
-      <section class="long-logic-section"><div class="card-title">核心结论</div><div class="long-logic-thesis">${esc(longLogicThesisExcerpt(l.investmentThesis))}</div></section>
-      <section class="long-logic-section"><div class="card-title">核心驱动</div>${longLogicDriverCards(l.coreDrivers)}</section>
+      <section class="long-logic-section"><div class="card-title">长期投资主线</div><div class="long-logic-thesis">${esc(longLogicThesisExcerpt(l.investmentThesis))}</div></section>
+      ${longLogicDriverSection('行业驱动',industryDrivers,'行业长期逻辑待补充。')}
+      ${longLogicDriverSection('公司护城河',companyDrivers,'公司专属护城河待补充。')}
+      ${longLogicDriverSection('组合价值',portfolioDrivers,'组合角色价值待补充。')}
       <section class="long-logic-section"><div class="card-title">与上次相比</div><div class="long-logic-change">${esc(longLogicChangeText(l))}</div></section>
       ${longLogicDetailsBlock(`长期风险（${risks.length}项）`,risks.length?`<ul>${risks.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'<div class="text">暂无长期风险记录。</div>')}
       ${longLogicDetailsBlock('详细内容',detailedLogic)}
@@ -5096,7 +5126,7 @@ function openLongLogicModal(){
   const el=ensureLongLogicModal();
   const title=document.getElementById('longLogicTitle');
   if(title)title.textContent=`${stock.name||'标的'} · 长期逻辑`;
-  document.getElementById('longLogicBody').innerHTML=`${longTermLogicPanel(stock)}${stock.type==='etf'?etfIndexAnalysisPanel(stock):fundamentalAnalysisPanel(stock)}${allocationDecisionPanel(stock)}${valuationAnalysisPanel(stock)}`;
+  document.getElementById('longLogicBody').innerHTML=`${longTermLogicPanel(stock)}${stock.type==='etf'?etfIndexAnalysisPanel(stock):fundamentalAnalysisPanel(stock)}${allocationDecisionPanel(stock)}${valuationAnalysisPanel(stock)}${positionManagementReviewPanel(stock)}`;
   el.classList.add('show');
 }
 function refreshLongLogicModalIfOpen(){
@@ -5108,7 +5138,7 @@ function refreshLongLogicModalIfOpen(){
   const title=document.getElementById('longLogicTitle');
   if(title)title.textContent=`${stock.name||'标的'} · 长期逻辑`;
   const body=document.getElementById('longLogicBody');
-  if(body)body.innerHTML=`${longTermLogicPanel(stock)}${stock.type==='etf'?etfIndexAnalysisPanel(stock):fundamentalAnalysisPanel(stock)}${allocationDecisionPanel(stock)}${valuationAnalysisPanel(stock)}`;
+  if(body)body.innerHTML=`${longTermLogicPanel(stock)}${stock.type==='etf'?etfIndexAnalysisPanel(stock):fundamentalAnalysisPanel(stock)}${allocationDecisionPanel(stock)}${valuationAnalysisPanel(stock)}${positionManagementReviewPanel(stock)}`;
 }
 function closeLongLogicModal(){
   const modal=document.getElementById('longLogicModal');

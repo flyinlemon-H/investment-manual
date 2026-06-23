@@ -479,6 +479,9 @@ function defaultLongTermLogic(){
     validUntil:'',
     investmentThesis:'',
     coreDrivers:[],
+    industryDrivers:[],
+    companyDrivers:[],
+    portfolioDrivers:[],
     fundamentalSupport:'',
     longTermRisks:[],
     logicStatus:'unclear',
@@ -491,17 +494,55 @@ function normalizeLongTermLogic(v,stock={}){
   const src=(v&&typeof v==='object')?v:{};
   const framework=(stock.analysisFramework&&typeof stock.analysisFramework==='object')?stock.analysisFramework:{};
   const conclusion=(framework.conclusion&&typeof framework.conclusion==='object')?framework.conclusion:{};
+  const industryDrivers=normalizeStringArray(src.industryDrivers);
+  const companyDrivers=normalizeStringArray(src.companyDrivers);
+  const portfolioDrivers=normalizeStringArray(src.portfolioDrivers);
+  const legacyCoreDrivers=normalizeStringArray(src.coreDrivers||conclusion.buyRules);
+  const mergedCoreDrivers=normalizeStringArray(src.coreDrivers||[...industryDrivers,...companyDrivers,...portfolioDrivers]);
   return {
     updatedAt:normalizeDateOnly(src.updatedAt)||String(src.updatedAt||''),
     validUntil:normalizeDateOnly(src.validUntil)||String(src.validUntil||''),
     investmentThesis:String(src.investmentThesis||stock.thesis||stock.notes||conclusion.summary||''),
-    coreDrivers:normalizeStringArray(src.coreDrivers||conclusion.buyRules),
+    coreDrivers:mergedCoreDrivers.length?mergedCoreDrivers:legacyCoreDrivers,
+    industryDrivers:industryDrivers.length?industryDrivers:(companyDrivers.length||portfolioDrivers.length?[]:legacyCoreDrivers),
+    companyDrivers,
+    portfolioDrivers,
     fundamentalSupport:String(src.fundamentalSupport||''),
     longTermRisks:normalizeStringArray(src.longTermRisks||conclusion.invalidationConditions),
     logicStatus:enumOr(src.logicStatus,['valid','weakening','broken','unclear'],'unclear'),
     confidence:enumOr(src.confidence,['high','medium','low'],'low'),
     nextReviewDate:normalizeDateOnly(src.nextReviewDate)||String(src.nextReviewDate||''),
     sourceSummary:String(src.sourceSummary||'')
+  };
+}
+function defaultPositionManagementReview(){
+  return {
+    updatedAt:'',
+    currentWeight:0,
+    targetWeight:0,
+    weightStatus:'unknown',
+    profitProtectionStatus:'unknown',
+    reduceWatchStatus:'unknown',
+    summary:'',
+    actionHint:'',
+    riskFlags:[],
+    notes:''
+  };
+}
+function normalizePositionManagementReview(v){
+  const src=(v&&typeof v==='object')?v:{};
+  const arr=x=>Array.isArray(x)?x.map(i=>String(i??'').trim()).filter(Boolean):String(x||'').split(/\n|,|锛?|閿?/).map(i=>String(i||'').trim()).filter(Boolean);
+  return {
+    updatedAt:normalizeDateOnly(src.updatedAt)||String(src.updatedAt||''),
+    currentWeight:clampNumber(src.currentWeight,0,100,0),
+    targetWeight:clampNumber(src.targetWeight,0,100,0),
+    weightStatus:enumOr(src.weightStatus,['underweight','normal','overweight','heavily_overweight','unknown'],'unknown'),
+    profitProtectionStatus:enumOr(src.profitProtectionStatus,['none','normal','watch','protect','unknown'],'unknown'),
+    reduceWatchStatus:enumOr(src.reduceWatchStatus,['not_triggered','observe','reduce_watch','review_required','unknown'],'unknown'),
+    summary:String(src.summary||''),
+    actionHint:String(src.actionHint||''),
+    riskFlags:arr(src.riskFlags),
+    notes:String(src.notes||'')
   };
 }
 function defaultRecentCatalyst(){
@@ -1462,6 +1503,7 @@ function normalizeStockAnalysis(stock){
   stock.valuationReview=normalizeValuationReview(stock.valuationReview);
   stock.sentimentReview=normalizeSentimentReview(stock.sentimentReview,stock);
   stock.longTermLogic=normalizeLongTermLogic(stock.longTermLogic,stock);
+  stock.positionManagementReview=normalizePositionManagementReview(stock.positionManagementReview);
   stock.recentCatalyst=normalizeRecentCatalyst(stock.recentCatalyst,stock);
   stock.eventExplanation=normalizeEventExplanation(stock.eventExplanation,stock);
   stock.shortTermSentiment=normalizeShortTermSentiment(stock.shortTermSentiment,stock);
