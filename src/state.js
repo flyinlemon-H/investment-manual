@@ -237,7 +237,8 @@ function defaultTechnicalReview(stock={}){
       resistanceLevels:td.resistanceLevels||[],
       technicalSummary:td.technicalSummary||td.trendNote||'',
       riskFlags:td.riskFlags||[],
-      actionHint:td.actionHint||''
+      actionHint:td.actionHint||'',
+      confidence:'medium'
     },
     cycleTechnical:{
       lookbackDays:500,
@@ -249,14 +250,16 @@ function defaultTechnicalReview(stock={}){
       distanceToCycleHighPct:td.pricePosition&&td.pricePosition.distanceToCycleHighPct!==undefined?td.pricePosition.distanceToCycleHighPct:null,
       distanceToCycleLowPct:td.pricePosition&&td.pricePosition.distanceToCycleLowPct!==undefined?td.pricePosition.distanceToCycleLowPct:null,
       lastCycleUpdatedAt:'',
-      dataSource:'none'
+      dataSource:'none',
+      confidence:'medium'
     },
     priceActionEvent:{
       detected:false,
       type:'',
       changePct:null,
       volumeStatus:'',
-      needsNewsExplanation:false
+      needsNewsExplanation:false,
+      eventReason:''
     },
     finalTechnicalConclusion:td.technicalSummary||'',
     holdHint:td.holdHint||'',
@@ -294,7 +297,8 @@ function normalizeTechnicalReview(v,stock={}){
       resistanceLevels:normalizeTechnicalLevelArray(stSrc.resistanceLevels&&stSrc.resistanceLevels.length?stSrc.resistanceLevels:legacy.resistanceLevels),
       technicalSummary:String(stSrc.technicalSummary||legacy.technicalSummary||legacy.trendNote||''),
       riskFlags:normalizeStringArray(stSrc.riskFlags&&stSrc.riskFlags.length?stSrc.riskFlags:legacy.riskFlags),
-      actionHint:String(stSrc.actionHint||legacy.actionHint||'')
+      actionHint:String(stSrc.actionHint||legacy.actionHint||''),
+      confidence:enumOr(stSrc.confidence,['high','medium','low'],'medium')
     },
     cycleTechnical:{
       lookbackDays:nullableNumber(cySrc.lookbackDays)??500,
@@ -306,14 +310,16 @@ function normalizeTechnicalReview(v,stock={}){
       distanceToCycleHighPct:nullableNumber(cySrc.distanceToCycleHighPct)??(legacy.pricePosition&&legacy.pricePosition.distanceToCycleHighPct!==null?legacy.pricePosition.distanceToCycleHighPct:null),
       distanceToCycleLowPct:nullableNumber(cySrc.distanceToCycleLowPct)??(legacy.pricePosition&&legacy.pricePosition.distanceToCycleLowPct!==null?legacy.pricePosition.distanceToCycleLowPct:null),
       lastCycleUpdatedAt:normalizeDateOnly(cySrc.lastCycleUpdatedAt)||'',
-      dataSource:String(cySrc.dataSource||covSrc.cycleDataSource||'none')
+      dataSource:String(cySrc.dataSource||covSrc.cycleDataSource||'none'),
+      confidence:enumOr(cySrc.confidence,['high','medium','low'],'medium')
     },
     priceActionEvent:{
       detected:Boolean(eventSrc.detected),
       type:String(eventSrc.type||''),
       changePct:nullableNumber(eventSrc.changePct),
       volumeStatus:String(eventSrc.volumeStatus||''),
-      needsNewsExplanation:Boolean(eventSrc.needsNewsExplanation)
+      needsNewsExplanation:Boolean(eventSrc.needsNewsExplanation),
+      eventReason:String(eventSrc.eventReason||'')
     },
     finalTechnicalConclusion:String(src.finalTechnicalConclusion||legacy.technicalSummary||''),
     holdHint:String(src.holdHint||legacy.holdHint||''),

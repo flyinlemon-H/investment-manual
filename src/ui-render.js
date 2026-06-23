@@ -34,10 +34,11 @@ function priceRiskWarnings(s){
   return out;
 }
 const ZH_ENUM_MAP={
-  uptrend:'上升趋势',downtrend:'下降趋势',sideways:'震荡整理',rebound:'反弹修复',breakdown:'破位下行',reversal:'反转观察',unknown:'未知',
+  uptrend:'上升趋势',downtrend:'下降趋势',sideways:'震荡整理',rebound:'反弹修复',recovery:'修复反弹',breakdown:'破位下行',reversal:'反转观察',unknown:'未知',
   low_base:'低位筑底',early_uptrend:'初期上升',mid_uptrend:'中段趋势',high_level_rebreakout:'高位二次上攻',high_level_overextension:'高位过热',distribution_risk:'派发风险',unclear:'待判断',
   observe:'观察',wait:'等待',hold:'持有',review:'复核',add_watch:'加仓观察',add_triggered:'加仓触发',reduce_watch:'减仓观察',reduce_triggered:'减仓触发',breakthrough_watch:'突破观察',rebound_watch:'反弹观察',conditional_wait:'条件等待',conditional_add:'条件加仓',conditional_reduce:'条件减仓',
   macd_bearish_crossover:'MACD死叉风险',macd_bullish_crossover:'MACD金叉修复',momentum_weakening:'动能减弱',momentum_weaking:'动能减弱',near_short_term_resistance:'接近短期压力位',main_fund_outflow:'主力资金流出',price_below_ma20:'跌破MA20',price_below_ma60:'跌破MA60',support_breakdown:'跌破关键支撑',high_volatility:'高位波动加大',valuation_expensive:'估值偏贵',insufficient_data:'数据不足',
+  near_previous_high:'接近前高',short_term_volatility:'短期波动加大',resistance_overhead:'上方压力明显',gap_risk:'跳空风险',trend_weakening:'趋势走弱',below_ma20:'跌破MA20',below_ma60:'跌破MA60',breakout_failure:'突破失败风险',volume_divergence:'量价背离',
   growth:'成长仓',core:'核心仓',watchOnly:'观察仓',core_resource_holding:'核心资源仓',defensive:'防御仓',satellite:'卫星仓',value:'价值仓',cyclical:'周期仓',resource:'资源仓',dividend:'高股息仓',etf:'ETF配置',
   suitable:'适合配置',conditional:'有条件适合',unsuitable:'不适合配置',watch:'观察为主',
   raise:'上调',maintain:'维持',lower:'下调',reduce:'降低',
@@ -59,7 +60,13 @@ function zhEnum(value){
 }
 function zhTrendStatus(value){return zhEnum(value)}
 function zhDecision(value){return zhEnum(value)}
-function zhRiskFlag(value){return zhEnum(value)}
+function zhRiskFlag(value){
+  const raw=String(value||'').trim();
+  if(!raw)return '';
+  const translated=zhEnum(raw);
+  if(translated!==raw)return translated;
+  return raw.includes('_')?`未识别：${raw}`:raw;
+}
 function zhStrategyRole(value){return zhEnum(value)}
 function zhCapitalView(value){return zhEnum(value)}
 function zhTargetAdjustment(value){return zhEnum(value)}
@@ -72,14 +79,26 @@ function zhPriceActionEventType(value){
   const map={
     limit_up:'涨停',
     limit_down:'跌停',
+    volume_expansion_rebound:'放量反弹',
+    volume_expansion_breakout:'放量突破',
     volume_breakout_rally:'放量突破上涨',
+    breakout_attempt:'突破尝试',
+    breakout_success:'有效突破',
+    breakout_failure:'突破失败',
     breakout:'突破',
     pullback:'回踩',
     breakdown:'跌破',
     sharp_rise:'大幅上涨',
     sharp_drop:'大幅下跌',
+    gap_up:'向上跳空',
+    gap_down:'向下跳空',
+    high_volume_selloff:'放量下跌',
+    distribution_day:'放量派发',
+    sharp_pullback:'快速回调',
+    high_level_reversal:'高位反转',
     high_level_rebreakout:'高位二次上攻',
-    limit_up_near_cycle_high:'接近周期高位涨停'
+    limit_up_near_cycle_high:'接近周期高位涨停',
+    unknown:'未识别类型'
   };
   return map[raw]||`未识别类型：${raw}`;
 }
@@ -88,10 +107,13 @@ function zhVolumeStatus(value){
   if(!raw)return '';
   const map={
     significantly_expanded:'成交量显著放大',
+    significantly_expanding:'明显放量',
     expanded:'成交量放大',
+    expanding:'放量',
     normal:'成交量正常',
     shrinking:'成交量萎缩',
-    unknown:'成交量未知'
+    significantly_shrinking:'明显缩量',
+    unknown:'未识别量能'
   };
   return map[raw]||`未识别量能：${raw}`;
 }
@@ -2093,7 +2115,20 @@ function technicalVolumeStatus(td){
   }
   return fmtInt(td.volume);
 }
-function cyclePositionText(value){return zhEnum(value)||'待判断'}
+function cyclePositionText(value){
+  const raw=String(value||'').trim();
+  const map={
+    low_base:'低位筑底',
+    early_uptrend:'上升初期',
+    mid_uptrend:'上升中段',
+    high_level_rebreakout:'高位二次上攻',
+    high_level_overextension:'高位过热',
+    distribution_risk:'高位派发风险',
+    downtrend:'下行周期',
+    unclear:'周期位置不明'
+  };
+  return raw?(map[raw]||`未识别：${raw}`):'待判断';
+}
 function fmtPctMaybe(v,d=1){
   const n=Number(v);
   return isFinite(n)?`${fmt(n,d)}%`:'待补充';
@@ -2134,7 +2169,7 @@ function technicalAnalysisPromptText(stock){
   normalizeStockAnalysis(stock);
   const td=normalizeTechnicalData(stock.technicalData);
   const strategy=normalizeStrategy(stock.strategy,stock);
-  const schema={technicalReview:{updatedAt:'',inputCoverage:{hasRecentKline:false,hasCycleKline:false,cycleDataSource:'none',warning:''},shortTermTechnical:{lookbackDays:120,price:null,priceUpdatedAt:'',ma5:null,ma10:null,ma20:null,ma60:null,trendStatus:'',supportLevels:[],resistanceLevels:[],technicalSummary:'',riskFlags:[],actionHint:''},cycleTechnical:{lookbackDays:500,cyclePosition:'unclear',cycleSummary:'',cycleHigh:null,cycleLow:null,currentPercentile:null,distanceToCycleHighPct:null,distanceToCycleLowPct:null,lastCycleUpdatedAt:'',dataSource:'none'},priceActionEvent:{detected:false,type:'',changePct:null,volumeStatus:'',needsNewsExplanation:false},finalTechnicalConclusion:'',holdHint:'',addHint:'',reduceHint:''}};
+  const schema={technicalReview:{updatedAt:'',inputCoverage:{hasRecentKline:false,hasCycleKline:false,cycleDataSource:'none',warning:''},shortTermTechnical:{lookbackDays:120,price:null,priceUpdatedAt:'',ma5:null,ma10:null,ma20:null,ma60:null,trendStatus:'',supportLevels:[],resistanceLevels:[],technicalSummary:'',riskFlags:[],actionHint:'',confidence:'medium'},cycleTechnical:{lookbackDays:500,cyclePosition:'unclear',cycleSummary:'',cycleHigh:null,cycleLow:null,currentPercentile:null,distanceToCycleHighPct:null,distanceToCycleLowPct:null,lastCycleUpdatedAt:'',dataSource:'none',confidence:'medium'},priceActionEvent:{detected:false,type:'unknown',changePct:null,volumeStatus:'unknown',needsNewsExplanation:false,eventReason:''},finalTechnicalConclusion:'',holdHint:'',addHint:'',reduceHint:''}};
   const ctx={
     stockName:stock.name||'',
     symbol:stock.code||td.symbol||'',
@@ -2159,7 +2194,8 @@ function technicalAnalysisPromptText(stock){
     '不要给确定性买卖指令，只输出技术面辅助判断。',
     '重要原则：趋势强 ≠ 低位安全买点。trendStatus=uptrend 只代表趋势方向，不代表适合追高。',
     '只输出严格 JSON，不要 Markdown，不要解释，不要代码块。',
-    chineseOutputPromptRule(),
+    '自然语言字段请使用中文，包括 technicalSummary、actionHint、finalTechnicalConclusion、holdHint、addHint、reduceHint、cycleSummary、eventReason。',
+    '枚举字段必须使用英文固定值，禁止在 riskFlags、trendStatus、cyclePosition、priceActionEvent.type、priceActionEvent.volumeStatus 中输出中文。',
     'JSON 必须可以直接粘贴进程序导入：',
     '- 所有 key 和字符串必须使用英文半角双引号 "，禁止使用中文弯引号 “ ” 或 ‘ ’。',
     '- 不要在 JSON 前后添加任何说明文字。',
@@ -2174,10 +2210,41 @@ function technicalAnalysisPromptText(stock){
     '- shortTermTechnical：近期60/120日技术面，包含价格、MA5/MA10/MA20/MA60、趋势、支撑压力、摘要、风险和 actionHint。',
     '- cycleTechnical：500日/近2年周期位置。只有提供大周期图时才更新；否则沿用 previous_saved。',
     '- priceActionEvent：如果出现涨停、跳空、放量大涨、大跌、冲高回落等事件，请标记 detected=true，并说明是否需要新闻解释。',
+    '- priceActionEvent.eventReason：用中文说明为什么识别该价格行为事件。',
     '- finalTechnicalConclusion：综合短期技术和周期位置的一句话结论。',
     '- holdHint：核心仓如何处理。',
     '- addHint：新增资金如何处理。',
     '- reduceHint：是否需要兑现利润或减仓。',
+    '',
+    '固定枚举规则：',
+    '- riskFlags 必须使用英文固定枚举值，禁止输出中文风险标签。中文解释写入 technicalSummary、actionHint、finalTechnicalConclusion、holdHint、addHint、reduceHint。',
+    '- 允许的 riskFlags：near_previous_high, high_level_rebreakout, high_level_overextension, short_term_volatility, resistance_overhead, gap_risk, trend_weakening, below_ma20, below_ma60, distribution_risk, breakout_failure, volume_divergence, support_breakdown。',
+    '- priceActionEvent.type 必须从以下枚举中选择：volume_expansion_rebound, volume_expansion_breakout, breakout_attempt, breakout_success, breakout_failure, limit_up, limit_down, gap_up, gap_down, high_volume_selloff, distribution_day, sharp_pullback, high_level_reversal, unknown。无法判断填 unknown。',
+    '- priceActionEvent.volumeStatus 必须从以下枚举中选择：significantly_expanding, expanding, normal, shrinking, significantly_shrinking, unknown。无法判断填 unknown。',
+    '- shortTermTechnical.trendStatus 必须从以下枚举中选择：uptrend, sideways, downtrend, recovery, unclear。',
+    '- cycleTechnical.cyclePosition 必须从以下枚举中选择：low_base, early_uptrend, mid_uptrend, high_level_rebreakout, high_level_overextension, distribution_risk, downtrend, unclear。',
+    '',
+    '日常更新模式强化：',
+    '- 如果本次只提供 60/120 日 K 线，只更新 shortTermTechnical 和 priceActionEvent。',
+    '- 不得重新判断 cycleTechnical，不得重新推断 500 日高点、500 日低点、周期分位、周期位置。',
+    '- cycleTechnical 必须沿用 existingTechnicalData 中已有结果。',
+    '- inputCoverage.hasCycleKline=false。',
+    '- inputCoverage.cycleDataSource="previous_saved"。',
+    '- inputCoverage.warning="本次未提供500日K线，周期位置沿用上次结果。"',
+    '',
+    'confidence 字段规则：',
+    '- shortTermTechnical.confidence 和 cycleTechnical.confidence 只能填 high、medium、low。',
+    '- 截图清晰且 MA、MACD、成交量、平台区间可判断，填 high。',
+    '- 部分指标可判断，填 medium。',
+    '- 关键指标看不清或数据缺失较多，填 low。',
+    '',
+    '禁止输出确定性买卖指令：',
+    '- 禁止输出“应该买入”“立即买入”“建议买入”“必须加仓”“应该卖出”“立即卖出”“必须卖出”。',
+    '- 只能输出技术面辅助判断，例如：适合观察、等待确认、接近支撑区、接近压力区、趋势改善、风险增加、结构转弱、不属于低位安全买点。',
+    '',
+    '技术面判断优先级：',
+    '- 周期位置 > 支撑压力 > 均线结构 > MACD > 单日涨跌。',
+    '- 禁止因为单日大涨或大跌，直接推翻已有周期位置判断。',
     '',
     '大周期判断规则：',
     '- 如果当前价格处于近 500 日区间 80% 以上，并且距离近 500 日高点小于 10%，不得判断为 low_base 或 early_uptrend。',
@@ -2544,8 +2611,10 @@ function technicalAnalysisPanel(stock){
   const addHint=formatChineseText(review.addHint||'待补充');
   const reduceHint=formatChineseText(review.reduceHint||'待补充');
   const coverageWarning=review.inputCoverage.warning||(!review.inputCoverage.hasCycleKline&&cy.cyclePosition&&cy.cyclePosition!=='unclear'?'本次未提供500日K线，周期位置可能沿用上次结果。':'');
-  const event=review.priceActionEvent&&review.priceActionEvent.detected?`<div class="alert">价格行为事件：${esc(zhPriceActionEventType(review.priceActionEvent.type||'已检测'))} · 涨跌 ${review.priceActionEvent.changePct===null?'—':fmtPctMaybe(review.priceActionEvent.changePct)} · 量能 ${esc(zhVolumeStatus(review.priceActionEvent.volumeStatus||'unknown'))}${review.priceActionEvent.needsNewsExplanation?' · 需要新闻解释':''}</div>`:'';
-  return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--teal)"><div class="card-title">技术面 / 位置判断</div>${coverageWarning?`<div class="alert">${esc(coverageWarning)}</div>`:''}${event}<div class="dash" style="margin:0"><div><div class="card-title">短期价格</div><div class="card-num">${fmtMaybe(st.price!==null?st.price:stockCurrentPrice(stock),2)}</div><div class="card-note">最近 ${esc(st.lookbackDays||120)} 日 · ${esc(updated)}</div></div><div><div class="card-title">短期趋势</div><div class="card-note">${esc(zhTrendStatus(st.trendStatus)||'—')}</div><div class="card-note">${maText}</div></div><div><div class="card-title">周期位置</div><div class="card-note">${esc(cyclePositionText(cy.cyclePosition))}</div><div class="card-note">${esc(cycleTechnicalPriceText(cy))}</div></div><div><div class="card-title">综合结论</div><div class="card-note">${esc(formatChineseText(review.finalTechnicalConclusion||summary||'待补充'))}</div></div></div><div class="dash" style="margin-top:10px"><div><div class="card-title">核心仓提示</div><div class="card-note">${esc(holdHint)}</div></div><div><div class="card-title">新增资金提示</div><div class="card-note">${esc(addHint)}</div></div><div><div class="card-title">减仓/兑现提示</div><div class="card-note">${esc(reduceHint)}</div></div><div><div class="card-title">周期数据来源</div><div class="card-note">${esc(zhCycleDataSource(cy.dataSource||review.inputCoverage.cycleDataSource||'none'))} · ${esc(cy.lastCycleUpdatedAt||'—')}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>短期摘要：</b>${esc(summary)}${englishTextHint(summary)}<br><b>周期说明：</b>${esc(cycleSummary)}${englishTextHint(cycleSummary)}<br><b>支撑位：</b>${technicalLevelList(st.supportLevels)}<br><b>支撑区间：</b>${supportZonesText(td.supportZones)}<br><b>压力位：</b>${technicalLevelList(st.resistanceLevels)}<br><b>短期风险：</b>${st.riskFlags.length?zhList(st.riskFlags).map(esc).join('；'):'—'}<br><b>操作提示：</b>${esc(actionHint)}${englishTextHint(actionHint)}<div class="card-note" style="margin-top:8px">提示：趋势强 ≠ 低位安全买点；近期 K 线负责短期操作，500 日周期位置负责判断是否处于低位、中段、高位二次上攻或派发风险。</div></div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-technical-prompt">复制技术面判断 Prompt</button><button class="btn ghost small" data-detail-action="import-technical-json">导入技术面 JSON</button></div></div>`;
+  const eventReason=review.priceActionEvent&&review.priceActionEvent.eventReason?`<br><b>事件原因：</b>${esc(formatChineseText(review.priceActionEvent.eventReason))}`:'';
+  const event=review.priceActionEvent&&review.priceActionEvent.detected?`<div class="alert">价格行为事件：${esc(zhPriceActionEventType(review.priceActionEvent.type||'unknown'))} · 涨跌 ${review.priceActionEvent.changePct===null?'—':fmtPctMaybe(review.priceActionEvent.changePct)} · 量能 ${esc(zhVolumeStatus(review.priceActionEvent.volumeStatus||'unknown'))}${review.priceActionEvent.needsNewsExplanation?' · 需要新闻解释':''}${eventReason}</div>`:'';
+  const riskText=st.riskFlags.length?st.riskFlags.map(zhRiskFlag).map(esc).join('；'):'—';
+  return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--teal)"><div class="card-title">技术面 / 位置判断</div>${coverageWarning?`<div class="alert">${esc(coverageWarning)}</div>`:''}${event}<div class="dash" style="margin:0"><div><div class="card-title">短期价格</div><div class="card-num">${fmtMaybe(st.price!==null?st.price:stockCurrentPrice(stock),2)}</div><div class="card-note">最近 ${esc(st.lookbackDays||120)} 日 · ${esc(updated)}</div></div><div><div class="card-title">短期趋势</div><div class="card-note">${esc(zhTrendStatus(st.trendStatus)||'—')}</div><div class="card-note">${maText} · 置信度 ${esc(zhConfidence(st.confidence||'medium'))}</div></div><div><div class="card-title">周期位置</div><div class="card-note">${esc(cyclePositionText(cy.cyclePosition))}</div><div class="card-note">${esc(cycleTechnicalPriceText(cy))} · 置信度 ${esc(zhConfidence(cy.confidence||'medium'))}</div></div><div><div class="card-title">综合结论</div><div class="card-note">${esc(formatChineseText(review.finalTechnicalConclusion||summary||'待补充'))}</div></div></div><div class="dash" style="margin-top:10px"><div><div class="card-title">核心仓提示</div><div class="card-note">${esc(holdHint)}</div></div><div><div class="card-title">新增资金提示</div><div class="card-note">${esc(addHint)}</div></div><div><div class="card-title">减仓/兑现提示</div><div class="card-note">${esc(reduceHint)}</div></div><div><div class="card-title">周期数据来源</div><div class="card-note">${esc(zhCycleDataSource(cy.dataSource||review.inputCoverage.cycleDataSource||'none'))} · ${esc(cy.lastCycleUpdatedAt||'—')}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>短期摘要：</b>${esc(summary)}${englishTextHint(summary)}<br><b>周期说明：</b>${esc(cycleSummary)}${englishTextHint(cycleSummary)}<br><b>支撑位：</b>${technicalLevelList(st.supportLevels)}<br><b>支撑区间：</b>${supportZonesText(td.supportZones)}<br><b>压力位：</b>${technicalLevelList(st.resistanceLevels)}<br><b>短期风险：</b>${riskText}<br><b>操作提示：</b>${esc(actionHint)}${englishTextHint(actionHint)}<div class="card-note" style="margin-top:8px">提示：趋势强 ≠ 低位安全买点；近期 K 线负责短期操作，500 日周期位置负责判断是否处于低位、中段、高位二次上攻或派发风险。</div></div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-technical-prompt">复制技术面判断 Prompt</button><button class="btn ghost small" data-detail-action="import-technical-json">导入技术面 JSON</button></div></div>`;
 }
 function valuationSignalPanel(stock){
   const vd=normalizeValuationData(stock.valuationData);
@@ -3713,7 +3782,19 @@ function normalizeImportedTechnicalReview(parsed,stock){
   const hasV12=Boolean(source.shortTermTechnical||source.cycleTechnical||source.inputCoverage||source.finalTechnicalConclusion);
   if(hasV12){
     const incoming=normalizeTechnicalReview(source,stock);
-    const hasCycle=Boolean(incoming.inputCoverage.hasCycleKline||source.cycleTechnical&&Object.keys(source.cycleTechnical).length);
+    const sourceCoverage=(source.inputCoverage&&typeof source.inputCoverage==='object')?source.inputCoverage:{};
+    const sourceCycle=(source.cycleTechnical&&typeof source.cycleTechnical==='object')?source.cycleTechnical:null;
+    const explicitlyNoCycle=sourceCoverage.hasCycleKline===false;
+    const meaningfulCycle=Boolean(sourceCycle&&(
+      (sourceCycle.cyclePosition&&sourceCycle.cyclePosition!=='unclear')||
+      sourceCycle.cycleSummary||
+      sourceCycle.cycleHigh!==undefined||
+      sourceCycle.cycleLow!==undefined||
+      sourceCycle.currentPercentile!==undefined||
+      sourceCycle.distanceToCycleHighPct!==undefined||
+      sourceCycle.distanceToCycleLowPct!==undefined
+    ));
+    const hasCycle=Boolean(!explicitlyNoCycle&&(incoming.inputCoverage.hasCycleKline||meaningfulCycle));
     const preservedCycle=hasCycle?incoming.cycleTechnical:current.cycleTechnical;
     return normalizeTechnicalReview({
       ...incoming,
