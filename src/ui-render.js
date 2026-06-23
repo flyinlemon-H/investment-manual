@@ -1747,27 +1747,26 @@ function nearestDetailPlan(stock){
 function currentActionPanel(stock){
   const info=getLatestActionInfo(stock);
   const d=decisionForStock(stock);
-  const ex=executionForStock(stock);
-  const nearest=nearestDetailPlan(stock);
   const tech=info.technicalDecision||calculateTechnicalDecision(stock);
   const alloc=normalizeAllocationDecision(stock.allocationDecision,stock);
   const action=tech&&tech.title?formatChineseText(tech.title):actionKindLabel(info.text,d.action);
-  const importedPlan=tradePlanSummaryText(stock);
-  const planText=nearest?`${nearest.p.action==='sell'?'减仓':'加仓'} ${fmtInt(nearest.p.shares)} 股/份 @ ${fmtMaybe(nearest.p.price)}${nearest.g?(nearest.g.triggered?' · 已触发':` · 距触发 ${fmt(nearest.g.absPct,1)}%`):''}`:(importedPlan||'暂无价位计划');
-  const trigger=nearest?(nearest.p.note||`${nearest.p.action==='sell'?'达到减仓价':'达到加仓价'} ${fmtMaybe(nearest.p.price)}`):'暂无明确触发条件，需结合技术面和计划复核';
-  const range=nearest?`参考价位 ${fmtMaybe(nearest.p.price)} 附近`:(ex.suggestedBuyAmount>0?`建议金额 ${fmtMoney(ex.suggestedBuyAmount)} · 建议股数 ${fmtInt(ex.suggestedShares)}`:'暂无建议区间');
   const allocationWarnings=[];
   if(alloc.capitalAllocationView==='unsuitable')allocationWarnings.push('配置决策提示：新增资金暂不建议配置该标的');
   if(alloc.confidence==='low'&&alloc.conclusion)allocationWarnings.push('配置决策置信度较低，需要补充资料');
-  const risk=(tech&&tech.riskFlags&&tech.riskFlags.length?zhList(tech.riskFlags):[]).concat(allocationWarnings,(d.warnings||[]).slice(0,2),ex.executionWarnings||[]).slice(0,5);
+  const risk=(tech&&tech.riskFlags&&tech.riskFlags.length?zhList(tech.riskFlags):[]).concat(allocationWarnings,(d.warnings||[]).slice(0,2)).slice(0,5);
   const updated=info.updatedAt?(String(info.updatedAt).length>10?new Date(info.updatedAt).toLocaleString('zh-CN'):String(info.updatedAt)):'—';
   const summary=tech&&tech.summary?formatChineseText(tech.summary):formatChineseText(info.text);
-  const matched=tech&&tech.triggerMatched&&tech.triggerMatched.length?tech.triggerMatched.map(formatChineseText):[trigger];
+  const matched=tech&&tech.triggerMatched&&tech.triggerMatched.length?tech.triggerMatched.map(formatChineseText):['暂无明确触发条件，需结合技术面和计划复核'];
   const reasons=tech&&tech.reason&&tech.reason.length?tech.reason.map(formatChineseText):[formatChineseText(info.text)];
-  const zone=tech&&tech.suggestedPriceZone?tech.suggestedPriceZone:range;
-  const qty=tech&&tech.suggestedQuantity!==null&&tech.suggestedQuantity!==undefined?fmtInt(tech.suggestedQuantity):(nearest?fmtInt(nearest.p.shares):'—');
+  const zone=tech&&tech.suggestedPriceZone?tech.suggestedPriceZone:'暂无建议区间';
+  const decision=String(tech&&tech.decision||'').toLowerCase();
+  const canShowQty=/add_triggered|reduce_triggered|conditional_add|conditional_reduce/.test(decision);
+  const qty=canShowQty&&tech&&tech.suggestedQuantity!==null&&tech.suggestedQuantity!==undefined?fmtInt(tech.suggestedQuantity):'暂无当前执行数量';
   const confidence=tech&&tech.confidence?zhConfidence(tech.confidence):'—';
-  return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--seal)"><div class="card-title">当前操作建议</div><div class="dash" style="margin:0"><div><div class="card-num" style="font-size:22px">${esc(action)}</div><div class="card-note">来源：${esc(zhSource(info.source))} · 更新：${esc(updated)} · 置信度 ${esc(confidence)}</div></div><div><div class="card-title">最近计划</div><div class="card-note">${esc(planText)}</div></div><div><div class="card-title">建议价格区间</div><div class="card-note">${esc(zone||'—')}</div></div><div><div class="card-title">建议数量 / 金额</div><div class="card-note">${esc(qty)}${ex.suggestedBuyAmount>0?' · '+fmtMoney(ex.suggestedBuyAmount):''}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>操作提示：</b>${esc(summary)}${englishTextHint(summary)}<br><b>触发条件：</b>${matched.slice(0,3).map(esc).join('；')||'—'}<br><b>原因：</b>${reasons.slice(0,4).map(esc).join('；')||'—'}${risk.length?'<br><b>风险提醒：</b>'+risk.map(formatChineseText).map(esc).join('；'):''}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-full-add-discussion-prompt">复制完整加仓讨论 Prompt</button><button class="btn ghost small" data-detail-action="copy-trade-plan-prompt">复制加仓计划 Prompt</button><button class="btn ghost small" data-detail-action="import-trade-plan-json">导入加仓计划 JSON</button></div></div>`;
+  return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--seal)"><div class="card-title">当前操作建议</div><div class="dash" style="margin:0"><div><div class="card-num" style="font-size:22px">${esc(action)}</div><div class="card-note">来源：${esc(zhSource(info.source))} · 更新：${esc(updated)} · 置信度 ${esc(confidence)}</div></div><div><div class="card-title">建议价格区间</div><div class="card-note">${esc(zone||'—')}</div></div><div><div class="card-title">建议数量 / 金额</div><div class="card-note">${esc(qty)}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>操作提示：</b>${esc(summary)}${englishTextHint(summary)}<br><b>触发条件：</b>${matched.slice(0,3).map(esc).join('；')||'—'}<br><b>原因：</b>${reasons.slice(0,4).map(esc).join('；')||'—'}${risk.length?'<br><b>风险提醒：</b>'+risk.map(formatChineseText).map(esc).join('；'):''}</div>${tradePlanActionButtons()}</div>`;
+}
+function tradePlanActionButtons(includeDiscussion=true){
+  return `<div class="trade-plan-actions" style="margin-top:12px;display:grid;gap:10px"><div class="card" style="margin:0;background:rgba(255,255,255,.45)"><div class="card-title">AI辅助讨论</div>${includeDiscussion?'<button class="btn small" style="width:100%;margin-top:8px" data-detail-action="copy-full-add-discussion-prompt">与AI讨论 Prompt</button>':''}<div class="card-note" style="margin-top:6px">分析现在是否适合操作</div></div><div class="card" style="margin:0;background:rgba(255,255,255,.45)"><div class="card-title">结构化计划</div><div style="display:grid;gap:8px;margin-top:8px"><button class="btn ghost small" style="width:100%" data-detail-action="copy-trade-plan-prompt">生成操作计划 Prompt</button><button class="btn ghost small" style="width:100%" data-detail-action="import-trade-plan-json">导入操作计划 JSON</button></div><div class="card-note" style="margin-top:6px">生成并导入可保存的操作计划</div></div></div>`;
 }
 function catalystStatusLabel(value){
   return {fresh:'新鲜',acceptable:'可用',stale:'过期',unknown:'未知',high:'高',medium:'中',low:'低',full:'完整解释',partial:'部分解释',none:'无法解释'}[value]||formatChineseText(value||'未知');
@@ -1857,11 +1856,23 @@ function positionPlanPanel(stock){
   };
   const imported=tp?(()=>{
     const items=(Array.isArray(tp.planItems)?tp.planItems:[]).slice().sort((a,b)=>(Number(a.priority)||999)-(Number(b.priority)||999));
-    return `<div class="dash" style="margin:0"><div><div class="card-title">计划类型</div><div class="card-num" style="font-size:20px">${esc(label[tp.planType]||formatChineseText(tp.planType||'—'))}</div><div class="card-note">有效期 ${esc(tp.validUntil||'—')}</div></div><div><div class="card-title">复核要求</div><div class="card-note">${tp.reviewRequired?'需要人工复核':'未标记复核'}</div></div><div style="grid-column:span 2"><div class="card-title">计划摘要</div><div class="text" style="max-width:none">${esc(formatChineseText(tp.planSummary||planSummary||'—'))}</div></div></div><div style="margin-top:10px">${items.length?items.map(itemCard).join(''):'<div class="card-note">暂无结构化计划项</div>'}</div>${listBlock('风险提示',tp.riskFlags)}${listBlock('失效条件',tp.invalidConditions)}`;
+    const textOf=it=>[it.condition,it.technicalCondition,it.note,it.riskControl].map(x=>String(x||'')).join(' ');
+    const isReview=it=>/已触发|待复核|人工确认|人工复核|确认/.test(textOf(it));
+    const groups=[
+      ['当前重点观察',items.filter(it=>it.action==='observe'&&!isReview(it)).slice(0,3)],
+      ['当前持仓处理',items.filter(it=>it.action==='hold')],
+      ['已触发待复核计划',items.filter(it=>(it.action==='observe'||it.action==='reduce'||it.action==='sell')&&isReview(it))],
+      ['未触发计划',items.filter(it=>!isReview(it)&&['add','buy','reduce','sell'].includes(it.action))]
+    ];
+    const grouped=groups.map(([title,arr])=>arr.length?`<div style="margin-top:10px"><div class="card-title">${esc(title)}</div>${arr.map(itemCard).join('')}${title==='已触发待复核计划'?'<div class="alert" style="margin-top:6px">以上只表示计划进入复核状态，不构成自动执行建议，需人工确认。</div>':''}</div>`:'').join('');
+    return `<div class="dash" style="margin:0"><div><div class="card-title">计划类型</div><div class="card-num" style="font-size:20px">${esc(label[tp.planType]||formatChineseText(tp.planType||'—'))}</div><div class="card-note">有效期 ${esc(tp.validUntil||'—')}</div></div><div><div class="card-title">复核要求</div><div class="card-note">${tp.reviewRequired?'需要人工复核':'未标记复核'}</div></div><div style="grid-column:span 2"><div class="card-title">计划摘要</div><div class="text" style="max-width:none">${esc(formatChineseText(tp.planSummary||planSummary||'—'))}</div></div></div>${grouped||'<div class="card-note" style="margin-top:10px">暂无结构化计划项</div>'}${listBlock('风险提示',Array.from(new Set(tp.riskFlags||[])))}${listBlock('未触发 / 失效条件',tp.invalidConditions)}`;
   })():'';
-  const history=`<details class="card" style="margin-top:10px"><summary class="card-title" style="cursor:pointer">原始计划 / 历史计划</summary><div class="text" style="max-width:none;margin-top:8px"><b>最近触发计划：</b>${esc(main)}<br><b>历史计划：</b>${rows.length?'<ul style="margin:6px 0 0 18px;padding:0">'+rows.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':'—'}</div></details>`;
+  const buyRows=(stock.plans||[]).filter(p=>(p.action||'buy')!=='sell').map(p=>`${fmtMaybe(p.price)}：${fmtInt(p.shares)} · ${p.note||'—'}`);
+  const sellRows=(stock.plans||[]).filter(p=>p.action==='sell').map(p=>`${fmtMaybe(p.price)}：${fmtInt(p.shares)} · ${p.note||'—'}`);
+  const planList=arr=>arr.length?'<ul style="margin:6px 0 0 18px;padding:0">'+arr.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':'—';
+  const history=(stock.plans||[]).length?`<details class="card" style="margin-top:10px"><summary class="card-title" style="cursor:pointer">原始计划库 / 历史预设计划</summary><div class="text" style="max-width:none;margin-top:8px"><b>最近触发计划：</b>${esc(main)}<br><b>加仓计划：</b>${planList(buyRows)}<b>减仓计划：</b>${planList(sellRows)}</div></details>`:'';
   const fallback=`<div class="text" style="max-width:none"><b>最近计划：</b>${esc(main)}<br><b>计划摘要：</b>${esc(planSummary||'暂无明确仓位计划')}</div>`;
-  return `<div class="card" style="margin-bottom:14px"><div class="card-title">仓位与加减仓计划</div>${tp?imported:fallback}${history}<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-trade-plan-prompt">复制加仓计划 Prompt</button><button class="btn ghost small" data-detail-action="import-trade-plan-json">导入加仓计划 JSON</button></div></div>`;
+  return `<div class="card" style="margin-bottom:14px"><div class="card-title">仓位与加减仓计划</div>${tp?imported:fallback}${history}${tradePlanActionButtons(false)}</div>`;
 }
 function workflowDateText(dateStr){
   const d=normalizeDateOnly(dateStr);
@@ -1922,7 +1933,7 @@ function decisionWorkflowPanel(stock){
   const fundamentalButtons=`<button class="btn small" data-detail-action="copy-fundamental-prompt">复制基本面分析 Prompt</button><button class="btn ghost small" data-detail-action="import-fundamental-json">导入基本面 JSON</button>`;
   const etfButtons=`<button class="btn small" data-detail-action="copy-etf-analysis-prompt">复制 ETF 分析 Prompt</button><button class="btn ghost small" data-detail-action="import-etf-analysis-json">导入 ETF 分析 JSON</button>`;
   const allocButtons=`<button class="btn small" data-detail-action="view-allocation-detail">查看完整配置分析</button><button class="btn ghost small" data-detail-action="copy-allocation-prompt">复制配置决策 Prompt</button><button class="btn ghost small" data-detail-action="import-allocation-json">导入配置决策 JSON</button>`;
-  const capitalButtons=`<button class="btn small" data-detail-action="copy-full-add-discussion-prompt">复制完整加仓讨论 Prompt</button><button class="btn ghost small" data-detail-action="import-trade-plan-json">导入加仓计划 JSON</button>`;
+  const capitalButtons=`<button class="btn small" data-detail-action="copy-full-add-discussion-prompt">与AI讨论 Prompt</button><button class="btn ghost small" data-detail-action="copy-trade-plan-prompt">生成操作计划 Prompt</button><button class="btn ghost small" data-detail-action="import-trade-plan-json">导入操作计划 JSON</button>`;
   return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--seal)"><div class="card-title">五层决策流程</div><div class="card-note">日常按顺序走：技术面 → ${isEtf?'指数行业':'基本面'} → 情绪/新闻 → 配置决策 → 新增资金讨论。其余深度分析和旧工具已折叠到后面。</div><div class="dash" style="margin-top:12px">${workflowCard('1. 技术面','回答：现在是不是买点 / 卖点 / 等待？',techSummary,`技术更新时间：${workflowDateText(td.priceUpdatedAt||td.lastUpdated||normalizeDataFreshness(stock.dataFreshness).technicalUpdatedAt)}`,techButtons,'#3b82f6')}${isEtf?workflowCard('2. 指数行业','回答：指数、行业和宏观是否支持配置？',etfLayerSummary,`ETF分析更新时间：${workflowDateText(etfAnalysis.updatedAt||normalizeDataFreshness(stock.dataFreshness).etfAnalysisUpdatedAt)}`,etfButtons,'#10b981'):workflowCard('2. 基本面','回答：公司好不好，当前价格贵不贵？',fundamentalSummary,`财报 ${workflowDateText(normalizeDataFreshness(stock.dataFreshness).financialUpdatedAt||fd.lastUpdated)} · 估值 ${workflowDateText(normalizeDataFreshness(stock.dataFreshness).valuationUpdatedAt||valuationData.updatedAt||valuationData.lastUpdated)}`,fundamentalButtons,'#10b981')}${workflowCard('3. 情绪/新闻','回答：市场预期、板块热度、新闻和资金流是否支持？',sentimentSummary,sentimentMeta,sentimentButtons,'#8b5cf6')}${workflowCard('4. 策略配置','回答：这只标的值得配置多少？',`${allocSummary}<br><span class="muted">${esc(sentimentWeightHint)}</span>`,`配置更新时间：${ad.updatedAt?workflowDateText(ad.updatedAt):'未更新'} · 置信度 ${zhConfidence(ad.confidence)}`,allocButtons,'#d4a72c')}${workflowCard('5. 资金讨论','回答：今天这笔新增资金给不给它？',capitalSummary,`当前提示来源：${zhSource(actionInfo.source)||'—'}`,capitalButtons,'#ef4444')}</div></div>`;
 }
 const ALLOCATION_DIMENSION_LABELS={macro:'宏观',industry:'行业',company:'公司',financials:'财报',valuation:'估值',sentiment:'情绪',technical:'技术面'};
@@ -2393,7 +2404,7 @@ function tradePlanPromptText(stock){
 function copyTradePlanPrompt(){
   const stock=state.stocks.find(x=>x.id===detailStockId);
   if(!stock)return;
-  copyText(tradePlanPromptText(stock),'加仓计划 Prompt 已复制。');
+  copyText(tradePlanPromptText(stock),'生成操作计划 Prompt 已复制。');
 }
 function formatPlanForDiscussion(stock,p){
   const action=(p.action||'buy')==='sell'?'减仓':'加仓';
@@ -2602,7 +2613,7 @@ function ensureTradePlanImportModal(){
   el=document.createElement('div');
   el.className='modal-bg import-layer';
   el.id='tradePlanImportModal';
-  el.innerHTML=`<div class="modal"><h2>导入加仓计划 JSON</h2><div class="modal-sub">导入后只保存计划，不修改持仓数量、成本价，也不会自动执行交易。可触发条目会转换为现有价位计划。</div><div class="form-row"><label>粘贴 GPT 返回 JSON</label><textarea id="tradePlanImportText" style="min-height:300px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"symbol\":\"601869.SS\",\"planType\":\"observe\",\"planSummary\":\"...\",\"planItems\":[{\"action\":\"add\",\"triggerPrice\":420,\"quantity\":100,\"note\":\"仅观察加仓\"}]}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="tradePlanImportCancelBtn" type="button">取消</button><button class="btn" id="tradePlanImportSaveBtn" type="button">导入计划</button></div></div>`;
+  el.innerHTML=`<div class="modal"><h2>导入操作计划 JSON</h2><div class="modal-sub">导入后只保存计划，不修改持仓数量、成本价，也不会自动执行交易。可触发条目会转换为现有价位计划。</div><div class="form-row"><label>粘贴 GPT 返回 JSON</label><textarea id="tradePlanImportText" style="min-height:300px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{\"symbol\":\"601869.SS\",\"planType\":\"observe\",\"planSummary\":\"...\",\"planItems\":[{\"action\":\"add\",\"triggerPrice\":420,\"quantity\":100,\"note\":\"仅观察加仓\"}]}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="tradePlanImportCancelBtn" type="button">取消</button><button class="btn" id="tradePlanImportSaveBtn" type="button">导入操作计划</button></div></div>`;
   document.body.appendChild(el);
   el.addEventListener('click',e=>{if(e.target.id==='tradePlanImportModal')closeTradePlanImportModal()});
   document.getElementById('tradePlanImportCancelBtn').addEventListener('click',closeTradePlanImportModal);
