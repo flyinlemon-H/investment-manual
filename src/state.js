@@ -617,15 +617,22 @@ function defaultShortTermSentiment(stock={}){
 function normalizeShortTermSentiment(v,stock={}){
   const src=(v&&typeof v==='object')?v:{};
   const old=normalizeSentimentReview(stock.sentimentReview,stock);
+  const pick=(...keys)=>{
+    for(const k of keys){
+      if(Object.prototype.hasOwnProperty.call(src,k)&&src[k]!==undefined&&src[k]!==null&&src[k]!=='')return src[k];
+    }
+    return '';
+  };
+  const riskSource=pick('riskFlags','risks','riskPoints','negativePoints','warningFlags');
   return {
-    updatedAt:normalizeDateOnly(src.updatedAt)||old.updatedAt||'',
-    marketMood:String(src.marketMood||old.marketMood||''),
-    fundFlowView:String(src.fundFlowView||old.fundFlowView||''),
-    sectorHeat:String(src.sectorHeat||old.sectorHeat||''),
-    institutionalView:String(src.institutionalView||old.institutionalView||''),
-    riskFlags:normalizeStringArray(src.riskFlags&&src.riskFlags.length?src.riskFlags:old.riskFlags),
-    confidence:enumOr(src.confidence||old.confidence,['high','medium','low'],'low'),
-    actionHint:String(src.actionHint||old.actionHint||'')
+    updatedAt:normalizeDateOnly(pick('updatedAt','date','analysisDate'))||old.updatedAt||'',
+    marketMood:String(pick('marketMood','marketSentiment','sentiment','mood')||old.marketMood||''),
+    fundFlowView:String(pick('fundFlowView','fundFlow','fundFlowSummary','capitalFlow','moneyFlowView')||old.fundFlowView||''),
+    sectorHeat:String(pick('sectorHeat','sectorMomentum','sectorHotness','themeHeat','industryHeat')||old.sectorHeat||''),
+    institutionalView:String(pick('institutionalView','institutionalOpinion','institutionalViews','brokerView','analystView')||old.institutionalView||''),
+    riskFlags:normalizeStringArray((Array.isArray(riskSource)&&riskSource.length)||typeof riskSource==='string'?riskSource:old.riskFlags),
+    confidence:enumOr(pick('confidence','confidenceLevel')||old.confidence,['high','medium','low'],'low'),
+    actionHint:String(pick('actionHint','operationHint','suggestion','note')||old.actionHint||'')
   };
 }
 function defaultInformationCompleteness(){

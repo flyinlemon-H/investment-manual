@@ -821,15 +821,22 @@ function defaultShortTermSentiment(stock={}){
 function normalizeShortTermSentiment(v,stock={}){
   const src=(v&&typeof v==='object')?v:{};
   const old=normalizeSentimentReview(stock.sentimentReview,stock);
+  const pick=(...keys)=>{
+    for(const k of keys){
+      if(Object.prototype.hasOwnProperty.call(src,k)&&src[k]!==undefined&&src[k]!==null&&src[k]!=='')return src[k];
+    }
+    return '';
+  };
+  const riskSource=pick('riskFlags','risks','riskPoints','negativePoints','warningFlags');
   return {
-    updatedAt:normalizeDateOnly(src.updatedAt)||old.updatedAt||'',
-    marketMood:String(src.marketMood||old.marketMood||''),
-    fundFlowView:String(src.fundFlowView||old.fundFlowView||''),
-    sectorHeat:String(src.sectorHeat||old.sectorHeat||''),
-    institutionalView:String(src.institutionalView||old.institutionalView||''),
-    riskFlags:normalizeStringArray(src.riskFlags&&src.riskFlags.length?src.riskFlags:old.riskFlags),
-    confidence:enumOr(src.confidence||old.confidence,['high','medium','low'],'low'),
-    actionHint:String(src.actionHint||old.actionHint||'')
+    updatedAt:normalizeDateOnly(pick('updatedAt','date','analysisDate'))||old.updatedAt||'',
+    marketMood:String(pick('marketMood','marketSentiment','sentiment','mood')||old.marketMood||''),
+    fundFlowView:String(pick('fundFlowView','fundFlow','fundFlowSummary','capitalFlow','moneyFlowView')||old.fundFlowView||''),
+    sectorHeat:String(pick('sectorHeat','sectorMomentum','sectorHotness','themeHeat','industryHeat')||old.sectorHeat||''),
+    institutionalView:String(pick('institutionalView','institutionalOpinion','institutionalViews','brokerView','analystView')||old.institutionalView||''),
+    riskFlags:normalizeStringArray((Array.isArray(riskSource)&&riskSource.length)||typeof riskSource==='string'?riskSource:old.riskFlags),
+    confidence:enumOr(pick('confidence','confidenceLevel')||old.confidence,['high','medium','low'],'low'),
+    actionHint:String(pick('actionHint','operationHint','suggestion','note')||old.actionHint||'')
   };
 }
 function defaultInformationCompleteness(){
@@ -3918,7 +3925,7 @@ function shortTermSentimentPanel(stock){
       ?'情绪/新闻资料未补充，影响有限，主要参考宏观、基本面、估值和技术面。'
       :'情绪/新闻资料未补充，短期市场反馈判断受限。';
   const body=has
-    ?`<div class="dash" style="margin:0"><div><div class="card-title">情绪重要性</div><div class="card-num" style="font-size:20px">${sentimentImportanceText(ctx.importance)}</div><div class="card-note">动态判断</div></div><div><div class="card-title">市场情绪</div><div class="card-note">${esc(formatChineseText(st.marketMood||'—'))}</div></div><div><div class="card-title">板块热度</div><div class="card-note">${esc(formatChineseText(st.sectorHeat||'—'))}</div></div><div><div class="card-title">资金流 / 机构</div><div class="card-note">${esc(formatChineseText(st.fundFlowView||'—'))}</div><div class="card-note">${esc(formatChineseText(st.institutionalView||'—'))}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>风险：</b>${zhList(st.riskFlags).slice(0,5).map(esc).join('；')||'—'}<br><b>置信度：</b>${esc(zhConfidence(st.confidence))}<br><b>操作提示：</b>${esc(formatChineseText(st.actionHint||'—'))}</div>`
+    ?`<div class="dash" style="margin:0"><div><div class="card-title">情绪重要性</div><div class="card-num" style="font-size:20px">${sentimentImportanceText(ctx.importance)}</div><div class="card-note">动态判断</div></div><div><div class="card-title">市场情绪</div><div class="card-note">${esc(formatChineseText(st.marketMood||'—'))}</div></div><div><div class="card-title">板块热度</div><div class="card-note">${esc(formatChineseText(st.sectorHeat||'—'))}</div></div><div><div class="card-title">资金流 / 机构</div><div class="card-note">${esc(formatChineseText(st.fundFlowView||'—'))}</div><div class="card-note">${esc(formatChineseText(st.institutionalView||'—'))}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>风险：</b>${st.riskFlags&&st.riskFlags.length?'<ul style="margin:6px 0 10px 18px;padding:0">'+zhList(st.riskFlags).slice(0,5).map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':'—'}<b>置信度：</b>${esc(zhConfidence(st.confidence))}<br><b>操作提示：</b>${esc(formatChineseText(st.actionHint||'—'))}</div>`
     :`<div class="alert">${esc(missing)}</div>`;
   return `<div class="card" style="margin-bottom:14px"><div class="card-title">短期情绪 / 资金</div>${body}<div class="card-note" style="margin-top:8px">更新时间：${esc(st.updatedAt||'未更新')}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-short-term-sentiment-prompt">复制短期情绪资金 Prompt</button><button class="btn ghost small" data-detail-action="import-short-term-sentiment-json">导入情绪资金 JSON</button></div></div>`;
 }
@@ -3932,8 +3939,27 @@ function positionPlanPanel(stock){
   const nearest=nearestDetailPlan(stock);
   const planSummary=tradePlanSummaryText(stock);
   const rows=(stock.plans||[]).slice(0,4).map(p=>`${p.action==='sell'?'减仓':'加仓'} ${fmtInt(p.shares)} @ ${fmtMaybe(p.price)} · ${p.note||'—'}`);
-  const main=nearest?`${nearest.p.action==='sell'?'减仓':'加仓'} ${fmtInt(nearest.p.shares)} @ ${fmtMaybe(nearest.p.price)}${nearest.g?(nearest.g.triggered?' · 已触发':` · 距触发 ${fmt(nearest.g.absPct,1)}%`):''}`:(planSummary||'暂无明确仓位计划');
-  return `<div class="card" style="margin-bottom:14px"><div class="card-title">仓位与加减仓计划</div><div class="text" style="max-width:none"><b>最近计划：</b>${esc(main)}<br><b>计划摘要：</b>${rows.map(esc).join('；')||esc(planSummary||'—')}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-trade-plan-prompt">复制加仓计划 Prompt</button><button class="btn ghost small" data-detail-action="import-trade-plan-json">导入加仓计划 JSON</button></div></div>`;
+  const main=nearest?`${nearest.p.action==='sell'?'减仓':'加仓'} ${fmtInt(nearest.p.shares)} @ ${fmtMaybe(nearest.p.price)}${nearest.g?(nearest.g.triggered?' · 已触发':` · 距触发 ${fmt(nearest.g.absPct,1)}%`):''}`:'暂无最近触发计划';
+  const tp=stock.tradePlan&&typeof stock.tradePlan==='object'?stock.tradePlan:null;
+  const label={observe:'观察',hold:'持有',add:'加仓',reduce:'减仓',buy:'加仓',sell:'减仓'};
+  const listBlock=(title,items)=>{
+    const arr=Array.isArray(items)?items.filter(Boolean):[];
+    return arr.length?`<div class="text" style="max-width:none;margin-top:8px"><b>${esc(title)}：</b><ul style="margin:6px 0 0 18px;padding:0">${arr.slice(0,6).map(x=>`<li>${esc(formatChineseText(x))}</li>`).join('')}</ul></div>`:'';
+  };
+  const itemCard=it=>{
+    const action=label[it.action]||formatChineseText(it.action||'观察');
+    const trigger=it.triggerPrice!==null&&it.triggerPrice!==undefined?fmtMaybe(it.triggerPrice,2):'—';
+    const qty=it.quantity!==null&&it.quantity!==undefined?fmtInt(it.quantity):'—';
+    const amount=it.amountEstimate!==null&&it.amountEstimate!==undefined?` · 估算 ${fmtMoney(it.amountEstimate)}`:'';
+    return `<div class="card" style="margin:8px 0;background:rgba(255,255,255,.55)"><div class="card-title">${esc(action)} <span class="muted" style="font-weight:400">优先级 ${esc(it.priority||'—')}</span></div><div class="card-note">触发价 ${esc(trigger)} · 区间 ${esc(it.priceZone||'—')} · 数量 ${esc(qty)}${amount}</div><div class="text" style="max-width:none;margin-top:6px"><b>条件：</b>${esc(formatChineseText(it.condition||'—'))}<br><b>技术条件：</b>${esc(formatChineseText(it.technicalCondition||'—'))}<br><b>风控：</b>${esc(formatChineseText(it.riskControl||'—'))}<br><b>备注：</b>${esc(formatChineseText(it.note||'—'))}</div></div>`;
+  };
+  const imported=tp?(()=>{
+    const items=(Array.isArray(tp.planItems)?tp.planItems:[]).slice().sort((a,b)=>(Number(a.priority)||999)-(Number(b.priority)||999));
+    return `<div class="dash" style="margin:0"><div><div class="card-title">计划类型</div><div class="card-num" style="font-size:20px">${esc(label[tp.planType]||formatChineseText(tp.planType||'—'))}</div><div class="card-note">有效期 ${esc(tp.validUntil||'—')}</div></div><div><div class="card-title">复核要求</div><div class="card-note">${tp.reviewRequired?'需要人工复核':'未标记复核'}</div></div><div style="grid-column:span 2"><div class="card-title">计划摘要</div><div class="text" style="max-width:none">${esc(formatChineseText(tp.planSummary||planSummary||'—'))}</div></div></div><div style="margin-top:10px">${items.length?items.map(itemCard).join(''):'<div class="card-note">暂无结构化计划项</div>'}</div>${listBlock('风险提示',tp.riskFlags)}${listBlock('失效条件',tp.invalidConditions)}`;
+  })():'';
+  const history=`<details class="card" style="margin-top:10px"><summary class="card-title" style="cursor:pointer">原始计划 / 历史计划</summary><div class="text" style="max-width:none;margin-top:8px"><b>最近触发计划：</b>${esc(main)}<br><b>历史计划：</b>${rows.length?'<ul style="margin:6px 0 0 18px;padding:0">'+rows.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':'—'}</div></details>`;
+  const fallback=`<div class="text" style="max-width:none"><b>最近计划：</b>${esc(main)}<br><b>计划摘要：</b>${esc(planSummary||'暂无明确仓位计划')}</div>`;
+  return `<div class="card" style="margin-bottom:14px"><div class="card-title">仓位与加减仓计划</div>${tp?imported:fallback}${history}<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-trade-plan-prompt">复制加仓计划 Prompt</button><button class="btn ghost small" data-detail-action="import-trade-plan-json">导入加仓计划 JSON</button></div></div>`;
 }
 function workflowDateText(dateStr){
   const d=normalizeDateOnly(dateStr);
@@ -7012,7 +7038,7 @@ function importSentimentPayloadFromText(text,options={}){
     const looksLikeLongTerm=Boolean(parsed.longTermLogic||parsed.logicStatus||parsed.investmentThesis||parsed.fundamentalSupport||parsed.coreDrivers||parsed.longTermRisks);
     const looksLikeRecentCatalyst=Boolean(parsed.recentCatalyst||parsed.analysisDate||parsed.todayCatalyst||parsed.weeklyCatalysts||parsed.monthlyCatalysts||parsed.recentEvents||parsed.latestSourceDate||parsed.freshnessStatus||parsed.catalystCoverage);
     const looksLikeEventExplanation=Boolean(parsed.eventExplanation||parsed.priceActionDetected!==undefined||parsed.canExplainTodayMove!==undefined||parsed.explanationLevel||parsed.explanationConfidence||parsed.explanation);
-    const looksLikeShortTermSentiment=Boolean(parsed.shortTermSentiment||parsed.fundFlowView||parsed.sectorHeat||parsed.institutionalView);
+    const looksLikeShortTermSentiment=Boolean(parsed.shortTermSentiment||parsed.marketMood||parsed.marketSentiment||parsed.sentiment||parsed.fundFlowView||parsed.fundFlow||parsed.fundFlowSummary||parsed.capitalFlow||parsed.moneyFlowView||parsed.sectorHeat||parsed.sectorMomentum||parsed.sectorHotness||parsed.themeHeat||parsed.industryHeat||parsed.institutionalView||parsed.institutionalOpinion||parsed.institutionalViews||parsed.brokerView||parsed.analystView||(parsed.actionHint&&parsed.confidence&&parsed.riskFlags));
     const looksLikeInformationCompleteness=Boolean(parsed.informationCompleteness||parsed.missingItems||parsed.overall||parsed.news&&parsed.fundFlow||parsed.catalyst||parsed.longTermLogic||parsed.fundamentals);
     if(parsed.sentimentReview||(!looksLikeShortTermSentiment&&!looksLikeLongTerm&&!looksLikeRecentCatalyst&&!looksLikeInformationCompleteness&&(parsed.conclusion||parsed.marketMood||parsed.newsSummary||parsed.positivePoints))){
       const payload=parsed.sentimentReview||parsed;
@@ -7048,7 +7074,7 @@ function importSentimentPayloadFromText(text,options={}){
       changed=true;
     }
     if(options.onlyLongTerm&&!looksLikeLongTerm)throw new Error('未识别 longTermLogic。请粘贴包含 longTermLogic 的 JSON，或直接粘贴长期逻辑对象。');
-    if(!changed)throw new Error('未识别到可导入字段。请粘贴包含 sentimentReview、shortTermSentiment、recentCatalyst、eventExplanation、longTermLogic 或 informationCompleteness 的 JSON。');
+    if(!changed)throw new Error('未识别到可导入字段。情绪资金 JSON 请包含 shortTermSentiment，或包含 marketMood / marketSentiment / fundFlowView / fundFlow / sectorHeat / institutionalView 等字段。');
     normalizeStockAnalysis(stock);
     saveState();
     if(options.closeLongTerm)closeLongTermLogicImportModal();
