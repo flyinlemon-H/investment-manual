@@ -1277,7 +1277,7 @@ function renderDashboard(){
   const disciplinePanel=disciplineRows.length?`<div class="card" style="margin-bottom:14px;border-left:3px solid var(--gold)"><div class="card-title">纪律规则提醒（${disciplineRows.length} 项）</div><div class="trig-list">${disciplineRows.join('')}</div></div>`:'';
   const noPriceHint=noPriceRows.length?`<div class="alert" style="margin-bottom:14px">有 ${noPriceRows.length} 只标的缺少有效价格/市值，仓位和再平衡计算可能不完整。</div>`:'';
   const fxRiskHint=isDefaultFx()?'<div class="alert" style="margin-bottom:14px">汇率使用默认值，港股市值和仓位占比可能有偏差。可到「工具」页更新 HKD→CNY 汇率。</div>':'';
-  main.innerHTML=`${updateChecklistPanel()}${triggeredPanel}${disciplinePanel}${rebalPanel}${stalePanel()}${noPriceHint}${fxRiskHint}<div class="hint"><b>关键摘要：</b>系统工具已迁移到「工具」页；总览页只保留资产结构、触发提醒、再平衡提示和待更新清单。</div><div class="dash"><div class="card"><div class="card-title">按主题分布</div>${bars(themeRows)}</div><div class="card"><div class="card-title">按仓位角色分布</div>${bars(roleRows)}</div></div>`;
+  main.innerHTML=`${updateChecklistPanel()}${triggeredPanel}${disciplinePanel}${rebalPanel}${noPriceHint}${fxRiskHint}<div class="dash"><div class="card"><div class="card-title">按主题分布</div>${bars(themeRows)}</div><div class="card"><div class="card-title">按仓位角色分布</div>${bars(roleRows)}</div></div>`;
   document.querySelectorAll('[data-execute-stock]').forEach(b=>b.addEventListener('click',()=>executePlan(b.dataset.executeStock,b.dataset.executePlan)));
   document.querySelectorAll('[data-update-stock]').forEach(el=>el.addEventListener('click',()=>openStockDetail(el.dataset.updateStock)));
   const copyCodes=document.getElementById('copyUpdateCodesBtn');
@@ -5096,7 +5096,7 @@ function openLongLogicModal(){
   const el=ensureLongLogicModal();
   const title=document.getElementById('longLogicTitle');
   if(title)title.textContent=`${stock.name||'标的'} · 长期逻辑`;
-  document.getElementById('longLogicBody').innerHTML=`${longTermLogicPanel(stock)}${stock.type==='etf'?etfIndexAnalysisPanel(stock):fundamentalAnalysisPanel(stock)}${allocationDecisionPanel(stock)}${valuationAnalysisPanel(stock)}${aiReviewSummaryPanel(stock)}`;
+  document.getElementById('longLogicBody').innerHTML=`${longTermLogicPanel(stock)}${stock.type==='etf'?etfIndexAnalysisPanel(stock):fundamentalAnalysisPanel(stock)}${allocationDecisionPanel(stock)}${valuationAnalysisPanel(stock)}`;
   el.classList.add('show');
 }
 function refreshLongLogicModalIfOpen(){
@@ -5108,7 +5108,7 @@ function refreshLongLogicModalIfOpen(){
   const title=document.getElementById('longLogicTitle');
   if(title)title.textContent=`${stock.name||'标的'} · 长期逻辑`;
   const body=document.getElementById('longLogicBody');
-  if(body)body.innerHTML=`${longTermLogicPanel(stock)}${stock.type==='etf'?etfIndexAnalysisPanel(stock):fundamentalAnalysisPanel(stock)}${allocationDecisionPanel(stock)}${valuationAnalysisPanel(stock)}${aiReviewSummaryPanel(stock)}`;
+  if(body)body.innerHTML=`${longTermLogicPanel(stock)}${stock.type==='etf'?etfIndexAnalysisPanel(stock):fundamentalAnalysisPanel(stock)}${allocationDecisionPanel(stock)}${valuationAnalysisPanel(stock)}`;
 }
 function closeLongLogicModal(){
   const modal=document.getElementById('longLogicModal');
