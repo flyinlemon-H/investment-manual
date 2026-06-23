@@ -743,7 +743,10 @@ function normalizeRecentCatalyst(v,stock={}){
   if(!src.freshnessStatus&&days!==null)freshnessStatus=days<=3?'fresh':(days<=7?'acceptable':'stale');
   const weeklyCatalysts=normalizeStringArray(src.weeklyCatalysts);
   const monthlyCatalysts=normalizeStringArray(src.monthlyCatalysts);
-  const recentEvents=normalizeStringArray(src.recentEvents||news.attentionPoints||news.positivePoints);
+  const rawEvents=src.recentEvents||news.attentionPoints||news.positivePoints;
+  const recentEvents=Array.isArray(rawEvents)
+    ?rawEvents.map(x=>(x&&typeof x==='object')?{...x}:String(x??'').trim()).filter(x=>typeof x==='object'||Boolean(x))
+    :normalizeStringArray(rawEvents);
   const catalystCoverage=src.catalystCoverage?completenessLevel(src.catalystCoverage):(src.hasTodayNews&&weeklyCatalysts.length&&monthlyCatalysts.length?'high':(weeklyCatalysts.length||monthlyCatalysts.length||recentEvents.length?'medium':'low'));
   return {
     analysisDate:normalizeDateOnly(src.analysisDate)||String(src.analysisDate||''),
@@ -3857,25 +3860,53 @@ function currentActionPanel(stock){
   const confidence=tech&&tech.confidence?zhConfidence(tech.confidence):'—';
   return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--seal)"><div class="card-title">当前操作建议</div><div class="dash" style="margin:0"><div><div class="card-num" style="font-size:22px">${esc(action)}</div><div class="card-note">来源：${esc(zhSource(info.source))} · 更新：${esc(updated)} · 置信度 ${esc(confidence)}</div></div><div><div class="card-title">最近计划</div><div class="card-note">${esc(planText)}</div></div><div><div class="card-title">建议价格区间</div><div class="card-note">${esc(zone||'—')}</div></div><div><div class="card-title">建议数量 / 金额</div><div class="card-note">${esc(qty)}${ex.suggestedBuyAmount>0?' · '+fmtMoney(ex.suggestedBuyAmount):''}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>操作提示：</b>${esc(summary)}${englishTextHint(summary)}<br><b>触发条件：</b>${matched.slice(0,3).map(esc).join('；')||'—'}<br><b>原因：</b>${reasons.slice(0,4).map(esc).join('；')||'—'}${risk.length?'<br><b>风险提醒：</b>'+risk.map(formatChineseText).map(esc).join('；'):''}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-full-add-discussion-prompt">复制完整加仓讨论 Prompt</button><button class="btn ghost small" data-detail-action="copy-trade-plan-prompt">复制加仓计划 Prompt</button><button class="btn ghost small" data-detail-action="import-trade-plan-json">导入加仓计划 JSON</button></div></div>`;
 }
+function catalystStatusLabel(value){
+  return {fresh:'新鲜',acceptable:'可用',stale:'过期',unknown:'未知',high:'高',medium:'中',low:'低',full:'完整解释',partial:'部分解释',none:'无法解释'}[value]||formatChineseText(value||'未知');
+}
+function catalystEventTypeLabel(value){
+  const raw=String(value||'unknown').trim();
+  const map={sector_move:'板块异动',fund_flow:'资金流',announcement:'公告',news:'新闻',policy:'政策',earnings:'财报',industry:'行业催化',unknown:'未识别'};
+  return map[raw]||`未识别：${raw}`;
+}
+function priceActionTypeLabel(value){
+  const raw=String(value||'unknown').trim();
+  const map={breakout_attempt:'突破尝试',volume_expansion_rebound:'放量反弹',volume_expansion_breakout:'放量突破',breakout_success:'有效突破',breakout_failure:'突破失败',limit_up:'涨停',gap_up:'向上跳空',high_level_reversal:'高位反转',unknown:'未识别'};
+  return map[raw]||zhPriceActionEventType(raw);
+}
+function catalystListHtml(title,items,limit=6){
+  const arr=Array.isArray(items)?items.filter(x=>x!==null&&x!==undefined&&String(typeof x==='object'?JSON.stringify(x):x).trim()):[];
+  if(!arr.length)return `<div class="catalyst-list"><b>${esc(title)}：</b><div class="card-note">—</div></div>`;
+  const rows=arr.slice(0,limit).map(item=>{
+    const text=typeof item==='object'
+      ?[item.date||item.sourceDate||item.updatedAt,item.type?catalystEventTypeLabel(item.type):'',item.summary||item.title||item.content||item.description||item.keyPoint||item.note||''].filter(Boolean).map(formatChineseText).join('｜')
+      :formatChineseText(item);
+    return `<li>${esc(text)}</li>`;
+  }).join('');
+  return `<div class="catalyst-list"><b>${esc(title)}：</b><ul class="text" style="max-width:none;margin:6px 0 10px 18px;padding:0">${rows}</ul></div>`;
+}
 function shortTermCatalystPanel(stock){
   const rc=normalizeRecentCatalyst(stock.recentCatalyst,stock);
   const ev=normalizeEventExplanation(stock.eventExplanation,stock);
   const today=todayDate();
   const sourceStale=rc.analysisDate===today&&rc.latestSourceDate&&rc.latestSourceDate!==today;
   const has=Boolean(rc.todayCatalyst||rc.weeklyCatalysts.length||rc.monthlyCatalysts.length||rc.recentEvents.length||rc.latestSourceDate);
-  const freshnessLabel={fresh:'新鲜',acceptable:'可用',stale:'偏旧',unknown:'未知'}[rc.freshnessStatus]||rc.freshnessStatus||'未知';
+  const freshnessLabel=catalystStatusLabel(rc.freshnessStatus);
   const level=ev.explanationLevel&&ev.explanationLevel!=='unknown'?ev.explanationLevel:(ev.priceActionDetected?(ev.canExplainTodayMove?'full':'none'):'unknown');
-  const explanationLabel={full:'催化解释充分',partial:'部分解释',none:'无法解释',unknown:ev.priceActionDetected?'未知':'无异动'}[level]||'未知';
-  const coverageLabel={high:'高',medium:'中',low:'低',unknown:'未知'}[rc.catalystCoverage]||'未知';
+  const explanationLabel=level==='unknown'&&!ev.priceActionDetected?'无异动':catalystStatusLabel(level);
+  const coverageLabel=catalystStatusLabel(rc.catalystCoverage);
   const levelWarning=level==='partial'
     ?'<div class="alert" style="margin-top:8px">未发现明确当日公告，但近7天/30天存在相关催化，行情可部分解释。短线追涨仍需谨慎。</div>'
     :(level==='none'?'<div class="alert" style="margin-top:8px">未发现足以解释行情的当天或近期催化，新闻层结论应降权。</div>':(level==='full'?'<div class="alert" style="margin-top:8px">存在明确催化，行情解释较充分。</div>':''));
+  const noTodayWarning=(!rc.hasTodayNews||ev.canExplainTodayMove===false)&&level==='partial'
+    ?'<div class="alert" style="margin-top:8px">未发现明确当日公告或新闻，近期催化只能部分解释行情。</div>'
+    :'';
   const staleWarning=sourceStale?'<div class="alert" style="margin-top:8px">分析日期为今天，但最新新闻来源不是今天。</div>':'';
   const eventWarning=ev.priceActionDetected&&level==='none'?`<div class="alert" style="margin-top:8px">${esc(ev.warning||'行情异动缺少新闻解释，新闻结论应降权。')}</div>`:'';
+  const missingItems=(rc.missingData||[]).concat(ev.missingData||[]);
   const body=has
-    ?`<div class="dash" style="margin:0"><div><div class="card-title">分析日期</div><div class="card-note">${esc(rc.analysisDate||'—')}</div><div class="card-note">回看 ${fmtInt(rc.lookbackDays)} / ${fmtInt(rc.monthlyLookbackDays)} 天</div></div><div><div class="card-title">最新来源</div><div class="card-note">${esc(rc.latestSourceDate||'—')}</div><div class="card-note">${esc(freshnessLabel)}${rc.freshnessDays!==null?` · ${fmtInt(rc.freshnessDays)}天`:''}</div></div><div><div class="card-title">催化覆盖度</div><div class="card-note">${esc(coverageLabel)}</div><div class="card-note">置信度 ${esc(zhConfidence(rc.confidence))}</div></div><div><div class="card-title">行情解释程度</div><div class="card-note">${esc(explanationLabel)}</div><div class="card-note">${esc(formatChineseText(ev.priceActionType||'—'))}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>当天催化：</b>${esc(formatChineseText(rc.todayCatalyst||'未发现明确当日公告或新闻'))}<br><b>最近7天催化：</b>${rc.weeklyCatalysts.slice(0,5).map(formatChineseText).map(esc).join('；')||'—'}<br><b>最近30天催化：</b>${rc.monthlyCatalysts.slice(0,6).map(formatChineseText).map(esc).join('；')||'—'}<br><b>近期事件：</b>${rc.recentEvents.slice(0,5).map(formatChineseText).map(esc).join('；')||'—'}<br><b>缺失信息：</b>${rc.missingData.concat(ev.missingData||[]).slice(0,5).map(formatChineseText).map(esc).join('；')||'—'}<br><b>操作提示：</b>${esc(formatChineseText(rc.actionHint||'—'))}</div>`
+    ?`<div class="dash" style="margin:0"><div><div class="card-title">分析日期</div><div class="card-note">${esc(rc.analysisDate||'—')}</div><div class="card-note">回看 ${fmtInt(rc.lookbackDays)} / ${fmtInt(rc.monthlyLookbackDays)} 天</div></div><div><div class="card-title">最新来源</div><div class="card-note">${esc(rc.latestSourceDate||'—')}</div><div class="card-note">${esc(freshnessLabel)}${rc.freshnessDays!==null?` · ${fmtInt(rc.freshnessDays)}天`:''}</div></div><div><div class="card-title">催化覆盖度</div><div class="card-note">${esc(coverageLabel)}</div><div class="card-note">置信度 ${esc(catalystStatusLabel(rc.confidence))}</div></div><div><div class="card-title">行情解释程度</div><div class="card-note">${esc(explanationLabel)}</div><div class="card-note">${esc(priceActionTypeLabel(ev.priceActionType||'unknown'))}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>当天催化：</b>${esc(formatChineseText(rc.todayCatalyst||'未发现明确当日公告或新闻'))}</div>${catalystListHtml('最近7天催化',rc.weeklyCatalysts,5)}${catalystListHtml('最近30天催化',rc.monthlyCatalysts,6)}${catalystListHtml('近期事件',rc.recentEvents,6)}${catalystListHtml('缺失信息',missingItems,6)}<div class="text" style="max-width:none"><b>操作提示：</b>${esc(formatChineseText(rc.actionHint||'—'))}</div>`
     :'暂无短期新闻催化资料；如出现涨停、跳空、放量异动，建议补充新闻解释。';
-  return `<div class="card" style="margin-bottom:14px"><div class="card-title">短期新闻催化</div>${body}${staleWarning}${levelWarning}${eventWarning}<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-recent-catalyst-prompt">复制短期新闻催化 Prompt</button><button class="btn ghost small" data-detail-action="import-recent-catalyst-json">导入新闻/催化 JSON</button></div></div>`;
+  return `<div class="card" style="margin-bottom:14px"><div class="card-title">短期新闻催化</div>${body}${staleWarning}${noTodayWarning}${levelWarning}${eventWarning}<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-recent-catalyst-prompt">复制短期新闻催化 Prompt</button><button class="btn ghost small" data-detail-action="import-recent-catalyst-json">导入新闻/催化 JSON</button></div></div>`;
 }
 function shortTermSentimentPanel(stock){
   const st=normalizeShortTermSentiment(stock.shortTermSentiment,stock);

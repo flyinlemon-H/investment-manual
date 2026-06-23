@@ -539,7 +539,10 @@ function normalizeRecentCatalyst(v,stock={}){
   if(!src.freshnessStatus&&days!==null)freshnessStatus=days<=3?'fresh':(days<=7?'acceptable':'stale');
   const weeklyCatalysts=normalizeStringArray(src.weeklyCatalysts);
   const monthlyCatalysts=normalizeStringArray(src.monthlyCatalysts);
-  const recentEvents=normalizeStringArray(src.recentEvents||news.attentionPoints||news.positivePoints);
+  const rawEvents=src.recentEvents||news.attentionPoints||news.positivePoints;
+  const recentEvents=Array.isArray(rawEvents)
+    ?rawEvents.map(x=>(x&&typeof x==='object')?{...x}:String(x??'').trim()).filter(x=>typeof x==='object'||Boolean(x))
+    :normalizeStringArray(rawEvents);
   const catalystCoverage=src.catalystCoverage?completenessLevel(src.catalystCoverage):(src.hasTodayNews&&weeklyCatalysts.length&&monthlyCatalysts.length?'high':(weeklyCatalysts.length||monthlyCatalysts.length||recentEvents.length?'medium':'low'));
   return {
     analysisDate:normalizeDateOnly(src.analysisDate)||String(src.analysisDate||''),
