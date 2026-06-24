@@ -605,12 +605,33 @@ function stripJsonFence(text){
   return m?m[1].trim():s;
 }
 function normalizeJsonLikeText(text){
-  return String(text||'')
+  const raw=String(text||'')
     .replace(/[\u201C\u201D\u201E\u201F]/g,'"')
     .replace(/[\u2018\u2019\u201A\u201B]/g,"'")
     .replace(/\u00A0/g,' ')
+    .replace(/[\u200B-\u200D\uFEFF]/g,'')
+    .replace(/｛/g,'{')
+    .replace(/｝/g,'}')
+    .replace(/［/g,'[')
+    .replace(/］/g,']')
     .replace(/，(?=\s*[\}\]])/g,',')
     .replace(/,\s*([\}\]])/g,'$1');
+  let out='',inString=false,escape=false;
+  for(let i=0;i<raw.length;i++){
+    const ch=raw[i];
+    if(inString){
+      out+=ch;
+      if(escape)escape=false;
+      else if(ch==='\\')escape=true;
+      else if(ch==='"')inString=false;
+      continue;
+    }
+    if(ch==='"'){inString=true;out+=ch;continue}
+    if(ch==='：')out+=':';
+    else if(ch==='，')out+=',';
+    else out+=ch;
+  }
+  return out;
 }
 function extractFirstJsonObject(text){
   const s=normalizeJsonLikeText(stripJsonFence(text));
