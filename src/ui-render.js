@@ -1767,27 +1767,6 @@ function nearestDetailPlan(stock){
   });
   return rows[0];
 }
-function currentActionPanel(stock){
-  const info=getLatestActionInfo(stock);
-  const d=decisionForStock(stock);
-  const tech=info.technicalDecision||calculateTechnicalDecision(stock);
-  const alloc=normalizeAllocationDecision(stock.allocationDecision,stock);
-  const action=tech&&tech.title?formatChineseText(tech.title):actionKindLabel(info.text,d.action);
-  const allocationWarnings=[];
-  if(alloc.capitalAllocationView==='unsuitable')allocationWarnings.push('配置决策提示：新增资金暂不建议配置该标的');
-  if(alloc.confidence==='low'&&alloc.conclusion)allocationWarnings.push('配置决策置信度较低，需要补充资料');
-  const risk=(tech&&tech.riskFlags&&tech.riskFlags.length?zhList(tech.riskFlags):[]).concat(allocationWarnings,(d.warnings||[]).slice(0,2)).slice(0,5);
-  const updated=info.updatedAt?(String(info.updatedAt).length>10?new Date(info.updatedAt).toLocaleString('zh-CN'):String(info.updatedAt)):'—';
-  const summary=tech&&tech.summary?formatChineseText(tech.summary):formatChineseText(info.text);
-  const matched=tech&&tech.triggerMatched&&tech.triggerMatched.length?tech.triggerMatched.map(formatChineseText):['暂无明确触发条件，需结合技术面和计划复核'];
-  const reasons=tech&&tech.reason&&tech.reason.length?tech.reason.map(formatChineseText):[formatChineseText(info.text)];
-  const zone=tech&&tech.suggestedPriceZone?tech.suggestedPriceZone:'暂无建议区间';
-  const decision=String(tech&&tech.decision||'').toLowerCase();
-  const canShowQty=/add_triggered|reduce_triggered|conditional_add|conditional_reduce/.test(decision);
-  const qty=canShowQty&&tech&&tech.suggestedQuantity!==null&&tech.suggestedQuantity!==undefined?fmtInt(tech.suggestedQuantity):'暂无当前执行数量';
-  const confidence=tech&&tech.confidence?zhConfidence(tech.confidence):'—';
-  return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--seal)"><div class="card-title">当前操作建议</div><div class="dash" style="margin:0"><div><div class="card-num" style="font-size:22px">${esc(action)}</div><div class="card-note">来源：${esc(zhSource(info.source))} · 更新：${esc(updated)} · 置信度 ${esc(confidence)}</div></div><div><div class="card-title">建议价格区间</div><div class="card-note">${esc(zone||'—')}</div></div><div><div class="card-title">建议数量 / 金额</div><div class="card-note">${esc(qty)}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>操作提示：</b>${esc(summary)}${englishTextHint(summary)}<br><b>触发条件：</b>${matched.slice(0,3).map(esc).join('；')||'—'}<br><b>原因：</b>${reasons.slice(0,4).map(esc).join('；')||'—'}${risk.length?'<br><b>风险提醒：</b>'+risk.map(formatChineseText).map(esc).join('；'):''}</div>${tradePlanActionButtons()}</div>`;
-}
 function tradePlanActionButtons(){
   return `<div class="trade-plan-actions" style="margin-top:12px;display:grid;gap:10px"><div class="card" style="margin:0;background:rgba(255,255,255,.45)"><div class="card-title">结构化计划</div><div style="display:grid;gap:8px;margin-top:8px"><button class="btn ghost small" style="width:100%" data-detail-action="copy-trade-plan-prompt">生成操作计划 Prompt</button><button class="btn ghost small" style="width:100%" data-detail-action="import-trade-plan-json">导入操作计划 JSON</button></div><div class="card-note" style="margin-top:6px">生成并导入可保存的操作计划</div></div></div>`;
 }
