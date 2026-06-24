@@ -1788,8 +1788,8 @@ function currentActionPanel(stock){
   const confidence=tech&&tech.confidence?zhConfidence(tech.confidence):'—';
   return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--seal)"><div class="card-title">当前操作建议</div><div class="dash" style="margin:0"><div><div class="card-num" style="font-size:22px">${esc(action)}</div><div class="card-note">来源：${esc(zhSource(info.source))} · 更新：${esc(updated)} · 置信度 ${esc(confidence)}</div></div><div><div class="card-title">建议价格区间</div><div class="card-note">${esc(zone||'—')}</div></div><div><div class="card-title">建议数量 / 金额</div><div class="card-note">${esc(qty)}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>操作提示：</b>${esc(summary)}${englishTextHint(summary)}<br><b>触发条件：</b>${matched.slice(0,3).map(esc).join('；')||'—'}<br><b>原因：</b>${reasons.slice(0,4).map(esc).join('；')||'—'}${risk.length?'<br><b>风险提醒：</b>'+risk.map(formatChineseText).map(esc).join('；'):''}</div>${tradePlanActionButtons()}</div>`;
 }
-function tradePlanActionButtons(includeDiscussion=true){
-  return `<div class="trade-plan-actions" style="margin-top:12px;display:grid;gap:10px"><div class="card" style="margin:0;background:rgba(255,255,255,.45)"><div class="card-title">AI辅助讨论</div>${includeDiscussion?'<button class="btn small" style="width:100%;margin-top:8px" data-detail-action="copy-full-add-discussion-prompt">与AI讨论 Prompt</button>':''}<div class="card-note" style="margin-top:6px">分析现在是否适合操作</div></div><div class="card" style="margin:0;background:rgba(255,255,255,.45)"><div class="card-title">结构化计划</div><div style="display:grid;gap:8px;margin-top:8px"><button class="btn ghost small" style="width:100%" data-detail-action="copy-trade-plan-prompt">生成操作计划 Prompt</button><button class="btn ghost small" style="width:100%" data-detail-action="import-trade-plan-json">导入操作计划 JSON</button></div><div class="card-note" style="margin-top:6px">生成并导入可保存的操作计划</div></div></div>`;
+function tradePlanActionButtons(){
+  return `<div class="trade-plan-actions" style="margin-top:12px;display:grid;gap:10px"><div class="card" style="margin:0;background:rgba(255,255,255,.45)"><div class="card-title">结构化计划</div><div style="display:grid;gap:8px;margin-top:8px"><button class="btn ghost small" style="width:100%" data-detail-action="copy-trade-plan-prompt">生成操作计划 Prompt</button><button class="btn ghost small" style="width:100%" data-detail-action="import-trade-plan-json">导入操作计划 JSON</button></div><div class="card-note" style="margin-top:6px">生成并导入可保存的操作计划</div></div></div>`;
 }
 function catalystStatusLabel(value){
   return {fresh:'新鲜',acceptable:'可用',stale:'过期',unknown:'未知',high:'高',medium:'中',low:'低',full:'完整解释',partial:'部分解释',none:'无法解释'}[value]||formatChineseText(value||'未知');
@@ -2105,7 +2105,7 @@ function detailHeroPanel(s,mv,actual,deviation){
   const chg=(typeof s.dailyChange==='number'&&!isNaN(s.dailyChange))?`${s.dailyChange>=0?'+':''}${s.dailyChange.toFixed(2)}%`:'—';
   const currency=getCurrency(s)||'—';
   const actualText=actual===null?'—':actual.toFixed(1)+'%';
-  return `<div class="card detail-title-card"><div class="entry-head"><div><div class="entry-name">${esc(s.name||'未命名标的')}</div><div class="entry-code">${esc(s.code||'无代码')} · ${esc(category)}</div></div><div class="detail-title-actions"><button class="btn ghost small" data-detail-action="long-logic" type="button">长期逻辑</button><button class="btn small" data-detail-action="refresh" type="button">${s.type==='etf'?'刷新市值':'刷新价格'}</button><button class="btn ghost small" id="backToListBtn" type="button">返回列表</button></div></div></div><div class="card core-summary-card"><div class="card-title">核心数据摘要</div><div class="core-summary-grid"><div class="core-summary-item"><span>成本</span><strong>${fmtMaybe(s.avgCost)}</strong></div><div class="core-summary-item"><span>现价</span><strong>${current}</strong></div><div class="core-summary-item"><span>持仓</span><strong>${fmtInt(s.shares)}</strong></div><div class="core-summary-item"><span>市值</span><strong>${fmtMoney(mv)}</strong></div><div class="core-summary-item"><span>目标</span><strong>${fmtMaybe(s.targetPct,1)}%</strong></div><div class="core-summary-item"><span>实际</span><strong>${actualText}</strong></div></div><div class="core-summary-meta">更新 ${esc(date||'—')} · ${esc(s.code||'无代码')} · ${esc(currency)} · ${esc(chg)} · 偏差 ${esc(deviation)}</div></div>`;
+  return `<div class="card detail-title-card"><div class="entry-head"><div><div class="entry-name">${esc(s.name||'未命名标的')}</div><div class="entry-code">${esc(s.code||'无代码')} · ${esc(category)}</div></div><div class="detail-title-actions"><button class="btn small" data-detail-action="copy-ai-discussion-prompt" type="button">AI讨论</button><button class="btn ghost small" data-detail-action="long-logic" type="button">长期逻辑</button><button class="btn small" data-detail-action="refresh" type="button">${s.type==='etf'?'刷新市值':'刷新价格'}</button><button class="btn ghost small" id="backToListBtn" type="button">返回列表</button></div></div></div><div class="card core-summary-card"><div class="card-title">核心数据摘要</div><div class="core-summary-grid"><div class="core-summary-item"><span>成本</span><strong>${fmtMaybe(s.avgCost)}</strong></div><div class="core-summary-item"><span>现价</span><strong>${current}</strong></div><div class="core-summary-item"><span>持仓</span><strong>${fmtInt(s.shares)}</strong></div><div class="core-summary-item"><span>市值</span><strong>${fmtMoney(mv)}</strong></div><div class="core-summary-item"><span>目标</span><strong>${fmtMaybe(s.targetPct,1)}%</strong></div><div class="core-summary-item"><span>实际</span><strong>${actualText}</strong></div></div><div class="core-summary-meta">更新 ${esc(date||'—')} · ${esc(s.code||'无代码')} · ${esc(currency)} · ${esc(chg)} · 偏差 ${esc(deviation)}</div></div>`;
 }
 function detailToolsPanel(s){
   return `<details class="card" style="margin-top:14px;margin-bottom:14px"><summary class="card-title" style="cursor:pointer">详情工具</summary><div class="card-note" style="margin:8px 0 12px">这些是维护、导入和生成提示词工具，已从首屏下移，避免干扰日常分析。</div><div class="actions"><button class="btn small" data-detail-action="ai-assistant">AI助手</button><button class="btn ghost small" data-detail-action="financial-source">财报助手</button><button class="btn ghost small" data-detail-action="valuation-source">估值助手</button><button class="btn ghost small" data-detail-action="template">套用分析模板</button><button class="btn ghost small" data-detail-action="ai-prompt">生成分析提示词</button><button class="btn ghost small" data-detail-action="ai-import">导入AI分析JSON</button><button class="btn ghost small" data-detail-action="ai-strategy-import">导入AI策略JSON</button><button class="btn ghost small" data-detail-action="refresh">${s.type==='etf'?'刷新市值':'刷新价格'}</button><button class="btn ghost small" data-detail-action="edit">编辑标的</button></div></details>`;
@@ -2369,6 +2369,82 @@ function copyTradePlanPrompt(){
   const stock=state.stocks.find(x=>x.id===detailStockId);
   if(!stock)return;
   copyText(tradePlanPromptText(stock),'生成操作计划 Prompt 已复制。');
+}
+function aiDiscussionPromptText(stock){
+  normalizeStockAnalysis(stock);
+  const strategy=normalizeStrategy(stock.strategy,stock);
+  const total=getEstimatedTotalAssets();
+  const pos=getPositionInfo(stock,total);
+  const cp=getComparablePrice(stock)||stock.currentPrice||stock.lastUnitPrice||null;
+  const mv=getMarketValue(stock);
+  const td=normalizeTechnicalData(stock.technicalData);
+  const tr=normalizeTechnicalReview(stock.technicalReview,stock);
+  const techDecision=calculateTechnicalDecision(stock);
+  const tradePlan=stock.tradePlan&&typeof stock.tradePlan==='object'?stock.tradePlan:null;
+  const context={
+    stock:{
+      name:stock.name||'',
+      symbol:stock.code||stock.symbol||'',
+      type:stock.type||'',
+      role:stock.role||'',
+      theme:stock.theme||''
+    },
+    position:{
+      shares:stockCurrentShares(stock),
+      avgCost:stock.avgCost||null,
+      currentPrice:cp,
+      marketValue:mv,
+      targetWeight:strategy.targetWeight,
+      actualWeight:pos&&pos.actualPct!==null?Number(pos.actualPct.toFixed(2)):null
+    },
+    strategy:{
+      targetShares:strategy.targetShares,
+      minTradeUnit:strategy.minTradeUnit,
+      preferredBuyAmount:strategy.preferredBuyAmount,
+      maxSingleBuyAmount:strategy.maxSingleBuyAmount,
+      investmentStyle:strategy.investmentStyle,
+      buyAggressiveness:strategy.buyAggressiveness,
+      notes:strategy.notes||''
+    },
+    technicalData:td,
+    technicalReview:tr,
+    technicalDecision:techDecision,
+    longTermLogic:normalizeLongTermLogic(stock.longTermLogic,stock),
+    etfAnalysis:stock.type==='etf'?etfAnalysisSummary(stock):normalizeEtfAnalysis(stock.etfAnalysis,stock),
+    valuationData:normalizeValuationData(stock.valuationData),
+    shortTermSentiment:normalizeShortTermSentiment(stock.shortTermSentiment,stock),
+    sentimentReview:normalizeSentimentReview(stock.sentimentReview,stock),
+    allocationDecision:normalizeAllocationDecision(stock.allocationDecision,stock),
+    positionPlan:{
+      tradePlan,
+      importedTradePlan:stock.importedTradePlan||null,
+      existingPlans:stock.plans||[]
+    },
+    notes:stock.notes||stock.personalView||'',
+    strategyNotes:strategy.notes||''
+  };
+  return [
+    '你是一名谨慎的投资讨论助手。',
+    '',
+    '我想临时讨论这个标的当前是否值得继续观察、持有、加仓、减仓或等待。请只做条件化分析，不要给确定性买卖指令，不要输出可导入 JSON。',
+    '',
+    '请重点回答：',
+    '1. 当前最重要的判断是什么？',
+    '2. 技术面、长期逻辑、估值、情绪资金、配置决策和仓位计划之间是否一致？',
+    '3. 如果现在不行动，需要观察哪些价格、事件或风险？',
+    '4. 如果考虑新增资金，应满足哪些条件？',
+    '5. 如果已有减仓/加仓计划触发，是否需要人工复核？',
+    '',
+    '【当前标的完整上下文】',
+    JSON.stringify(context,null,2),
+    '',
+    '请用中文输出，按“结论 / 主要理由 / 风险 / 观察条件 / 下一步动作建议”组织。'
+  ].join('\n');
+}
+function copyAiDiscussionPrompt(){
+  const stock=state.stocks.find(x=>x.id===detailStockId);
+  if(!stock)return;
+  copyText(aiDiscussionPromptText(stock),'AI讨论 Prompt 已复制。');
 }
 function formatPlanForDiscussion(stock,p){
   const action=(p.action||'buy')==='sell'?'减仓':'加仓';
@@ -5087,6 +5163,7 @@ function handleDetailAction(action,stock){
   if(!action)return;
   if(action==='refresh'&&s)refreshOnePrice(s.id);
   if(action==='long-logic')openLongLogicModal();
+  if(action==='copy-ai-discussion-prompt')copyAiDiscussionPrompt();
   if(action==='edit'&&s)openModal(s.id);
   if(action==='ai-assistant')openAiAssistant();
   if(action==='financial-source')openFinancialSourceAssistant();
@@ -5183,7 +5260,7 @@ function renderStockDetail(){
   const actual=info&&info.actualPct!==null?info.actualPct:null;
   const deviation=info&&info.deviation!==null?`${info.deviation>=0?'+':''}${info.deviation.toFixed(1)}%`:'—';
   document.getElementById('summary').innerHTML=`标的详情 · <strong>${esc(s.name)}</strong> · ${esc(s.role||'—')} · ${esc(s.theme||'—')}`;
-  document.getElementById('main').innerHTML=`${detailHeroPanel(s,mv,actual,deviation)}${currentActionPanel(s)}${technicalAnalysisPanel(s)}${shortTermCatalystPanel(s)}${shortTermSentimentPanel(s)}${informationCompletenessPanel(s)}${positionPlanPanel(s)}${detailResultsArchivePanel(s,cp)}${detailResearchArchivePanel(s,cp)}${detailAdvancedToolsArchivePanel(s)}`;
+  document.getElementById('main').innerHTML=`${detailHeroPanel(s,mv,actual,deviation)}${technicalAnalysisPanel(s)}${shortTermCatalystPanel(s)}${shortTermSentimentPanel(s)}${informationCompletenessPanel(s)}${positionPlanPanel(s)}${detailResultsArchivePanel(s,cp)}${detailResearchArchivePanel(s,cp)}${detailAdvancedToolsArchivePanel(s)}`;
   document.getElementById('backToListBtn').addEventListener('click',closeStockDetail);
   document.querySelectorAll('[data-detail-action]').forEach(b=>b.addEventListener('click',()=>handleDetailAction(b.dataset.detailAction,s)));
   document.querySelectorAll('[data-collection-action="save"]').forEach(b=>b.addEventListener('click',saveCollectionInputs));
