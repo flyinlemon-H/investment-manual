@@ -2354,10 +2354,10 @@ function aiDiscussionPromptText(stock){
   const strategy=normalizeStrategy(stock.strategy,stock);
   const total=getEstimatedTotalAssets();
   const pos=getPositionInfo(stock,total);
-  const cp=getComparablePrice(stock)||stock.currentPrice||stock.lastUnitPrice||null;
   const mv=getMarketValue(stock);
   const td=normalizeTechnicalData(stock.technicalData);
   const tr=normalizeTechnicalReview(stock.technicalReview,stock);
+  const cp=Number(stock.currentPrice)>0?Number(stock.currentPrice):(Number(td.price)>0?Number(td.price):(Number(tr.shortTermTechnical&&tr.shortTermTechnical.price)>0?Number(tr.shortTermTechnical.price):null));
   const techDecision=calculateTechnicalDecision(stock);
   const tradePlan=stock.tradePlan&&typeof stock.tradePlan==='object'?stock.tradePlan:null;
   const ltl=normalizeLongTermLogic(stock.longTermLogic,stock);
@@ -2370,15 +2370,25 @@ function aiDiscussionPromptText(stock){
   const actualWeight=pos&&pos.actualPct!==null?Number(pos.actualPct.toFixed(2)):null;
   const etfHasData=Boolean(stock.type==='etf'||etf.indexName||etf.conclusion||(etf.keyPoints&&etf.keyPoints.length)||Number(etf.score)>0||etf.updatedAt);
   const triggeredLines=[],nearLines=[],untriggeredLines=[];
-  const addTriggerLine=(bucket,line)=>{
+  const triggerSeen=new Set();
+  const addTriggerLine=(bucket,line,key='')=>{
+    const dedupeKey=String(key||line).replace(/\s+/g,'').replace(/距触发\d+(\.\d+)?%/g,'距触发');
+    if(triggerSeen.has(dedupeKey))return;
+    triggerSeen.add(dedupeKey);
     if(bucket==='triggered')triggeredLines.push(line);
     else if(bucket==='untriggered')untriggeredLines.push(line);
     else nearLines.push(line);
   };
+  const distanceFromText=text=>{
+    const m=String(text||'').match(/距(?:离)?触发\s*([0-9]+(?:\.[0-9]+)?)\s*%/);
+    return m?Number(m[1]):null;
+  };
   const classifyTriggerText=text=>{
     const raw=String(text||'');
     if(/未触发|未满足|不满足|不属于|失效|条件未达成|条件不成立/.test(raw))return 'untriggered';
-    if(/已触发|进入复核|待复核|待人工复核|人工确认|人工复核/.test(raw))return 'triggered';
+    const dist=distanceFromText(raw);
+    if(dist!==null)return dist<=3?'near':'untriggered';
+    if(/已触发|触发后|进入复核|待复核|待人工复核|人工确认|人工复核/.test(raw))return 'triggered';
     if(/距触发|接近|附近|支撑|压力|观察|距离|回踩|突破|确认/.test(raw))return 'near';
     return 'near';
   };
@@ -2390,29 +2400,41 @@ function aiDiscussionPromptText(stock){
     const text=[it.condition,it.technicalCondition,it.note,it.riskControl].map(x=>String(x||'')).join(' ');
     if(/未触发|未满足|不满足|不属于|失效|条件未达成|条件不成立/.test(text))return 'untriggered';
     if(/已触发|进入复核|待复核|待人工复核|人工确认|人工复核/.test(text))return 'triggered';
+    if(/接近|观察|等待|突破|回踩|支撑|压力|确认/.test(text))return 'near';
     const price=Number(it.triggerPrice);
     if(isFinite(price)&&price>0&&cp){
       const gap=Math.abs(Number(cp)-price)/price*100;
       if(gap<=3)return 'near';
       return 'untriggered';
     }
-    if(/接近|附近|支撑|压力|观察|回踩|突破|确认/.test(text))return 'near';
     return 'untriggered';
   };
+  const planItemKeys=new Set();
   if(tradePlan&&Array.isArray(tradePlan.planItems)){
     tradePlan.planItems.slice().sort((a,b)=>(Number(a.priority)||999)-(Number(b.priority)||999)).slice(0,8).forEach(it=>{
       const state=classifyPlanItem(it);
       const action={observe:'观察',hold:'持有',add:'加仓',reduce:'减仓',buy:'加仓',sell:'减仓'}[it.action]||formatChineseText(it.action||'观察');
       const price=it.triggerPrice!==null&&it.triggerPrice!==undefined?`触发价 ${fmtMaybe(it.triggerPrice,2)}`:(it.priceZone?`区间 ${it.priceZone}`:'无明确价位');
-      addTriggerLine(state,`- ${action}计划，${price}，数量 ${it.quantity!==null&&it.quantity!==undefined?fmtInt(it.quantity):'未定'}，${formatChineseText(it.note||it.condition||'无备注')}`);
+      const numericPrice=Number(it.triggerPrice);
+      const actionKey=['reduce','sell'].includes(it.action)?'sell':(['add','buy'].includes(it.action)?'buy':String(it.action||'observe'));
+      const key=isFinite(numericPrice)&&numericPrice>0?`${actionKey}:${numericPrice.toFixed(2)}`:`${actionKey}:${price}`;
+      planItemKeys.add(key);
+      addTriggerLine(state,`- ${action}计划，${price}，数量 ${it.quantity!==null&&it.quantity!==undefined?fmtInt(it.quantity):'未定'}，${formatChineseText(it.note||it.condition||'无备注')}`,key);
     });
   }
   (stock.plans||[]).forEach(p=>{
-    const g=cp?planGap(cp,p.price,p.action,p.triggerOn):null;
-    if(!g)return;
-    const state=g.triggered?'triggered':(g.absPct<=3?'near':'untriggered');
-    const action=p.action==='sell'?'减仓':'加仓';
-    addTriggerLine(state,`- 原始${action}计划 @ ${fmtMaybe(p.price,2)}，数量 ${fmtInt(p.shares)}，距触发 ${fmt(g.absPct,1)}%，备注 ${p.note||'无'}`);
+    const price=Number(p.price);
+    if(!(price>0)||!(cp>0))return;
+    const actionRaw=(p.action||'buy')==='sell'?'sell':'buy';
+    const key=`${actionRaw}:${price.toFixed(2)}`;
+    if(planItemKeys.has(key))return;
+    const triggerOn=p.triggerOn||(actionRaw==='sell'?'above':'below');
+    const triggered=(actionRaw==='buy'&&triggerOn==='below'&&cp<=price)||(actionRaw==='sell'&&triggerOn==='above'&&cp>=price);
+    const gap=Math.abs(cp-price)/price*100;
+    const state=triggered?'triggered':(gap<=3?'near':'untriggered');
+    const action=actionRaw==='sell'?'减仓':'加仓';
+    const suffix=triggered?'需人工复核，不构成自动执行建议':(state==='near'?'接近触发，重点观察':'未达到触发条件');
+    addTriggerLine(state,`- 原始${action}计划 @ ${fmtMaybe(price,2)}，数量 ${fmtInt(p.shares)}，距触发 ${fmt(gap,1)}%，${suffix}，备注 ${p.note||'无'}`,key);
   });
   (tradePlan&&Array.isArray(tradePlan.invalidConditions)?tradePlan.invalidConditions:[]).filter(Boolean).slice(0,6).forEach(x=>untriggeredLines.push(`- ${formatChineseText(x)}`));
   const triggerSection=(title,arr)=>[title,...(arr.length?arr.slice(0,6):['暂无'])].join('\n');
