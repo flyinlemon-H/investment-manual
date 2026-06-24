@@ -4150,6 +4150,7 @@ function importAllocationDecisionJson(){
   saveState();
   closeAllocationDecisionImportModal();
   render();
+  refreshLongLogicModalIfOpen();
   alert('配置决策已导入。如需调整目标仓位，请人工确认。');
 }
 function ensureFinancialDataModal(){
@@ -4331,6 +4332,11 @@ function closeEtfAnalysisImportModal(){
   const modal=document.getElementById('etfAnalysisImportModal');
   if(modal)modal.classList.remove('show');
 }
+function looksLikeEtfAnalysisPayload(obj){
+  if(!obj||typeof obj!=='object'||Array.isArray(obj))return false;
+  const fields=['indexName','indexValuationLevel','historicalPercentile','industryTrend','macroView','constituentQuality','liquidityView','trackingRisk','conclusion','keyPoints','riskFlags','actionHint','score','confidence'];
+  return fields.some(k=>Object.prototype.hasOwnProperty.call(obj,k));
+}
 function importEtfAnalysisJson(){
   const stock=state.stocks.find(x=>x.id===detailStockId);
   if(!stock)return;
@@ -4338,13 +4344,14 @@ function importEtfAnalysisJson(){
   let parsed;
   try{parsed=extractFirstJsonObject(document.getElementById('etfAnalysisImportText').value)}catch(e){alert('导入失败：JSON 无法解析。');return}
   try{
-    const payload=parsed&&parsed.etfAnalysis?parsed.etfAnalysis:parsed;
-    if(!payload||typeof payload!=='object'||Array.isArray(payload))throw new Error('JSON 必须是 etfAnalysis 对象，或顶层包含 etfAnalysis。');
+    const payload=parsed&&parsed.etfAnalysis?parsed.etfAnalysis:(looksLikeEtfAnalysisPayload(parsed)?parsed:null);
+    if(!payload||typeof payload!=='object'||Array.isArray(payload))throw new Error('未识别 etfAnalysis。请粘贴 {"etfAnalysis": {...}} 或 etfAnalysis 对象本体。');
     stock.etfAnalysis=normalizeEtfAnalysis({...payload,symbol:payload.symbol||stock.code||stock.symbol||'',updatedAt:payload.updatedAt||todayDate()},stock);
     touchDataFreshness(stock,'etfAnalysisUpdatedAt');
     saveState();
     closeEtfAnalysisImportModal();
-    render();
+    openStockDetail(stock.id);
+    refreshLongLogicModalIfOpen();
     alert('ETF 分析 JSON 已导入。不会自动修改目标仓位、配置决策或当前操作建议。');
   }catch(err){
     stock.etfAnalysis=original.etfAnalysis;

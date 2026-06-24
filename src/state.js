@@ -732,6 +732,13 @@ function defaultEtfAnalysis(stock={}){
     confidence:'low'
   };
 }
+function normalizeEtfScoreValue(x){
+  if(x===null||x===undefined||x==='')return null;
+  const n=Number(x);
+  if(!isFinite(n)||n<0)return null;
+  if(n>10&&n<=100)return Number((n/10).toFixed(1));
+  return Math.min(n,10);
+}
 function normalizeEtfAnalysis(v,stock={}){
   const src=(v&&typeof v==='object')?v:{};
   const arr=x=>Array.isArray(x)?x.map(i=>String(i??'').trim()).filter(Boolean):String(x||'').split(/\n|,|，/).map(i=>String(i||'').trim()).filter(Boolean);
@@ -752,7 +759,7 @@ function normalizeEtfAnalysis(v,stock={}){
     keyPoints:arr(src.keyPoints),
     riskFlags:arr(src.riskFlags||src.risks),
     actionHint:String(src.actionHint||''),
-    score:nullableNumber(src.score),
+    score:normalizeEtfScoreValue(src.score),
     confidence:['low','medium','high'].includes(confidence)?confidence:'low'
   };
 }
