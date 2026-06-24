@@ -2381,64 +2381,120 @@ function aiDiscussionPromptText(stock){
   const tr=normalizeTechnicalReview(stock.technicalReview,stock);
   const techDecision=calculateTechnicalDecision(stock);
   const tradePlan=stock.tradePlan&&typeof stock.tradePlan==='object'?stock.tradePlan:null;
-  const context={
-    stock:{
-      name:stock.name||'',
-      symbol:stock.code||stock.symbol||'',
-      type:stock.type||'',
-      role:stock.role||'',
-      theme:stock.theme||''
-    },
-    position:{
-      shares:stockCurrentShares(stock),
-      avgCost:stock.avgCost||null,
-      currentPrice:cp,
-      marketValue:mv,
-      targetWeight:strategy.targetWeight,
-      actualWeight:pos&&pos.actualPct!==null?Number(pos.actualPct.toFixed(2)):null
-    },
-    strategy:{
-      targetShares:strategy.targetShares,
-      minTradeUnit:strategy.minTradeUnit,
-      preferredBuyAmount:strategy.preferredBuyAmount,
-      maxSingleBuyAmount:strategy.maxSingleBuyAmount,
-      investmentStyle:strategy.investmentStyle,
-      buyAggressiveness:strategy.buyAggressiveness,
-      notes:strategy.notes||''
-    },
-    technicalData:td,
-    technicalReview:tr,
-    technicalDecision:techDecision,
-    longTermLogic:normalizeLongTermLogic(stock.longTermLogic,stock),
-    etfAnalysis:stock.type==='etf'?etfAnalysisSummary(stock):normalizeEtfAnalysis(stock.etfAnalysis,stock),
-    valuationData:normalizeValuationData(stock.valuationData),
-    shortTermSentiment:normalizeShortTermSentiment(stock.shortTermSentiment,stock),
-    sentimentReview:normalizeSentimentReview(stock.sentimentReview,stock),
-    allocationDecision:normalizeAllocationDecision(stock.allocationDecision,stock),
-    positionPlan:{
-      tradePlan,
-      importedTradePlan:stock.importedTradePlan||null,
-      existingPlans:stock.plans||[]
-    },
-    notes:stock.notes||stock.personalView||'',
-    strategyNotes:strategy.notes||''
+  const ltl=normalizeLongTermLogic(stock.longTermLogic,stock);
+  const etf=stock.type==='etf'?etfAnalysisSummary(stock):normalizeEtfAnalysis(stock.etfAnalysis,stock);
+  const valuation=normalizeValuationData(stock.valuationData);
+  const shortSentiment=normalizeShortTermSentiment(stock.shortTermSentiment,stock);
+  const sentiment=normalizeSentimentReview(stock.sentimentReview,stock);
+  const allocation=normalizeAllocationDecision(stock.allocationDecision,stock);
+  const freshness=normalizeDataFreshness(stock.dataFreshness);
+  const actualWeight=pos&&pos.actualPct!==null?Number(pos.actualPct.toFixed(2)):null;
+  const etfHasData=Boolean(stock.type==='etf'||etf.indexName||etf.conclusion||etf.indexValuationLevel||etf.industryTrend||etf.actionHint||etf.score!==null);
+  const triggerLines=[];
+  (techDecision.triggerMatched||[]).filter(Boolean).forEach(x=>triggerLines.push(`- 已触发/匹配：技术面条件 ${formatChineseText(x)}`));
+  const classifyPlanItem=it=>{
+    const text=[it.condition,it.technicalCondition,it.note,it.riskControl].map(x=>String(x||'')).join(' ');
+    if(/已触发|触发|待复核|人工确认|人工复核/.test(text))return '已触发';
+    const price=Number(it.triggerPrice);
+    if(isFinite(price)&&price>0&&cp){
+      const gap=Math.abs(Number(cp)-price)/price*100;
+      if(gap<=3)return '接近触发';
+      return '未触发';
+    }
+    return '未触发';
   };
+  if(tradePlan&&Array.isArray(tradePlan.planItems)){
+    tradePlan.planItems.slice().sort((a,b)=>(Number(a.priority)||999)-(Number(b.priority)||999)).slice(0,8).forEach(it=>{
+      const state=classifyPlanItem(it);
+      const action={observe:'观察',hold:'持有',add:'加仓',reduce:'减仓',buy:'加仓',sell:'减仓'}[it.action]||formatChineseText(it.action||'观察');
+      const price=it.triggerPrice!==null&&it.triggerPrice!==undefined?`触发价 ${fmtMaybe(it.triggerPrice,2)}`:(it.priceZone?`区间 ${it.priceZone}`:'无明确价位');
+      triggerLines.push(`- ${state}：${action}计划，${price}，数量 ${it.quantity!==null&&it.quantity!==undefined?fmtInt(it.quantity):'未定'}，${formatChineseText(it.note||it.condition||'无备注')}`);
+    });
+  }
+  (stock.plans||[]).forEach(p=>{
+    const g=cp?planGap(cp,p.price,p.action,p.triggerOn):null;
+    if(!g)return;
+    const state=g.triggered?'已触发':(g.absPct<=3?'接近触发':'未触发');
+    if(state==='未触发')return;
+    const action=p.action==='sell'?'减仓':'加仓';
+    triggerLines.push(`- ${state}：原始${action}计划 @ ${fmtMaybe(p.price,2)}，数量 ${fmtInt(p.shares)}，距离 ${fmt(g.absPct,1)}%，备注 ${p.note||'无'}`);
+  });
+  (tradePlan&&Array.isArray(tradePlan.invalidConditions)?tradePlan.invalidConditions:[]).filter(Boolean).slice(0,6).forEach(x=>triggerLines.push(`- 未触发/失效条件：${formatChineseText(x)}`));
+  const triggerStatus=triggerLines.length?triggerLines.join('\n'):'- 暂无明确触发状态';
+  const dateOrMissing=v=>v?String(v):'未更新';
+  const freshnessLines=[
+    `- 价格：${dateOrMissing(stock.priceUpdatedAt||stock.valueUpdatedAt||freshness.priceUpdatedAt)}`,
+    `- 技术面：${dateOrMissing(freshness.technicalUpdatedAt||td.lastUpdated||tr.updatedAt)}`,
+    `- 长期逻辑：${dateOrMissing(ltl.updatedAt)}`,
+    `- 估值：${dateOrMissing(valuation.updatedAt||valuation.lastUpdated||freshness.valuationUpdatedAt)}`,
+    `- 短期情绪资金：${dateOrMissing(shortSentiment.updatedAt)}`,
+    `- 情绪/新闻复核：${dateOrMissing(sentiment.updatedAt)}`,
+    `- 配置决策：${dateOrMissing(allocation.updatedAt)}`,
+    `- 操作计划：${dateOrMissing(tradePlan&&tradePlan.updatedAt)}`,
+    `- ETF分析：${dateOrMissing(etf.updatedAt)}`
+  ].join('\n');
   return [
-    '你是一名谨慎的投资讨论助手。',
+    '【任务说明】',
+    '这是一次临时投资讨论，用于判断当前标的是否继续观察、持有、加仓、减仓或等待。',
+    '不要输出可导入 JSON，不要给确定性买卖指令，只做条件化分析。',
     '',
-    '我想临时讨论这个标的当前是否值得继续观察、持有、加仓、减仓或等待。请只做条件化分析，不要给确定性买卖指令，不要输出可导入 JSON。',
+    '【当前标的】',
+    `- 名称：${stock.name||'未填写'}`,
+    `- 代码：${stock.code||stock.symbol||'未填写'}`,
+    `- 类型：${stock.type||'未填写'}`,
+    `- 角色：${stock.role||'未填写'}`,
+    `- 主题：${stock.theme||'未填写'}`,
     '',
-    '请重点回答：',
-    '1. 当前最重要的判断是什么？',
-    '2. 技术面、长期逻辑、估值、情绪资金、配置决策和仓位计划之间是否一致？',
-    '3. 如果现在不行动，需要观察哪些价格、事件或风险？',
-    '4. 如果考虑新增资金，应满足哪些条件？',
-    '5. 如果已有减仓/加仓计划触发，是否需要人工复核？',
+    '【持仓与仓位】',
+    `- 持仓数量：${fmtInt(stockCurrentShares(stock))}`,
+    `- 成本价：${stock.avgCost!==''&&stock.avgCost!==undefined?stock.avgCost:'未填写'}`,
+    `- 当前价格：${cp!==null&&cp!==undefined?fmtMaybe(cp,2):'暂无数据'}`,
+    `- 当前市值：${mv!==null&&mv!==undefined?fmtMoney(mv):'暂无数据'}`,
+    `- 目标仓位：${fmtMaybe(strategy.targetWeight,1)}%`,
+    `- 实际仓位：${actualWeight!==null?actualWeight+'%':'暂无数据'}`,
+    `- 推荐仓位区间：${allocation.recommendedWeightRange||'暂无数据'}`,
+    `- 推荐最大仓位：${allocation.recommendedMaxWeight!==null&&allocation.recommendedMaxWeight!==undefined?allocation.recommendedMaxWeight+'%':'暂无数据'}`,
     '',
-    '【当前标的完整上下文】',
-    JSON.stringify(context,null,2),
+    '【当前触发状态】',
+    triggerStatus,
     '',
-    '请用中文输出，按“结论 / 主要理由 / 风险 / 观察条件 / 下一步动作建议”组织。'
+    '【数据新鲜度】',
+    freshnessLines,
+    '',
+    '【技术面】',
+    JSON.stringify({technicalData:td,technicalReview:tr,technicalDecision:techDecision},null,2),
+    '',
+    '【长期逻辑】',
+    JSON.stringify({longTermLogic:ltl},null,2),
+    '',
+    ...(etfHasData?['【ETF分析】',JSON.stringify({etfAnalysis:etf},null,2),'']:[]),
+    '【估值】',
+    JSON.stringify({valuationData:valuation},null,2),
+    '',
+    '【情绪与资金】',
+    JSON.stringify({shortTermSentiment:shortSentiment,sentimentReview:sentiment},null,2),
+    '',
+    '【配置决策】',
+    JSON.stringify({allocationDecision:allocation},null,2),
+    '',
+    '【仓位与加减仓计划】',
+    JSON.stringify({tradePlan,importedTradePlan:stock.importedTradePlan||null,existingPlans:stock.plans||[]},null,2),
+    '',
+    '【用户备注】',
+    `- notes：${stock.notes||stock.personalView||'未填写'}`,
+    `- strategyNotes：${strategy.notes||'未填写'}`,
+    `- strategy.notes：${strategy.notes||'未填写'}`,
+    '',
+    '请用中文输出，按以下结构组织：',
+    '- 结论',
+    '- 主要理由',
+    '- 风险',
+    '- 观察条件',
+    '- 下一步动作建议',
+    '',
+    '不要输出可导入 JSON。',
+    '不要给确定性买卖指令。',
+    '如果信息不足，请明确说明哪些信息不足。'
   ].join('\n');
 }
 function copyAiDiscussionPrompt(){
