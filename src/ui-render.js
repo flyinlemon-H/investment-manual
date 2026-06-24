@@ -2368,38 +2368,59 @@ function aiDiscussionPromptText(stock){
   const allocation=normalizeAllocationDecision(stock.allocationDecision,stock);
   const freshness=normalizeDataFreshness(stock.dataFreshness);
   const actualWeight=pos&&pos.actualPct!==null?Number(pos.actualPct.toFixed(2)):null;
-  const etfHasData=Boolean(stock.type==='etf'||etf.indexName||etf.conclusion||etf.indexValuationLevel||etf.industryTrend||etf.actionHint||etf.score!==null);
-  const triggerLines=[];
-  (techDecision.triggerMatched||[]).filter(Boolean).forEach(x=>triggerLines.push(`- 已触发/匹配：技术面条件 ${formatChineseText(x)}`));
+  const etfHasData=Boolean(stock.type==='etf'||etf.indexName||etf.conclusion||(etf.keyPoints&&etf.keyPoints.length)||Number(etf.score)>0||etf.updatedAt);
+  const triggeredLines=[],nearLines=[],untriggeredLines=[];
+  const addTriggerLine=(bucket,line)=>{
+    if(bucket==='triggered')triggeredLines.push(line);
+    else if(bucket==='untriggered')untriggeredLines.push(line);
+    else nearLines.push(line);
+  };
+  const classifyTriggerText=text=>{
+    const raw=String(text||'');
+    if(/未触发|未满足|不满足|不属于|失效|条件未达成|条件不成立/.test(raw))return 'untriggered';
+    if(/已触发|进入复核|待复核|待人工复核|人工确认|人工复核/.test(raw))return 'triggered';
+    if(/距触发|接近|附近|支撑|压力|观察|距离|回踩|突破|确认/.test(raw))return 'near';
+    return 'near';
+  };
+  (techDecision.triggerMatched||[]).filter(Boolean).forEach(x=>{
+    const text=formatChineseText(x);
+    addTriggerLine(classifyTriggerText(text),`- 技术面条件：${text}`);
+  });
   const classifyPlanItem=it=>{
     const text=[it.condition,it.technicalCondition,it.note,it.riskControl].map(x=>String(x||'')).join(' ');
-    if(/已触发|触发|待复核|人工确认|人工复核/.test(text))return '已触发';
+    if(/未触发|未满足|不满足|不属于|失效|条件未达成|条件不成立/.test(text))return 'untriggered';
+    if(/已触发|进入复核|待复核|待人工复核|人工确认|人工复核/.test(text))return 'triggered';
     const price=Number(it.triggerPrice);
     if(isFinite(price)&&price>0&&cp){
       const gap=Math.abs(Number(cp)-price)/price*100;
-      if(gap<=3)return '接近触发';
-      return '未触发';
+      if(gap<=3)return 'near';
+      return 'untriggered';
     }
-    return '未触发';
+    if(/接近|附近|支撑|压力|观察|回踩|突破|确认/.test(text))return 'near';
+    return 'untriggered';
   };
   if(tradePlan&&Array.isArray(tradePlan.planItems)){
     tradePlan.planItems.slice().sort((a,b)=>(Number(a.priority)||999)-(Number(b.priority)||999)).slice(0,8).forEach(it=>{
       const state=classifyPlanItem(it);
       const action={observe:'观察',hold:'持有',add:'加仓',reduce:'减仓',buy:'加仓',sell:'减仓'}[it.action]||formatChineseText(it.action||'观察');
       const price=it.triggerPrice!==null&&it.triggerPrice!==undefined?`触发价 ${fmtMaybe(it.triggerPrice,2)}`:(it.priceZone?`区间 ${it.priceZone}`:'无明确价位');
-      triggerLines.push(`- ${state}：${action}计划，${price}，数量 ${it.quantity!==null&&it.quantity!==undefined?fmtInt(it.quantity):'未定'}，${formatChineseText(it.note||it.condition||'无备注')}`);
+      addTriggerLine(state,`- ${action}计划，${price}，数量 ${it.quantity!==null&&it.quantity!==undefined?fmtInt(it.quantity):'未定'}，${formatChineseText(it.note||it.condition||'无备注')}`);
     });
   }
   (stock.plans||[]).forEach(p=>{
     const g=cp?planGap(cp,p.price,p.action,p.triggerOn):null;
     if(!g)return;
-    const state=g.triggered?'已触发':(g.absPct<=3?'接近触发':'未触发');
-    if(state==='未触发')return;
+    const state=g.triggered?'triggered':(g.absPct<=3?'near':'untriggered');
     const action=p.action==='sell'?'减仓':'加仓';
-    triggerLines.push(`- ${state}：原始${action}计划 @ ${fmtMaybe(p.price,2)}，数量 ${fmtInt(p.shares)}，距离 ${fmt(g.absPct,1)}%，备注 ${p.note||'无'}`);
+    addTriggerLine(state,`- 原始${action}计划 @ ${fmtMaybe(p.price,2)}，数量 ${fmtInt(p.shares)}，距触发 ${fmt(g.absPct,1)}%，备注 ${p.note||'无'}`);
   });
-  (tradePlan&&Array.isArray(tradePlan.invalidConditions)?tradePlan.invalidConditions:[]).filter(Boolean).slice(0,6).forEach(x=>triggerLines.push(`- 未触发/失效条件：${formatChineseText(x)}`));
-  const triggerStatus=triggerLines.length?triggerLines.join('\n'):'- 暂无明确触发状态';
+  (tradePlan&&Array.isArray(tradePlan.invalidConditions)?tradePlan.invalidConditions:[]).filter(Boolean).slice(0,6).forEach(x=>untriggeredLines.push(`- ${formatChineseText(x)}`));
+  const triggerSection=(title,arr)=>[title,...(arr.length?arr.slice(0,6):['暂无'])].join('\n');
+  const triggerStatus=[
+    triggerSection('【已触发 / 需人工复核】',triggeredLines),
+    triggerSection('【接近触发 / 重点观察】',nearLines),
+    triggerSection('【未触发 / 条件不满足】',untriggeredLines)
+  ].join('\n');
   const dateOrMissing=v=>v?String(v):'未更新';
   const freshnessLines=[
     `- 价格：${dateOrMissing(stock.priceUpdatedAt||stock.valueUpdatedAt||freshness.priceUpdatedAt)}`,
