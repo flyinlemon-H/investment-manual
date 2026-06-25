@@ -1499,6 +1499,155 @@ function calculateExecutionPlan(stock,portfolioContext={}){
     executionWarnings
   };
 }
+function defaultRiskManagement(){
+  return {
+    status:'normal',
+    riskLevel:0,
+    summary:'',
+    triggerReasons:[],
+    protectiveActions:[],
+    reviewConditions:[],
+    invalidConditions:[],
+    updatedAt:''
+  };
+}
+function normalizeRiskManagement(v){
+  const src=(v&&typeof v==='object'&&!Array.isArray(v))?v:{};
+  const rawStatus=String(src.status||'');
+  const status=rawStatus==='reduce_review'?'defensive_reduce_review':rawStatus;
+  return {
+    status:enumOr(status,['normal','observe','risk_review','defensive_reduce_review','profit_take_review','execute_plan'],'normal'),
+    riskLevel:clampNumber(src.riskLevel,0,10,0),
+    summary:String(src.summary||''),
+    triggerReasons:normalizeStringArray(src.triggerReasons),
+    protectiveActions:normalizeStringArray(src.protectiveActions),
+    reviewConditions:normalizeStringArray(src.reviewConditions),
+    invalidConditions:normalizeStringArray(src.invalidConditions),
+    updatedAt:normalizeDateOnly(src.updatedAt)||String(src.updatedAt||'')
+  };
+}
+function calculateRiskManagement(stock){
+  const s=(stock&&typeof stock==='object')?stock:{};
+  const strategy=normalizeStrategy(s.strategy,s);
+  const technicalData=normalizeTechnicalData(s.technicalData);
+  const technicalReview=normalizeTechnicalReview(s.technicalReview,s);
+  const shortTerm=technicalReview.shortTermTechnical||{};
+  const sentiment=normalizeShortTermSentiment(s.shortTermSentiment,s);
+  const longTerm=normalizeLongTermLogic(s.longTermLogic,s);
+  const triggerReasons=[];
+  const protectiveActions=[];
+  const reviewConditions=[];
+  const invalidConditions=[];
+  const addUnique=(arr,text)=>{const value=String(text||'').trim();if(value&&!arr.includes(value))arr.push(value)};
+  const num=x=>{const n=Number(x);return isFinite(n)?n:null};
+  const currentPrice=num(s.currentPrice)??num(technicalData.price)??num(shortTerm.price);
+  const shares=num(s.shares)??num(s.currentShares)??0;
+  const marketValue=num(s.currentValue)??num(s.marketValue)??(currentPrice&&shares?currentPrice*shares:0);
+  let totalValue=0;
+  if(typeof state==='object'&&state&&Array.isArray(state.stocks)){
+    totalValue=state.stocks.reduce((sum,item)=>{
+      const price=num(item.currentPrice)??num(item.technicalData&&item.technicalData.price);
+      const itemShares=num(item.shares)??0;
+      return sum+(num(item.currentValue)??num(item.marketValue)??(price&&itemShares?price*itemShares:0));
+    },0);
+  }
+  const currentWeight=num(s.currentWeight)??num(s.actualWeight)??num(s.weight)??(totalValue>0&&marketValue>0?marketValue/totalValue*100:0);
+  const targetWeight=num(strategy.targetWeight)??num(s.targetPct)??num(s.targetWeight)??0;
+  const overweight=targetWeight>0&&currentWeight>targetWeight+Math.max(0.5,targetWeight*0.1);
+  if(overweight)addUnique(triggerReasons,`当前仓位 ${currentWeight.toFixed(1)}% 高于目标仓位 ${targetWeight.toFixed(1)}%`);
+  const ma20=num(shortTerm.ma20)??num(technicalData.ma20);
+  const ma60=num(shortTerm.ma60)??num(technicalData.ma60);
+  const belowMa20=Boolean(currentPrice&&ma20&&currentPrice<ma20);
+  const belowMa60=Boolean(currentPrice&&ma60&&currentPrice<ma60);
+  if(belowMa20)addUnique(triggerReasons,`当前价格跌破 MA20（${ma20}）`);
+  if(belowMa60)addUnique(triggerReasons,`当前价格跌破 MA60（${ma60}）`);
+  const supportLevels=normalizeTechnicalLevelArray(shortTerm.supportLevels&&shortTerm.supportLevels.length?shortTerm.supportLevels:technicalData.supportLevels).map(num).filter(n=>n&&n>0);
+  const resistanceLevels=normalizeTechnicalLevelArray(shortTerm.resistanceLevels&&shortTerm.resistanceLevels.length?shortTerm.resistanceLevels:technicalData.resistanceLevels).map(num).filter(n=>n&&n>0);
+  const nearestSupport=currentPrice&&supportLevels.length?supportLevels.filter(n=>n<=currentPrice).sort((a,b)=>b-a)[0]||Math.max(...supportLevels):null;
+  const nearestResistance=currentPrice&&resistanceLevels.length?resistanceLevels.filter(n=>n>=currentPrice).sort((a,b)=>a-b)[0]||Math.max(...resistanceLevels):null;
+  const belowKeySupport=Boolean(currentPrice&&nearestSupport&&currentPrice<nearestSupport);
+  const nearSupport=Boolean(currentPrice&&nearestSupport&&currentPrice>=nearestSupport&&((currentPrice-nearestSupport)/currentPrice*100)<=3);
+  const nearResistance=Boolean(currentPrice&&nearestResistance&&currentPrice<=nearestResistance&&((nearestResistance-currentPrice)/currentPrice*100)<=3);
+  if(belowKeySupport)addUnique(triggerReasons,`当前价格跌破关键支撑 ${nearestSupport}`);
+  if(nearSupport)addUnique(reviewConditions,`当前价格接近关键支撑 ${nearestSupport}`);
+  if(nearResistance)addUnique(reviewConditions,`当前价格接近压力位或前高 ${nearestResistance}`);
+  const technicalText=[
+    shortTerm.trendStatus,
+    technicalData.trendStatus,
+    technicalReview.finalTechnicalConclusion,
+    shortTerm.technicalSummary,
+    technicalData.technicalSummary,
+    ...(shortTerm.riskFlags||[]),
+    ...(technicalData.riskFlags||[])
+  ].join(' ').toLowerCase();
+  const technicalWeak=/downtrend|breakdown|support_breakdown|below_ma20|below_ma60|price_below_ma20|price_below_ma60|跌破ma20|跌破ma60|跌破关键支撑|破位|下降趋势/.test(technicalText);
+  const upwardOrRebound=/uptrend|rebound|high_level_rebreakout|early_uptrend|mid_uptrend|上升趋势|反弹|高位二次上攻/.test(technicalText);
+  if(technicalWeak)addUnique(triggerReasons,'短期技术面出现趋势走弱或支撑破坏信号');
+  const sentimentText=[
+    sentiment.marketMood,
+    sentiment.fundFlowView,
+    sentiment.sectorHeat,
+    sentiment.institutionalView,
+    sentiment.actionHint,
+    ...(sentiment.riskFlags||[])
+  ].join(' ').toLowerCase();
+  const weakSentiment=/weak|outflow|negative|bearish|偏弱|走弱|净流出|流出|分歧|降温|低迷|板块偏弱|资金偏弱/.test(sentimentText);
+  if(weakSentiment)addUnique(triggerReasons,'短期情绪或资金面偏弱');
+  if(longTerm.logicStatus==='broken'){
+    addUnique(invalidConditions,'长期逻辑破坏');
+  }else if(longTerm.logicStatus&&longTerm.logicStatus!=='valid'){
+    addUnique(reviewConditions,`长期逻辑状态为 ${longTerm.logicStatus}，需要复核`);
+  }
+  addUnique(protectiveActions,'复核仓位是否仍匹配目标仓位');
+  if(belowMa20||nearSupport)addUnique(protectiveActions,'观察 MA20 与关键支撑能否修复');
+  if(belowMa60||belowKeySupport||technicalWeak)addUnique(protectiveActions,'复核是否需要启动防守性减仓计划');
+  if(weakSentiment)addUnique(protectiveActions,'复核资金流与板块强度是否继续走弱');
+  const plans=Array.isArray(s.plans)?s.plans:[];
+  const planTriggered=Boolean(currentPrice&&plans.some(p=>{
+    const price=num(p&&p.price);
+    if(!price)return false;
+    const action=String((p&&p.action)||'buy');
+    const triggerOn=String((p&&p.triggerOn)||'');
+    if((action==='sell'||triggerOn==='above')&&currentPrice>=price)return true;
+    if((action==='buy'||triggerOn==='below')&&currentPrice<=price)return true;
+    return false;
+  }));
+  if(planTriggered)addUnique(reviewConditions,'当前价格进入既定计划复核区，需要人工确认');
+  let riskLevel=0;
+  if(overweight)riskLevel+=2;
+  if(belowMa20)riskLevel+=2;
+  if(belowMa60)riskLevel+=3;
+  if(belowKeySupport)riskLevel+=3;
+  if(technicalWeak)riskLevel+=2;
+  if(weakSentiment)riskLevel+=2;
+  if(longTerm.logicStatus==='broken')riskLevel+=3;
+  riskLevel=Math.min(10,riskLevel);
+  let status='normal';
+  if(planTriggered)status='execute_plan';
+  else if(overweight&&(belowMa60||belowKeySupport||technicalWeak)&&weakSentiment)status='defensive_reduce_review';
+  else if(overweight&&(nearResistance||upwardOrRebound))status='profit_take_review';
+  else if(belowKeySupport||belowMa20||technicalWeak||longTerm.logicStatus==='broken')status='risk_review';
+  else if(nearSupport||weakSentiment||overweight)status='observe';
+  const summaryMap={
+    normal:'风险状态正常，继续按既有计划观察。',
+    observe:'存在轻度风险或接近关键位置，建议继续观察并复核触发条件。',
+    risk_review:'出现趋势或支撑风险，需要进行风险复核。',
+    defensive_reduce_review:'仓位、趋势与情绪资金同时触发防守条件，需要复核防守性减仓计划。',
+    profit_take_review:'上升或反弹阶段接近压力位且仓位偏高，需要复核盈利兑现计划。',
+    execute_plan:'当前价格进入既定计划区，需要进行既定计划复核。'
+  };
+  return {
+    ...defaultRiskManagement(),
+    status,
+    riskLevel,
+    summary:summaryMap[status],
+    triggerReasons,
+    protectiveActions,
+    reviewConditions,
+    invalidConditions,
+    updatedAt:todayDate()
+  };
+}
 function normalizeStockAnalysis(stock){
   stock.strategy=normalizeStrategy(stock.strategy,stock);
   stock.dataFreshness=normalizeDataFreshness(stock.dataFreshness);
@@ -1521,6 +1670,8 @@ function normalizeStockAnalysis(stock){
   if(!stock.technicalData.symbol)stock.technicalData.symbol=String(stock.code||stock.symbol||'');
   stock.technicalReview=normalizeTechnicalReview(stock.technicalReview,stock);
   stock.technicalData=technicalDataFromReview(stock.technicalReview,stock);
+  stock.riskManagement=normalizeRiskManagement(stock.riskManagement);
+  stock.riskManagement=calculateRiskManagement(stock);
   stock.etfAnalysis=normalizeEtfAnalysis(stock.etfAnalysis,stock);
   stock.analysisFramework=normalizeAnalysisFramework(stock.analysisFramework,stock);
   stock.allocationDecision=normalizeAllocationDecision(stock.allocationDecision,stock);
