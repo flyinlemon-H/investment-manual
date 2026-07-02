@@ -514,10 +514,78 @@ function v13EventSourceText(event){
 function v13EventUpdatedText(event){
   return String(event&&event.updatedAt||event&&event.createdAt||'—');
 }
+function v13EventById(stock,eventId){
+  const events=typeof getStockVisibleEvents==='function'?getStockVisibleEvents(stock):[];
+  return events.find(event=>String(event.id)===String(eventId))||null;
+}
+function v13EventDetailValue(label,value){
+  const text=value===null||value===undefined||String(value).trim()===''?'暂无完整依据':String(value);
+  return `<div class="card-note"><b>${esc(label)}：</b>${esc(formatChineseText(text))}</div>`;
+}
+function v13EventDetailContext(stock,event){
+  const cm=stock&&stock.coreModel?stock.coreModel:{};
+  const price=cm.priceSnapshot&&cm.priceSnapshot.price!==null&&cm.priceSnapshot.price!==undefined?fmtMaybe(cm.priceSnapshot.price,2):(getComparablePrice(stock)||stockCurrentPrice(stock)||'暂无完整依据');
+  const legacy=event&&event.legacy&&typeof event.legacy==='object'?event.legacy:{};
+  let plan=null;
+  if(event&&event.businessObjectType==='Plan'){
+    plan=(cm.plans||[]).find(p=>String(p.id)===String(event.businessObjectId))
+      ||(stock.plans||[]).find(p=>String(p.id)===String(event.businessObjectId));
+  }
+  const risk=event&&event.businessObjectType==='RiskState'
+    ?(cm.riskState&&Array.isArray(cm.riskState.risks)?cm.riskState.risks[0]:null)
+    :null;
+  return {
+    currentPrice:price,
+    currentStatus:event.status||'pending',
+    planPrice:plan&&(plan.triggerPrice||plan.price)?fmtMaybe(plan.triggerPrice||plan.price,2):'暂无完整依据',
+    riskCondition:risk?(risk.summary||risk.riskType||risk.phase||'暂无完整依据'):'暂无完整依据',
+    triggerReason:event.summary||legacy.source||'暂无完整依据',
+    evidence:event.summary||legacy.source||'暂无完整依据',
+    recommendedModule:{
+      Plan:'仓位与加减仓计划',
+      RiskState:'趋势风险管理',
+      ModuleSummary:event.businessObjectId==='longTermLogic'?'长期逻辑':'信息完整度'
+    }[event.businessObjectType]||'对应详情模块'
+  };
+}
+function ensureV13EventDetailModal(){
+  let el=document.getElementById('v13EventDetailModal');
+  if(el)return el;
+  el=document.createElement('div');
+  el.className='modal-bg import-layer';
+  el.id='v13EventDetailModal';
+  el.innerHTML=`<div class="modal"><h2>事件详情</h2><div class="modal-sub">只读复核面板。本弹窗不记录操作、不归档事件、不生成交易。</div><div id="v13EventDetailBody"></div><div class="modal-actions"><button class="btn ghost" id="v13EventDetailCloseBtn" type="button">关闭</button></div></div>`;
+  document.body.appendChild(el);
+  el.addEventListener('click',e=>{if(e.target.id==='v13EventDetailModal')closeV13EventDetailModal()});
+  document.getElementById('v13EventDetailCloseBtn').addEventListener('click',closeV13EventDetailModal);
+  return el;
+}
+function openV13EventDetail(stockId,eventId){
+  const stock=state.stocks.find(x=>String(x.id)===String(stockId))||state.stocks.find(x=>x.id===detailStockId);
+  if(!stock)return;
+  normalizeStockAnalysis(stock);
+  const event=v13EventById(stock,eventId);
+  const modal=ensureV13EventDetailModal();
+  const body=document.getElementById('v13EventDetailBody');
+  if(!event){
+    body.innerHTML='<div class="alert">未找到该事件，可能已归档或数据已刷新。</div>';
+    modal.classList.add('show');
+    return;
+  }
+  const ctx=v13EventDetailContext(stock,event);
+  body.innerHTML=`<div class="card" style="margin-bottom:12px"><div class="card-title">${esc(v13EventPhaseLabel(event.phase))}</div><div class="card-num" style="font-size:20px;white-space:normal">${esc(event.title||'未命名事件')}</div><div class="card-note">${esc(event.summary||'暂无完整依据')}</div></div>`
+    +`<div class="card" style="margin-bottom:12px">${v13EventDetailValue('来源对象',`${event.businessObjectType||'Event'}${event.businessObjectId?' · '+event.businessObjectId:''}`)}${v13EventDetailValue('当前状态',ctx.currentStatus)}${v13EventDetailValue('当前价格',ctx.currentPrice)}${v13EventDetailValue('计划价或风险条件',event.businessObjectType==='Plan'?ctx.planPrice:ctx.riskCondition)}${v13EventDetailValue('触发原因',ctx.triggerReason)}${v13EventDetailValue('依据摘要',ctx.evidence)}${v13EventDetailValue('推荐查看模块',ctx.recommendedModule)}</div>`
+    +'<div class="alert">人工复核提示：事件只表示进入复核流程，不代表自动买入、卖出、减仓或归档。请结合对应模块确认后再记录操作或调整计划。</div>';
+  modal.classList.add('show');
+}
+function closeV13EventDetailModal(){
+  const modal=document.getElementById('v13EventDetailModal');
+  if(modal)modal.classList.remove('show');
+}
 function v13StockEventPanel(stock){
   if(typeof getStockVisibleEvents!=='function')return '';
   const events=getStockVisibleEvents(stock);
-  const row=event=>`<div class="trig-row"><div class="trig-name">${esc(v13EventPhaseLabel(event.phase))} <span class="muted">· 来源 ${esc(v13EventSourceText(event))}</span></div><div class="trig-dist">${esc(v13EventUpdatedText(event))}</div><div class="trig-desc"><b>${esc(event.title||'未命名事件')}</b>${event.summary?` · ${esc(event.summary)}`:''}</div></div>`;
+  const row=event=>`<div class="trig-row" data-v13-detail-stock="${esc(stock.id)}" data-v13-detail-event="${esc(event.id)}" style="cursor:pointer"><div class="trig-name">${esc(v13EventPhaseLabel(event.phase))} <span class="muted">· 来源 ${esc(v13EventSourceText(event))}</span></div><div class="trig-dist">${esc(v13EventUpdatedText(event))}</div><div class="trig-desc"><b>${esc(event.title||'未命名事件')}</b>${event.summary?` · ${esc(event.summary)}`:''}</div></div>`;
   return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><div class="card-title">当前事件</div>${events.length?`<div class="trig-list">${events.map(row).join('')}</div>`:'<div class="card-note">暂无未处理事件。</div>'}</div>`;
 }
 function stockSearchBase(stock){return [stock.name,stock.code].filter(Boolean).join(' ').trim()||'stock'}
@@ -5410,7 +5478,10 @@ function ensureLongLogicModal(){
   el.addEventListener('click',e=>{
     const btn=e.target.closest&&e.target.closest('[data-detail-action]');
     if(!btn)return;
-    handleDetailAction(btn.dataset.detailAction);
+    e.preventDefault();
+    e.stopPropagation();
+    const stock=state.stocks.find(x=>x.id===detailStockId);
+    handleDetailAction(btn.dataset.detailAction,stock);
   });
   document.getElementById('longLogicCloseBtn').addEventListener('click',closeLongLogicModal);
   return el;
@@ -5453,6 +5524,7 @@ function renderStockDetail(){
   document.getElementById('main').innerHTML=`${detailHeroPanel(s,mv,actual,deviation)}${v13StockEventPanel(s)}${trendRiskManagementPanel(s)}${technicalAnalysisPanel(s)}${shortTermCatalystPanel(s)}${shortTermSentimentPanel(s)}${informationCompletenessPanel(s)}${positionPlanPanel(s)}${detailResultsArchivePanel(s,cp)}${detailResearchArchivePanel(s,cp)}${detailAdvancedToolsArchivePanel(s)}`;
   document.getElementById('backToListBtn').addEventListener('click',closeStockDetail);
   document.querySelectorAll('[data-detail-action]').forEach(b=>b.addEventListener('click',()=>handleDetailAction(b.dataset.detailAction,s)));
+  document.querySelectorAll('[data-v13-detail-event]').forEach(row=>row.addEventListener('click',()=>openV13EventDetail(row.dataset.v13DetailStock,row.dataset.v13DetailEvent)));
   document.querySelectorAll('[data-collection-action="save"]').forEach(b=>b.addEventListener('click',saveCollectionInputs));
   document.querySelectorAll('[data-collection-prompt]').forEach(b=>b.addEventListener('click',()=>copyCollectionPrompt(b.dataset.collectionPrompt)));
   const copyFinancialIntegratedFromCollection=document.getElementById('copyFinancialIntegratedPromptFromCollectionBtn');
