@@ -1654,7 +1654,7 @@ function calculateTechnicalDecision(stock){
   const s=stock||{};
   const td=normalizeTechnicalData(s.technicalData);
   const strategy=normalizeStrategy(s.strategy,s);
-  const currentPrice=Number(td.price)||Number(getComparablePrice(s))||stockCurrentPrice(s);
+  const currentPrice=Number(getComparablePrice(s))||stockCurrentPrice(s)||Number(td.price);
   const currentShares=typeof stockCurrentShares==='function'?stockCurrentShares(s):(Number(s.shares)||0);
   const targetShares=Number(strategy.targetShares)||0;
   const isWatchOnly=strategy.investmentStyle==='watchOnly'||s.type==='watching'||(targetShares>0&&currentShares>=targetShares*.95);
@@ -2133,7 +2133,8 @@ function allocationDecisionContext(stock){
   const reviews=normalizeAiReviews(stock.aiReviews);
   const currentAction=getLatestActionInfo(stock);
   const sentiment=sentimentReviewContext(stock);
-  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||td.price||'';
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
+  const technicalSnapshotPrice=td.price!==null&&td.price!==undefined?td.price:'';
   return {
     stock:{
       name:stock.name||'',
@@ -2152,8 +2153,15 @@ function allocationDecisionContext(stock){
       strategyNotes:strategy.notes||'',
       isWatchOnly:stock.type==='watching'||strategy.investmentStyle==='watchOnly'||/观察/.test(String(stock.role||''))
     },
+    priceContext:{
+      currentLatestPrice:latestPrice||null,
+      currentLatestPriceSource:latestPrice?'stockCurrentPrice/coreModel.priceSnapshot':'missing',
+      technicalSnapshotPrice:technicalSnapshotPrice||null,
+      technicalSnapshotUpdatedAt:td.priceUpdatedAt||td.lastUpdated||'',
+      rule:'仓位、市值、计划距离和配置测算必须使用 currentLatestPrice；technicalData.price 只表示技术分析生成时的快照价格，不得作为当前价格。'
+    },
     currentAction:{text:currentAction.text||'',source:currentAction.source||'',updatedAt:currentAction.updatedAt||''},
-    technicalData:td,
+    technicalData:{...td,priceRole:'技术分析快照价格，不是当前最新价格，不用于仓位金额测算。'},
     technicalDecision:calculateTechnicalDecision(stock),
     fundamental:stock.type==='etf'?null:fundamentalSummaryForPrompt(stock),
     valuationCompleteness:stock.type==='etf'?null:valuationCompleteness(stock.valuationData),
@@ -2179,6 +2187,7 @@ function allocationDecisionPromptText(stock){
     '',
     '请注意：配置决策回答“这只标的值得配置多少”，不是回答“现在是否行动”。',
     '请不要输出确定性买卖指令，不要替我自动调整仓位，只做配置区间、目标仓位和新增资金适配度复核。',
+    '价格口径：仓位、市值、计划距离和配置测算必须使用 priceContext.currentLatestPrice。technicalData.price 仅是技术分析快照价格，不得当作当前价格，也不得把二者写成“价格字段冲突”。',
     '',
     '请只基于我提供的资料分析；资料不足时请明确写 confidence low，不要编造缺失数据。',
     chineseOutputPromptRule(),
@@ -2331,15 +2340,16 @@ function technicalAnalysisPromptText(stock){
   const td=normalizeTechnicalData(stock.technicalData);
   const strategy=normalizeStrategy(stock.strategy,stock);
   const schema={technicalReview:{updatedAt:'',inputCoverage:{hasRecentKline:false,hasCycleKline:false,cycleDataSource:'none',warning:''},shortTermTechnical:{lookbackDays:120,price:null,priceUpdatedAt:'',ma5:null,ma10:null,ma20:null,ma60:null,trendStatus:'',supportLevels:[],resistanceLevels:[],technicalSummary:'',riskFlags:[],actionHint:'',confidence:'medium'},cycleTechnical:{lookbackDays:500,cyclePosition:'unclear',cycleSummary:'',cycleHigh:null,cycleLow:null,currentPercentile:null,distanceToCycleHighPct:null,distanceToCycleLowPct:null,lastCycleUpdatedAt:'',dataSource:'none',confidence:'medium'},priceActionEvent:{detected:false,type:'unknown',changePct:null,volumeStatus:'unknown',needsNewsExplanation:false,eventReason:''},finalTechnicalConclusion:'',holdHint:'',addHint:'',reduceHint:''}};
-  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||td.price||'';
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
   const ctx={
     stockName:stock.name||'',
     symbol:stock.code||td.symbol||'',
     shares:Number(stock.shares)||0,
     avgCost:stock.avgCost||'',
     currentPrice:latestPrice,
+    priceContext:{currentLatestPrice:latestPrice||null,technicalSnapshotPrice:td.price??null,rule:'currentPrice 使用系统最新价格；existingTechnicalData.price 是技术分析快照。'},
     strategy,
-    existingTechnicalData:td
+    existingTechnicalData:{...td,priceRole:'技术分析快照价格'}
   };
   return [
     '你是一名严谨的技术面分析助手。',
@@ -2432,7 +2442,7 @@ function tradePlanPromptText(stock){
   const review=normalizeAiReviews(stock.aiReviews).comprehensiveReview||null;
   const fundamental=fundamentalSummaryForPrompt(stock);
   const etfAnalysis=etfAnalysisSummary(stock);
-  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||td.price||'';
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
   const ctx={
     stockName:stock.name||'',
     symbol:stock.code||stock.symbol||'',
@@ -2440,6 +2450,7 @@ function tradePlanPromptText(stock){
     avgCost:stock.avgCost||'',
     currentPrice:latestPrice,
     marketValue:getMarketValue(stock)||0,
+    priceContext:{currentLatestPrice:latestPrice||null,technicalSnapshotPrice:td.price??null,rule:'操作计划的触发距离、数量和金额测算必须使用 currentLatestPrice；technicalData.price 只是技术分析快照。'},
     strategy:{
       targetWeight:strategy.targetWeight,
       maxWeight:strategy.maxWeight,
@@ -2453,7 +2464,7 @@ function tradePlanPromptText(stock){
       convictionLevel:strategy.convictionLevel,
       notes:strategy.notes
     },
-    technicalData:td,
+    technicalData:{...td,priceRole:'技术分析快照价格，不是当前最新价格。'},
     technicalDecision:techDecision,
     existingPlans:stock.plans||[],
     existingTradePlan:stock.tradePlan||null,
@@ -2520,7 +2531,10 @@ function aiDiscussionPromptText(stock){
   const td=normalizeTechnicalData(stock.technicalData);
   const tr=normalizeTechnicalReview(stock.technicalReview,stock);
   const displayPrice=Number(getComparablePrice(stock))||Number(stockCurrentPrice(stock))||0;
-  const cp=displayPrice>0?displayPrice:(Number(td.price)>0?Number(td.price):(Number(tr.shortTermTechnical&&tr.shortTermTechnical.price)>0?Number(tr.shortTermTechnical.price):null));
+  const cp=displayPrice>0?displayPrice:null;
+  const technicalSnapshotPrice=Number(td.price)>0?Number(td.price):(Number(tr.shortTermTechnical&&tr.shortTermTechnical.price)>0?Number(tr.shortTermTechnical.price):null);
+  const technicalDataForPrompt={...td,priceRole:'技术分析快照价格，不是当前最新价格，不用于仓位、市值、计划距离或配置测算。'};
+  const technicalReviewForPrompt={...tr,shortTermTechnical:{...(tr.shortTermTechnical||{}),priceRole:'技术分析快照价格，不是当前最新价格。'}};
   const techDecision=calculateTechnicalDecision(stock);
   const tradePlan=stock.tradePlan&&typeof stock.tradePlan==='object'?stock.tradePlan:null;
   const ltl=normalizeLongTermLogic(stock.longTermLogic,stock);
@@ -2641,7 +2655,8 @@ function aiDiscussionPromptText(stock){
     `- 持仓数量：${fmtInt(stockCurrentShares(stock))}`,
     `- 成本价：${stock.avgCost!==''&&stock.avgCost!==undefined?stock.avgCost:'未填写'}`,
     `- 当前价格：${cp!==null&&cp!==undefined?fmtMaybe(cp,2):'暂无数据'}`,
-    `- 当前价格来源：${displayPrice>0?'系统最新价格/ETF单位价':'技术面快照价格（可能不是最新行情）'}`,
+    `- 当前价格来源：${displayPrice>0?'系统最新价格 / coreModel.priceSnapshot / ETF单位价':'暂无系统最新价格'}`,
+    `- 技术分析快照价格：${technicalSnapshotPrice!==null?fmtMaybe(technicalSnapshotPrice,2):'暂无数据'}（仅表示技术分析生成时价格，不用于仓位金额测算）`,
     `- 当前市值：${mv!==null&&mv!==undefined?fmtMoney(mv):'暂无数据'}`,
     `- 目标仓位：${fmtMaybe(strategy.targetWeight,1)}%`,
     `- 实际仓位：${actualWeight!==null?actualWeight+'%':'暂无数据'}`,
@@ -2658,7 +2673,7 @@ function aiDiscussionPromptText(stock){
     freshnessLines,
     '',
     '【技术面】',
-    JSON.stringify({technicalData:td,technicalReview:tr,technicalDecision:techDecision},null,2),
+    JSON.stringify({priceRule:'当前价格以上方“当前价格”为准；technicalData.price / technicalReview.shortTermTechnical.price 只作为技术分析快照。',technicalData:technicalDataForPrompt,technicalReview:technicalReviewForPrompt,technicalDecision:techDecision},null,2),
     '',
     '【长期逻辑】',
     JSON.stringify({longTermLogic:ltl},null,2),
@@ -2709,7 +2724,7 @@ function fullAddDiscussionPromptText(stock){
   const info=getLatestActionInfo(stock);
   const total=getEstimatedTotalAssets();
   const pos=getPositionInfo(stock,total);
-  const cp=getComparablePrice(stock)||stockCurrentPrice(stock)||td.price||null;
+  const cp=getComparablePrice(stock)||stockCurrentPrice(stock)||null;
   const mv=getMarketValue(stock);
   const currentShares=stockCurrentShares(stock);
   const buyPlans=(stock.plans||[]).filter(p=>(p.action||'buy')==='buy');
@@ -2771,7 +2786,7 @@ function fullAddDiscussionPromptText(stock){
     '',
     '【当前技术面】',
     `- trendStatus：${td.trendStatus||'暂无数据'}`,
-    `- 当前技术价格：${td.price!==null&&td.price!==undefined?fmtMaybe(td.price):'暂无数据'}`,
+    `- 技术分析快照价格：${td.price!==null&&td.price!==undefined?fmtMaybe(td.price):'暂无数据'}（不是当前最新价格，不用于仓位金额测算）`,
     `- MA5 / MA10 / MA20 / MA60：${fmtMaybe(td.ma5)} / ${fmtMaybe(td.ma10)} / ${fmtMaybe(td.ma20)} / ${fmtMaybe(td.ma60)}`,
     `- 支撑位：${(td.supportLevels||[]).length?td.supportLevels.join('、'):'暂无数据'}`,
     `- 压力位：${(td.resistanceLevels||[]).length?td.resistanceLevels.join('、'):'暂无数据'}`,
@@ -3022,11 +3037,14 @@ function valuationLookupPromptText(stock){
   const info=getPositionInfo(stock,total);
   const vd=normalizeValuationData(stock.valuationData);
   const vr=normalizeValuationReview(stock.valuationReview);
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
+  const technicalData=normalizeTechnicalData(stock.technicalData);
   const ctx={
     name:stock.name||'',
     symbol:stock.code||stock.symbol||'',
     marketType:stockMarketTypeLabel(stock),
-    currentPrice:getComparablePrice(stock)||stock.currentPrice||'',
+    currentPrice:latestPrice,
+    priceContext:{currentLatestPrice:latestPrice||null,technicalSnapshotPrice:technicalData.price??null,rule:'估值判断中的当前价格必须使用 currentLatestPrice；technicalData.price 只是技术分析快照。'},
     marketValue:getMarketValue(stock)||0,
     shares:Number(stock.shares)||0,
     avgCost:stock.avgCost||'',
@@ -3036,7 +3054,7 @@ function valuationLookupPromptText(stock){
     currentWeight:info&&info.actualPct!==null?Number(info.actualPct.toFixed(2)):null,
     financialData:normalizeFinancialData(stock.financialData),
     financialReview:normalizeAiReviews(stock.aiReviews).financialReview||null,
-    technicalData:normalizeTechnicalData(stock.technicalData),
+    technicalData:{...technicalData,priceRole:'技术分析快照价格，不是当前最新价格。'},
     technicalDecision:calculateTechnicalDecision(stock),
     allocationDecision:normalizeAllocationDecision(stock.allocationDecision,stock),
     valuationData:hasValuationData(vd)?vd:'暂无数据',
@@ -3232,9 +3250,12 @@ function fundamentalPromptText(stock){
   normalizeStockAnalysis(stock);
   const strategy=normalizeStrategy(stock.strategy,stock);
   const freshness=normalizeDataFreshness(stock.dataFreshness);
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
+  const technicalData=normalizeTechnicalData(stock.technicalData);
   const ctx={
-    stock:{name:stock.name||'',symbol:stock.code||stock.symbol||'',marketType:stockMarketTypeLabel(stock),shares:Number(stock.shares)||0,avgCost:stock.avgCost||'',currentPrice:getComparablePrice(stock)||stock.currentPrice||'',marketValue:getMarketValue(stock)||0,role:stock.role||'',theme:stock.theme||'',strategyNotes:strategy.notes||''},
-    technicalData:normalizeTechnicalData(stock.technicalData),
+    stock:{name:stock.name||'',symbol:stock.code||stock.symbol||'',marketType:stockMarketTypeLabel(stock),shares:Number(stock.shares)||0,avgCost:stock.avgCost||'',currentPrice:latestPrice,marketValue:getMarketValue(stock)||0,role:stock.role||'',theme:stock.theme||'',strategyNotes:strategy.notes||''},
+    priceContext:{currentLatestPrice:latestPrice||null,technicalSnapshotPrice:technicalData.price??null,rule:'基本面估值分析中的当前价格必须使用 currentLatestPrice；technicalData.price 只是技术分析快照。'},
+    technicalData:{...technicalData,priceRole:'技术分析快照价格，不是当前最新价格。'},
     technicalDecision:calculateTechnicalDecision(stock),
     allocationDecision:normalizeAllocationDecision(stock.allocationDecision,stock),
     existingFundamental:fundamentalSummaryForPrompt(stock),
@@ -3308,9 +3329,12 @@ function copyFundamentalPrompt(){
 function etfAnalysisPromptText(stock){
   normalizeStockAnalysis(stock);
   const strategy=normalizeStrategy(stock.strategy,stock);
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
+  const technicalData=normalizeTechnicalData(stock.technicalData);
   const ctx={
-    etf:{name:stock.name||'',symbol:stock.code||stock.symbol||'',marketType:stockMarketTypeLabel(stock),shares:Number(stock.shares)||0,avgCost:stock.avgCost||'',currentPrice:getComparablePrice(stock)||stock.currentPrice||'',marketValue:getMarketValue(stock)||0,role:stock.role||'',theme:stock.theme||'',strategyNotes:strategy.notes||''},
-    technicalData:normalizeTechnicalData(stock.technicalData),
+    etf:{name:stock.name||'',symbol:stock.code||stock.symbol||'',marketType:stockMarketTypeLabel(stock),shares:Number(stock.shares)||0,avgCost:stock.avgCost||'',currentPrice:latestPrice,marketValue:getMarketValue(stock)||0,role:stock.role||'',theme:stock.theme||'',strategyNotes:strategy.notes||''},
+    priceContext:{currentLatestPrice:latestPrice||null,technicalSnapshotPrice:technicalData.price??null,rule:'ETF 分析中的当前价格必须使用 currentLatestPrice；technicalData.price 只是技术分析快照，不得作为当前价格或仓位金额测算依据。'},
+    technicalData:{...technicalData,priceRole:'技术分析快照价格，不是当前最新价格。'},
     technicalDecision:calculateTechnicalDecision(stock),
     existingEtfAnalysis:normalizeEtfAnalysis(stock.etfAnalysis,stock),
     allocationDecision:normalizeAllocationDecision(stock.allocationDecision,stock),
@@ -3676,6 +3700,7 @@ function aiAssistantContext(stock){
   const fw=normalizeAnalysisFramework(stock.analysisFramework,stock);
   const inputs=normalizeAnalysisInputs(stock.analysisInputs);
   const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
+  const technicalData=normalizeTechnicalData(stock.technicalData);
   return {
     stock:{
       name:stock.name||'',
@@ -3695,7 +3720,8 @@ function aiAssistantContext(stock){
     currentAnalysisFramework:fw,
     analysisScore:stock.analysisScore,
     analysisSummary:analysisSummaryPayload(stock),
-    technicalData:normalizeTechnicalData(stock.technicalData),
+    priceContext:{currentLatestPrice:latestPrice||null,technicalSnapshotPrice:technicalData.price??null,rule:'当前价格统一使用 currentLatestPrice。technicalData.price 仅代表技术分析快照价格，不得用于仓位、市值、配置或操作金额测算。'},
+    technicalData:{...technicalData,priceRole:'技术分析快照价格，不是当前最新价格。'},
     technical:{score:technical.technicalScore,status:technical.technicalStatus,summary:technical.technicalSummary,signals:technical.signals,warnings:technical.warnings},
     valuation:{score:valuation.valuationScore,status:valuation.valuationStatus,summary:valuation.valuationSummary,signals:valuation.signals,warnings:valuation.warnings,valuationData:normalizeValuationData(stock.valuationData),valuationReview:normalizeValuationReview(stock.valuationReview),valuationRawText:inputs.valuationRawText},
     financial:{score:financial.financialScore,status:financial.financialStatus,summary:financial.financialSummary,signals:financial.signals,warnings:financial.warnings,financialData:normalizeFinancialData(stock.financialData),currentFinancialsModule:fw.financials,financialReport:inputs.financialReport},

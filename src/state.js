@@ -1553,14 +1553,14 @@ function calculateRiskManagement(stock){
   const addUnique=(arr,text)=>{const value=String(text||'').trim();if(value&&!arr.includes(value))arr.push(value)};
   const num=x=>{const n=Number(x);return isFinite(n)?n:null};
   const displayPrice=stockCurrentPrice(s);
-  const currentPrice=displayPrice>0?displayPrice:(num(technicalData.price)??num(shortTerm.price));
+  const currentPrice=displayPrice>0?displayPrice:null;
   const shares=num(s.shares)??num(s.currentShares)??0;
   const marketValue=num(s.currentValue)??num(s.marketValue)??(currentPrice&&shares?currentPrice*shares:0);
   let totalValue=0;
   if(typeof state==='object'&&state&&Array.isArray(state.stocks)){
     totalValue=state.stocks.reduce((sum,item)=>{
       const display=stockCurrentPrice(item);
-      const price=display>0?display:(num(item.technicalData&&item.technicalData.price));
+      const price=display>0?display:null;
       const itemShares=num(item.shares)??0;
       return sum+(num(item.currentValue)??num(item.marketValue)??(price&&itemShares?price*itemShares:0));
     },0);
@@ -1678,9 +1678,7 @@ function v13DerivedCurrentPrice(stock){
   }
   const candidates=[
     stock&&stock.currentPrice,
-    stock&&stock.price,
-    stock&&stock.technicalData&&stock.technicalData.price,
-    stock&&stock.technicalReview&&stock.technicalReview.shortTermTechnical&&stock.technicalReview.shortTermTechnical.price
+    stock&&stock.price
   ];
   for(const raw of candidates){
     const value=Number(raw);
