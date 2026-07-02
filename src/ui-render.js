@@ -463,6 +463,63 @@ function updateTaskPromptText(){
   return ['请协助整理以下股票的待更新资料，优先补充价格、估值、财报、新闻和个人观点所需信息。','建议逐只打开投资手册详情页的“信息采集面板”，补充新闻、财报、社媒、技术和综合资料。','也可进入详情页使用“统一 Prompt 生成器”或“综合复核自动组包”复制复核资料。','',...rows.map(x=>`- ${x.s.name||'—'} (${x.s.code||'无代码'})：需要更新 ${x.items.join('、')}；最旧更新时间：${x.oldest}；建议进入详情页生成综合复核包`)].join('\n');
 }
 function copyUpdatePrompt(){copyText(updateTaskPromptText(),'待更新任务提示词已复制。')}
+function v13EventPhaseLabel(phase){
+  return {decision:'🔴 待处理',prepare:'🟡 待关注',info:'⚪ 信息'}[phase]||'⚪ 信息';
+}
+function v13EventStockFor(event){
+  const id=String(event&&event.stockId||'');
+  return state.stocks.find(s=>[s.id,s.code,s.symbol,s.name].map(x=>String(x||'')).includes(id))||null;
+}
+function v13HomeEventTaskPanel(){
+  if(typeof getHomeVisibleEventsByStock!=='function')return '';
+  const events=getHomeVisibleEventsByStock(state.stocks||[]);
+  const groups={decision:[],prepare:[],info:[]};
+  events.forEach(event=>{
+    const phase=['decision','prepare','info'].includes(event.phase)?event.phase:'info';
+    groups[phase].push(event);
+  });
+  const total=events.length;
+  const sourceGroupLabel=event=>{
+    const type=String(event&&event.businessObjectType||'').trim();
+    if(type==='Plan')return 'Plan';
+    if(type==='RiskState')return 'RiskState';
+    return '其它';
+  };
+  const row=event=>{
+    const stock=v13EventStockFor(event);
+    const stockName=stock?(stock.name||stock.code||stock.symbol||'—'):(event.stockId||'—');
+    const stockCode=stock?(stock.code||stock.symbol||''):'';
+    const targetId=stock&&stock.id?` data-v13-event-stock="${esc(stock.id)}"`:'';
+    return `<div class="trig-row"${targetId} style="${stock?'cursor:pointer':''}"><div class="trig-name">${esc(stockName)} <span class="muted">· ${esc(stockCode||event.businessObjectType||'Event')}</span></div><div class="trig-dist">${esc(v13EventPhaseLabel(event.phase).replace(/^.. /,''))}</div><div class="trig-desc"><b>${esc(event.title||'未命名事件')}</b>${event.summary?` · ${esc(event.summary)}`:''}</div></div>`;
+  };
+  const decisionSection=()=>{
+    const list=groups.decision||[];
+    const bySource={Plan:[],RiskState:[],其他:[]};
+    list.forEach(event=>bySource[sourceGroupLabel(event)].push(event));
+    const sourceBlock=(label,items)=>items.length?`<div style="margin-top:8px"><div class="card-note" style="margin-bottom:6px">${esc(label)}（${items.length}）</div><div class="trig-list">${items.map(row).join('')}</div></div>`:'';
+    return `<div style="margin-top:10px"><div class="card-note" style="margin-bottom:6px">🔴 待处理（${list.length}）</div>${list.length?`${sourceBlock('Plan',bySource.Plan)}${sourceBlock('RiskState',bySource.RiskState)}${sourceBlock('其它',bySource.其他)}`:'<div class="card-note">暂无</div>'}</div>`;
+  };
+  const section=(phase,title)=>{
+    const list=groups[phase]||[];
+    return `<div style="margin-top:10px"><div class="card-note" style="margin-bottom:6px">${title}（${list.length}）</div>${list.length?`<div class="trig-list">${list.map(row).join('')}</div>`:'<div class="card-note">暂无</div>'}</div>`;
+  };
+  const infoList=groups.info||[];
+  const infoSection=infoList.length?`<details style="margin-top:10px"><summary class="card-note" style="cursor:pointer">⚪ 信息（${infoList.length}）</summary><div class="trig-list" style="margin-top:6px">${infoList.map(row).join('')}</div></details>`:`<div style="margin-top:10px"><div class="card-note" style="margin-bottom:6px">⚪ 信息（0）</div><div class="card-note">暂无</div></div>`;
+  return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><div class="card-title">首页任务流（Event Engine）</div>${total?`${decisionSection()}${section('prepare','🟡 待关注')}${infoSection}`:'<div class="card-note">暂无需要处理的事件。</div>'}</div>`;
+}
+function v13EventSourceText(event){
+  const parts=[event&&event.businessObjectType,event&&event.businessObjectId].map(x=>String(x||'').trim()).filter(Boolean);
+  return parts.length?parts.join(' · '):'—';
+}
+function v13EventUpdatedText(event){
+  return String(event&&event.updatedAt||event&&event.createdAt||'—');
+}
+function v13StockEventPanel(stock){
+  if(typeof getStockVisibleEvents!=='function')return '';
+  const events=getStockVisibleEvents(stock);
+  const row=event=>`<div class="trig-row"><div class="trig-name">${esc(v13EventPhaseLabel(event.phase))} <span class="muted">· 来源 ${esc(v13EventSourceText(event))}</span></div><div class="trig-dist">${esc(v13EventUpdatedText(event))}</div><div class="trig-desc"><b>${esc(event.title||'未命名事件')}</b>${event.summary?` · ${esc(event.summary)}`:''}</div></div>`;
+  return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><div class="card-title">当前事件</div>${events.length?`<div class="trig-list">${events.map(row).join('')}</div>`:'<div class="card-note">暂无未处理事件。</div>'}</div>`;
+}
 function stockSearchBase(stock){return [stock.name,stock.code].filter(Boolean).join(' ').trim()||'stock'}
 function collectionSourceLinks(stock){
   const code=String(stock.code||'').trim().toUpperCase();
@@ -1285,7 +1342,8 @@ function renderDashboard(){
   const resPct=(themeRows.find(x=>x.name==='黄金资源')||{p:0}).p;
   summary.innerHTML=`总资产 <strong>${fmtMoney(estAssets||totalMv)}</strong> · 已投资 <strong>${fmtMoney(totalMv)}</strong> · 现金/预留 <strong>${fmt(reserve,1)}%</strong> · AI <strong>${fmt(aiPct,1)}%</strong> · 黄金资源 <strong>${fmt(resPct,1)}%</strong>`;
 
-  const triggeredPanel=planRows.length?`<div class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><div class="card-title">已触发价位计划（${triggeredCount} 条）</div><div class="trig-list">${planRows.map(({s})=>{const cp=getComparablePrice(s);const rows=(s.plans||[]).map(p=>({p,g:planGap(cp,p.price,p.action,p.triggerOn)})).filter(x=>x.g&&x.g.triggered);return rows.map(({p,g})=>`<div class="trig-row ${p.action==='sell'?'sell':'buy'}"><div class="trig-name">${esc(s.name)} <span class="muted">· ${p.action==='sell'?'减仓':'加仓'} · 触发价 ${fmtMaybe(p.price)}</span></div><div class="trig-dist">${fmtMaybe(cp)} / ${fmt(g.absPct,1)}%</div><div class="trig-desc">${esc(p.note||'已到达计划价位')} <button class="link-btn" data-execute-stock="${esc(s.id)}" data-execute-plan="${esc(p.id)}">记录执行</button></div></div>`).join('')}).join('')}</div></div>`:'<div class="card" style="margin-bottom:14px"><div class="card-title">触发提醒</div><div class="card-note">当前没有已触发的价位计划。</div></div>';
+  const triggeredRows=planRows.map(({s})=>{const cp=getComparablePrice(s);const rows=(s.plans||[]).map(p=>({p,g:planGap(cp,p.price,p.action,p.triggerOn)})).filter(x=>x.g&&x.g.triggered);return rows.map(({p,g})=>`<div class="trig-row ${p.action==='sell'?'sell':'buy'}"><div class="trig-name">${esc(s.name)} <span class="muted">· ${p.action==='sell'?'减仓':'加仓'} · 触发价 ${fmtMaybe(p.price)}</span></div><div class="trig-dist">${fmtMaybe(cp)} / ${fmt(g.absPct,1)}%</div><div class="trig-desc">${esc(p.note||'已到达计划价位')} <button class="link-btn" data-execute-stock="${esc(s.id)}" data-execute-plan="${esc(p.id)}">记录执行</button></div></div>`).join('')}).join('');
+  const triggeredPanel=planRows.length?`<details class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><summary class="card-title">已触发价位计划（legacy/fallback，${triggeredCount} 条）</summary><div class="card-note" style="margin:8px 0 10px">V13 Event 区已作为主任务入口，此区块仅用于旧逻辑对照。</div><div class="trig-list">${triggeredRows}</div></details>`:'<div class="card" style="margin-bottom:14px"><div class="card-title">触发提醒</div><div class="card-note">当前没有已触发的价位计划。</div></div>';
 
   const rebalPanel=rebalRows.length?`<div class="card" style="margin-bottom:14px"><div class="card-title">再平衡提示（${rebalRows.length} 只）</div><div class="trig-list">${rebalRows.slice(0,8).map(x=>{const cls=x.info.status==='overweight'?'sell':'buy';const word=x.info.status==='overweight'?'超配':'低配';return `<div class="trig-row ${cls}"><div class="trig-name">${esc(x.s.name)} <span class="muted">· ${word} ${x.info.deviation>0?'+':''}${fmt(x.info.deviation,1)}%</span></div><div class="trig-dist">${fmtMoney(Math.abs(x.action.amount||0))}</div><div class="trig-desc">${esc(x.action.text||x.action.desc||'按目标仓位复核')}</div></div>`}).join('')}</div></div>`:'<div class="card" style="margin-bottom:14px"><div class="card-title">再平衡提示</div><div class="card-note">当前没有明显偏离目标仓位的标的。</div></div>';
 
@@ -1300,7 +1358,8 @@ function renderDashboard(){
   const disciplinePanel=disciplineRows.length?`<div class="card" style="margin-bottom:14px;border-left:3px solid var(--gold)"><div class="card-title">纪律规则提醒（${disciplineRows.length} 项）</div><div class="trig-list">${disciplineRows.join('')}</div></div>`:'';
   const noPriceHint=noPriceRows.length?`<div class="alert" style="margin-bottom:14px">有 ${noPriceRows.length} 只标的缺少有效价格/市值，仓位和再平衡计算可能不完整。</div>`:'';
   const fxRiskHint=isDefaultFx()?'<div class="alert" style="margin-bottom:14px">汇率使用默认值，港股市值和仓位占比可能有偏差。可到「工具」页更新 HKD→CNY 汇率。</div>':'';
-  main.innerHTML=`${updateChecklistPanel()}${triggeredPanel}${disciplinePanel}${rebalPanel}${noPriceHint}${fxRiskHint}<div class="dash"><div class="card"><div class="card-title">按主题分布</div>${bars(themeRows)}</div><div class="card"><div class="card-title">按仓位角色分布</div>${bars(roleRows)}</div></div>`;
+  main.innerHTML=`${v13HomeEventTaskPanel()}${updateChecklistPanel()}${triggeredPanel}${disciplinePanel}${rebalPanel}${noPriceHint}${fxRiskHint}<div class="dash"><div class="card"><div class="card-title">按主题分布</div>${bars(themeRows)}</div><div class="card"><div class="card-title">按仓位角色分布</div>${bars(roleRows)}</div></div>`;
+  document.querySelectorAll('[data-v13-event-stock]').forEach(el=>el.addEventListener('click',()=>openStockDetail(el.dataset.v13EventStock)));
   document.querySelectorAll('[data-execute-stock]').forEach(b=>b.addEventListener('click',()=>executePlan(b.dataset.executeStock,b.dataset.executePlan)));
   document.querySelectorAll('[data-update-stock]').forEach(el=>el.addEventListener('click',()=>openStockDetail(el.dataset.updateStock)));
   const copyCodes=document.getElementById('copyUpdateCodesBtn');
@@ -5377,7 +5436,7 @@ function renderStockDetail(){
   const actual=info&&info.actualPct!==null?info.actualPct:null;
   const deviation=info&&info.deviation!==null?`${info.deviation>=0?'+':''}${info.deviation.toFixed(1)}%`:'—';
   document.getElementById('summary').innerHTML=`标的详情 · <strong>${esc(s.name)}</strong> · ${esc(s.role||'—')} · ${esc(s.theme||'—')}`;
-  document.getElementById('main').innerHTML=`${detailHeroPanel(s,mv,actual,deviation)}${trendRiskManagementPanel(s)}${technicalAnalysisPanel(s)}${shortTermCatalystPanel(s)}${shortTermSentimentPanel(s)}${informationCompletenessPanel(s)}${positionPlanPanel(s)}${detailResultsArchivePanel(s,cp)}${detailResearchArchivePanel(s,cp)}${detailAdvancedToolsArchivePanel(s)}`;
+  document.getElementById('main').innerHTML=`${detailHeroPanel(s,mv,actual,deviation)}${v13StockEventPanel(s)}${trendRiskManagementPanel(s)}${technicalAnalysisPanel(s)}${shortTermCatalystPanel(s)}${shortTermSentimentPanel(s)}${informationCompletenessPanel(s)}${positionPlanPanel(s)}${detailResultsArchivePanel(s,cp)}${detailResearchArchivePanel(s,cp)}${detailAdvancedToolsArchivePanel(s)}`;
   document.getElementById('backToListBtn').addEventListener('click',closeStockDetail);
   document.querySelectorAll('[data-detail-action]').forEach(b=>b.addEventListener('click',()=>handleDetailAction(b.dataset.detailAction,s)));
   document.querySelectorAll('[data-collection-action="save"]').forEach(b=>b.addEventListener('click',saveCollectionInputs));

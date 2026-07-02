@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>投资作战手册 V13.0-B.3</title>
+<title>投资作战手册 V13-dev Alpha-1</title>
 <style>
 :root{--paper:#F5F1E8;--paper2:#EFEADE;--ink:#1B1B1B;--ink2:#4A4A48;--ink3:#8A857A;--seal:#B83A2B;--sealsoft:rgba(184,58,43,.08);--teal:#2F5D6E;--tealsoft:rgba(47,93,110,.10);--gold:#9A6B24;--goldsoft:rgba(154,107,36,.12);--purple:#6A4C93;--purplesoft:rgba(106,76,147,.11);--line:rgba(27,27,27,.14);--lines:rgba(27,27,27,.28);}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background-image:radial-gradient(rgba(27,27,27,.025) 1px,transparent 1px);background-size:18px 18px}.wrap{max-width:1380px;margin:0 auto;padding:34px 22px 70px}header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--ink);padding-bottom:16px;margin-bottom:18px;gap:16px}.brand{display:flex;gap:14px;align-items:center}.seal{width:42px;height:42px;border-radius:4px;background:var(--seal);color:var(--paper);display:grid;place-items:center;font-size:22px;font-weight:800;transform:rotate(-3deg)}h1{margin:0;font-family:Georgia,"Songti SC",serif;font-size:30px;letter-spacing:3px}.sub,.date{color:var(--ink3);font-size:11px;letter-spacing:1.8px}.date{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap;color:var(--ink2)}.tabs{display:flex;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:14px}.tab{background:0;border:0;padding:13px 18px 11px;margin-bottom:-1px;border-bottom:2px solid transparent;color:var(--ink3);font-weight:700;letter-spacing:1px;white-space:nowrap;cursor:pointer}.tab.active{color:var(--ink);border-bottom-color:var(--seal)}.toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.summary{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;color:var(--ink2)}.summary strong{color:var(--ink)}.actions{display:flex;gap:8px;flex-wrap:wrap}button{font:inherit}.btn{background:var(--ink);color:var(--paper);border:1px solid var(--ink);padding:8px 13px;border-radius:2px;font-weight:700;cursor:pointer;letter-spacing:.8px}.btn:hover{background:var(--seal);border-color:var(--seal)}.btn.ghost{background:transparent;color:var(--ink2);border-color:var(--lines)}.btn.ghost:hover{color:var(--ink);background:transparent;border-color:var(--ink)}.btn.small{font-size:12px;padding:6px 10px}.sync{min-height:14px;color:var(--ink3);font-size:11px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;margin-bottom:14px}.hint{border:1px solid var(--line);background:rgba(255,255,255,.22);padding:12px 14px;margin-bottom:14px;color:var(--ink2);font-size:13px;line-height:1.65}.dash{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}.card{border:1px solid var(--line);background:rgba(245,241,232,.82);padding:14px}.card-title{font-size:11px;color:var(--ink3);font-weight:800;letter-spacing:1.6px;margin-bottom:8px}.card-num{font-size:24px;font-weight:800;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.card-note{font-size:12px;color:var(--ink3);margin-top:4px;line-height:1.5}.bar-list{display:grid;gap:9px}.bar-row{display:grid;grid-template-columns:76px 1fr 48px;gap:8px;align-items:center;font-size:12px}.bar-bg{height:8px;border:1px solid var(--line);background:rgba(255,255,255,.25);overflow:hidden}.bar{height:100%;background:var(--ink)}.bar.ai{background:var(--seal)}.bar.res{background:var(--gold)}.bar.core{background:var(--teal)}.bar.sat{background:var(--purple)}.alert{padding:9px 10px;border-left:3px solid #A65E2E;background:rgba(166,94,46,.08);font-size:12px;color:var(--ink2);line-height:1.5;margin-top:8px}.table-wrap{border:1px solid var(--line);background:rgba(245,241,232,.82);overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:1180px}th{text-align:left;color:var(--ink3);font-size:11px;letter-spacing:1.3px;padding:12px;border-bottom:1px solid var(--ink);white-space:nowrap}td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top}tr:hover{background:rgba(255,255,255,.28)}.name{font-weight:800;font-size:15px;min-width:120px}.num{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap}.muted{color:var(--ink3)}.text{font-size:12px;line-height:1.55;color:var(--ink2);max-width:260px}.chips{display:flex;flex-wrap:wrap;gap:6px;max-width:380px}.chip{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px;border-radius:14px;padding:4px 9px;font-size:12px;line-height:1.35;white-space:normal;max-width:100%;overflow-wrap:anywhere}.chip .price,.chip .shares,.chip .gap{white-space:nowrap}.buy{color:var(--seal);background:var(--sealsoft)}.sell{color:var(--teal);background:var(--tealsoft)}.chip.triggered{background:var(--seal);color:#fff;font-weight:800;box-shadow:0 0 0 2px rgba(184,58,43,.18);animation:pulse 2.4s ease-in-out infinite}.chip.triggered.sell{background:var(--teal);box-shadow:0 0 0 2px rgba(47,93,110,.20)}.chip .gap{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;color:var(--ink3);margin-left:2px;font-weight:700}.chip.triggered .gap{color:inherit}.chip .gap.trig{font-weight:800;letter-spacing:.5px}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.72}}.alert-trig{padding:9px 12px;border-left:3px solid var(--seal);background:rgba(184,58,43,.08);font-size:13px;color:var(--ink);line-height:1.5;margin-bottom:14px;font-weight:600}.trig-list{display:flex;flex-direction:column;gap:8px}.trig-row{padding:10px 12px;background:rgba(184,58,43,.06);border:1px solid rgba(184,58,43,.20);border-left:3px solid var(--seal);display:grid;grid-template-columns:1fr auto;column-gap:10px;row-gap:4px;align-items:baseline}.trig-row.sell{border-left-color:var(--teal);background:rgba(47,93,110,.06);border-color:rgba(47,93,110,.20)}.trig-row .trig-name{font-weight:800;font-size:15px;color:var(--ink)}.trig-row .trig-dist{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:800;font-size:13px;color:var(--seal);white-space:nowrap;text-align:right}.trig-row.sell .trig-dist{color:var(--teal)}.trig-row .trig-desc{grid-column:1/-1;font-size:12px;color:var(--ink2);line-height:1.55}.trig-row .trig-tag{display:inline-block;font-weight:800;margin-right:4px}.trig-row.buy .trig-tag{color:var(--seal)}.trig-row.sell .trig-tag{color:var(--teal)}.trig-action{grid-column:1/-1;text-align:right;margin-top:4px;padding-top:6px;border-top:1px dashed rgba(27,27,27,.12)}.trig-action button{background:transparent;border:1px solid var(--lines);color:var(--ink2);padding:5px 14px;font-size:12px;cursor:pointer;border-radius:2px;font-weight:700;letter-spacing:.5px;font-family:inherit}.trig-action button:hover{background:var(--seal);color:var(--paper);border-color:var(--seal)}.trig-row.sell .trig-action button:hover{background:var(--teal);border-color:var(--teal)}.daily-chg{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;font-weight:800;margin-left:4px;letter-spacing:.3px;white-space:nowrap}.daily-chg.up{color:#C84545}.daily-chg.down{color:#2A7942}.trig-suggest{grid-column:1/-1;margin-top:6px;padding:8px 10px;background:rgba(154,107,36,.10);border-left:2px solid var(--gold);font-size:12.5px;font-weight:700;color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.3px}.trig-suggest .trig-tag{font-weight:800;margin-right:6px;color:var(--gold)}.cell-target .target-line{font-weight:800;font-size:14px;color:var(--ink)}.cell-target .actual-line{font-size:11px;color:var(--ink3);margin-top:3px;line-height:1.4;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.dev-badge{display:inline-block;font-weight:800;font-size:11px;padding:1px 6px;border-radius:3px;margin-top:2px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.5px}.dev-badge.over{color:var(--teal);background:var(--tealsoft)}.dev-badge.under{color:var(--seal);background:var(--sealsoft)}.dev-badge.ok{color:var(--ink3);background:transparent;padding-left:0;padding-right:0}.dev-badge.na{color:var(--ink3);background:transparent;font-style:italic;font-weight:400;padding-left:0;padding-right:0}.stale-list{display:flex;flex-direction:column;gap:0}.stale-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:12px}.stale-row:last-child{border-bottom:0}.stale-name{font-weight:700;color:var(--ink);font-size:13px}.stale-meta{color:var(--ink3);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-align:right;white-space:nowrap}.stale-meta.urgent{color:var(--seal);font-weight:700}.tag{color:var(--purple);background:var(--purplesoft)}.role{color:var(--gold);background:var(--goldsoft)}.price,.shares{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:800}.row-actions{display:flex;gap:8px;white-space:nowrap}.link-btn{background:0;border:0;color:var(--ink2);cursor:pointer;padding:2px 0;font-size:12px}.link-btn:hover{color:var(--seal)}.danger{color:var(--seal)}.empty{text-align:center;padding:60px 20px;color:var(--ink3)}.modal-bg{position:fixed;inset:0;background:rgba(27,27,27,.45);display:none;align-items:center;justify-content:center;z-index:10;padding:16px}.modal-bg.show{display:flex}.modal{width:min(720px,100%);max-height:92vh;overflow:auto;background:var(--paper);border:1px solid var(--ink);box-shadow:6px 6px 0 rgba(27,27,27,.15);padding:22px}.modal h2{margin:0 0 4px;font-family:Georgia,"Songti SC",serif;letter-spacing:2px;font-size:20px}.modal-sub{color:var(--ink3);font-size:11px;letter-spacing:1px;margin-bottom:16px}.form-row{margin-bottom:13px}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}label{display:block;color:var(--ink2);font-size:11px;letter-spacing:1.5px;font-weight:800;margin-bottom:5px}input,textarea,select{width:100%;border:1px solid var(--lines);background:var(--paper);color:var(--ink);padding:9px 11px;border-radius:2px;font-size:14px}textarea{min-height:70px;resize:vertical}input:focus,textarea:focus,select:focus{outline:none;border-color:var(--seal)}.type-toggle{display:flex;border:1px solid var(--lines);overflow:hidden}.type-toggle button{flex:1;border:0;background:transparent;color:var(--ink3);padding:10px;cursor:pointer;font-weight:700}.type-toggle button.active{background:var(--ink);color:var(--paper)}.plan-editor{border:1px solid var(--line);padding:10px}.plan-table{width:100%;min-width:0}.plan-table th,.plan-table td{padding:6px;border-bottom:1px solid var(--line);font-size:12px}.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
@@ -185,7 +185,7 @@ td+td{padding-top:9px;border-top:1px dashed rgba(27,27,27,.10)}
 </style>
 </head>
 <body><div class="wrap">
-<header><div class="brand"><div class="seal">策</div><div><h1>投资作战手册 V13.0-B.3</h1><div class="sub">Thesis · Discipline · Action Plan</div></div></div><div class="date" id="dateStamp"></div></header>
+<header><div class="brand"><div class="seal">策</div><div><h1>投资作战手册 V13-dev Alpha-1</h1><div class="sub">Thesis · Discipline · Action Plan</div></div></div><div class="date" id="dateStamp"></div></header>
 <div class="tabs"><button class="tab active" data-tab="dashboard">总览</button><button class="tab" data-tab="holding">个股 <span id="countHolding" class="count">0</span></button><button class="tab" data-tab="etf">ETF <span id="countEtf" class="count">0</span></button><button class="tab" data-tab="watching">观察 <span id="countWatching" class="count">0</span></button></div>
 <div class="toolbar"><div class="summary" id="summary">—</div><div class="actions" id="globalActions"><button class="btn ghost small" id="fxBtn" title="点击设置或刷新 HKD→CNY 汇率">汇率 —</button><button class="btn ghost small" id="importBtn">导入JSON</button><button class="btn ghost small" id="exportBtn">导出</button><button class="btn ghost small" id="socialImportBtn">导入 social_posts.json</button><button class="btn ghost small" id="resetBtn">清空本地数据</button><button class="btn ghost small" id="refreshAllBtn">刷新全部价格</button><button class="btn" id="addBtn">＋ 新增标的</button><input type="file" id="importFile" accept=".json,application/json" style="display:none"><input type="file" id="socialImportFile" accept=".json,application/json" style="display:none"></div></div><div class="sync" id="syncHint"></div><div class="sync" id="socialDataStatus">社媒数据更新时间：—</div><div id="main"></div>
 </div>
@@ -201,6 +201,654 @@ td+td{padding-top:9px;border-top:1px dashed rgba(27,27,27,.10)}
 <div class="form-row"><label>加仓 / 建仓动作</label><div class="plan-editor"><table class="plan-table"><thead><tr><th>触发价格</th><th>数量</th><th>动作备注</th><th></th></tr></thead><tbody id="buyRows"></tbody></table><button class="link-btn" id="addBuy" type="button">＋ 添加一档</button></div></div>
 <div class="form-row" id="sellBox"><label>减仓 / 止盈动作</label><div class="plan-editor"><table class="plan-table"><thead><tr><th>触发价格</th><th>数量</th><th>动作备注</th><th></th></tr></thead><tbody id="sellRows"></tbody></table><button class="link-btn" id="addSell" type="button">＋ 添加一档</button></div></div>
 <div class="modal-actions"><button class="btn ghost" id="testCodeBtn" type="button">测试行情代码</button><button class="btn ghost" id="cancelBtn">取消</button><button class="btn" id="saveBtn">保存</button></div></div></div>
+<script>
+const V13_OBJECT_TYPES=[
+  'Stock',
+  'Position',
+  'PriceSnapshot',
+  'Plan',
+  'Event',
+  'Trade',
+  'RiskState',
+  'ModuleSummary',
+  'RuleConfig'
+];
+
+function v13NowIso(){
+  return new Date().toISOString();
+}
+function v13Id(prefix='v13'){
+  return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,8)}`;
+}
+function v13Object(v){
+  return v&&typeof v==='object'&&!Array.isArray(v)?v:{};
+}
+function v13Array(v){
+  return Array.isArray(v)?v:[];
+}
+function v13String(v){
+  return v===null||v===undefined?'':String(v);
+}
+function v13NumberOrNull(v){
+  const n=Number(v);
+  return Number.isFinite(n)?n:null;
+}
+function v13Bool(v){
+  return Boolean(v);
+}
+function v13Enum(v,allowed,fallback){
+  const s=v13String(v);
+  return allowed.includes(s)?s:fallback;
+}
+function v13KeepLegacy(src,knownKeys){
+  const legacy={};
+  Object.keys(src||{}).forEach(k=>{
+    if(!knownKeys.includes(k))legacy[k]=src[k];
+  });
+  return legacy;
+}
+
+function defaultV13Position(){
+  return {
+    objectType:'Position',
+    stockId:'',
+    shares:0,
+    avgCost:null,
+    marketValue:null,
+    currentWeight:null,
+    targetWeight:null,
+    updatedAt:'',
+    legacy:{}
+  };
+}
+function normalizeV13Position(v={},stock={}){
+  const src=v13Object(v);
+  const known=['objectType','stockId','shares','avgCost','marketValue','currentWeight','targetWeight','updatedAt','legacy'];
+  return {
+    ...defaultV13Position(),
+    stockId:v13String(src.stockId||stock.id||stock.code||stock.symbol),
+    shares:v13NumberOrNull(src.shares??stock.shares)??0,
+    avgCost:v13NumberOrNull(src.avgCost??stock.avgCost),
+    marketValue:v13NumberOrNull(src.marketValue??stock.currentValue??stock.marketValue),
+    currentWeight:v13NumberOrNull(src.currentWeight??stock.currentWeight??stock.actualWeight),
+    targetWeight:v13NumberOrNull(src.targetWeight??(stock.strategy&&stock.strategy.targetWeight)??stock.targetPct),
+    updatedAt:v13String(src.updatedAt||stock.updatedAt||''),
+    legacy:{...v13Object(src.legacy),...v13KeepLegacy(src,known)}
+  };
+}
+
+function defaultV13PriceSnapshot(){
+  return {
+    objectType:'PriceSnapshot',
+    id:'',
+    stockId:'',
+    price:null,
+    currency:'',
+    source:'',
+    capturedAt:'',
+    legacy:{}
+  };
+}
+function normalizeV13PriceSnapshot(v={},stock={}){
+  const src=v13Object(v);
+  const known=['objectType','id','stockId','price','currency','source','capturedAt','legacy'];
+  return {
+    ...defaultV13PriceSnapshot(),
+    id:v13String(src.id)||v13Id('price'),
+    stockId:v13String(src.stockId||stock.id||stock.code||stock.symbol),
+    price:v13NumberOrNull(src.price??stock.currentPrice),
+    currency:v13String(src.currency||stock.currency),
+    source:v13String(src.source||stock.priceSource),
+    capturedAt:v13String(src.capturedAt||stock.priceUpdatedAt||stock.valueUpdatedAt||''),
+    legacy:{...v13Object(src.legacy),...v13KeepLegacy(src,known)}
+  };
+}
+
+const V13_PLAN_TYPES=['build','add','position_control','profit_take','trend_defense'];
+const V13_VERSION_STATUS=['active','archived'];
+function defaultV13Plan(){
+  return {
+    objectType:'Plan',
+    id:'',
+    stockId:'',
+    planType:'add',
+    versionStatus:'active',
+    triggerPrice:null,
+    triggerDirection:'',
+    stage:'none',
+    summary:'',
+    createdAt:'',
+    archivedAt:'',
+    source:'',
+    legacy:{}
+  };
+}
+function normalizeV13Plan(v={},stock={}){
+  const src=v13Object(v);
+  const known=['objectType','id','stockId','planType','versionStatus','triggerPrice','triggerDirection','stage','summary','createdAt','archivedAt','source','legacy'];
+  const legacyAction=v13String(src.action);
+  const inferredType=legacyAction==='sell'?'profit_take':(legacyAction==='buy'?'add':src.planType);
+  return {
+    ...defaultV13Plan(),
+    id:v13String(src.id)||v13Id('plan'),
+    stockId:v13String(src.stockId||stock.id||stock.code||stock.symbol),
+    planType:v13Enum(inferredType,V13_PLAN_TYPES,'add'),
+    versionStatus:v13Enum(src.versionStatus||src.status,V13_VERSION_STATUS,'active'),
+    triggerPrice:v13NumberOrNull(src.triggerPrice??src.price),
+    triggerDirection:v13String(src.triggerDirection||src.triggerOn),
+    stage:v13Enum(src.stage,['none','level1','level2','triggered'],'none'),
+    summary:v13String(src.summary||src.planSummary||src.note),
+    createdAt:v13String(src.createdAt||src.updatedAt||''),
+    archivedAt:v13String(src.archivedAt||''),
+    source:v13String(src.source||'legacy'),
+    legacy:{...v13Object(src.legacy),...v13KeepLegacy(src,known)}
+  };
+}
+
+const V13_EVENT_PHASES=['info','prepare','decision'];
+const V13_EVENT_STATUSES=['pending','cooldown','archived'];
+function defaultV13Event(){
+  return {
+    objectType:'Event',
+    id:'',
+    stockId:'',
+    businessObjectType:'',
+    businessObjectId:'',
+    phase:'info',
+    status:'pending',
+    title:'',
+    summary:'',
+    priority:0,
+    createdAt:'',
+    updatedAt:'',
+    archivedAt:'',
+    legacy:{}
+  };
+}
+function normalizeV13Event(v={},stock={}){
+  const src=v13Object(v);
+  const known=['objectType','id','stockId','businessObjectType','businessObjectId','phase','status','title','summary','priority','createdAt','updatedAt','archivedAt','legacy'];
+  const status=v13String(src.status)==='closed'?'archived':src.status;
+  return {
+    ...defaultV13Event(),
+    id:v13String(src.id)||v13Id('event'),
+    stockId:v13String(src.stockId||stock.id||stock.code||stock.symbol),
+    businessObjectType:v13String(src.businessObjectType),
+    businessObjectId:v13String(src.businessObjectId),
+    phase:v13Enum(src.phase,V13_EVENT_PHASES,'info'),
+    status:v13Enum(status,V13_EVENT_STATUSES,'pending'),
+    title:v13String(src.title),
+    summary:v13String(src.summary),
+    priority:v13NumberOrNull(src.priority)??0,
+    createdAt:v13String(src.createdAt||''),
+    updatedAt:v13String(src.updatedAt||''),
+    archivedAt:v13String(src.archivedAt||''),
+    legacy:{...v13Object(src.legacy),...v13KeepLegacy(src,known)}
+  };
+}
+
+function defaultV13Trade(){
+  return {
+    objectType:'Trade',
+    id:'',
+    stockId:'',
+    action:'',
+    shares:null,
+    price:null,
+    amount:null,
+    tradeDate:'',
+    relatedPlanId:'',
+    source:'',
+    legacy:{}
+  };
+}
+function normalizeV13Trade(v={},stock={}){
+  const src=v13Object(v);
+  const known=['objectType','id','stockId','action','shares','price','amount','tradeDate','relatedPlanId','source','legacy'];
+  return {
+    ...defaultV13Trade(),
+    id:v13String(src.id)||v13Id('trade'),
+    stockId:v13String(src.stockId||stock.id||stock.code||stock.symbol),
+    action:v13String(src.action),
+    shares:v13NumberOrNull(src.shares),
+    price:v13NumberOrNull(src.price),
+    amount:v13NumberOrNull(src.amount),
+    tradeDate:v13String(src.tradeDate||src.date||''),
+    relatedPlanId:v13String(src.relatedPlanId||src.planId),
+    source:v13String(src.source||'manual'),
+    legacy:{...v13Object(src.legacy),...v13KeepLegacy(src,known)}
+  };
+}
+
+const V13_RISK_TYPES=['trend_defense','profit_take','position_control'];
+function defaultV13RiskState(){
+  return {
+    objectType:'RiskState',
+    stockId:'',
+    risks:[],
+    updatedAt:'',
+    legacy:{}
+  };
+}
+function normalizeV13RiskState(v={},stock={}){
+  const src=v13Object(v);
+  const known=['objectType','stockId','risks','updatedAt','legacy'];
+  const risks=v13Array(src.risks).map(r=>{
+    const item=v13Object(r);
+    return {
+      riskType:v13Enum(item.riskType,V13_RISK_TYPES,'trend_defense'),
+      active:v13Bool(item.active),
+      phase:v13Enum(item.phase,V13_EVENT_PHASES,'info'),
+      summary:v13String(item.summary),
+      sourceObjectId:v13String(item.sourceObjectId),
+      createdAt:v13String(item.createdAt),
+      updatedAt:v13String(item.updatedAt)
+    };
+  });
+  return {
+    ...defaultV13RiskState(),
+    stockId:v13String(src.stockId||stock.id||stock.code||stock.symbol),
+    risks,
+    updatedAt:v13String(src.updatedAt||''),
+    legacy:{...v13Object(src.legacy),...v13KeepLegacy(src,known)}
+  };
+}
+
+function defaultV13ModuleSummary(){
+  return {
+    objectType:'ModuleSummary',
+    stockId:'',
+    modules:{},
+    updatedAt:'',
+    legacy:{}
+  };
+}
+function normalizeV13ModuleSummary(v={},stock={}){
+  const src=v13Object(v);
+  const known=['objectType','stockId','modules','updatedAt','legacy'];
+  return {
+    ...defaultV13ModuleSummary(),
+    stockId:v13String(src.stockId||stock.id||stock.code||stock.symbol),
+    modules:v13Object(src.modules),
+    updatedAt:v13String(src.updatedAt||''),
+    legacy:{...v13Object(src.legacy),...v13KeepLegacy(src,known)}
+  };
+}
+
+function defaultV13RuleConfig(){
+  return {
+    objectType:'RuleConfig',
+    planLevel1Pct:10,
+    planLevel2Pct:5,
+    updatedAt:'',
+    legacy:{}
+  };
+}
+function normalizeV13RuleConfig(v={}){
+  const src=v13Object(v);
+  const known=['objectType','planLevel1Pct','planLevel2Pct','updatedAt','legacy'];
+  const legacy=v13Object(src.legacy);
+  const level1=src.planLevel1Pct??src.level1Pct??src.planWarningLevel1Pct??src.planNearPct??legacy.planLevel1Pct??legacy.level1Pct;
+  const level2=src.planLevel2Pct??src.level2Pct??src.planWarningLevel2Pct??src.planClosePct??legacy.planLevel2Pct??legacy.level2Pct;
+  return {
+    ...defaultV13RuleConfig(),
+    planLevel1Pct:v13NumberOrNull(level1)??10,
+    planLevel2Pct:v13NumberOrNull(level2)??5,
+    updatedAt:v13String(src.updatedAt||''),
+    legacy:{...v13Object(src.legacy),...v13KeepLegacy(src,known)}
+  };
+}
+
+function defaultV13Stock(){
+  return {
+    objectType:'Stock',
+    id:'',
+    symbol:'',
+    name:'',
+    type:'holding',
+    position:defaultV13Position(),
+    priceSnapshots:[],
+    plans:[],
+    events:[],
+    trades:[],
+    riskState:defaultV13RiskState(),
+    moduleSummary:defaultV13ModuleSummary(),
+    legacy:{}
+  };
+}
+function normalizeV13Stock(v={}){
+  const src=v13Object(v);
+  const known=['objectType','id','symbol','code','name','type','position','priceSnapshots','plans','events','trades','riskState','moduleSummary','coreModel','legacy'];
+  const stockId=v13String(src.id||src.code||src.symbol)||v13Id('stock');
+  const base={id:stockId,code:src.code,symbol:src.symbol,name:src.name,type:src.type};
+  return {
+    ...defaultV13Stock(),
+    id:stockId,
+    symbol:v13String(src.symbol||src.code),
+    name:v13String(src.name),
+    type:v13String(src.type||'holding'),
+    position:normalizeV13Position(src.position,src),
+    priceSnapshots:v13Array(src.priceSnapshots).map(p=>normalizeV13PriceSnapshot(p,base)),
+    plans:v13Array(src.v13Plans||src.plans).map(p=>normalizeV13Plan(p,base)),
+    events:v13Array(src.events).map(e=>normalizeV13Event(e,base)),
+    trades:v13Array(src.trades).map(t=>normalizeV13Trade(t,base)),
+    riskState:normalizeV13RiskState(src.riskState,base),
+    moduleSummary:normalizeV13ModuleSummary(src.moduleSummary,base),
+    legacy:{...v13Object(src.legacy),...v13KeepLegacy(src,known)}
+  };
+}
+
+</script>
+<script>
+const V13_EVENT_STAGE_RANK={decision:3,prepare:2,info:1};
+const V13_EVENT_STATUS_RANK={pending:3,cooldown:2,archived:0};
+
+function normalizeEventList(events){
+  return (Array.isArray(events)?events:[])
+    .map(event=>typeof normalizeV13Event==='function'?normalizeV13Event(event):event)
+    .filter(event=>event&&typeof event==='object');
+}
+
+function getEventStageRank(event){
+  const e=typeof normalizeV13Event==='function'?normalizeV13Event(event):event;
+  return V13_EVENT_STAGE_RANK[e&&e.phase]||0;
+}
+
+function getEventStatusRank(event){
+  const e=typeof normalizeV13Event==='function'?normalizeV13Event(event):event;
+  return V13_EVENT_STATUS_RANK[e&&e.status]||0;
+}
+
+function getEventPriorityRank(event){
+  const e=typeof normalizeV13Event==='function'?normalizeV13Event(event):event;
+  const priority=Number(e&&e.priority);
+  return Number.isFinite(priority)?priority:0;
+}
+
+function sortEventsByDecisionPriority(events){
+  return normalizeEventList(events).slice().sort((a,b)=>{
+    const stageDiff=getEventStageRank(b)-getEventStageRank(a);
+    if(stageDiff)return stageDiff;
+    const statusDiff=getEventStatusRank(b)-getEventStatusRank(a);
+    if(statusDiff)return statusDiff;
+    const priorityDiff=getEventPriorityRank(b)-getEventPriorityRank(a);
+    if(priorityDiff)return priorityDiff;
+    return String(b.updatedAt||b.createdAt||'').localeCompare(String(a.updatedAt||a.createdAt||''));
+  });
+}
+
+function getActiveEvents(events){
+  return sortEventsByDecisionPriority(events).filter(event=>event.status!=='archived');
+}
+
+function v13StockEvents(stock){
+  if(!stock||typeof stock!=='object')return [];
+  if(stock.coreModel&&Array.isArray(stock.coreModel.events))return stock.coreModel.events;
+  if(Array.isArray(stock.events))return stock.events;
+  return [];
+}
+
+function getHomeVisibleEventsByStock(stocks){
+  const result=[];
+  (Array.isArray(stocks)?stocks:[]).forEach(stock=>{
+    const active=getActiveEvents(v13StockEvents(stock));
+    if(active.length)result.push(active[0]);
+  });
+  return sortEventsByDecisionPriority(result);
+}
+
+function getStockVisibleEvents(stock){
+  return getActiveEvents(v13StockEvents(stock));
+}
+
+</script>
+<script>
+const V13_PLAN_STAGE_RANK={triggered:4,level2:3,level1:2,none:1};
+const V13_PLAN_TYPE_RANK={trend_defense:5,profit_take:4,position_control:3,add:2,build:1};
+
+function normalizePlanList(plans){
+  return (Array.isArray(plans)?plans:[])
+    .map(plan=>typeof normalizeV13Plan==='function'?normalizeV13Plan(plan):plan)
+    .filter(plan=>plan&&typeof plan==='object');
+}
+
+function getActivePlans(plans){
+  return normalizePlanList(plans).filter(plan=>plan.versionStatus==='active');
+}
+
+function getArchivedPlans(plans){
+  return normalizePlanList(plans).filter(plan=>plan.versionStatus==='archived');
+}
+
+function getActivePlanByType(plans,planType){
+  return sortPlansByPriority(getActivePlans(plans).filter(plan=>plan.planType===planType))[0]||null;
+}
+
+function getDisplayActivePlans(plans){
+  const grouped=new Map();
+  sortPlansByPriority(getActivePlans(plans)).forEach(plan=>{
+    if(!grouped.has(plan.planType))grouped.set(plan.planType,plan);
+  });
+  return Array.from(grouped.values());
+}
+
+function sortPlansByPriority(plans){
+  return normalizePlanList(plans).slice().sort((a,b)=>{
+    const stageDiff=(V13_PLAN_STAGE_RANK[b.stage]||0)-(V13_PLAN_STAGE_RANK[a.stage]||0);
+    if(stageDiff)return stageDiff;
+    const typeDiff=(V13_PLAN_TYPE_RANK[b.planType]||0)-(V13_PLAN_TYPE_RANK[a.planType]||0);
+    if(typeDiff)return typeDiff;
+    const priceDiff=(Number(b.triggerPrice)||0)-(Number(a.triggerPrice)||0);
+    if(priceDiff)return priceDiff;
+    return String(b.createdAt||'').localeCompare(String(a.createdAt||''));
+  });
+}
+
+function v13PlanCurrentPrice(priceSnapshot){
+  if(!priceSnapshot||typeof priceSnapshot!=='object')return null;
+  const raw=priceSnapshot.price??priceSnapshot.currentPrice??priceSnapshot.close??priceSnapshot.lastPrice;
+  const value=Number(raw);
+  return Number.isFinite(value)&&value>0?value:null;
+}
+
+function v13PlanTriggerPrice(plan){
+  const value=Number(plan&&plan.triggerPrice);
+  return Number.isFinite(value)&&value>0?value:null;
+}
+
+function v13PlanTriggerDirection(plan){
+  const explicit=String(plan&&plan.triggerDirection||'').toLowerCase();
+  if(['above','gte','up','sell_above'].includes(explicit))return 'above';
+  if(['below','lte','down','buy_below'].includes(explicit))return 'below';
+  if(['profit_take','position_control'].includes(plan&&plan.planType))return 'above';
+  if(['build','add','trend_defense'].includes(plan&&plan.planType))return 'below';
+  return '';
+}
+
+function checkPlanTriggerLevel(plan,priceSnapshot,ruleConfig){
+  const normalized=typeof normalizeV13Plan==='function'?normalizeV13Plan(plan):plan;
+  const current=v13PlanCurrentPrice(priceSnapshot);
+  const trigger=v13PlanTriggerPrice(normalized);
+  if(!current||!trigger)return 'none';
+  const direction=v13PlanTriggerDirection(normalized);
+  if(direction==='above'&&current>=trigger)return 'triggered';
+  if(direction==='below'&&current<=trigger)return 'triggered';
+  const level1=Number(ruleConfig&&ruleConfig.planLevel1Pct);
+  const level2=Number(ruleConfig&&ruleConfig.planLevel2Pct);
+  const level1Pct=Number.isFinite(level1)?level1:10;
+  const level2Pct=Number.isFinite(level2)?level2:5;
+  const distancePct=Math.abs(current-trigger)/trigger*100;
+  if(distancePct<=level2Pct)return 'level2';
+  if(distancePct<=level1Pct)return 'level1';
+  return 'none';
+}
+
+function archivePlan(plan,reason){
+  const normalized=typeof normalizeV13Plan==='function'?normalizeV13Plan(plan):{...(plan||{})};
+  return {
+    ...normalized,
+    versionStatus:'archived',
+    archivedAt:normalized.archivedAt||(typeof v13NowIso==='function'?v13NowIso():new Date().toISOString()),
+    legacy:{
+      ...(normalized.legacy||{}),
+      archiveReason:String(reason||'')
+    }
+  };
+}
+
+</script>
+<script>
+const V13_RISK_PHASE_RANK={decision:3,prepare:2,info:1};
+const V13_RISK_TYPE_RANK={trend_defense:3,profit_take:2,position_control:1};
+
+function normalizeRiskState(riskState){
+  const src=riskState&&typeof riskState==='object'?riskState:{};
+  const base=typeof normalizeV13RiskState==='function'?normalizeV13RiskState(src):{
+    objectType:'RiskState',
+    stockId:String(src.stockId||''),
+    risks:Array.isArray(src.risks)?src.risks:[],
+    updatedAt:String(src.updatedAt||''),
+    legacy:src.legacy&&typeof src.legacy==='object'?src.legacy:{}
+  };
+  const original=Array.isArray(src.risks)?src.risks:[];
+  return {
+    ...base,
+    risks:(Array.isArray(base.risks)?base.risks:[]).map((risk,index)=>{
+      const raw=original[index]&&typeof original[index]==='object'?original[index]:{};
+      return {
+        ...risk,
+        status:raw.status,
+        versionStatus:raw.versionStatus,
+        archivedAt:raw.archivedAt,
+        triggerPrice:raw.triggerPrice??raw.thresholdPrice??raw.price??raw.level,
+        thresholdWeight:raw.thresholdWeight,
+        targetWeight:raw.targetWeight,
+        currentWeight:raw.currentWeight
+      };
+    })
+  };
+}
+
+function v13RiskObject(risk){
+  return risk&&typeof risk==='object'?{...risk}:{};
+}
+
+function v13RiskType(risk){
+  const type=String(risk&&risk.riskType||'');
+  return ['trend_defense','profit_take','position_control'].includes(type)?type:'trend_defense';
+}
+
+function v13RiskIsArchived(risk){
+  const status=String(risk&&risk.status||risk&&risk.versionStatus||'').toLowerCase();
+  return status==='archived'||risk&&risk.archivedAt;
+}
+
+function getActiveRisks(riskState){
+  return normalizeRiskState(riskState).risks
+    .map(v13RiskObject)
+    .filter(risk=>!v13RiskIsArchived(risk)&&risk.active===true);
+}
+
+function getRiskDecisionStage(risk){
+  const r=v13RiskObject(risk);
+  if(r.phase)return ['decision','prepare','info'].includes(r.phase)?r.phase:'info';
+  if(v13RiskType(r)==='position_control')return r.active?'prepare':'info';
+  if(['trend_defense','profit_take'].includes(v13RiskType(r)))return r.active?'decision':'info';
+  return 'info';
+}
+
+function sortRisksByDecisionPriority(risks){
+  return (Array.isArray(risks)?risks:[]).map(v13RiskObject).sort((a,b)=>{
+    const phaseDiff=(V13_RISK_PHASE_RANK[getRiskDecisionStage(b)]||0)-(V13_RISK_PHASE_RANK[getRiskDecisionStage(a)]||0);
+    if(phaseDiff)return phaseDiff;
+    const typeDiff=(V13_RISK_TYPE_RANK[v13RiskType(b)]||0)-(V13_RISK_TYPE_RANK[v13RiskType(a)]||0);
+    if(typeDiff)return typeDiff;
+    return String(b.updatedAt||b.createdAt||'').localeCompare(String(a.updatedAt||a.createdAt||''));
+  });
+}
+
+function v13RiskNumber(...values){
+  for(const raw of values){
+    const value=Number(raw);
+    if(Number.isFinite(value))return value;
+  }
+  return null;
+}
+
+function v13RiskPrice(priceSnapshot){
+  if(!priceSnapshot||typeof priceSnapshot!=='object')return null;
+  return v13RiskNumber(priceSnapshot.price,priceSnapshot.currentPrice,priceSnapshot.close,priceSnapshot.lastPrice);
+}
+
+function v13RiskCloseConfirmed(priceSnapshot){
+  if(!priceSnapshot||typeof priceSnapshot!=='object')return false;
+  return priceSnapshot.closeConfirmed===true
+    ||priceSnapshot.isCloseConfirmed===true
+    ||String(priceSnapshot.priceType||'').toLowerCase()==='close'
+    ||String(priceSnapshot.marketStatus||'').toLowerCase()==='closed';
+}
+
+function v13RiskTriggerPrice(risk){
+  const legacy=risk&&risk.legacy&&typeof risk.legacy==='object'?risk.legacy:{};
+  return v13RiskNumber(risk&&risk.triggerPrice,risk&&risk.thresholdPrice,risk&&risk.price,risk&&risk.level,legacy.triggerPrice,legacy.thresholdPrice,legacy.price);
+}
+
+function v13RiskKeepActive(risk,phase){
+  return {
+    ...v13RiskObject(risk),
+    riskType:v13RiskType(risk),
+    active:true,
+    phase,
+    updatedAt:(typeof v13NowIso==='function'?v13NowIso():new Date().toISOString())
+  };
+}
+
+function checkTrendRisk(risk,priceSnapshot){
+  const r=v13RiskObject(risk);
+  if(r.active===true)return v13RiskKeepActive(r,'decision');
+  const price=v13RiskPrice(priceSnapshot);
+  const trigger=v13RiskTriggerPrice(r);
+  if(price===null||trigger===null||!v13RiskCloseConfirmed(priceSnapshot))return r;
+  if(price<=trigger)return v13RiskKeepActive(r,'decision');
+  return r;
+}
+
+function checkProfitTakeRisk(risk,priceSnapshot){
+  const r=v13RiskObject(risk);
+  if(r.active===true)return v13RiskKeepActive(r,'decision');
+  const price=v13RiskPrice(priceSnapshot);
+  const trigger=v13RiskTriggerPrice(r);
+  if(price===null||trigger===null)return r;
+  if(price>=trigger)return v13RiskKeepActive(r,'decision');
+  return r;
+}
+
+function checkPositionRisk(risk,position){
+  const r=v13RiskObject(risk);
+  if(r.active===true)return v13RiskKeepActive(r,'prepare');
+  const legacy=r.legacy&&typeof r.legacy==='object'?r.legacy:{};
+  const current=v13RiskNumber(position&&position.currentWeight,position&&position.weight,r.currentWeight,legacy.currentWeight);
+  const target=v13RiskNumber(r.thresholdWeight,r.targetWeight,legacy.thresholdWeight,legacy.targetWeight,position&&position.targetWeight,position&&position.maxWeight);
+  if(current===null||target===null)return r;
+  if(current>=target)return v13RiskKeepActive(r,'prepare');
+  return r;
+}
+
+function archiveRisk(risk,reason){
+  const r=v13RiskObject(risk);
+  return {
+    ...r,
+    active:false,
+    phase:r.phase||getRiskDecisionStage(r),
+    archivedAt:r.archivedAt||(typeof v13NowIso==='function'?v13NowIso():new Date().toISOString()),
+    legacy:{
+      ...(r.legacy&&typeof r.legacy==='object'?r.legacy:{}),
+      archiveReason:String(reason||'')
+    }
+  };
+}
+
+</script>
 <script>
 const STORAGE_KEY='portfolio_manual_v502_network_price_20260610';
 const OLD_KEYS=[];
@@ -1703,7 +2351,372 @@ function calculateExecutionPlan(stock,portfolioContext={}){
     executionWarnings
   };
 }
-function normalizeStockAnalysis(stock){
+function defaultRiskManagement(){
+  return {
+    status:'normal',
+    riskLevel:0,
+    summary:'',
+    triggerReasons:[],
+    protectiveActions:[],
+    reviewConditions:[],
+    invalidConditions:[],
+    updatedAt:''
+  };
+}
+function normalizeRiskManagement(v){
+  const src=(v&&typeof v==='object'&&!Array.isArray(v))?v:{};
+  const rawStatus=String(src.status||'');
+  const status=rawStatus==='reduce_review'?'defensive_reduce_review':rawStatus;
+  return {
+    status:enumOr(status,['normal','observe','risk_review','defensive_reduce_review','profit_take_review','execute_plan'],'normal'),
+    riskLevel:clampNumber(src.riskLevel,0,10,0),
+    summary:String(src.summary||''),
+    triggerReasons:normalizeStringArray(src.triggerReasons),
+    protectiveActions:normalizeStringArray(src.protectiveActions),
+    reviewConditions:normalizeStringArray(src.reviewConditions),
+    invalidConditions:normalizeStringArray(src.invalidConditions),
+    updatedAt:normalizeDateOnly(src.updatedAt)||String(src.updatedAt||'')
+  };
+}
+function calculateRiskManagement(stock){
+  const s=(stock&&typeof stock==='object')?stock:{};
+  const strategy=normalizeStrategy(s.strategy,s);
+  const technicalData=normalizeTechnicalData(s.technicalData);
+  const technicalReview=normalizeTechnicalReview(s.technicalReview,s);
+  const shortTerm=technicalReview.shortTermTechnical||{};
+  const sentiment=normalizeShortTermSentiment(s.shortTermSentiment,s);
+  const longTerm=normalizeLongTermLogic(s.longTermLogic,s);
+  const triggerReasons=[];
+  const protectiveActions=[];
+  const reviewConditions=[];
+  const invalidConditions=[];
+  const addUnique=(arr,text)=>{const value=String(text||'').trim();if(value&&!arr.includes(value))arr.push(value)};
+  const num=x=>{const n=Number(x);return isFinite(n)?n:null};
+  const currentPrice=num(s.currentPrice)??num(technicalData.price)??num(shortTerm.price);
+  const shares=num(s.shares)??num(s.currentShares)??0;
+  const marketValue=num(s.currentValue)??num(s.marketValue)??(currentPrice&&shares?currentPrice*shares:0);
+  let totalValue=0;
+  if(typeof state==='object'&&state&&Array.isArray(state.stocks)){
+    totalValue=state.stocks.reduce((sum,item)=>{
+      const price=num(item.currentPrice)??num(item.technicalData&&item.technicalData.price);
+      const itemShares=num(item.shares)??0;
+      return sum+(num(item.currentValue)??num(item.marketValue)??(price&&itemShares?price*itemShares:0));
+    },0);
+  }
+  const currentWeight=num(s.currentWeight)??num(s.actualWeight)??num(s.weight)??(totalValue>0&&marketValue>0?marketValue/totalValue*100:0);
+  const targetWeight=num(strategy.targetWeight)??num(s.targetPct)??num(s.targetWeight)??0;
+  const overweight=targetWeight>0&&currentWeight>targetWeight+Math.max(0.5,targetWeight*0.1);
+  if(overweight)addUnique(triggerReasons,`当前仓位 ${currentWeight.toFixed(1)}% 高于目标仓位 ${targetWeight.toFixed(1)}%`);
+  const ma20=num(shortTerm.ma20)??num(technicalData.ma20);
+  const ma60=num(shortTerm.ma60)??num(technicalData.ma60);
+  const belowMa20=Boolean(currentPrice&&ma20&&currentPrice<ma20);
+  const belowMa60=Boolean(currentPrice&&ma60&&currentPrice<ma60);
+  if(belowMa20)addUnique(triggerReasons,`当前价格跌破 MA20（${ma20}）`);
+  if(belowMa60)addUnique(triggerReasons,`当前价格跌破 MA60（${ma60}）`);
+  const supportLevels=normalizeTechnicalLevelArray(shortTerm.supportLevels&&shortTerm.supportLevels.length?shortTerm.supportLevels:technicalData.supportLevels).map(num).filter(n=>n&&n>0);
+  const resistanceLevels=normalizeTechnicalLevelArray(shortTerm.resistanceLevels&&shortTerm.resistanceLevels.length?shortTerm.resistanceLevels:technicalData.resistanceLevels).map(num).filter(n=>n&&n>0);
+  const nearestSupport=currentPrice&&supportLevels.length?supportLevels.filter(n=>n<=currentPrice).sort((a,b)=>b-a)[0]||Math.max(...supportLevels):null;
+  const nearestResistance=currentPrice&&resistanceLevels.length?resistanceLevels.filter(n=>n>=currentPrice).sort((a,b)=>a-b)[0]||Math.max(...resistanceLevels):null;
+  const belowKeySupport=Boolean(currentPrice&&nearestSupport&&currentPrice<nearestSupport);
+  const nearSupport=Boolean(currentPrice&&nearestSupport&&currentPrice>=nearestSupport&&((currentPrice-nearestSupport)/currentPrice*100)<=3);
+  const nearResistance=Boolean(currentPrice&&nearestResistance&&currentPrice<=nearestResistance&&((nearestResistance-currentPrice)/currentPrice*100)<=3);
+  if(belowKeySupport)addUnique(triggerReasons,`当前价格跌破关键支撑 ${nearestSupport}`);
+  if(nearSupport)addUnique(reviewConditions,`当前价格接近关键支撑 ${nearestSupport}`);
+  if(nearResistance)addUnique(reviewConditions,`当前价格接近压力位或前高 ${nearestResistance}`);
+  const technicalText=[
+    shortTerm.trendStatus,
+    technicalData.trendStatus,
+    technicalReview.finalTechnicalConclusion,
+    shortTerm.technicalSummary,
+    technicalData.technicalSummary,
+    ...(shortTerm.riskFlags||[]),
+    ...(technicalData.riskFlags||[])
+  ].join(' ').toLowerCase();
+  const technicalWeak=/downtrend|breakdown|support_breakdown|below_ma20|below_ma60|price_below_ma20|price_below_ma60|跌破ma20|跌破ma60|跌破关键支撑|破位|下降趋势/.test(technicalText);
+  const upwardOrRebound=/uptrend|rebound|high_level_rebreakout|early_uptrend|mid_uptrend|上升趋势|反弹|高位二次上攻/.test(technicalText);
+  if(technicalWeak)addUnique(triggerReasons,'短期技术面出现趋势走弱或支撑破坏信号');
+  const sentimentText=[
+    sentiment.marketMood,
+    sentiment.fundFlowView,
+    sentiment.sectorHeat,
+    sentiment.institutionalView,
+    sentiment.actionHint,
+    ...(sentiment.riskFlags||[])
+  ].join(' ').toLowerCase();
+  const weakSentiment=/weak|outflow|negative|bearish|偏弱|走弱|净流出|流出|分歧|降温|低迷|板块偏弱|资金偏弱/.test(sentimentText);
+  if(weakSentiment)addUnique(triggerReasons,'短期情绪或资金面偏弱');
+  if(longTerm.logicStatus==='broken'){
+    addUnique(invalidConditions,'长期逻辑破坏');
+  }else if(longTerm.logicStatus&&longTerm.logicStatus!=='valid'){
+    addUnique(reviewConditions,`长期逻辑状态为 ${longTerm.logicStatus}，需要复核`);
+  }
+  addUnique(protectiveActions,'复核仓位是否仍匹配目标仓位');
+  if(belowMa20||nearSupport)addUnique(protectiveActions,'观察 MA20 与关键支撑能否修复');
+  if(belowMa60||belowKeySupport||technicalWeak)addUnique(protectiveActions,'复核是否需要启动防守性减仓计划');
+  if(weakSentiment)addUnique(protectiveActions,'复核资金流与板块强度是否继续走弱');
+  const plans=Array.isArray(s.plans)?s.plans:[];
+  const planTriggered=Boolean(currentPrice&&plans.some(p=>{
+    const price=num(p&&p.price);
+    if(!price)return false;
+    const action=String((p&&p.action)||'buy');
+    const triggerOn=String((p&&p.triggerOn)||'');
+    if((action==='sell'||triggerOn==='above')&&currentPrice>=price)return true;
+    if((action==='buy'||triggerOn==='below')&&currentPrice<=price)return true;
+    return false;
+  }));
+  if(planTriggered)addUnique(reviewConditions,'当前价格进入既定计划复核区，需要人工确认');
+  let riskLevel=0;
+  if(overweight)riskLevel+=2;
+  if(belowMa20)riskLevel+=2;
+  if(belowMa60)riskLevel+=3;
+  if(belowKeySupport)riskLevel+=3;
+  if(technicalWeak)riskLevel+=2;
+  if(weakSentiment)riskLevel+=2;
+  if(longTerm.logicStatus==='broken')riskLevel+=3;
+  riskLevel=Math.min(10,riskLevel);
+  let status='normal';
+  if(planTriggered)status='execute_plan';
+  else if(overweight&&(belowMa60||belowKeySupport||technicalWeak)&&weakSentiment)status='defensive_reduce_review';
+  else if(overweight&&(nearResistance||upwardOrRebound))status='profit_take_review';
+  else if(belowKeySupport||belowMa20||technicalWeak||longTerm.logicStatus==='broken')status='risk_review';
+  else if(nearSupport||weakSentiment||overweight)status='observe';
+  const summaryMap={
+    normal:'风险状态正常，继续按既有计划观察。',
+    observe:'存在轻度风险或接近关键位置，建议继续观察并复核触发条件。',
+    risk_review:'出现趋势或支撑风险，需要进行风险复核。',
+    defensive_reduce_review:'仓位、趋势与情绪资金同时触发防守条件，需要复核防守性减仓计划。',
+    profit_take_review:'上升或反弹阶段接近压力位且仓位偏高，需要复核盈利兑现计划。',
+    execute_plan:'当前价格进入既定计划区，需要进行既定计划复核。'
+  };
+  return {
+    ...defaultRiskManagement(),
+    status,
+    riskLevel,
+    summary:summaryMap[status],
+    triggerReasons,
+    protectiveActions,
+    reviewConditions,
+    invalidConditions,
+    updatedAt:todayDate()
+  };
+}
+function v13DerivedStockId(stock){
+  return String((stock&&stock.id)||(stock&&stock.code)||(stock&&stock.symbol)||'');
+}
+function v13DerivedPlanId(stock,plan,index){
+  return String((plan&&plan.id)||`legacy-plan-${v13DerivedStockId(stock)}-${index}`);
+}
+function v13DerivedCurrentPrice(stock){
+  const candidates=[
+    stock&&stock.currentPrice,
+    stock&&stock.price,
+    stock&&stock.technicalData&&stock.technicalData.price,
+    stock&&stock.technicalReview&&stock.technicalReview.shortTermTechnical&&stock.technicalReview.shortTermTechnical.price
+  ];
+  for(const raw of candidates){
+    const value=Number(raw);
+    if(Number.isFinite(value)&&value>0)return value;
+  }
+  if(stock&&stock.type==='etf'){
+    const value=Number(stock.currentValue);
+    const shares=Number(stock.shares);
+    if(Number.isFinite(value)&&value>0&&Number.isFinite(shares)&&shares>0)return value/shares;
+  }
+  return null;
+}
+function v13DerivedTriggerOn(stock,plan){
+  const explicit=String(plan&&plan.triggerOn||plan&&plan.triggerDirection||'').toLowerCase();
+  if(['above','below'].includes(explicit))return explicit;
+  const action=String(plan&&plan.action||'buy').toLowerCase();
+  if(action==='sell'||action==='reduce')return 'above';
+  return 'below';
+}
+function v13DerivedPlanTriggered(stock,plan){
+  const price=v13DerivedCurrentPrice(stock);
+  const trigger=Number(plan&&plan.price!==undefined?plan.price:plan&&plan.triggerPrice);
+  if(!Number.isFinite(price)||price<=0||!Number.isFinite(trigger)||trigger<=0)return false;
+  const triggerOn=v13DerivedTriggerOn(stock,plan);
+  if(triggerOn==='above')return price>=trigger;
+  if(triggerOn==='below')return price<=trigger;
+  return false;
+}
+function v13DerivedIsCashRow(stock){
+  const type=String(stock&&stock.type||'').toLowerCase();
+  const name=String(stock&&stock.name||'');
+  const code=String(stock&&stock.code||stock&&stock.symbol||'');
+  return type==='cash'||(!code&&/现金/.test(name));
+}
+function buildV13DerivedPlans(stock){
+  return (Array.isArray(stock&&stock.plans)?stock.plans:[]).map((plan,index)=>({
+    ...plan,
+    id:v13DerivedPlanId(stock,plan,index),
+    stockId:v13DerivedStockId(stock),
+    source:'legacy-plans'
+  }));
+}
+function buildV13DerivedRiskState(stock){
+  const rm=normalizeRiskManagement(stock&&stock.riskManagement);
+  const risks=[];
+  const add=(riskType,phase,summary)=>{
+    risks.push({
+      riskType,
+      active:true,
+      phase,
+      summary,
+      sourceObjectId:'riskManagement',
+      createdAt:rm.updatedAt||todayDate(),
+      updatedAt:rm.updatedAt||todayDate()
+    });
+  };
+  if(rm.status==='defensive_reduce_review')add('trend_defense','decision',rm.summary||'趋势风险进入防守性减仓复核。');
+  else if(rm.status==='profit_take_review')add('profit_take','decision',rm.summary||'上涨或超配进入盈利兑现复核。');
+  else if(rm.status==='execute_plan')add('position_control','decision',rm.summary||'既定计划进入人工复核。');
+  else if(rm.status==='risk_review')add('trend_defense','prepare',rm.summary||'趋势风险进入复核观察。');
+  else if(rm.status==='observe')add('trend_defense','info',rm.summary||'趋势风险继续观察。');
+  return {
+    objectType:'RiskState',
+    stockId:v13DerivedStockId(stock),
+    risks,
+    updatedAt:rm.updatedAt||todayDate(),
+    legacy:{source:'derived-risk-management'}
+  };
+}
+function buildV13DerivedEvents(stock){
+  const stockId=v13DerivedStockId(stock);
+  const events=[];
+  const now=todayDate();
+  const addEvent=(event)=>{
+    events.push({
+      objectType:'Event',
+      stockId,
+      status:'pending',
+      priority:0,
+      createdAt:now,
+      updatedAt:now,
+      legacy:{derived:true,...(event.legacy||{})},
+      ...event
+    });
+  };
+  const triggeredPlanGroups=new Map();
+  buildV13DerivedPlans(stock).forEach((plan,index)=>{
+    if(!v13DerivedPlanTriggered(stock,plan))return;
+    const actionKey=String(plan.action||'buy').toLowerCase()==='sell'?'sell':'buy';
+    const typeKey=plan.planType||((actionKey==='sell')?'profit_take':'add');
+    const groupKey=`${typeKey}:${actionKey}`;
+    const current=triggeredPlanGroups.get(groupKey);
+    const currentPrice=Number(v13DerivedCurrentPrice(stock))||0;
+    const triggerPrice=Number(plan.price||plan.triggerPrice)||0;
+    const gap=triggerPrice>0?Math.abs(currentPrice-triggerPrice)/triggerPrice:999;
+    if(!current||gap<current.gap)triggeredPlanGroups.set(groupKey,{plan,index,gap});
+  });
+  Array.from(triggeredPlanGroups.values()).forEach(({plan,index})=>{
+    const action=String(plan.action||'buy').toLowerCase()==='sell'?'减仓':'加仓';
+    addEvent({
+      id:`derived-event-plan-${stockId}-${plan.id||index}`,
+      businessObjectType:'Plan',
+      businessObjectId:String(plan.id||index),
+      phase:'decision',
+      title:`价位计划进入人工复核：${action} ${plan.price||plan.triggerPrice||''}`,
+      summary:'计划触发不代表已经执行，需要人工确认后再记录操作。',
+      priority:80,
+      legacy:{source:'legacy-triggered-plan'}
+    });
+  });
+  const hasPlanDecisionEvent=events.some(event=>event.businessObjectType==='Plan'&&event.phase==='decision');
+  const rm=normalizeRiskManagement(stock&&stock.riskManagement);
+  if(['defensive_reduce_review','profit_take_review','execute_plan','risk_review','observe'].includes(rm.status)){
+    const phase=rm.status==='observe'?'info':(rm.status==='risk_review'?'prepare':'decision');
+    if(!(rm.status==='execute_plan'&&hasPlanDecisionEvent)){
+      addEvent({
+        id:`derived-event-risk-${stockId}-${rm.status}`,
+        businessObjectType:'RiskState',
+        businessObjectId:'riskManagement',
+        phase,
+        title:{
+          defensive_reduce_review:'趋势风险进入防守性减仓复核',
+          profit_take_review:'上涨或超配进入盈利兑现复核',
+          execute_plan:'既定计划进入人工复核',
+          risk_review:'趋势风险进入复核观察',
+          observe:'风险状态继续观察'
+        }[rm.status],
+        summary:rm.summary||'风险事件仅提示人工复核，不构成自动交易。',
+        priority:rm.status==='execute_plan'?60:90,
+        legacy:{source:'riskManagement'}
+      });
+    }
+  }
+  const info=normalizeInformationCompleteness(stock&&stock.informationCompleteness,stock||{});
+  const hasDecisionOrPrepareEvent=events.some(event=>event.phase==='decision'||event.phase==='prepare');
+  if(info.overall==='low'&&!hasDecisionOrPrepareEvent&&!v13DerivedIsCashRow(stock)){
+    addEvent({
+      id:`derived-event-info-${stockId}-information-low`,
+      businessObjectType:'ModuleSummary',
+      businessObjectId:'informationCompleteness',
+      phase:'info',
+      title:'信息完整度较低',
+      summary:info.warning||'资料覆盖不足，建议补充后再复核。',
+      priority:10,
+      legacy:{source:'informationCompleteness'}
+    });
+  }
+  const logic=normalizeLongTermLogic(stock&&stock.longTermLogic,stock||{});
+  if(logic.logicStatus==='weakening'||logic.logicStatus==='broken'){
+    addEvent({
+      id:`derived-event-logic-${stockId}-${logic.logicStatus}`,
+      businessObjectType:'ModuleSummary',
+      businessObjectId:'longTermLogic',
+      phase:logic.logicStatus==='broken'?'decision':'prepare',
+      title:logic.logicStatus==='broken'?'长期逻辑失效复核':'长期逻辑减弱复核',
+      summary:'长期逻辑状态变化仅作为人工复核提醒，不自动触发交易。',
+      priority:logic.logicStatus==='broken'?95:70,
+      legacy:{source:'longTermLogic'}
+    });
+  }
+  return events;
+}
+function buildV13DerivedCoreModel(stock,ruleConfig){
+  const base=typeof normalizeV13Stock==='function'?normalizeV13Stock(stock):null;
+  if(!base)return null;
+  const derivedPlans=buildV13DerivedPlans(stock);
+  const derivedRiskState=buildV13DerivedRiskState(stock);
+  const derivedEvents=buildV13DerivedEvents(stock);
+  const mergedRiskState={
+    ...base.riskState,
+    risks:[...(base.riskState&&Array.isArray(base.riskState.risks)?base.riskState.risks:[]),...(derivedRiskState.risks||[])],
+    updatedAt:derivedRiskState.updatedAt||base.riskState.updatedAt,
+    legacy:{...(base.riskState&&base.riskState.legacy||{}),derivedRiskState}
+  };
+  return {
+    ...base,
+    plans:[...(base.plans||[])],
+    events:[...(base.events||[]),...derivedEvents],
+    riskState:mergedRiskState,
+    ruleConfig:typeof normalizeV13RuleConfig==='function'?normalizeV13RuleConfig(ruleConfig||(state&&state.ruleConfig)||{}):null
+  };
+}
+function buildV13CoreModelSnapshot(stock,ruleConfig){
+  const normalized=typeof buildV13DerivedCoreModel==='function'?buildV13DerivedCoreModel(stock,ruleConfig):(typeof normalizeV13Stock==='function'?normalizeV13Stock(stock):null);
+  if(!normalized)return null;
+  return {
+    stock:{
+      objectType:normalized.objectType,
+      id:normalized.id,
+      symbol:normalized.symbol,
+      name:normalized.name,
+      type:normalized.type,
+      legacy:normalized.legacy
+    },
+    position:normalized.position,
+    priceSnapshot:normalized.priceSnapshots[0]||normalizeV13PriceSnapshot({},stock),
+    plans:normalized.plans,
+    events:normalized.events,
+    trades:normalized.trades,
+    riskState:normalized.riskState,
+    moduleSummary:normalized.moduleSummary,
+    ruleConfig:typeof normalizeV13RuleConfig==='function'?normalizeV13RuleConfig(ruleConfig||(state&&state.ruleConfig)||{}):null
+  };
+}
+function normalizeStockAnalysis(stock,context={}){
   stock.strategy=normalizeStrategy(stock.strategy,stock);
   stock.dataFreshness=normalizeDataFreshness(stock.dataFreshness);
   stock.collectionInputs=normalizeCollectionInputs(stock.collectionInputs);
@@ -1725,17 +2738,20 @@ function normalizeStockAnalysis(stock){
   if(!stock.technicalData.symbol)stock.technicalData.symbol=String(stock.code||stock.symbol||'');
   stock.technicalReview=normalizeTechnicalReview(stock.technicalReview,stock);
   stock.technicalData=technicalDataFromReview(stock.technicalReview,stock);
+  stock.riskManagement=normalizeRiskManagement(stock.riskManagement);
+  stock.riskManagement=calculateRiskManagement(stock);
   stock.etfAnalysis=normalizeEtfAnalysis(stock.etfAnalysis,stock);
   stock.analysisFramework=normalizeAnalysisFramework(stock.analysisFramework,stock);
   stock.allocationDecision=normalizeAllocationDecision(stock.allocationDecision,stock);
   stock.analysisScore=calculateAnalysisScore(stock.analysisFramework);
+  stock.coreModel=buildV13CoreModelSnapshot(stock,context.ruleConfig);
   return stock;
 }
 function getCurrency(s){if(s&&(s.currency==='HKD'||s.currency==='CNY'))return s.currency;const c=String((s&&s.code)||'').trim().toUpperCase();return c.endsWith('.HK')?'HKD':'CNY'}
 function fxHKD(){const r=(state&&state.fx)?Number(state.fx.hkdcny):NaN;return (r>0&&isFinite(r))?r:DEFAULT_HKD_CNY}
 function toCNY(v,s){if(v===null||v===undefined||isNaN(v))return v;return getCurrency(s)==='HKD'?v*fxHKD():v}
 function fxLabel(){const f=(state&&state.fx)||{};const base=`HKD→CNY ${fxHKD().toFixed(4)}`;return f.updatedAt?`${base} · ${f.updatedAt}`:`${base} · 默认值`}
-function normalize(s){if(!s.fx||!(Number(s.fx.hkdcny)>0))s.fx={hkdcny:DEFAULT_HKD_CNY,updatedAt:'',source:'默认'};s.stocks=(s.stocks||[]).map(x=>{if(x.currency===undefined)x.currency='';if(x.currentPrice===undefined)x.currentPrice='';if(x.currentValue===undefined)x.currentValue='';if(x.priceUpdatedAt===undefined)x.priceUpdatedAt='';if(x.valueUpdatedAt===undefined)x.valueUpdatedAt='';if(x.code===undefined)x.code=DEFAULT_CODES[x.id]||'';if(x.priceSource===undefined)x.priceSource='';if(x.trimPct===undefined)x.trimPct='';if(x.trimToPct===undefined)x.trimToPct='';if(x.capPct===undefined)x.capPct='';if(x.syncStatus===undefined)x.syncStatus='';if(x.tradePlan!==undefined&&(!x.tradePlan||typeof x.tradePlan!=='object'||Array.isArray(x.tradePlan)))x.tradePlan=null;if(!x.id)x.id=uid();if(!x.type)x.type='holding';if(!x.role)x.role=x.type==='watching'?'观察仓':'核心仓';if(!x.theme)x.theme='其他';if(!Array.isArray(x.plans))x.plans=[];const refPrice=x.type==='etf'?(Number(x.lastUnitPrice)||((Number(x.currentValue)>0&&Number(x.shares)>0)?Number(x.currentValue)/Number(x.shares):null)):(Number(x.currentPrice)||null);x.plans=x.plans.map(p=>{if(!p.triggerOn)p.triggerOn=inferTriggerOn(refPrice,p.price,p.action);return p});if(!x.thesis)x.thesis=x.notes||'';if(!x.buyRule){const buys=x.plans.filter(p=>(p.action||'buy')==='buy');x.buyRule=buys.map(p=>`${p.price}：${p.note||'加仓'}`).join('；')||'低于目标仓位且逻辑未变时再考虑。'}if(!x.sellRule){const sells=x.plans.filter(p=>p.action==='sell');x.sellRule=sells.map(p=>`${p.price}：${p.note||'减仓'}`).join('；')||(x.type==='etf'?'不设机械止损，只按目标仓位再平衡。':'逻辑破坏、估值过热或仓位超标时处理。')}return normalizeStockAnalysis(x)});return s}
+function normalize(s){if(typeof normalizeV13RuleConfig==='function')s.ruleConfig=normalizeV13RuleConfig(s.ruleConfig||s.rules||s.config||{});if(!s.fx||!(Number(s.fx.hkdcny)>0))s.fx={hkdcny:DEFAULT_HKD_CNY,updatedAt:'',source:'默认'};s.stocks=(s.stocks||[]).map(x=>{if(x.currency===undefined)x.currency='';if(x.currentPrice===undefined)x.currentPrice='';if(x.currentValue===undefined)x.currentValue='';if(x.priceUpdatedAt===undefined)x.priceUpdatedAt='';if(x.valueUpdatedAt===undefined)x.valueUpdatedAt='';if(x.code===undefined)x.code=DEFAULT_CODES[x.id]||'';if(x.priceSource===undefined)x.priceSource='';if(x.trimPct===undefined)x.trimPct='';if(x.trimToPct===undefined)x.trimToPct='';if(x.capPct===undefined)x.capPct='';if(x.syncStatus===undefined)x.syncStatus='';if(x.tradePlan!==undefined&&(!x.tradePlan||typeof x.tradePlan!=='object'||Array.isArray(x.tradePlan)))x.tradePlan=null;if(!x.id)x.id=uid();if(!x.type)x.type='holding';if(!x.role)x.role=x.type==='watching'?'观察仓':'核心仓';if(!x.theme)x.theme='其他';if(!Array.isArray(x.plans))x.plans=[];const refPrice=x.type==='etf'?(Number(x.lastUnitPrice)||((Number(x.currentValue)>0&&Number(x.shares)>0)?Number(x.currentValue)/Number(x.shares):null)):(Number(x.currentPrice)||null);x.plans=x.plans.map(p=>{if(!p.triggerOn)p.triggerOn=inferTriggerOn(refPrice,p.price,p.action);return p});if(!x.thesis)x.thesis=x.notes||'';if(!x.buyRule){const buys=x.plans.filter(p=>(p.action||'buy')==='buy');x.buyRule=buys.map(p=>`${p.price}：${p.note||'加仓'}`).join('；')||'低于目标仓位且逻辑未变时再考虑。'}if(!x.sellRule){const sells=x.plans.filter(p=>p.action==='sell');x.sellRule=sells.map(p=>`${p.price}：${p.note||'减仓'}`).join('；')||(x.type==='etf'?'不设机械止损，只按目标仓位再平衡。':'逻辑破坏、估值过热或仓位超标时处理。')}return normalizeStockAnalysis(x,{ruleConfig:s.ruleConfig})});return s}
 function loadState(){try{let raw=localStorage.getItem(STORAGE_KEY);state=raw?normalize(JSON.parse(raw)):normalize({stocks:[],updatedAt:null})}catch(e){console.warn(e);state=normalize({stocks:[],updatedAt:null})}}
 function saveState(){state=normalize(state);state.updatedAt=Date.now();localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
 
@@ -1744,7 +2760,7 @@ function saveState(){state=normalize(state);state.updatedAt=Date.now();localStor
 function pad2(n){return String(n).padStart(2,'0')}
 function dateStamp(d=new Date()){return `${d.getFullYear()}${pad2(d.getMonth()+1)}${pad2(d.getDate())}`}
 function timeStamp(d=new Date()){return `${dateStamp(d)}-${pad2(d.getHours())}${pad2(d.getMinutes())}`}
-function appVersion(){return 'V13.0-B.3'}
+function appVersion(){return 'V13-dev Alpha-1'}
 function backupFilename(prefix='投资作战手册',d=new Date()){return `${prefix}-${appVersion()}-${timeStamp(d)}.json`}
 function downloadJson(data,filename){
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
@@ -2610,6 +3626,63 @@ function updateTaskPromptText(){
   return ['请协助整理以下股票的待更新资料，优先补充价格、估值、财报、新闻和个人观点所需信息。','建议逐只打开投资手册详情页的“信息采集面板”，补充新闻、财报、社媒、技术和综合资料。','也可进入详情页使用“统一 Prompt 生成器”或“综合复核自动组包”复制复核资料。','',...rows.map(x=>`- ${x.s.name||'—'} (${x.s.code||'无代码'})：需要更新 ${x.items.join('、')}；最旧更新时间：${x.oldest}；建议进入详情页生成综合复核包`)].join('\n');
 }
 function copyUpdatePrompt(){copyText(updateTaskPromptText(),'待更新任务提示词已复制。')}
+function v13EventPhaseLabel(phase){
+  return {decision:'🔴 待处理',prepare:'🟡 待关注',info:'⚪ 信息'}[phase]||'⚪ 信息';
+}
+function v13EventStockFor(event){
+  const id=String(event&&event.stockId||'');
+  return state.stocks.find(s=>[s.id,s.code,s.symbol,s.name].map(x=>String(x||'')).includes(id))||null;
+}
+function v13HomeEventTaskPanel(){
+  if(typeof getHomeVisibleEventsByStock!=='function')return '';
+  const events=getHomeVisibleEventsByStock(state.stocks||[]);
+  const groups={decision:[],prepare:[],info:[]};
+  events.forEach(event=>{
+    const phase=['decision','prepare','info'].includes(event.phase)?event.phase:'info';
+    groups[phase].push(event);
+  });
+  const total=events.length;
+  const sourceGroupLabel=event=>{
+    const type=String(event&&event.businessObjectType||'').trim();
+    if(type==='Plan')return 'Plan';
+    if(type==='RiskState')return 'RiskState';
+    return '其它';
+  };
+  const row=event=>{
+    const stock=v13EventStockFor(event);
+    const stockName=stock?(stock.name||stock.code||stock.symbol||'—'):(event.stockId||'—');
+    const stockCode=stock?(stock.code||stock.symbol||''):'';
+    const targetId=stock&&stock.id?` data-v13-event-stock="${esc(stock.id)}"`:'';
+    return `<div class="trig-row"${targetId} style="${stock?'cursor:pointer':''}"><div class="trig-name">${esc(stockName)} <span class="muted">· ${esc(stockCode||event.businessObjectType||'Event')}</span></div><div class="trig-dist">${esc(v13EventPhaseLabel(event.phase).replace(/^.. /,''))}</div><div class="trig-desc"><b>${esc(event.title||'未命名事件')}</b>${event.summary?` · ${esc(event.summary)}`:''}</div></div>`;
+  };
+  const decisionSection=()=>{
+    const list=groups.decision||[];
+    const bySource={Plan:[],RiskState:[],其他:[]};
+    list.forEach(event=>bySource[sourceGroupLabel(event)].push(event));
+    const sourceBlock=(label,items)=>items.length?`<div style="margin-top:8px"><div class="card-note" style="margin-bottom:6px">${esc(label)}（${items.length}）</div><div class="trig-list">${items.map(row).join('')}</div></div>`:'';
+    return `<div style="margin-top:10px"><div class="card-note" style="margin-bottom:6px">🔴 待处理（${list.length}）</div>${list.length?`${sourceBlock('Plan',bySource.Plan)}${sourceBlock('RiskState',bySource.RiskState)}${sourceBlock('其它',bySource.其他)}`:'<div class="card-note">暂无</div>'}</div>`;
+  };
+  const section=(phase,title)=>{
+    const list=groups[phase]||[];
+    return `<div style="margin-top:10px"><div class="card-note" style="margin-bottom:6px">${title}（${list.length}）</div>${list.length?`<div class="trig-list">${list.map(row).join('')}</div>`:'<div class="card-note">暂无</div>'}</div>`;
+  };
+  const infoList=groups.info||[];
+  const infoSection=infoList.length?`<details style="margin-top:10px"><summary class="card-note" style="cursor:pointer">⚪ 信息（${infoList.length}）</summary><div class="trig-list" style="margin-top:6px">${infoList.map(row).join('')}</div></details>`:`<div style="margin-top:10px"><div class="card-note" style="margin-bottom:6px">⚪ 信息（0）</div><div class="card-note">暂无</div></div>`;
+  return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><div class="card-title">首页任务流（Event Engine）</div>${total?`${decisionSection()}${section('prepare','🟡 待关注')}${infoSection}`:'<div class="card-note">暂无需要处理的事件。</div>'}</div>`;
+}
+function v13EventSourceText(event){
+  const parts=[event&&event.businessObjectType,event&&event.businessObjectId].map(x=>String(x||'').trim()).filter(Boolean);
+  return parts.length?parts.join(' · '):'—';
+}
+function v13EventUpdatedText(event){
+  return String(event&&event.updatedAt||event&&event.createdAt||'—');
+}
+function v13StockEventPanel(stock){
+  if(typeof getStockVisibleEvents!=='function')return '';
+  const events=getStockVisibleEvents(stock);
+  const row=event=>`<div class="trig-row"><div class="trig-name">${esc(v13EventPhaseLabel(event.phase))} <span class="muted">· 来源 ${esc(v13EventSourceText(event))}</span></div><div class="trig-dist">${esc(v13EventUpdatedText(event))}</div><div class="trig-desc"><b>${esc(event.title||'未命名事件')}</b>${event.summary?` · ${esc(event.summary)}`:''}</div></div>`;
+  return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><div class="card-title">当前事件</div>${events.length?`<div class="trig-list">${events.map(row).join('')}</div>`:'<div class="card-note">暂无未处理事件。</div>'}</div>`;
+}
 function stockSearchBase(stock){return [stock.name,stock.code].filter(Boolean).join(' ').trim()||'stock'}
 function collectionSourceLinks(stock){
   const code=String(stock.code||'').trim().toUpperCase();
@@ -3432,7 +4505,8 @@ function renderDashboard(){
   const resPct=(themeRows.find(x=>x.name==='黄金资源')||{p:0}).p;
   summary.innerHTML=`总资产 <strong>${fmtMoney(estAssets||totalMv)}</strong> · 已投资 <strong>${fmtMoney(totalMv)}</strong> · 现金/预留 <strong>${fmt(reserve,1)}%</strong> · AI <strong>${fmt(aiPct,1)}%</strong> · 黄金资源 <strong>${fmt(resPct,1)}%</strong>`;
 
-  const triggeredPanel=planRows.length?`<div class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><div class="card-title">已触发价位计划（${triggeredCount} 条）</div><div class="trig-list">${planRows.map(({s})=>{const cp=getComparablePrice(s);const rows=(s.plans||[]).map(p=>({p,g:planGap(cp,p.price,p.action,p.triggerOn)})).filter(x=>x.g&&x.g.triggered);return rows.map(({p,g})=>`<div class="trig-row ${p.action==='sell'?'sell':'buy'}"><div class="trig-name">${esc(s.name)} <span class="muted">· ${p.action==='sell'?'减仓':'加仓'} · 触发价 ${fmtMaybe(p.price)}</span></div><div class="trig-dist">${fmtMaybe(cp)} / ${fmt(g.absPct,1)}%</div><div class="trig-desc">${esc(p.note||'已到达计划价位')} <button class="link-btn" data-execute-stock="${esc(s.id)}" data-execute-plan="${esc(p.id)}">记录执行</button></div></div>`).join('')}).join('')}</div></div>`:'<div class="card" style="margin-bottom:14px"><div class="card-title">触发提醒</div><div class="card-note">当前没有已触发的价位计划。</div></div>';
+  const triggeredRows=planRows.map(({s})=>{const cp=getComparablePrice(s);const rows=(s.plans||[]).map(p=>({p,g:planGap(cp,p.price,p.action,p.triggerOn)})).filter(x=>x.g&&x.g.triggered);return rows.map(({p,g})=>`<div class="trig-row ${p.action==='sell'?'sell':'buy'}"><div class="trig-name">${esc(s.name)} <span class="muted">· ${p.action==='sell'?'减仓':'加仓'} · 触发价 ${fmtMaybe(p.price)}</span></div><div class="trig-dist">${fmtMaybe(cp)} / ${fmt(g.absPct,1)}%</div><div class="trig-desc">${esc(p.note||'已到达计划价位')} <button class="link-btn" data-execute-stock="${esc(s.id)}" data-execute-plan="${esc(p.id)}">记录执行</button></div></div>`).join('')}).join('');
+  const triggeredPanel=planRows.length?`<details class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><summary class="card-title">已触发价位计划（legacy/fallback，${triggeredCount} 条）</summary><div class="card-note" style="margin:8px 0 10px">V13 Event 区已作为主任务入口，此区块仅用于旧逻辑对照。</div><div class="trig-list">${triggeredRows}</div></details>`:'<div class="card" style="margin-bottom:14px"><div class="card-title">触发提醒</div><div class="card-note">当前没有已触发的价位计划。</div></div>';
 
   const rebalPanel=rebalRows.length?`<div class="card" style="margin-bottom:14px"><div class="card-title">再平衡提示（${rebalRows.length} 只）</div><div class="trig-list">${rebalRows.slice(0,8).map(x=>{const cls=x.info.status==='overweight'?'sell':'buy';const word=x.info.status==='overweight'?'超配':'低配';return `<div class="trig-row ${cls}"><div class="trig-name">${esc(x.s.name)} <span class="muted">· ${word} ${x.info.deviation>0?'+':''}${fmt(x.info.deviation,1)}%</span></div><div class="trig-dist">${fmtMoney(Math.abs(x.action.amount||0))}</div><div class="trig-desc">${esc(x.action.text||x.action.desc||'按目标仓位复核')}</div></div>`}).join('')}</div></div>`:'<div class="card" style="margin-bottom:14px"><div class="card-title">再平衡提示</div><div class="card-note">当前没有明显偏离目标仓位的标的。</div></div>';
 
@@ -3447,7 +4521,8 @@ function renderDashboard(){
   const disciplinePanel=disciplineRows.length?`<div class="card" style="margin-bottom:14px;border-left:3px solid var(--gold)"><div class="card-title">纪律规则提醒（${disciplineRows.length} 项）</div><div class="trig-list">${disciplineRows.join('')}</div></div>`:'';
   const noPriceHint=noPriceRows.length?`<div class="alert" style="margin-bottom:14px">有 ${noPriceRows.length} 只标的缺少有效价格/市值，仓位和再平衡计算可能不完整。</div>`:'';
   const fxRiskHint=isDefaultFx()?'<div class="alert" style="margin-bottom:14px">汇率使用默认值，港股市值和仓位占比可能有偏差。可到「工具」页更新 HKD→CNY 汇率。</div>':'';
-  main.innerHTML=`${updateChecklistPanel()}${triggeredPanel}${disciplinePanel}${rebalPanel}${noPriceHint}${fxRiskHint}<div class="dash"><div class="card"><div class="card-title">按主题分布</div>${bars(themeRows)}</div><div class="card"><div class="card-title">按仓位角色分布</div>${bars(roleRows)}</div></div>`;
+  main.innerHTML=`${v13HomeEventTaskPanel()}${updateChecklistPanel()}${triggeredPanel}${disciplinePanel}${rebalPanel}${noPriceHint}${fxRiskHint}<div class="dash"><div class="card"><div class="card-title">按主题分布</div>${bars(themeRows)}</div><div class="card"><div class="card-title">按仓位角色分布</div>${bars(roleRows)}</div></div>`;
+  document.querySelectorAll('[data-v13-event-stock]').forEach(el=>el.addEventListener('click',()=>openStockDetail(el.dataset.v13EventStock)));
   document.querySelectorAll('[data-execute-stock]').forEach(b=>b.addEventListener('click',()=>executePlan(b.dataset.executeStock,b.dataset.executePlan)));
   document.querySelectorAll('[data-update-stock]').forEach(el=>el.addEventListener('click',()=>openStockDetail(el.dataset.updateStock)));
   const copyCodes=document.getElementById('copyUpdateCodesBtn');
@@ -3890,6 +4965,35 @@ function technicalStatusLabel(v){return zhActionStatus(v==='positive'?'positive'
 function valuationStatusLabel(v){return zhActionStatus(v==='positive'?'positive':(v==='negative'?'negative':'neutral'))}
 function financialStatusLabel(v){return zhActionStatus(v==='positive'?'positive':(v==='negative'?'negative':'neutral'))}
 function fmtTechnicalNumber(v,d=2){return Number(v)>0?fmtMaybe(v,d):'—'}
+function riskManagementStatusLabel(value){
+  return {
+    normal:'正常',
+    observe:'观察',
+    risk_review:'风险复核',
+    defensive_reduce_review:'防守性减仓复核',
+    profit_take_review:'盈利兑现复核',
+    reduce_review:'防守性减仓复核',
+    execute_plan:'既定计划复核'
+  }[value]||formatChineseText(value||'未知');
+}
+function riskManagementLevel(riskLevel){
+  const n=Number(riskLevel)||0;
+  if(n>=7)return 3;
+  if(n>=4)return 2;
+  if(n>=2)return 1;
+  return 0;
+}
+function riskManagementList(title,items){
+  const arr=Array.isArray(items)?items.filter(Boolean):[];
+  if(!arr.length)return '';
+  return `<div class="text" style="max-width:none;margin-top:8px"><b>${esc(title)}：</b><ul style="margin:6px 0 0 18px;padding:0">${arr.slice(0,8).map(formatChineseText).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
+}
+function trendRiskManagementPanel(stock){
+  if(!stock||!stock.riskManagement)return '';
+  const rm=normalizeRiskManagement(stock.riskManagement);
+  const level=riskManagementLevel(rm.riskLevel);
+  return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--seal)"><div class="card-title">趋势风险管理</div><div class="dash" style="margin:0"><div><div class="card-title">状态</div><div class="card-num" style="font-size:22px">${esc(riskManagementStatusLabel(rm.status))}</div><div class="card-note">更新：${esc(rm.updatedAt||'—')}</div></div><div><div class="card-title">风险等级</div><div class="card-num" style="font-size:22px">Level ${level}</div><div class="card-note">风险分 ${fmtMaybe(rm.riskLevel,0)} / 10</div></div><div style="grid-column:span 2"><div class="card-title">摘要</div><div class="text" style="max-width:none">${esc(formatChineseText(rm.summary||'暂无趋势风险复核'))}</div></div></div>${riskManagementList('触发原因',rm.triggerReasons)}${riskManagementList('防守动作复核',rm.protectiveActions)}${riskManagementList('复核条件',rm.reviewConditions)}${riskManagementList('失效条件',rm.invalidConditions)}<div class="card-note" style="margin-top:8px">说明：本模块只做趋势风险复核，不构成确定性买卖指令；防守性减仓复核不等于减仓建议，盈利兑现复核不等于卖出指令，既定计划复核也需要人工确认。</div></div>`;
+}
 function decisionPanel(stock){
   const d=decisionForStock(stock);
   const ex=calculateExecutionPlan(stock,portfolioContext());
@@ -4513,6 +5617,7 @@ function aiDiscussionPromptText(stock){
   const shortSentiment=normalizeShortTermSentiment(stock.shortTermSentiment,stock);
   const sentiment=normalizeSentimentReview(stock.sentimentReview,stock);
   const allocation=normalizeAllocationDecision(stock.allocationDecision,stock);
+  const riskManagement=normalizeRiskManagement(stock.riskManagement||calculateRiskManagement(stock));
   const freshness=normalizeDataFreshness(stock.dataFreshness);
   const actualWeight=pos&&pos.actualPct!==null?Number(pos.actualPct.toFixed(2)):null;
   const etfHasData=Boolean(stock.type==='etf'||etf.indexName||etf.conclusion||(etf.keyPoints&&etf.keyPoints.length)||Number(etf.score)>0||etf.updatedAt);
@@ -4604,8 +5709,14 @@ function aiDiscussionPromptText(stock){
   ].join('\n');
   return [
     '【任务说明】',
-    '这是一次临时投资讨论，用于判断当前标的是否继续观察、持有、加仓、减仓或等待。',
+    '这是一次临时投资讨论，用于判断当前标的是否继续观察、持有、风险复核、防守性减仓复核、盈利兑现复核、等待回补或维持原计划。',
     '不要输出可导入 JSON，不要给确定性买卖指令，只做条件化分析。',
+    '不要默认讨论补仓；请先识别 riskManagement.status，再决定讨论重点。',
+    '如果 riskManagement.status 为 defensive_reduce_review，应优先讨论趋势破坏后的防守性减仓复核。',
+    '如果 riskManagement.status 为 profit_take_review，应优先讨论上涨后的盈利兑现或再平衡复核。',
+    '如果 riskManagement.status 为 execute_plan，应优先讨论既定计划是否进入人工复核。',
+    '如果仓位高于目标且趋势破坏，应优先讨论风险管理，而不是补仓。',
+    '如果价格未到战略加仓区，只能说“等待回补条件”，不能引导提前补仓。',
     '',
     '【当前标的】',
     `- 名称：${stock.name||'未填写'}`,
@@ -4623,6 +5734,9 @@ function aiDiscussionPromptText(stock){
     `- 实际仓位：${actualWeight!==null?actualWeight+'%':'暂无数据'}`,
     `- 推荐仓位区间：${allocation.recommendedWeightRange||'暂无数据'}`,
     `- 推荐最大仓位：${allocation.recommendedMaxWeight!==null&&allocation.recommendedMaxWeight!==undefined?allocation.recommendedMaxWeight+'%':'暂无数据'}`,
+    '',
+    '【趋势风险管理】',
+    JSON.stringify({riskManagement},null,2),
     '',
     '【当前触发状态】',
     triggerStatus,
@@ -4799,8 +5913,8 @@ function fullAddDiscussionPromptText(stock){
     '【我希望你输出】',
     '请按以下结构输出：',
     '',
-    '1. 是否建议现在用新增资金加仓该股票：',
-    '   - 可以 / 不建议 / 仅观察 / 条件触发后再考虑',
+    '1. 当前是否适合行动：',
+    '   - 继续观察 / 持有 / 风险复核 / 防守性减仓复核 / 盈利兑现复核 / 条件触发后再考虑',
     '',
     '2. 主要理由：',
     '   - 技术面',
@@ -7485,7 +8599,7 @@ function renderStockDetail(){
   const actual=info&&info.actualPct!==null?info.actualPct:null;
   const deviation=info&&info.deviation!==null?`${info.deviation>=0?'+':''}${info.deviation.toFixed(1)}%`:'—';
   document.getElementById('summary').innerHTML=`标的详情 · <strong>${esc(s.name)}</strong> · ${esc(s.role||'—')} · ${esc(s.theme||'—')}`;
-  document.getElementById('main').innerHTML=`${detailHeroPanel(s,mv,actual,deviation)}${technicalAnalysisPanel(s)}${shortTermCatalystPanel(s)}${shortTermSentimentPanel(s)}${informationCompletenessPanel(s)}${positionPlanPanel(s)}${detailResultsArchivePanel(s,cp)}${detailResearchArchivePanel(s,cp)}${detailAdvancedToolsArchivePanel(s)}`;
+  document.getElementById('main').innerHTML=`${detailHeroPanel(s,mv,actual,deviation)}${v13StockEventPanel(s)}${trendRiskManagementPanel(s)}${technicalAnalysisPanel(s)}${shortTermCatalystPanel(s)}${shortTermSentimentPanel(s)}${informationCompletenessPanel(s)}${positionPlanPanel(s)}${detailResultsArchivePanel(s,cp)}${detailResearchArchivePanel(s,cp)}${detailAdvancedToolsArchivePanel(s)}`;
   document.getElementById('backToListBtn').addEventListener('click',closeStockDetail);
   document.querySelectorAll('[data-detail-action]').forEach(b=>b.addEventListener('click',()=>handleDetailAction(b.dataset.detailAction,s)));
   document.querySelectorAll('[data-collection-action="save"]').forEach(b=>b.addEventListener('click',saveCollectionInputs));

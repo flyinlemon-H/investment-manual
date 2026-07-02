@@ -1648,7 +1648,223 @@ function calculateRiskManagement(stock){
     updatedAt:todayDate()
   };
 }
-function normalizeStockAnalysis(stock){
+function v13DerivedStockId(stock){
+  return String((stock&&stock.id)||(stock&&stock.code)||(stock&&stock.symbol)||'');
+}
+function v13DerivedPlanId(stock,plan,index){
+  return String((plan&&plan.id)||`legacy-plan-${v13DerivedStockId(stock)}-${index}`);
+}
+function v13DerivedCurrentPrice(stock){
+  const candidates=[
+    stock&&stock.currentPrice,
+    stock&&stock.price,
+    stock&&stock.technicalData&&stock.technicalData.price,
+    stock&&stock.technicalReview&&stock.technicalReview.shortTermTechnical&&stock.technicalReview.shortTermTechnical.price
+  ];
+  for(const raw of candidates){
+    const value=Number(raw);
+    if(Number.isFinite(value)&&value>0)return value;
+  }
+  if(stock&&stock.type==='etf'){
+    const value=Number(stock.currentValue);
+    const shares=Number(stock.shares);
+    if(Number.isFinite(value)&&value>0&&Number.isFinite(shares)&&shares>0)return value/shares;
+  }
+  return null;
+}
+function v13DerivedTriggerOn(stock,plan){
+  const explicit=String(plan&&plan.triggerOn||plan&&plan.triggerDirection||'').toLowerCase();
+  if(['above','below'].includes(explicit))return explicit;
+  const action=String(plan&&plan.action||'buy').toLowerCase();
+  if(action==='sell'||action==='reduce')return 'above';
+  return 'below';
+}
+function v13DerivedPlanTriggered(stock,plan){
+  const price=v13DerivedCurrentPrice(stock);
+  const trigger=Number(plan&&plan.price!==undefined?plan.price:plan&&plan.triggerPrice);
+  if(!Number.isFinite(price)||price<=0||!Number.isFinite(trigger)||trigger<=0)return false;
+  const triggerOn=v13DerivedTriggerOn(stock,plan);
+  if(triggerOn==='above')return price>=trigger;
+  if(triggerOn==='below')return price<=trigger;
+  return false;
+}
+function v13DerivedIsCashRow(stock){
+  const type=String(stock&&stock.type||'').toLowerCase();
+  const name=String(stock&&stock.name||'');
+  const code=String(stock&&stock.code||stock&&stock.symbol||'');
+  return type==='cash'||(!code&&/现金/.test(name));
+}
+function buildV13DerivedPlans(stock){
+  return (Array.isArray(stock&&stock.plans)?stock.plans:[]).map((plan,index)=>({
+    ...plan,
+    id:v13DerivedPlanId(stock,plan,index),
+    stockId:v13DerivedStockId(stock),
+    source:'legacy-plans'
+  }));
+}
+function buildV13DerivedRiskState(stock){
+  const rm=normalizeRiskManagement(stock&&stock.riskManagement);
+  const risks=[];
+  const add=(riskType,phase,summary)=>{
+    risks.push({
+      riskType,
+      active:true,
+      phase,
+      summary,
+      sourceObjectId:'riskManagement',
+      createdAt:rm.updatedAt||todayDate(),
+      updatedAt:rm.updatedAt||todayDate()
+    });
+  };
+  if(rm.status==='defensive_reduce_review')add('trend_defense','decision',rm.summary||'趋势风险进入防守性减仓复核。');
+  else if(rm.status==='profit_take_review')add('profit_take','decision',rm.summary||'上涨或超配进入盈利兑现复核。');
+  else if(rm.status==='execute_plan')add('position_control','decision',rm.summary||'既定计划进入人工复核。');
+  else if(rm.status==='risk_review')add('trend_defense','prepare',rm.summary||'趋势风险进入复核观察。');
+  else if(rm.status==='observe')add('trend_defense','info',rm.summary||'趋势风险继续观察。');
+  return {
+    objectType:'RiskState',
+    stockId:v13DerivedStockId(stock),
+    risks,
+    updatedAt:rm.updatedAt||todayDate(),
+    legacy:{source:'derived-risk-management'}
+  };
+}
+function buildV13DerivedEvents(stock){
+  const stockId=v13DerivedStockId(stock);
+  const events=[];
+  const now=todayDate();
+  const addEvent=(event)=>{
+    events.push({
+      objectType:'Event',
+      stockId,
+      status:'pending',
+      priority:0,
+      createdAt:now,
+      updatedAt:now,
+      legacy:{derived:true,...(event.legacy||{})},
+      ...event
+    });
+  };
+  const triggeredPlanGroups=new Map();
+  buildV13DerivedPlans(stock).forEach((plan,index)=>{
+    if(!v13DerivedPlanTriggered(stock,plan))return;
+    const actionKey=String(plan.action||'buy').toLowerCase()==='sell'?'sell':'buy';
+    const typeKey=plan.planType||((actionKey==='sell')?'profit_take':'add');
+    const groupKey=`${typeKey}:${actionKey}`;
+    const current=triggeredPlanGroups.get(groupKey);
+    const currentPrice=Number(v13DerivedCurrentPrice(stock))||0;
+    const triggerPrice=Number(plan.price||plan.triggerPrice)||0;
+    const gap=triggerPrice>0?Math.abs(currentPrice-triggerPrice)/triggerPrice:999;
+    if(!current||gap<current.gap)triggeredPlanGroups.set(groupKey,{plan,index,gap});
+  });
+  Array.from(triggeredPlanGroups.values()).forEach(({plan,index})=>{
+    const action=String(plan.action||'buy').toLowerCase()==='sell'?'减仓':'加仓';
+    addEvent({
+      id:`derived-event-plan-${stockId}-${plan.id||index}`,
+      businessObjectType:'Plan',
+      businessObjectId:String(plan.id||index),
+      phase:'decision',
+      title:`价位计划进入人工复核：${action} ${plan.price||plan.triggerPrice||''}`,
+      summary:'计划触发不代表已经执行，需要人工确认后再记录操作。',
+      priority:80,
+      legacy:{source:'legacy-triggered-plan'}
+    });
+  });
+  const hasPlanDecisionEvent=events.some(event=>event.businessObjectType==='Plan'&&event.phase==='decision');
+  const rm=normalizeRiskManagement(stock&&stock.riskManagement);
+  if(['defensive_reduce_review','profit_take_review','execute_plan','risk_review','observe'].includes(rm.status)){
+    const phase=rm.status==='observe'?'info':(rm.status==='risk_review'?'prepare':'decision');
+    if(!(rm.status==='execute_plan'&&hasPlanDecisionEvent)){
+      addEvent({
+        id:`derived-event-risk-${stockId}-${rm.status}`,
+        businessObjectType:'RiskState',
+        businessObjectId:'riskManagement',
+        phase,
+        title:{
+          defensive_reduce_review:'趋势风险进入防守性减仓复核',
+          profit_take_review:'上涨或超配进入盈利兑现复核',
+          execute_plan:'既定计划进入人工复核',
+          risk_review:'趋势风险进入复核观察',
+          observe:'风险状态继续观察'
+        }[rm.status],
+        summary:rm.summary||'风险事件仅提示人工复核，不构成自动交易。',
+        priority:rm.status==='execute_plan'?60:90,
+        legacy:{source:'riskManagement'}
+      });
+    }
+  }
+  const info=normalizeInformationCompleteness(stock&&stock.informationCompleteness,stock||{});
+  const hasDecisionOrPrepareEvent=events.some(event=>event.phase==='decision'||event.phase==='prepare');
+  if(info.overall==='low'&&!hasDecisionOrPrepareEvent&&!v13DerivedIsCashRow(stock)){
+    addEvent({
+      id:`derived-event-info-${stockId}-information-low`,
+      businessObjectType:'ModuleSummary',
+      businessObjectId:'informationCompleteness',
+      phase:'info',
+      title:'信息完整度较低',
+      summary:info.warning||'资料覆盖不足，建议补充后再复核。',
+      priority:10,
+      legacy:{source:'informationCompleteness'}
+    });
+  }
+  const logic=normalizeLongTermLogic(stock&&stock.longTermLogic,stock||{});
+  if(logic.logicStatus==='weakening'||logic.logicStatus==='broken'){
+    addEvent({
+      id:`derived-event-logic-${stockId}-${logic.logicStatus}`,
+      businessObjectType:'ModuleSummary',
+      businessObjectId:'longTermLogic',
+      phase:logic.logicStatus==='broken'?'decision':'prepare',
+      title:logic.logicStatus==='broken'?'长期逻辑失效复核':'长期逻辑减弱复核',
+      summary:'长期逻辑状态变化仅作为人工复核提醒，不自动触发交易。',
+      priority:logic.logicStatus==='broken'?95:70,
+      legacy:{source:'longTermLogic'}
+    });
+  }
+  return events;
+}
+function buildV13DerivedCoreModel(stock,ruleConfig){
+  const base=typeof normalizeV13Stock==='function'?normalizeV13Stock(stock):null;
+  if(!base)return null;
+  const derivedPlans=buildV13DerivedPlans(stock);
+  const derivedRiskState=buildV13DerivedRiskState(stock);
+  const derivedEvents=buildV13DerivedEvents(stock);
+  const mergedRiskState={
+    ...base.riskState,
+    risks:[...(base.riskState&&Array.isArray(base.riskState.risks)?base.riskState.risks:[]),...(derivedRiskState.risks||[])],
+    updatedAt:derivedRiskState.updatedAt||base.riskState.updatedAt,
+    legacy:{...(base.riskState&&base.riskState.legacy||{}),derivedRiskState}
+  };
+  return {
+    ...base,
+    plans:[...(base.plans||[])],
+    events:[...(base.events||[]),...derivedEvents],
+    riskState:mergedRiskState,
+    ruleConfig:typeof normalizeV13RuleConfig==='function'?normalizeV13RuleConfig(ruleConfig||(state&&state.ruleConfig)||{}):null
+  };
+}
+function buildV13CoreModelSnapshot(stock,ruleConfig){
+  const normalized=typeof buildV13DerivedCoreModel==='function'?buildV13DerivedCoreModel(stock,ruleConfig):(typeof normalizeV13Stock==='function'?normalizeV13Stock(stock):null);
+  if(!normalized)return null;
+  return {
+    stock:{
+      objectType:normalized.objectType,
+      id:normalized.id,
+      symbol:normalized.symbol,
+      name:normalized.name,
+      type:normalized.type,
+      legacy:normalized.legacy
+    },
+    position:normalized.position,
+    priceSnapshot:normalized.priceSnapshots[0]||normalizeV13PriceSnapshot({},stock),
+    plans:normalized.plans,
+    events:normalized.events,
+    trades:normalized.trades,
+    riskState:normalized.riskState,
+    moduleSummary:normalized.moduleSummary,
+    ruleConfig:typeof normalizeV13RuleConfig==='function'?normalizeV13RuleConfig(ruleConfig||(state&&state.ruleConfig)||{}):null
+  };
+}
+function normalizeStockAnalysis(stock,context={}){
   stock.strategy=normalizeStrategy(stock.strategy,stock);
   stock.dataFreshness=normalizeDataFreshness(stock.dataFreshness);
   stock.collectionInputs=normalizeCollectionInputs(stock.collectionInputs);
@@ -1676,12 +1892,13 @@ function normalizeStockAnalysis(stock){
   stock.analysisFramework=normalizeAnalysisFramework(stock.analysisFramework,stock);
   stock.allocationDecision=normalizeAllocationDecision(stock.allocationDecision,stock);
   stock.analysisScore=calculateAnalysisScore(stock.analysisFramework);
+  stock.coreModel=buildV13CoreModelSnapshot(stock,context.ruleConfig);
   return stock;
 }
 function getCurrency(s){if(s&&(s.currency==='HKD'||s.currency==='CNY'))return s.currency;const c=String((s&&s.code)||'').trim().toUpperCase();return c.endsWith('.HK')?'HKD':'CNY'}
 function fxHKD(){const r=(state&&state.fx)?Number(state.fx.hkdcny):NaN;return (r>0&&isFinite(r))?r:DEFAULT_HKD_CNY}
 function toCNY(v,s){if(v===null||v===undefined||isNaN(v))return v;return getCurrency(s)==='HKD'?v*fxHKD():v}
 function fxLabel(){const f=(state&&state.fx)||{};const base=`HKD→CNY ${fxHKD().toFixed(4)}`;return f.updatedAt?`${base} · ${f.updatedAt}`:`${base} · 默认值`}
-function normalize(s){if(!s.fx||!(Number(s.fx.hkdcny)>0))s.fx={hkdcny:DEFAULT_HKD_CNY,updatedAt:'',source:'默认'};s.stocks=(s.stocks||[]).map(x=>{if(x.currency===undefined)x.currency='';if(x.currentPrice===undefined)x.currentPrice='';if(x.currentValue===undefined)x.currentValue='';if(x.priceUpdatedAt===undefined)x.priceUpdatedAt='';if(x.valueUpdatedAt===undefined)x.valueUpdatedAt='';if(x.code===undefined)x.code=DEFAULT_CODES[x.id]||'';if(x.priceSource===undefined)x.priceSource='';if(x.trimPct===undefined)x.trimPct='';if(x.trimToPct===undefined)x.trimToPct='';if(x.capPct===undefined)x.capPct='';if(x.syncStatus===undefined)x.syncStatus='';if(x.tradePlan!==undefined&&(!x.tradePlan||typeof x.tradePlan!=='object'||Array.isArray(x.tradePlan)))x.tradePlan=null;if(!x.id)x.id=uid();if(!x.type)x.type='holding';if(!x.role)x.role=x.type==='watching'?'观察仓':'核心仓';if(!x.theme)x.theme='其他';if(!Array.isArray(x.plans))x.plans=[];const refPrice=x.type==='etf'?(Number(x.lastUnitPrice)||((Number(x.currentValue)>0&&Number(x.shares)>0)?Number(x.currentValue)/Number(x.shares):null)):(Number(x.currentPrice)||null);x.plans=x.plans.map(p=>{if(!p.triggerOn)p.triggerOn=inferTriggerOn(refPrice,p.price,p.action);return p});if(!x.thesis)x.thesis=x.notes||'';if(!x.buyRule){const buys=x.plans.filter(p=>(p.action||'buy')==='buy');x.buyRule=buys.map(p=>`${p.price}：${p.note||'加仓'}`).join('；')||'低于目标仓位且逻辑未变时再考虑。'}if(!x.sellRule){const sells=x.plans.filter(p=>p.action==='sell');x.sellRule=sells.map(p=>`${p.price}：${p.note||'减仓'}`).join('；')||(x.type==='etf'?'不设机械止损，只按目标仓位再平衡。':'逻辑破坏、估值过热或仓位超标时处理。')}return normalizeStockAnalysis(x)});return s}
+function normalize(s){if(typeof normalizeV13RuleConfig==='function')s.ruleConfig=normalizeV13RuleConfig(s.ruleConfig||s.rules||s.config||{});if(!s.fx||!(Number(s.fx.hkdcny)>0))s.fx={hkdcny:DEFAULT_HKD_CNY,updatedAt:'',source:'默认'};s.stocks=(s.stocks||[]).map(x=>{if(x.currency===undefined)x.currency='';if(x.currentPrice===undefined)x.currentPrice='';if(x.currentValue===undefined)x.currentValue='';if(x.priceUpdatedAt===undefined)x.priceUpdatedAt='';if(x.valueUpdatedAt===undefined)x.valueUpdatedAt='';if(x.code===undefined)x.code=DEFAULT_CODES[x.id]||'';if(x.priceSource===undefined)x.priceSource='';if(x.trimPct===undefined)x.trimPct='';if(x.trimToPct===undefined)x.trimToPct='';if(x.capPct===undefined)x.capPct='';if(x.syncStatus===undefined)x.syncStatus='';if(x.tradePlan!==undefined&&(!x.tradePlan||typeof x.tradePlan!=='object'||Array.isArray(x.tradePlan)))x.tradePlan=null;if(!x.id)x.id=uid();if(!x.type)x.type='holding';if(!x.role)x.role=x.type==='watching'?'观察仓':'核心仓';if(!x.theme)x.theme='其他';if(!Array.isArray(x.plans))x.plans=[];const refPrice=x.type==='etf'?(Number(x.lastUnitPrice)||((Number(x.currentValue)>0&&Number(x.shares)>0)?Number(x.currentValue)/Number(x.shares):null)):(Number(x.currentPrice)||null);x.plans=x.plans.map(p=>{if(!p.triggerOn)p.triggerOn=inferTriggerOn(refPrice,p.price,p.action);return p});if(!x.thesis)x.thesis=x.notes||'';if(!x.buyRule){const buys=x.plans.filter(p=>(p.action||'buy')==='buy');x.buyRule=buys.map(p=>`${p.price}：${p.note||'加仓'}`).join('；')||'低于目标仓位且逻辑未变时再考虑。'}if(!x.sellRule){const sells=x.plans.filter(p=>p.action==='sell');x.sellRule=sells.map(p=>`${p.price}：${p.note||'减仓'}`).join('；')||(x.type==='etf'?'不设机械止损，只按目标仓位再平衡。':'逻辑破坏、估值过热或仓位超标时处理。')}return normalizeStockAnalysis(x,{ruleConfig:s.ruleConfig})});return s}
 function loadState(){try{let raw=localStorage.getItem(STORAGE_KEY);state=raw?normalize(JSON.parse(raw)):normalize({stocks:[],updatedAt:null})}catch(e){console.warn(e);state=normalize({stocks:[],updatedAt:null})}}
 function saveState(){state=normalize(state);state.updatedAt=Date.now();localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
