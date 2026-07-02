@@ -1423,7 +1423,19 @@ function calculateDecision(stock,portfolioContext={}){
   return {decisionScore,action,positionGap:Number(positionGap.toFixed(1)),positionStatus,reasons,warnings,suggestedAction:`${decisionActionLabel(action)}：${suffix}`,currentWeight:Number(currentWeight.toFixed(1)),targetWeight,maxWeight,priority:strategy.priority};
 }
 function stockCurrentPrice(stock){
-  return Number(stock&&((stock.currentPrice!==undefined&&stock.currentPrice!=='')?stock.currentPrice:stock.price))||0;
+  if(!stock)return 0;
+  const num=value=>{
+    const n=Number(value);
+    return isFinite(n)&&n>0?n:null;
+  };
+  if(stock.type==='etf'){
+    const unit=num(stock.lastUnitPrice);
+    if(unit!==null)return unit;
+    const value=num(stock.currentValue);
+    const shares=num(stock.shares);
+    if(value!==null&&shares!==null)return value/shares;
+  }
+  return num(stock.currentPrice)??num(stock.price)??0;
 }
 function stockCurrentShares(stock){
   return Number(stock&&((stock.shares!==undefined&&stock.shares!=='')?stock.shares:(stock.quantity!==undefined?stock.quantity:stock.holdingShares)))||0;
@@ -1540,13 +1552,15 @@ function calculateRiskManagement(stock){
   const invalidConditions=[];
   const addUnique=(arr,text)=>{const value=String(text||'').trim();if(value&&!arr.includes(value))arr.push(value)};
   const num=x=>{const n=Number(x);return isFinite(n)?n:null};
-  const currentPrice=num(s.currentPrice)??num(technicalData.price)??num(shortTerm.price);
+  const displayPrice=stockCurrentPrice(s);
+  const currentPrice=displayPrice>0?displayPrice:(num(technicalData.price)??num(shortTerm.price));
   const shares=num(s.shares)??num(s.currentShares)??0;
   const marketValue=num(s.currentValue)??num(s.marketValue)??(currentPrice&&shares?currentPrice*shares:0);
   let totalValue=0;
   if(typeof state==='object'&&state&&Array.isArray(state.stocks)){
     totalValue=state.stocks.reduce((sum,item)=>{
-      const price=num(item.currentPrice)??num(item.technicalData&&item.technicalData.price);
+      const display=stockCurrentPrice(item);
+      const price=display>0?display:(num(item.technicalData&&item.technicalData.price));
       const itemShares=num(item.shares)??0;
       return sum+(num(item.currentValue)??num(item.marketValue)??(price&&itemShares?price*itemShares:0));
     },0);
@@ -1655,6 +1669,13 @@ function v13DerivedPlanId(stock,plan,index){
   return String((plan&&plan.id)||`legacy-plan-${v13DerivedStockId(stock)}-${index}`);
 }
 function v13DerivedCurrentPrice(stock){
+  if(stock&&stock.type==='etf'){
+    const unit=Number(stock.lastUnitPrice);
+    if(Number.isFinite(unit)&&unit>0)return unit;
+    const value=Number(stock.currentValue);
+    const shares=Number(stock.shares);
+    if(Number.isFinite(value)&&value>0&&Number.isFinite(shares)&&shares>0)return value/shares;
+  }
   const candidates=[
     stock&&stock.currentPrice,
     stock&&stock.price,
@@ -1664,11 +1685,6 @@ function v13DerivedCurrentPrice(stock){
   for(const raw of candidates){
     const value=Number(raw);
     if(Number.isFinite(value)&&value>0)return value;
-  }
-  if(stock&&stock.type==='etf'){
-    const value=Number(stock.currentValue);
-    const shares=Number(stock.shares);
-    if(Number.isFinite(value)&&value>0&&Number.isFinite(shares)&&shares>0)return value/shares;
   }
   return null;
 }

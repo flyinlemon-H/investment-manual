@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>投资作战手册 V13-dev Alpha-1</title>
+<title>投资作战手册 V13-dev Alpha-1.1</title>
 <style>
 :root{--paper:#F5F1E8;--paper2:#EFEADE;--ink:#1B1B1B;--ink2:#4A4A48;--ink3:#8A857A;--seal:#B83A2B;--sealsoft:rgba(184,58,43,.08);--teal:#2F5D6E;--tealsoft:rgba(47,93,110,.10);--gold:#9A6B24;--goldsoft:rgba(154,107,36,.12);--purple:#6A4C93;--purplesoft:rgba(106,76,147,.11);--line:rgba(27,27,27,.14);--lines:rgba(27,27,27,.28);}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background-image:radial-gradient(rgba(27,27,27,.025) 1px,transparent 1px);background-size:18px 18px}.wrap{max-width:1380px;margin:0 auto;padding:34px 22px 70px}header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--ink);padding-bottom:16px;margin-bottom:18px;gap:16px}.brand{display:flex;gap:14px;align-items:center}.seal{width:42px;height:42px;border-radius:4px;background:var(--seal);color:var(--paper);display:grid;place-items:center;font-size:22px;font-weight:800;transform:rotate(-3deg)}h1{margin:0;font-family:Georgia,"Songti SC",serif;font-size:30px;letter-spacing:3px}.sub,.date{color:var(--ink3);font-size:11px;letter-spacing:1.8px}.date{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap;color:var(--ink2)}.tabs{display:flex;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:14px}.tab{background:0;border:0;padding:13px 18px 11px;margin-bottom:-1px;border-bottom:2px solid transparent;color:var(--ink3);font-weight:700;letter-spacing:1px;white-space:nowrap;cursor:pointer}.tab.active{color:var(--ink);border-bottom-color:var(--seal)}.toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.summary{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;color:var(--ink2)}.summary strong{color:var(--ink)}.actions{display:flex;gap:8px;flex-wrap:wrap}button{font:inherit}.btn{background:var(--ink);color:var(--paper);border:1px solid var(--ink);padding:8px 13px;border-radius:2px;font-weight:700;cursor:pointer;letter-spacing:.8px}.btn:hover{background:var(--seal);border-color:var(--seal)}.btn.ghost{background:transparent;color:var(--ink2);border-color:var(--lines)}.btn.ghost:hover{color:var(--ink);background:transparent;border-color:var(--ink)}.btn.small{font-size:12px;padding:6px 10px}.sync{min-height:14px;color:var(--ink3);font-size:11px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;margin-bottom:14px}.hint{border:1px solid var(--line);background:rgba(255,255,255,.22);padding:12px 14px;margin-bottom:14px;color:var(--ink2);font-size:13px;line-height:1.65}.dash{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}.card{border:1px solid var(--line);background:rgba(245,241,232,.82);padding:14px}.card-title{font-size:11px;color:var(--ink3);font-weight:800;letter-spacing:1.6px;margin-bottom:8px}.card-num{font-size:24px;font-weight:800;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.card-note{font-size:12px;color:var(--ink3);margin-top:4px;line-height:1.5}.bar-list{display:grid;gap:9px}.bar-row{display:grid;grid-template-columns:76px 1fr 48px;gap:8px;align-items:center;font-size:12px}.bar-bg{height:8px;border:1px solid var(--line);background:rgba(255,255,255,.25);overflow:hidden}.bar{height:100%;background:var(--ink)}.bar.ai{background:var(--seal)}.bar.res{background:var(--gold)}.bar.core{background:var(--teal)}.bar.sat{background:var(--purple)}.alert{padding:9px 10px;border-left:3px solid #A65E2E;background:rgba(166,94,46,.08);font-size:12px;color:var(--ink2);line-height:1.5;margin-top:8px}.table-wrap{border:1px solid var(--line);background:rgba(245,241,232,.82);overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:1180px}th{text-align:left;color:var(--ink3);font-size:11px;letter-spacing:1.3px;padding:12px;border-bottom:1px solid var(--ink);white-space:nowrap}td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top}tr:hover{background:rgba(255,255,255,.28)}.name{font-weight:800;font-size:15px;min-width:120px}.num{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap}.muted{color:var(--ink3)}.text{font-size:12px;line-height:1.55;color:var(--ink2);max-width:260px}.chips{display:flex;flex-wrap:wrap;gap:6px;max-width:380px}.chip{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px;border-radius:14px;padding:4px 9px;font-size:12px;line-height:1.35;white-space:normal;max-width:100%;overflow-wrap:anywhere}.chip .price,.chip .shares,.chip .gap{white-space:nowrap}.buy{color:var(--seal);background:var(--sealsoft)}.sell{color:var(--teal);background:var(--tealsoft)}.chip.triggered{background:var(--seal);color:#fff;font-weight:800;box-shadow:0 0 0 2px rgba(184,58,43,.18);animation:pulse 2.4s ease-in-out infinite}.chip.triggered.sell{background:var(--teal);box-shadow:0 0 0 2px rgba(47,93,110,.20)}.chip .gap{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;color:var(--ink3);margin-left:2px;font-weight:700}.chip.triggered .gap{color:inherit}.chip .gap.trig{font-weight:800;letter-spacing:.5px}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.72}}.alert-trig{padding:9px 12px;border-left:3px solid var(--seal);background:rgba(184,58,43,.08);font-size:13px;color:var(--ink);line-height:1.5;margin-bottom:14px;font-weight:600}.trig-list{display:flex;flex-direction:column;gap:8px}.trig-row{padding:10px 12px;background:rgba(184,58,43,.06);border:1px solid rgba(184,58,43,.20);border-left:3px solid var(--seal);display:grid;grid-template-columns:1fr auto;column-gap:10px;row-gap:4px;align-items:baseline}.trig-row.sell{border-left-color:var(--teal);background:rgba(47,93,110,.06);border-color:rgba(47,93,110,.20)}.trig-row .trig-name{font-weight:800;font-size:15px;color:var(--ink)}.trig-row .trig-dist{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:800;font-size:13px;color:var(--seal);white-space:nowrap;text-align:right}.trig-row.sell .trig-dist{color:var(--teal)}.trig-row .trig-desc{grid-column:1/-1;font-size:12px;color:var(--ink2);line-height:1.55}.trig-row .trig-tag{display:inline-block;font-weight:800;margin-right:4px}.trig-row.buy .trig-tag{color:var(--seal)}.trig-row.sell .trig-tag{color:var(--teal)}.trig-action{grid-column:1/-1;text-align:right;margin-top:4px;padding-top:6px;border-top:1px dashed rgba(27,27,27,.12)}.trig-action button{background:transparent;border:1px solid var(--lines);color:var(--ink2);padding:5px 14px;font-size:12px;cursor:pointer;border-radius:2px;font-weight:700;letter-spacing:.5px;font-family:inherit}.trig-action button:hover{background:var(--seal);color:var(--paper);border-color:var(--seal)}.trig-row.sell .trig-action button:hover{background:var(--teal);border-color:var(--teal)}.daily-chg{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;font-weight:800;margin-left:4px;letter-spacing:.3px;white-space:nowrap}.daily-chg.up{color:#C84545}.daily-chg.down{color:#2A7942}.trig-suggest{grid-column:1/-1;margin-top:6px;padding:8px 10px;background:rgba(154,107,36,.10);border-left:2px solid var(--gold);font-size:12.5px;font-weight:700;color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.3px}.trig-suggest .trig-tag{font-weight:800;margin-right:6px;color:var(--gold)}.cell-target .target-line{font-weight:800;font-size:14px;color:var(--ink)}.cell-target .actual-line{font-size:11px;color:var(--ink3);margin-top:3px;line-height:1.4;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.dev-badge{display:inline-block;font-weight:800;font-size:11px;padding:1px 6px;border-radius:3px;margin-top:2px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.5px}.dev-badge.over{color:var(--teal);background:var(--tealsoft)}.dev-badge.under{color:var(--seal);background:var(--sealsoft)}.dev-badge.ok{color:var(--ink3);background:transparent;padding-left:0;padding-right:0}.dev-badge.na{color:var(--ink3);background:transparent;font-style:italic;font-weight:400;padding-left:0;padding-right:0}.stale-list{display:flex;flex-direction:column;gap:0}.stale-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:12px}.stale-row:last-child{border-bottom:0}.stale-name{font-weight:700;color:var(--ink);font-size:13px}.stale-meta{color:var(--ink3);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-align:right;white-space:nowrap}.stale-meta.urgent{color:var(--seal);font-weight:700}.tag{color:var(--purple);background:var(--purplesoft)}.role{color:var(--gold);background:var(--goldsoft)}.price,.shares{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:800}.row-actions{display:flex;gap:8px;white-space:nowrap}.link-btn{background:0;border:0;color:var(--ink2);cursor:pointer;padding:2px 0;font-size:12px}.link-btn:hover{color:var(--seal)}.danger{color:var(--seal)}.empty{text-align:center;padding:60px 20px;color:var(--ink3)}.modal-bg{position:fixed;inset:0;background:rgba(27,27,27,.45);display:none;align-items:center;justify-content:center;z-index:10;padding:16px}.modal-bg.show{display:flex}.modal{width:min(720px,100%);max-height:92vh;overflow:auto;background:var(--paper);border:1px solid var(--ink);box-shadow:6px 6px 0 rgba(27,27,27,.15);padding:22px}.modal h2{margin:0 0 4px;font-family:Georgia,"Songti SC",serif;letter-spacing:2px;font-size:20px}.modal-sub{color:var(--ink3);font-size:11px;letter-spacing:1px;margin-bottom:16px}.form-row{margin-bottom:13px}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}label{display:block;color:var(--ink2);font-size:11px;letter-spacing:1.5px;font-weight:800;margin-bottom:5px}input,textarea,select{width:100%;border:1px solid var(--lines);background:var(--paper);color:var(--ink);padding:9px 11px;border-radius:2px;font-size:14px}textarea{min-height:70px;resize:vertical}input:focus,textarea:focus,select:focus{outline:none;border-color:var(--seal)}.type-toggle{display:flex;border:1px solid var(--lines);overflow:hidden}.type-toggle button{flex:1;border:0;background:transparent;color:var(--ink3);padding:10px;cursor:pointer;font-weight:700}.type-toggle button.active{background:var(--ink);color:var(--paper)}.plan-editor{border:1px solid var(--line);padding:10px}.plan-table{width:100%;min-width:0}.plan-table th,.plan-table td{padding:6px;border-bottom:1px solid var(--line);font-size:12px}.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
@@ -185,7 +185,7 @@ td+td{padding-top:9px;border-top:1px dashed rgba(27,27,27,.10)}
 </style>
 </head>
 <body><div class="wrap">
-<header><div class="brand"><div class="seal">策</div><div><h1>投资作战手册 V13-dev Alpha-1</h1><div class="sub">Thesis · Discipline · Action Plan</div></div></div><div class="date" id="dateStamp"></div></header>
+<header><div class="brand"><div class="seal">策</div><div><h1>投资作战手册 V13-dev Alpha-1.1</h1><div class="sub">Thesis · Discipline · Action Plan</div></div></div><div class="date" id="dateStamp"></div></header>
 <div class="tabs"><button class="tab active" data-tab="dashboard">总览</button><button class="tab" data-tab="holding">个股 <span id="countHolding" class="count">0</span></button><button class="tab" data-tab="etf">ETF <span id="countEtf" class="count">0</span></button><button class="tab" data-tab="watching">观察 <span id="countWatching" class="count">0</span></button></div>
 <div class="toolbar"><div class="summary" id="summary">—</div><div class="actions" id="globalActions"><button class="btn ghost small" id="fxBtn" title="点击设置或刷新 HKD→CNY 汇率">汇率 —</button><button class="btn ghost small" id="importBtn">导入JSON</button><button class="btn ghost small" id="exportBtn">导出</button><button class="btn ghost small" id="socialImportBtn">导入 social_posts.json</button><button class="btn ghost small" id="resetBtn">清空本地数据</button><button class="btn ghost small" id="refreshAllBtn">刷新全部价格</button><button class="btn" id="addBtn">＋ 新增标的</button><input type="file" id="importFile" accept=".json,application/json" style="display:none"><input type="file" id="socialImportFile" accept=".json,application/json" style="display:none"></div></div><div class="sync" id="syncHint"></div><div class="sync" id="socialDataStatus">社媒数据更新时间：—</div><div id="main"></div>
 </div>
@@ -289,14 +289,31 @@ function defaultV13PriceSnapshot(){
     legacy:{}
   };
 }
+function v13LatestUnitPrice(stock={}){
+  const s=v13Object(stock);
+  const isEtf=String(s.type||'').toLowerCase()==='etf';
+  const numberOrNull=value=>{
+    const n=Number(value);
+    return Number.isFinite(n)&&n>0?n:null;
+  };
+  if(isEtf){
+    const unit=numberOrNull(s.lastUnitPrice);
+    if(unit!==null)return unit;
+    const value=numberOrNull(s.currentValue);
+    const shares=numberOrNull(s.shares);
+    if(value!==null&&shares!==null)return value/shares;
+  }
+  return numberOrNull(s.currentPrice)??numberOrNull(s.price);
+}
 function normalizeV13PriceSnapshot(v={},stock={}){
   const src=v13Object(v);
   const known=['objectType','id','stockId','price','currency','source','capturedAt','legacy'];
+  const price=v13NumberOrNull(src.price)??v13LatestUnitPrice(stock);
   return {
     ...defaultV13PriceSnapshot(),
     id:v13String(src.id)||v13Id('price'),
     stockId:v13String(src.stockId||stock.id||stock.code||stock.symbol),
-    price:v13NumberOrNull(src.price??stock.currentPrice),
+    price,
     currency:v13String(src.currency||stock.currency),
     source:v13String(src.source||stock.priceSource),
     capturedAt:v13String(src.capturedAt||stock.priceUpdatedAt||stock.valueUpdatedAt||''),
@@ -520,7 +537,7 @@ function normalizeV13Stock(v={}){
   const src=v13Object(v);
   const known=['objectType','id','symbol','code','name','type','position','priceSnapshots','plans','events','trades','riskState','moduleSummary','coreModel','legacy'];
   const stockId=v13String(src.id||src.code||src.symbol)||v13Id('stock');
-  const base={id:stockId,code:src.code,symbol:src.symbol,name:src.name,type:src.type};
+  const base={id:stockId,code:src.code,symbol:src.symbol,name:src.name,type:src.type,currentPrice:src.currentPrice,currentValue:src.currentValue,lastUnitPrice:src.lastUnitPrice,shares:src.shares,price:src.price,priceUpdatedAt:src.priceUpdatedAt,valueUpdatedAt:src.valueUpdatedAt,priceSource:src.priceSource,currency:src.currency};
   return {
     ...defaultV13Stock(),
     id:stockId,
@@ -2275,7 +2292,19 @@ function calculateDecision(stock,portfolioContext={}){
   return {decisionScore,action,positionGap:Number(positionGap.toFixed(1)),positionStatus,reasons,warnings,suggestedAction:`${decisionActionLabel(action)}：${suffix}`,currentWeight:Number(currentWeight.toFixed(1)),targetWeight,maxWeight,priority:strategy.priority};
 }
 function stockCurrentPrice(stock){
-  return Number(stock&&((stock.currentPrice!==undefined&&stock.currentPrice!=='')?stock.currentPrice:stock.price))||0;
+  if(!stock)return 0;
+  const num=value=>{
+    const n=Number(value);
+    return isFinite(n)&&n>0?n:null;
+  };
+  if(stock.type==='etf'){
+    const unit=num(stock.lastUnitPrice);
+    if(unit!==null)return unit;
+    const value=num(stock.currentValue);
+    const shares=num(stock.shares);
+    if(value!==null&&shares!==null)return value/shares;
+  }
+  return num(stock.currentPrice)??num(stock.price)??0;
 }
 function stockCurrentShares(stock){
   return Number(stock&&((stock.shares!==undefined&&stock.shares!=='')?stock.shares:(stock.quantity!==undefined?stock.quantity:stock.holdingShares)))||0;
@@ -2392,13 +2421,15 @@ function calculateRiskManagement(stock){
   const invalidConditions=[];
   const addUnique=(arr,text)=>{const value=String(text||'').trim();if(value&&!arr.includes(value))arr.push(value)};
   const num=x=>{const n=Number(x);return isFinite(n)?n:null};
-  const currentPrice=num(s.currentPrice)??num(technicalData.price)??num(shortTerm.price);
+  const displayPrice=stockCurrentPrice(s);
+  const currentPrice=displayPrice>0?displayPrice:(num(technicalData.price)??num(shortTerm.price));
   const shares=num(s.shares)??num(s.currentShares)??0;
   const marketValue=num(s.currentValue)??num(s.marketValue)??(currentPrice&&shares?currentPrice*shares:0);
   let totalValue=0;
   if(typeof state==='object'&&state&&Array.isArray(state.stocks)){
     totalValue=state.stocks.reduce((sum,item)=>{
-      const price=num(item.currentPrice)??num(item.technicalData&&item.technicalData.price);
+      const display=stockCurrentPrice(item);
+      const price=display>0?display:(num(item.technicalData&&item.technicalData.price));
       const itemShares=num(item.shares)??0;
       return sum+(num(item.currentValue)??num(item.marketValue)??(price&&itemShares?price*itemShares:0));
     },0);
@@ -2507,6 +2538,13 @@ function v13DerivedPlanId(stock,plan,index){
   return String((plan&&plan.id)||`legacy-plan-${v13DerivedStockId(stock)}-${index}`);
 }
 function v13DerivedCurrentPrice(stock){
+  if(stock&&stock.type==='etf'){
+    const unit=Number(stock.lastUnitPrice);
+    if(Number.isFinite(unit)&&unit>0)return unit;
+    const value=Number(stock.currentValue);
+    const shares=Number(stock.shares);
+    if(Number.isFinite(value)&&value>0&&Number.isFinite(shares)&&shares>0)return value/shares;
+  }
   const candidates=[
     stock&&stock.currentPrice,
     stock&&stock.price,
@@ -2516,11 +2554,6 @@ function v13DerivedCurrentPrice(stock){
   for(const raw of candidates){
     const value=Number(raw);
     if(Number.isFinite(value)&&value>0)return value;
-  }
-  if(stock&&stock.type==='etf'){
-    const value=Number(stock.currentValue);
-    const shares=Number(stock.shares);
-    if(Number.isFinite(value)&&value>0&&Number.isFinite(shares)&&shares>0)return value/shares;
   }
   return null;
 }
@@ -2760,7 +2793,7 @@ function saveState(){state=normalize(state);state.updatedAt=Date.now();localStor
 function pad2(n){return String(n).padStart(2,'0')}
 function dateStamp(d=new Date()){return `${d.getFullYear()}${pad2(d.getMonth()+1)}${pad2(d.getDate())}`}
 function timeStamp(d=new Date()){return `${dateStamp(d)}-${pad2(d.getHours())}${pad2(d.getMinutes())}`}
-function appVersion(){return 'V13-dev Alpha-1'}
+function appVersion(){return 'V13-dev Alpha-1.1'}
 function backupFilename(prefix='投资作战手册',d=new Date()){return `${prefix}-${appVersion()}-${timeStamp(d)}.json`}
 function downloadJson(data,filename){
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
@@ -3715,8 +3748,9 @@ function collectionPromptText(stock,kind){
   normalizeStockAnalysis(stock);
   const ci=normalizeCollectionInputs(stock.collectionInputs);
   const raw={news:ci.newsRawText,financial:ci.financialRawText,social:ci.socialRawText,technical:ci.technicalRawText,comprehensive:ci.generalRawText}[kind]||'';
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
   const ctx={
-    stock:{name:stock.name||'',code:stock.code||'',type:stock.type||'',role:stock.role||'',shares:stock.shares||0,avgCost:stock.avgCost||'',currentPrice:stock.currentPrice||stock.currentValue||''},
+    stock:{name:stock.name||'',code:stock.code||'',type:stock.type||'',role:stock.role||'',shares:stock.shares||0,avgCost:stock.avgCost||'',currentPrice:latestPrice},
     valuationData:normalizeValuationData(stock.valuationData),
     dataFreshness:normalizeDataFreshness(stock.dataFreshness),
     personalView:normalizeAnalysisInputs(stock.analysisInputs).personalView,
@@ -4045,6 +4079,7 @@ function promptBaseContext(stock,type){
   const decision=calculateDecision(stock,{totalMarketValue:total});
   const execution=calculateExecutionPlan(stock,{totalMarketValue:total});
   const inputs=normalizeAnalysisInputs(stock.analysisInputs);
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
   return {
     stock:{
       name:stock.name||'',
@@ -4055,7 +4090,7 @@ function promptBaseContext(stock,type){
       theme:stock.theme||'',
       shares:Number(stock.shares)||0,
       cost:stock.avgCost||'',
-      currentPrice:stock.currentPrice||stock.currentValue||'',
+      currentPrice:latestPrice,
       holdingValue:mv,
       targetPct:stock.targetPct||''
     },
@@ -4325,7 +4360,8 @@ function buildReviewPackageContext(stock,mode='standard'){
   normalizeStockAnalysis(stock);
   const total=getEstimatedTotalAssets();
   const mv=getMarketValue(stock);
-  const currentPrice=Number(stock.currentPrice||stock.currentValue||0);
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
+  const currentPrice=Number(latestPrice||0);
   const cost=Number(stock.avgCost||0);
   const shares=Number(stock.shares)||0;
   const pnl=(currentPrice>0&&cost>0&&shares>0)?{amount:(currentPrice-cost)*shares,percent:(currentPrice-cost)/cost*100}:null;
@@ -4353,7 +4389,7 @@ function buildReviewPackageContext(stock,mode='standard'){
       theme:stock.theme||'',
       shares,
       cost:stock.avgCost||'',
-      currentPrice:stock.currentPrice||stock.currentValue||'',
+      currentPrice:latestPrice,
       holdingValue:mv,
       unrealizedPnl:pnl,
       focus:isFocusStockForUpdate(stock)
@@ -5225,6 +5261,7 @@ function allocationDecisionContext(stock){
   const reviews=normalizeAiReviews(stock.aiReviews);
   const currentAction=getLatestActionInfo(stock);
   const sentiment=sentimentReviewContext(stock);
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||td.price||'';
   return {
     stock:{
       name:stock.name||'',
@@ -5233,7 +5270,7 @@ function allocationDecisionContext(stock){
       marketType:stockMarketTypeLabel(stock),
       shares:Number(stock.shares)||0,
       avgCost:stock.avgCost||'',
-      currentPrice:getComparablePrice(stock)||stock.currentPrice||td.price||'',
+      currentPrice:latestPrice,
       marketValue:getMarketValue(stock)||0,
       currentWeight:position&&position.actualPct!==null?Number(position.actualPct.toFixed(2)):null,
       targetWeight:strategy.targetWeight,
@@ -5422,12 +5459,13 @@ function technicalAnalysisPromptText(stock){
   const td=normalizeTechnicalData(stock.technicalData);
   const strategy=normalizeStrategy(stock.strategy,stock);
   const schema={technicalReview:{updatedAt:'',inputCoverage:{hasRecentKline:false,hasCycleKline:false,cycleDataSource:'none',warning:''},shortTermTechnical:{lookbackDays:120,price:null,priceUpdatedAt:'',ma5:null,ma10:null,ma20:null,ma60:null,trendStatus:'',supportLevels:[],resistanceLevels:[],technicalSummary:'',riskFlags:[],actionHint:'',confidence:'medium'},cycleTechnical:{lookbackDays:500,cyclePosition:'unclear',cycleSummary:'',cycleHigh:null,cycleLow:null,currentPercentile:null,distanceToCycleHighPct:null,distanceToCycleLowPct:null,lastCycleUpdatedAt:'',dataSource:'none',confidence:'medium'},priceActionEvent:{detected:false,type:'unknown',changePct:null,volumeStatus:'unknown',needsNewsExplanation:false,eventReason:''},finalTechnicalConclusion:'',holdHint:'',addHint:'',reduceHint:''}};
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||td.price||'';
   const ctx={
     stockName:stock.name||'',
     symbol:stock.code||td.symbol||'',
     shares:Number(stock.shares)||0,
     avgCost:stock.avgCost||'',
-    currentPrice:stock.currentPrice||td.price||'',
+    currentPrice:latestPrice,
     strategy,
     existingTechnicalData:td
   };
@@ -5522,12 +5560,13 @@ function tradePlanPromptText(stock){
   const review=normalizeAiReviews(stock.aiReviews).comprehensiveReview||null;
   const fundamental=fundamentalSummaryForPrompt(stock);
   const etfAnalysis=etfAnalysisSummary(stock);
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||td.price||'';
   const ctx={
     stockName:stock.name||'',
     symbol:stock.code||stock.symbol||'',
     shares:Number(stock.shares)||0,
     avgCost:stock.avgCost||'',
-    currentPrice:getComparablePrice(stock)||stock.currentPrice||td.price||'',
+    currentPrice:latestPrice,
     marketValue:getMarketValue(stock)||0,
     strategy:{
       targetWeight:strategy.targetWeight,
@@ -5608,7 +5647,8 @@ function aiDiscussionPromptText(stock){
   const mv=getMarketValue(stock);
   const td=normalizeTechnicalData(stock.technicalData);
   const tr=normalizeTechnicalReview(stock.technicalReview,stock);
-  const cp=Number(stock.currentPrice)>0?Number(stock.currentPrice):(Number(td.price)>0?Number(td.price):(Number(tr.shortTermTechnical&&tr.shortTermTechnical.price)>0?Number(tr.shortTermTechnical.price):null));
+  const displayPrice=Number(getComparablePrice(stock))||Number(stockCurrentPrice(stock))||0;
+  const cp=displayPrice>0?displayPrice:(Number(td.price)>0?Number(td.price):(Number(tr.shortTermTechnical&&tr.shortTermTechnical.price)>0?Number(tr.shortTermTechnical.price):null));
   const techDecision=calculateTechnicalDecision(stock);
   const tradePlan=stock.tradePlan&&typeof stock.tradePlan==='object'?stock.tradePlan:null;
   const ltl=normalizeLongTermLogic(stock.longTermLogic,stock);
@@ -5729,6 +5769,7 @@ function aiDiscussionPromptText(stock){
     `- 持仓数量：${fmtInt(stockCurrentShares(stock))}`,
     `- 成本价：${stock.avgCost!==''&&stock.avgCost!==undefined?stock.avgCost:'未填写'}`,
     `- 当前价格：${cp!==null&&cp!==undefined?fmtMaybe(cp,2):'暂无数据'}`,
+    `- 当前价格来源：${displayPrice>0?'系统最新价格/ETF单位价':'技术面快照价格（可能不是最新行情）'}`,
     `- 当前市值：${mv!==null&&mv!==undefined?fmtMoney(mv):'暂无数据'}`,
     `- 目标仓位：${fmtMaybe(strategy.targetWeight,1)}%`,
     `- 实际仓位：${actualWeight!==null?actualWeight+'%':'暂无数据'}`,
@@ -5796,7 +5837,7 @@ function fullAddDiscussionPromptText(stock){
   const info=getLatestActionInfo(stock);
   const total=getEstimatedTotalAssets();
   const pos=getPositionInfo(stock,total);
-  const cp=getComparablePrice(stock)||stock.currentPrice||td.price||null;
+  const cp=getComparablePrice(stock)||stockCurrentPrice(stock)||td.price||null;
   const mv=getMarketValue(stock);
   const currentShares=stockCurrentShares(stock);
   const buyPlans=(stock.plans||[]).filter(p=>(p.action||'buy')==='buy');
@@ -6624,13 +6665,14 @@ function planPromptList(plans,type){
 }
 function buildAnalysisPrompt(stock){
   normalizeStockAnalysis(stock);
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
   const payload={
     stock:{
       name:stock.name||'',
       code:stock.code||'',
       shares:stock.shares||0,
       avgCost:stock.avgCost||'',
-      currentPrice:stock.type==='etf'?(stock.currentValue||''):(stock.currentPrice||''),
+      currentPrice:latestPrice,
       positionRole:analysisPositionRole(stock)||stock.role||'',
       buyPlans:planPromptList(stock.plans,'buy'),
       sellPlans:planPromptList(stock.plans,'sell'),
@@ -6761,6 +6803,7 @@ function aiAssistantContext(stock){
   const financial=calculateFinancialSignal(stock);
   const fw=normalizeAnalysisFramework(stock.analysisFramework,stock);
   const inputs=normalizeAnalysisInputs(stock.analysisInputs);
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
   return {
     stock:{
       name:stock.name||'',
@@ -6768,7 +6811,7 @@ function aiAssistantContext(stock){
       type:stock.type||'',
       shares:stock.shares||0,
       avgCost:stock.avgCost||'',
-      currentPrice:stock.type==='etf'?(stock.currentValue||''):(stock.currentPrice||''),
+      currentPrice:latestPrice,
       marketValue:getMarketValue(stock)||0,
       currentWeight:decision.currentWeight,
       targetPct:stock.targetPct||'',
@@ -7516,9 +7559,11 @@ function importValuationJson(){
     }
     if(!hasData&&!hasReview&&!looksLikeData)throw new Error('未识别 valuationData 或 valuationReview。');
     touchDataFreshness(stock,'valuationUpdatedAt');
+    normalizeStockAnalysis(stock);
     saveState();
     closeValuationImportModal();
     render();
+    refreshLongLogicModalIfOpen();
     alert(hasData&&hasReview?'估值 JSON 已导入':(hasReview?'估值复核已导入；如需估值指标，请继续导入 valuationData。':'估值 JSON 已导入'));
   }catch(err){
     stock.valuationData=original.valuationData;
@@ -7724,9 +7769,11 @@ function importFundamentalJson(){
   try{parsed=extractFirstJsonObject(document.getElementById('fundamentalImportText').value)}catch(e){alert('导入失败：JSON 无法解析。');return}
   try{
     const flags=applyFundamentalPayload(stock,parsed);
+    normalizeStockAnalysis(stock);
     saveState();
     closeFundamentalImportModal();
     render();
+    refreshLongLogicModalIfOpen();
     const parts=[];
     if(flags.hasFinancialData)parts.push('financialData');
     if(flags.hasFinancialReview)parts.push('financialReview');

@@ -552,8 +552,9 @@ function collectionPromptText(stock,kind){
   normalizeStockAnalysis(stock);
   const ci=normalizeCollectionInputs(stock.collectionInputs);
   const raw={news:ci.newsRawText,financial:ci.financialRawText,social:ci.socialRawText,technical:ci.technicalRawText,comprehensive:ci.generalRawText}[kind]||'';
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
   const ctx={
-    stock:{name:stock.name||'',code:stock.code||'',type:stock.type||'',role:stock.role||'',shares:stock.shares||0,avgCost:stock.avgCost||'',currentPrice:stock.currentPrice||stock.currentValue||''},
+    stock:{name:stock.name||'',code:stock.code||'',type:stock.type||'',role:stock.role||'',shares:stock.shares||0,avgCost:stock.avgCost||'',currentPrice:latestPrice},
     valuationData:normalizeValuationData(stock.valuationData),
     dataFreshness:normalizeDataFreshness(stock.dataFreshness),
     personalView:normalizeAnalysisInputs(stock.analysisInputs).personalView,
@@ -882,6 +883,7 @@ function promptBaseContext(stock,type){
   const decision=calculateDecision(stock,{totalMarketValue:total});
   const execution=calculateExecutionPlan(stock,{totalMarketValue:total});
   const inputs=normalizeAnalysisInputs(stock.analysisInputs);
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
   return {
     stock:{
       name:stock.name||'',
@@ -892,7 +894,7 @@ function promptBaseContext(stock,type){
       theme:stock.theme||'',
       shares:Number(stock.shares)||0,
       cost:stock.avgCost||'',
-      currentPrice:stock.currentPrice||stock.currentValue||'',
+      currentPrice:latestPrice,
       holdingValue:mv,
       targetPct:stock.targetPct||''
     },
@@ -1162,7 +1164,8 @@ function buildReviewPackageContext(stock,mode='standard'){
   normalizeStockAnalysis(stock);
   const total=getEstimatedTotalAssets();
   const mv=getMarketValue(stock);
-  const currentPrice=Number(stock.currentPrice||stock.currentValue||0);
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
+  const currentPrice=Number(latestPrice||0);
   const cost=Number(stock.avgCost||0);
   const shares=Number(stock.shares)||0;
   const pnl=(currentPrice>0&&cost>0&&shares>0)?{amount:(currentPrice-cost)*shares,percent:(currentPrice-cost)/cost*100}:null;
@@ -1190,7 +1193,7 @@ function buildReviewPackageContext(stock,mode='standard'){
       theme:stock.theme||'',
       shares,
       cost:stock.avgCost||'',
-      currentPrice:stock.currentPrice||stock.currentValue||'',
+      currentPrice:latestPrice,
       holdingValue:mv,
       unrealizedPnl:pnl,
       focus:isFocusStockForUpdate(stock)
@@ -2062,6 +2065,7 @@ function allocationDecisionContext(stock){
   const reviews=normalizeAiReviews(stock.aiReviews);
   const currentAction=getLatestActionInfo(stock);
   const sentiment=sentimentReviewContext(stock);
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||td.price||'';
   return {
     stock:{
       name:stock.name||'',
@@ -2070,7 +2074,7 @@ function allocationDecisionContext(stock){
       marketType:stockMarketTypeLabel(stock),
       shares:Number(stock.shares)||0,
       avgCost:stock.avgCost||'',
-      currentPrice:getComparablePrice(stock)||stock.currentPrice||td.price||'',
+      currentPrice:latestPrice,
       marketValue:getMarketValue(stock)||0,
       currentWeight:position&&position.actualPct!==null?Number(position.actualPct.toFixed(2)):null,
       targetWeight:strategy.targetWeight,
@@ -2259,12 +2263,13 @@ function technicalAnalysisPromptText(stock){
   const td=normalizeTechnicalData(stock.technicalData);
   const strategy=normalizeStrategy(stock.strategy,stock);
   const schema={technicalReview:{updatedAt:'',inputCoverage:{hasRecentKline:false,hasCycleKline:false,cycleDataSource:'none',warning:''},shortTermTechnical:{lookbackDays:120,price:null,priceUpdatedAt:'',ma5:null,ma10:null,ma20:null,ma60:null,trendStatus:'',supportLevels:[],resistanceLevels:[],technicalSummary:'',riskFlags:[],actionHint:'',confidence:'medium'},cycleTechnical:{lookbackDays:500,cyclePosition:'unclear',cycleSummary:'',cycleHigh:null,cycleLow:null,currentPercentile:null,distanceToCycleHighPct:null,distanceToCycleLowPct:null,lastCycleUpdatedAt:'',dataSource:'none',confidence:'medium'},priceActionEvent:{detected:false,type:'unknown',changePct:null,volumeStatus:'unknown',needsNewsExplanation:false,eventReason:''},finalTechnicalConclusion:'',holdHint:'',addHint:'',reduceHint:''}};
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||td.price||'';
   const ctx={
     stockName:stock.name||'',
     symbol:stock.code||td.symbol||'',
     shares:Number(stock.shares)||0,
     avgCost:stock.avgCost||'',
-    currentPrice:stock.currentPrice||td.price||'',
+    currentPrice:latestPrice,
     strategy,
     existingTechnicalData:td
   };
@@ -2359,12 +2364,13 @@ function tradePlanPromptText(stock){
   const review=normalizeAiReviews(stock.aiReviews).comprehensiveReview||null;
   const fundamental=fundamentalSummaryForPrompt(stock);
   const etfAnalysis=etfAnalysisSummary(stock);
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||td.price||'';
   const ctx={
     stockName:stock.name||'',
     symbol:stock.code||stock.symbol||'',
     shares:Number(stock.shares)||0,
     avgCost:stock.avgCost||'',
-    currentPrice:getComparablePrice(stock)||stock.currentPrice||td.price||'',
+    currentPrice:latestPrice,
     marketValue:getMarketValue(stock)||0,
     strategy:{
       targetWeight:strategy.targetWeight,
@@ -2445,7 +2451,8 @@ function aiDiscussionPromptText(stock){
   const mv=getMarketValue(stock);
   const td=normalizeTechnicalData(stock.technicalData);
   const tr=normalizeTechnicalReview(stock.technicalReview,stock);
-  const cp=Number(stock.currentPrice)>0?Number(stock.currentPrice):(Number(td.price)>0?Number(td.price):(Number(tr.shortTermTechnical&&tr.shortTermTechnical.price)>0?Number(tr.shortTermTechnical.price):null));
+  const displayPrice=Number(getComparablePrice(stock))||Number(stockCurrentPrice(stock))||0;
+  const cp=displayPrice>0?displayPrice:(Number(td.price)>0?Number(td.price):(Number(tr.shortTermTechnical&&tr.shortTermTechnical.price)>0?Number(tr.shortTermTechnical.price):null));
   const techDecision=calculateTechnicalDecision(stock);
   const tradePlan=stock.tradePlan&&typeof stock.tradePlan==='object'?stock.tradePlan:null;
   const ltl=normalizeLongTermLogic(stock.longTermLogic,stock);
@@ -2566,6 +2573,7 @@ function aiDiscussionPromptText(stock){
     `- 持仓数量：${fmtInt(stockCurrentShares(stock))}`,
     `- 成本价：${stock.avgCost!==''&&stock.avgCost!==undefined?stock.avgCost:'未填写'}`,
     `- 当前价格：${cp!==null&&cp!==undefined?fmtMaybe(cp,2):'暂无数据'}`,
+    `- 当前价格来源：${displayPrice>0?'系统最新价格/ETF单位价':'技术面快照价格（可能不是最新行情）'}`,
     `- 当前市值：${mv!==null&&mv!==undefined?fmtMoney(mv):'暂无数据'}`,
     `- 目标仓位：${fmtMaybe(strategy.targetWeight,1)}%`,
     `- 实际仓位：${actualWeight!==null?actualWeight+'%':'暂无数据'}`,
@@ -2633,7 +2641,7 @@ function fullAddDiscussionPromptText(stock){
   const info=getLatestActionInfo(stock);
   const total=getEstimatedTotalAssets();
   const pos=getPositionInfo(stock,total);
-  const cp=getComparablePrice(stock)||stock.currentPrice||td.price||null;
+  const cp=getComparablePrice(stock)||stockCurrentPrice(stock)||td.price||null;
   const mv=getMarketValue(stock);
   const currentShares=stockCurrentShares(stock);
   const buyPlans=(stock.plans||[]).filter(p=>(p.action||'buy')==='buy');
@@ -3461,13 +3469,14 @@ function planPromptList(plans,type){
 }
 function buildAnalysisPrompt(stock){
   normalizeStockAnalysis(stock);
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
   const payload={
     stock:{
       name:stock.name||'',
       code:stock.code||'',
       shares:stock.shares||0,
       avgCost:stock.avgCost||'',
-      currentPrice:stock.type==='etf'?(stock.currentValue||''):(stock.currentPrice||''),
+      currentPrice:latestPrice,
       positionRole:analysisPositionRole(stock)||stock.role||'',
       buyPlans:planPromptList(stock.plans,'buy'),
       sellPlans:planPromptList(stock.plans,'sell'),
@@ -3598,6 +3607,7 @@ function aiAssistantContext(stock){
   const financial=calculateFinancialSignal(stock);
   const fw=normalizeAnalysisFramework(stock.analysisFramework,stock);
   const inputs=normalizeAnalysisInputs(stock.analysisInputs);
+  const latestPrice=getComparablePrice(stock)||stockCurrentPrice(stock)||'';
   return {
     stock:{
       name:stock.name||'',
@@ -3605,7 +3615,7 @@ function aiAssistantContext(stock){
       type:stock.type||'',
       shares:stock.shares||0,
       avgCost:stock.avgCost||'',
-      currentPrice:stock.type==='etf'?(stock.currentValue||''):(stock.currentPrice||''),
+      currentPrice:latestPrice,
       marketValue:getMarketValue(stock)||0,
       currentWeight:decision.currentWeight,
       targetPct:stock.targetPct||'',
@@ -4353,9 +4363,11 @@ function importValuationJson(){
     }
     if(!hasData&&!hasReview&&!looksLikeData)throw new Error('未识别 valuationData 或 valuationReview。');
     touchDataFreshness(stock,'valuationUpdatedAt');
+    normalizeStockAnalysis(stock);
     saveState();
     closeValuationImportModal();
     render();
+    refreshLongLogicModalIfOpen();
     alert(hasData&&hasReview?'估值 JSON 已导入':(hasReview?'估值复核已导入；如需估值指标，请继续导入 valuationData。':'估值 JSON 已导入'));
   }catch(err){
     stock.valuationData=original.valuationData;
@@ -4561,9 +4573,11 @@ function importFundamentalJson(){
   try{parsed=extractFirstJsonObject(document.getElementById('fundamentalImportText').value)}catch(e){alert('导入失败：JSON 无法解析。');return}
   try{
     const flags=applyFundamentalPayload(stock,parsed);
+    normalizeStockAnalysis(stock);
     saveState();
     closeFundamentalImportModal();
     render();
+    refreshLongLogicModalIfOpen();
     const parts=[];
     if(flags.hasFinancialData)parts.push('financialData');
     if(flags.hasFinancialReview)parts.push('financialReview');

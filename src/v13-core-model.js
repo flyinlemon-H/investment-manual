@@ -85,14 +85,31 @@ function defaultV13PriceSnapshot(){
     legacy:{}
   };
 }
+function v13LatestUnitPrice(stock={}){
+  const s=v13Object(stock);
+  const isEtf=String(s.type||'').toLowerCase()==='etf';
+  const numberOrNull=value=>{
+    const n=Number(value);
+    return Number.isFinite(n)&&n>0?n:null;
+  };
+  if(isEtf){
+    const unit=numberOrNull(s.lastUnitPrice);
+    if(unit!==null)return unit;
+    const value=numberOrNull(s.currentValue);
+    const shares=numberOrNull(s.shares);
+    if(value!==null&&shares!==null)return value/shares;
+  }
+  return numberOrNull(s.currentPrice)??numberOrNull(s.price);
+}
 function normalizeV13PriceSnapshot(v={},stock={}){
   const src=v13Object(v);
   const known=['objectType','id','stockId','price','currency','source','capturedAt','legacy'];
+  const price=v13NumberOrNull(src.price)??v13LatestUnitPrice(stock);
   return {
     ...defaultV13PriceSnapshot(),
     id:v13String(src.id)||v13Id('price'),
     stockId:v13String(src.stockId||stock.id||stock.code||stock.symbol),
-    price:v13NumberOrNull(src.price??stock.currentPrice),
+    price,
     currency:v13String(src.currency||stock.currency),
     source:v13String(src.source||stock.priceSource),
     capturedAt:v13String(src.capturedAt||stock.priceUpdatedAt||stock.valueUpdatedAt||''),
@@ -316,7 +333,7 @@ function normalizeV13Stock(v={}){
   const src=v13Object(v);
   const known=['objectType','id','symbol','code','name','type','position','priceSnapshots','plans','events','trades','riskState','moduleSummary','coreModel','legacy'];
   const stockId=v13String(src.id||src.code||src.symbol)||v13Id('stock');
-  const base={id:stockId,code:src.code,symbol:src.symbol,name:src.name,type:src.type};
+  const base={id:stockId,code:src.code,symbol:src.symbol,name:src.name,type:src.type,currentPrice:src.currentPrice,currentValue:src.currentValue,lastUnitPrice:src.lastUnitPrice,shares:src.shares,price:src.price,priceUpdatedAt:src.priceUpdatedAt,valueUpdatedAt:src.valueUpdatedAt,priceSource:src.priceSource,currency:src.currency};
   return {
     ...defaultV13Stock(),
     id:stockId,
