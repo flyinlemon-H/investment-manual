@@ -470,7 +470,73 @@ function v13EventStockFor(event){
   const id=String(event&&event.stockId||'');
   return state.stocks.find(s=>[s.id,s.code,s.symbol,s.name].map(x=>String(x||'')).includes(id))||null;
 }
+function v13RecommendationPriorityLabel(priority){
+  return {P4:'🔴 P4 立即复核',P3:'🔴 P3 重点复核',P2:'🟡 P2 观察复核',P1:'⚪ P1 信息补全'}[priority]||String(priority||'—');
+}
+function v13RecommendationTypeLabel(type){
+  return {
+    risk_management:'风险复核',
+    profit_management:'收益复核',
+    plan_review:'计划复核',
+    observe:'观察复核',
+    information_update:'信息补全'
+  }[type]||String(type||'复核');
+}
+function v13RecommendationSourceLabel(source){
+  const src=source&&typeof source==='object'?source:{};
+  const type={
+    Plan:'既定计划',
+    RiskState:'风险状态',
+    TechnicalReview:'技术事实',
+    InformationCompleteness:'信息完整度'
+  }[src.objectType]||'其它来源';
+  return type;
+}
+function v13PlanDisplayName(plan){
+  if(!plan||typeof plan!=='object')return '';
+  const name=String(plan.name||plan.title||'').trim();
+  return name&&!/^[a-z0-9_-]+$/i.test(name)?name:'';
+}
+function v13RecommendationPlanDisplayName(stock,rec){
+  const plan=v13DecisionReviewPlanContext(stock,rec);
+  return v13PlanDisplayName(plan);
+}
+function v13HomeRecommendationRows(){
+  const rows=[];
+  (state.stocks||[]).forEach(stock=>{
+    normalizeStockAnalysis(stock);
+    const primary=stock.coreModel&&Array.isArray(stock.coreModel.primaryRecommendations)?stock.coreModel.primaryRecommendations:[];
+    if(primary[0])rows.push({stock,rec:primary[0]});
+  });
+  return rows.sort((a,b)=>{
+    const ar=typeof getRecommendationPriorityRank==='function'?getRecommendationPriorityRank(a.rec):0;
+    const br=typeof getRecommendationPriorityRank==='function'?getRecommendationPriorityRank(b.rec):0;
+    if(br-ar)return br-ar;
+    return String(a.stock.name||a.stock.code||'').localeCompare(String(b.stock.name||b.stock.code||''),'zh-CN');
+  });
+}
+function v13RecommendationRow(item){
+  const stock=item.stock||{};
+  const rec=item.rec||{};
+  const planName=v13RecommendationPlanDisplayName(stock,rec);
+  return `<div class="trig-row" data-v13-rec-stock="${esc(stock.id||'')}" data-v13-rec-id="${esc(rec.id||'')}" style="cursor:pointer"><div class="trig-name">${esc(stock.name||stock.code||stock.symbol||'—')} <span class="muted">· ${esc(stock.code||stock.symbol||'')}</span></div><div class="trig-dist">${esc(v13RecommendationPriorityLabel(rec.priority))}</div><div class="trig-desc"><b>${esc(v13RecommendationTypeLabel(rec.type))}</b> · ${esc(formatChineseText(rec.reason||'暂无完整依据'))}<div class="card-note">来源 ${esc(v13RecommendationSourceLabel(rec.source))}${planName?` · 关联计划 ${esc(planName)}`:''}</div></div></div>`;
+}
+function v13HomeRecommendationTaskPanel(){
+  const rows=v13HomeRecommendationRows();
+  if(!rows.length)return '';
+  const high=rows.filter(x=>['P4','P3'].includes(x.rec.priority));
+  const low=rows.filter(x=>['P2','P1'].includes(x.rec.priority));
+  const byPriority=priority=>high.filter(x=>x.rec.priority===priority);
+  const highSection=priority=>{
+    const list=byPriority(priority);
+    return `<div style="margin-top:10px"><div class="card-note" style="margin-bottom:6px">${esc(v13RecommendationPriorityLabel(priority))}（${list.length}）</div>${list.length?`<div class="trig-list">${list.map(v13RecommendationRow).join('')}</div>`:'<div class="card-note">暂无</div>'}</div>`;
+  };
+  const lowSection=low.length?`<details style="margin-top:10px"><summary class="card-note" style="cursor:pointer">🟡/⚪ 待关注与信息补充（${low.length}）</summary><div class="trig-list" style="margin-top:6px">${low.map(v13RecommendationRow).join('')}</div></details>`:'';
+  return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><div class="card-title">V13 当前复核任务</div><div class="card-note">按复核优先级展示；每只标的只显示一条主任务。点击进入只读决策复核。</div>${highSection('P4')}${highSection('P3')}${lowSection}</div>`;
+}
 function v13HomeEventTaskPanel(){
+  const recommendationPanel=v13HomeRecommendationTaskPanel();
+  if(recommendationPanel)return recommendationPanel;
   if(typeof getHomeVisibleEventsByStock!=='function')return '';
   const events=getHomeVisibleEventsByStock(state.stocks||[]);
   const groups={decision:[],prepare:[],info:[]};
@@ -481,8 +547,8 @@ function v13HomeEventTaskPanel(){
   const total=events.length;
   const sourceGroupLabel=event=>{
     const type=String(event&&event.businessObjectType||'').trim();
-    if(type==='Plan')return 'Plan';
-    if(type==='RiskState')return 'RiskState';
+    if(type==='Plan')return '既定计划';
+    if(type==='RiskState')return '风险状态';
     return '其它';
   };
   const row=event=>{
@@ -490,14 +556,14 @@ function v13HomeEventTaskPanel(){
     const stockName=stock?(stock.name||stock.code||stock.symbol||'—'):(event.stockId||'—');
     const stockCode=stock?(stock.code||stock.symbol||''):'';
     const targetId=stock&&stock.id?` data-v13-event-stock="${esc(stock.id)}"`:'';
-    return `<div class="trig-row"${targetId} style="${stock?'cursor:pointer':''}"><div class="trig-name">${esc(stockName)} <span class="muted">· ${esc(stockCode||event.businessObjectType||'Event')}</span></div><div class="trig-dist">${esc(v13EventPhaseLabel(event.phase).replace(/^.. /,''))}</div><div class="trig-desc"><b>${esc(event.title||'未命名事件')}</b>${event.summary?` · ${esc(event.summary)}`:''}</div></div>`;
+    return `<div class="trig-row"${targetId} style="${stock?'cursor:pointer':''}"><div class="trig-name">${esc(stockName)} <span class="muted">· ${esc(stockCode||sourceGroupLabel(event)||'事件')}</span></div><div class="trig-dist">${esc(v13EventPhaseLabel(event.phase).replace(/^.. /,''))}</div><div class="trig-desc"><b>${esc(event.title||'未命名事件')}</b>${event.summary?` · ${esc(event.summary)}`:''}</div></div>`;
   };
   const decisionSection=()=>{
     const list=groups.decision||[];
-    const bySource={Plan:[],RiskState:[],其他:[]};
+    const bySource={既定计划:[],风险状态:[],其他:[]};
     list.forEach(event=>bySource[sourceGroupLabel(event)].push(event));
     const sourceBlock=(label,items)=>items.length?`<div style="margin-top:8px"><div class="card-note" style="margin-bottom:6px">${esc(label)}（${items.length}）</div><div class="trig-list">${items.map(row).join('')}</div></div>`:'';
-    return `<div style="margin-top:10px"><div class="card-note" style="margin-bottom:6px">🔴 待处理（${list.length}）</div>${list.length?`${sourceBlock('Plan',bySource.Plan)}${sourceBlock('RiskState',bySource.RiskState)}${sourceBlock('其它',bySource.其他)}`:'<div class="card-note">暂无</div>'}</div>`;
+    return `<div style="margin-top:10px"><div class="card-note" style="margin-bottom:6px">🔴 待处理（${list.length}）</div>${list.length?`${sourceBlock('既定计划',bySource.既定计划)}${sourceBlock('风险状态',bySource.风险状态)}${sourceBlock('其它',bySource.其他)}`:'<div class="card-note">暂无</div>'}</div>`;
   };
   const section=(phase,title)=>{
     const list=groups[phase]||[];
@@ -505,7 +571,7 @@ function v13HomeEventTaskPanel(){
   };
   const infoList=groups.info||[];
   const infoSection=infoList.length?`<details style="margin-top:10px"><summary class="card-note" style="cursor:pointer">⚪ 信息（${infoList.length}）</summary><div class="trig-list" style="margin-top:6px">${infoList.map(row).join('')}</div></details>`:`<div style="margin-top:10px"><div class="card-note" style="margin-bottom:6px">⚪ 信息（0）</div><div class="card-note">暂无</div></div>`;
-  return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><div class="card-title">首页任务流（Event Engine）</div>${total?`${decisionSection()}${section('prepare','🟡 待关注')}${infoSection}`:'<div class="card-note">暂无需要处理的事件。</div>'}</div>`;
+  return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><div class="card-title">首页任务流</div>${total?`${decisionSection()}${section('prepare','🟡 待关注')}${infoSection}`:'<div class="card-note">暂无需要处理的事件。</div>'}</div>`;
 }
 function v13EventSourceText(event){
   const parts=[event&&event.businessObjectType,event&&event.businessObjectId].map(x=>String(x||'').trim()).filter(Boolean);
@@ -547,6 +613,73 @@ function v13EventDetailContext(stock,event){
       ModuleSummary:event.businessObjectId==='longTermLogic'?'长期逻辑':'信息完整度'
     }[event.businessObjectType]||'对应详情模块'
   };
+}
+function v13RecommendationById(stock,recId){
+  const cm=stock&&stock.coreModel?stock.coreModel:{};
+  const all=[...(Array.isArray(cm.primaryRecommendations)?cm.primaryRecommendations:[]),...(Array.isArray(cm.secondaryRecommendations)?cm.secondaryRecommendations:[]),...(Array.isArray(cm.recommendations)?cm.recommendations:[])];
+  return all.find(rec=>String(rec.id)===String(recId))||null;
+}
+function v13DecisionReviewPlanContext(stock,rec){
+  const cm=stock&&stock.coreModel?stock.coreModel:{};
+  if(!rec||!rec.linkedPlanId)return null;
+  return (cm.plans||[]).find(plan=>String(plan.id)===String(rec.linkedPlanId))||null;
+}
+function v13DecisionReviewSecondaryHtml(stock,primaryRec){
+  const cm=stock&&stock.coreModel?stock.coreModel:{};
+  const secondary=Array.isArray(cm.secondaryRecommendations)?cm.secondaryRecommendations:[];
+  if(!secondary.length)return '<div class="card-note">暂无其它相关复核项。</div>';
+  const rows=secondary.map(rec=>{
+    const planName=v13RecommendationPlanDisplayName(stock,rec);
+    return `<div class="trig-row" style="opacity:.82;background:var(--soft);border-color:var(--line)"><div class="trig-name">${esc(v13RecommendationPriorityLabel(rec.priority))} <span class="muted">· ${esc(v13RecommendationTypeLabel(rec.type))}</span></div><div class="trig-dist">${esc(v13RecommendationSourceLabel(rec.source))}</div><div class="trig-desc">${esc(formatChineseText(rec.reason||'暂无完整依据'))}${planName?`<div class="card-note">关联计划 ${esc(planName)}</div>`:''}</div></div>`;
+  }).join('');
+  return `<div class="trig-list">${rows}</div>`;
+}
+function v13DecisionReviewChecklistHtml(){
+  const items=[
+    '核对当前价格是否仍在触发区',
+    '核对技术事实是否支持复核',
+    '核对当前仓位是否超出目标或计划',
+    '核对相关计划是否仍有效',
+    '最终由用户决定是否记录操作或调整计划'
+  ];
+  return `<ul style="margin:8px 0 0 18px;padding:0">${items.map(item=>`<li style="margin:4px 0">${esc(item)}</li>`).join('')}</ul>`;
+}
+function ensureV13DecisionReviewModal(){
+  let el=document.getElementById('v13DecisionReviewModal');
+  if(el)return el;
+  el=document.createElement('div');
+  el.className='modal-bg import-layer';
+  el.id='v13DecisionReviewModal';
+  el.innerHTML=`<div class="modal"><h2>决策复核</h2><div class="modal-sub">只读复核面板。本弹窗不记录操作、不归档事件、不生成交易。</div><div id="v13DecisionReviewBody"></div><div class="modal-actions"><button class="btn ghost" id="v13DecisionReviewCloseBtn" type="button">关闭</button></div></div>`;
+  document.body.appendChild(el);
+  el.addEventListener('click',e=>{if(e.target.id==='v13DecisionReviewModal')closeV13DecisionReviewModal()});
+  document.getElementById('v13DecisionReviewCloseBtn').addEventListener('click',closeV13DecisionReviewModal);
+  return el;
+}
+function openV13DecisionReview(stockId,recId){
+  const stock=state.stocks.find(x=>String(x.id)===String(stockId))||state.stocks.find(x=>x.id===detailStockId);
+  if(!stock)return;
+  normalizeStockAnalysis(stock);
+  const rec=v13RecommendationById(stock,recId);
+  const modal=ensureV13DecisionReviewModal();
+  const body=document.getElementById('v13DecisionReviewBody');
+  if(!rec){
+    body.innerHTML='<div class="alert">未找到该复核建议，可能数据已刷新。</div>';
+    modal.classList.add('show');
+    return;
+  }
+  const cm=stock.coreModel||{};
+  const plan=v13DecisionReviewPlanContext(stock,rec);
+  const planName=v13PlanDisplayName(plan);
+  const price=cm.priceSnapshot&&cm.priceSnapshot.price!==null&&cm.priceSnapshot.price!==undefined?fmtMaybe(cm.priceSnapshot.price,2):(getComparablePrice(stock)||stockCurrentPrice(stock)||'暂无完整依据');
+  body.innerHTML=`<div class="card" style="margin-bottom:12px"><div class="card-title">当前主要复核任务</div><div class="card-num" style="font-size:20px;white-space:normal">${esc(v13RecommendationTypeLabel(rec.type))}</div><div class="card-note">${esc(v13RecommendationPriorityLabel(rec.priority))} · ${esc(formatChineseText(rec.reason||'暂无完整依据'))}</div></div>`
+    +`<div class="card" style="margin-bottom:12px">${v13EventDetailValue('当前价格',price)}${v13EventDetailValue('来源',v13RecommendationSourceLabel(rec.source))}${planName?v13EventDetailValue('关联计划',planName):''}${v13EventDetailValue('计划价',plan&&plan.triggerPrice!==null&&plan.triggerPrice!==undefined?fmtMaybe(plan.triggerPrice,2):'暂无完整依据')}<div class="card-note"><b>复核清单：</b>${v13DecisionReviewChecklistHtml()}</div></div>`
+    +`<div class="card" style="margin-bottom:12px"><div class="card-title">同标的相关复核依据</div>${v13DecisionReviewSecondaryHtml(stock,rec)}</div>`;
+  modal.classList.add('show');
+}
+function closeV13DecisionReviewModal(){
+  const modal=document.getElementById('v13DecisionReviewModal');
+  if(modal)modal.classList.remove('show');
 }
 function ensureV13EventDetailModal(){
   let el=document.getElementById('v13EventDetailModal');
@@ -1430,6 +1563,7 @@ function renderDashboard(){
   const noPriceHint=noPriceRows.length?`<div class="alert" style="margin-bottom:14px">有 ${noPriceRows.length} 只标的缺少有效价格/市值，仓位和再平衡计算可能不完整。</div>`:'';
   const fxRiskHint=isDefaultFx()?'<div class="alert" style="margin-bottom:14px">汇率使用默认值，港股市值和仓位占比可能有偏差。可到「工具」页更新 HKD→CNY 汇率。</div>':'';
   main.innerHTML=`${v13HomeEventTaskPanel()}${updateChecklistPanel()}${triggeredPanel}${disciplinePanel}${rebalPanel}${noPriceHint}${fxRiskHint}<div class="dash"><div class="card"><div class="card-title">按主题分布</div>${bars(themeRows)}</div><div class="card"><div class="card-title">按仓位角色分布</div>${bars(roleRows)}</div></div>`;
+  document.querySelectorAll('[data-v13-rec-stock]').forEach(el=>el.addEventListener('click',()=>openV13DecisionReview(el.dataset.v13RecStock,el.dataset.v13RecId)));
   document.querySelectorAll('[data-v13-event-stock]').forEach(el=>el.addEventListener('click',()=>openStockDetail(el.dataset.v13EventStock)));
   document.querySelectorAll('[data-execute-stock]').forEach(b=>b.addEventListener('click',()=>executePlan(b.dataset.executeStock,b.dataset.executePlan)));
   document.querySelectorAll('[data-update-stock]').forEach(el=>el.addEventListener('click',()=>openStockDetail(el.dataset.updateStock)));

@@ -1836,28 +1836,47 @@ function buildV13DerivedEvents(stock){
   }
   return events;
 }
-function buildV13DerivedCoreModel(stock,ruleConfig){
+function buildV13DerivedCoreModel(stock,ruleConfig,options={}){
   const base=typeof normalizeV13Stock==='function'?normalizeV13Stock(stock):null;
   if(!base)return null;
   const derivedPlans=buildV13DerivedPlans(stock);
   const derivedRiskState=buildV13DerivedRiskState(stock);
   const derivedEvents=buildV13DerivedEvents(stock);
+  const normalizedRuleConfig=typeof normalizeV13RuleConfig==='function'?normalizeV13RuleConfig(ruleConfig||(state&&state.ruleConfig)||{}):null;
+  const currentPriceSnapshot=(base.priceSnapshots&&base.priceSnapshots[0])||normalizeV13PriceSnapshot({},stock);
   const mergedRiskState={
     ...base.riskState,
     risks:[...(base.riskState&&Array.isArray(base.riskState.risks)?base.riskState.risks:[]),...(derivedRiskState.risks||[])],
     updatedAt:derivedRiskState.updatedAt||base.riskState.updatedAt,
     legacy:{...(base.riskState&&base.riskState.legacy||{}),derivedRiskState}
   };
-  return {
+  const modelForRecommendations={
     ...base,
+    priceSnapshot:currentPriceSnapshot,
+    priceSnapshots:base.priceSnapshots&&base.priceSnapshots.length?base.priceSnapshots:[currentPriceSnapshot],
     plans:[...(base.plans||[])],
     events:[...(base.events||[]),...derivedEvents],
     riskState:mergedRiskState,
-    ruleConfig:typeof normalizeV13RuleConfig==='function'?normalizeV13RuleConfig(ruleConfig||(state&&state.ruleConfig)||{}):null
+    ruleConfig:normalizedRuleConfig
+  };
+  const recommendations=typeof buildV13DerivedRecommendations==='function'?buildV13DerivedRecommendations(stock,modelForRecommendations,options):[];
+  const recommendationAggregation=typeof aggregateV13Recommendations==='function'
+    ? aggregateV13Recommendations(recommendations)
+    : {primaryRecommendations:[],secondaryRecommendations:[]};
+  return {
+    ...base,
+    priceSnapshots:base.priceSnapshots&&base.priceSnapshots.length?base.priceSnapshots:[currentPriceSnapshot],
+    plans:[...(base.plans||[])],
+    events:[...(base.events||[]),...derivedEvents],
+    riskState:mergedRiskState,
+    ruleConfig:normalizedRuleConfig,
+    recommendations,
+    primaryRecommendations:recommendationAggregation.primaryRecommendations,
+    secondaryRecommendations:recommendationAggregation.secondaryRecommendations
   };
 }
-function buildV13CoreModelSnapshot(stock,ruleConfig){
-  const normalized=typeof buildV13DerivedCoreModel==='function'?buildV13DerivedCoreModel(stock,ruleConfig):(typeof normalizeV13Stock==='function'?normalizeV13Stock(stock):null);
+function buildV13CoreModelSnapshot(stock,ruleConfig,options={}){
+  const normalized=typeof buildV13DerivedCoreModel==='function'?buildV13DerivedCoreModel(stock,ruleConfig,options):(typeof normalizeV13Stock==='function'?normalizeV13Stock(stock):null);
   if(!normalized)return null;
   return {
     stock:{
@@ -1872,6 +1891,9 @@ function buildV13CoreModelSnapshot(stock,ruleConfig){
     priceSnapshot:normalized.priceSnapshots[0]||normalizeV13PriceSnapshot({},stock),
     plans:normalized.plans,
     events:normalized.events,
+    recommendations:Array.isArray(normalized.recommendations)?normalized.recommendations:[],
+    primaryRecommendations:Array.isArray(normalized.primaryRecommendations)?normalized.primaryRecommendations:[],
+    secondaryRecommendations:Array.isArray(normalized.secondaryRecommendations)?normalized.secondaryRecommendations:[],
     trades:normalized.trades,
     riskState:normalized.riskState,
     moduleSummary:normalized.moduleSummary,
@@ -1879,6 +1901,7 @@ function buildV13CoreModelSnapshot(stock,ruleConfig){
   };
 }
 function normalizeStockAnalysis(stock,context={}){
+  const hasExplicitInformationCompleteness=stock.informationCompleteness&&typeof stock.informationCompleteness==='object'&&Object.keys(stock.informationCompleteness).length>0;
   stock.strategy=normalizeStrategy(stock.strategy,stock);
   stock.dataFreshness=normalizeDataFreshness(stock.dataFreshness);
   stock.collectionInputs=normalizeCollectionInputs(stock.collectionInputs);
@@ -1906,7 +1929,7 @@ function normalizeStockAnalysis(stock,context={}){
   stock.analysisFramework=normalizeAnalysisFramework(stock.analysisFramework,stock);
   stock.allocationDecision=normalizeAllocationDecision(stock.allocationDecision,stock);
   stock.analysisScore=calculateAnalysisScore(stock.analysisFramework);
-  stock.coreModel=buildV13CoreModelSnapshot(stock,context.ruleConfig);
+  stock.coreModel=buildV13CoreModelSnapshot(stock,context.ruleConfig,{hasExplicitInformationCompleteness});
   return stock;
 }
 function getCurrency(s){if(s&&(s.currency==='HKD'||s.currency==='CNY'))return s.currency;const c=String((s&&s.code)||'').trim().toUpperCase();return c.endsWith('.HK')?'HKD':'CNY'}

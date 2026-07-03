@@ -867,6 +867,227 @@ function archiveRisk(risk,reason){
 
 </script>
 <script>
+const V13_RECOMMENDATION_PRIORITIES=['P1','P2','P3','P4'];
+const V13_RECOMMENDATION_PRIORITY_RANK={P4:4,P3:3,P2:2,P1:1};
+const V13_RECOMMENDATION_TYPES=[
+  'risk_management',
+  'profit_management',
+  'plan_review',
+  'observe',
+  'information_update'
+];
+
+function v13RecommendationObject(v){
+  return v&&typeof v==='object'&&!Array.isArray(v)?v:{};
+}
+function v13RecommendationArray(v){
+  return Array.isArray(v)?v:[];
+}
+function v13RecommendationString(v){
+  return v===null||v===undefined?'':String(v);
+}
+function v13RecommendationPriority(v,fallback='P1'){
+  const s=v13RecommendationString(v).toUpperCase();
+  return V13_RECOMMENDATION_PRIORITIES.includes(s)?s:fallback;
+}
+function v13RecommendationType(v,fallback='observe'){
+  const s=v13RecommendationString(v);
+  return V13_RECOMMENDATION_TYPES.includes(s)?s:fallback;
+}
+function v13RecommendationIsCashStock(stock={}){
+  const type=v13RecommendationString(stock.type).toLowerCase();
+  const id=v13RecommendationString(stock.id||stock.code||stock.symbol).toLowerCase();
+  const role=v13RecommendationString(stock.role);
+  const name=v13RecommendationString(stock.name);
+  return type==='cash'||id==='cash'||/现金/.test(role)||/现金/.test(name);
+}
+function v13RecommendationId(stockId,type,sourceId=''){
+  const safeStock=v13RecommendationString(stockId)||'stock';
+  const safeType=v13RecommendationString(type)||'recommendation';
+  const safeSource=v13RecommendationString(sourceId)||'derived';
+  return `rec-${safeStock}-${safeType}-${safeSource}`.replace(/\s+/g,'-');
+}
+function normalizeRecommendation(v={},stock={}){
+  const src=v13RecommendationObject(v);
+  const stockId=v13RecommendationString(src.stockId||stock.id||stock.code||stock.symbol);
+  const type=v13RecommendationType(src.type);
+  const source=v13RecommendationObject(src.source);
+  const sourceObjectId=v13RecommendationString(source.objectId||src.linkedPlanId||src.sourceId);
+  return {
+    id:v13RecommendationString(src.id)||v13RecommendationId(stockId,type,sourceObjectId),
+    stockId,
+    type,
+    priority:v13RecommendationPriority(src.priority),
+    reason:v13RecommendationString(src.reason),
+    reviewGuide:v13RecommendationString(src.reviewGuide),
+    source:{
+      objectType:v13RecommendationString(source.objectType||src.sourceObjectType),
+      objectId:sourceObjectId
+    },
+    linkedPlanId:v13RecommendationString(src.linkedPlanId),
+    legacy:v13RecommendationObject(src.legacy)
+  };
+}
+function normalizeRecommendationList(recommendations,stock={}){
+  return v13RecommendationArray(recommendations)
+    .map(item=>normalizeRecommendation(item,stock))
+    .filter(item=>item.reason||item.reviewGuide);
+}
+function getRecommendationPriorityRank(recommendation){
+  const rec=normalizeRecommendation(recommendation);
+  return V13_RECOMMENDATION_PRIORITY_RANK[rec.priority]||0;
+}
+function sortRecommendationsByPriority(recommendations){
+  return normalizeRecommendationList(recommendations).slice().sort((a,b)=>{
+    const priorityDiff=getRecommendationPriorityRank(b)-getRecommendationPriorityRank(a);
+    if(priorityDiff)return priorityDiff;
+    return String(a.id).localeCompare(String(b.id));
+  });
+}
+function v13RecommendationPlanKey(recommendation){
+  const rec=normalizeRecommendation(recommendation);
+  const legacy=v13RecommendationObject(rec.legacy);
+  const planType=v13RecommendationString(legacy.planType||legacy.plan&&legacy.plan.planType||rec.type);
+  const direction=v13RecommendationString(legacy.triggerDirection||legacy.plan&&legacy.plan.triggerDirection||'');
+  return `${planType}|${direction||'unknown'}`;
+}
+function v13RecommendationIsExecutePlanRisk(recommendation){
+  const rec=normalizeRecommendation(recommendation);
+  return rec.type==='plan_review'
+    && rec.source.objectType==='RiskState'
+    && /既定计划|execute_plan|计划区/.test(`${rec.reason} ${rec.reviewGuide}`);
+}
+function compareV13RecommendationForPrimary(a,b){
+  const priorityDiff=getRecommendationPriorityRank(b)-getRecommendationPriorityRank(a);
+  if(priorityDiff)return priorityDiff;
+  const aPlan=a&&a.source&&a.source.objectType==='Plan';
+  const bPlan=b&&b.source&&b.source.objectType==='Plan';
+  if(aPlan!==bPlan)return bPlan?1:-1;
+  const aExecute=v13RecommendationIsExecutePlanRisk(a);
+  const bExecute=v13RecommendationIsExecutePlanRisk(b);
+  if(aExecute!==bExecute)return aExecute?1:-1;
+  return String(a.id).localeCompare(String(b.id));
+}
+function aggregateV13Recommendations(recommendations){
+  const sorted=sortRecommendationsByPriority(recommendations);
+  const planGroups=new Map();
+  const nonPlan=[];
+  sorted.forEach(rec=>{
+    if(rec.type==='plan_review'&&rec.source.objectType==='Plan'){
+      const key=v13RecommendationPlanKey(rec);
+      const existing=planGroups.get(key);
+      if(!existing||compareV13RecommendationForPrimary(existing,rec)>0)planGroups.set(key,rec);
+    }else{
+      nonPlan.push(rec);
+    }
+  });
+  const groupedPlanPrimaries=Array.from(planGroups.values());
+  const primary=[...groupedPlanPrimaries,...nonPlan].slice().sort(compareV13RecommendationForPrimary)[0]||null;
+  const primaryRecommendations=primary?[primary]:[];
+  const secondaryRecommendations=sortRecommendationsByPriority(sorted.filter(rec=>!primary||rec.id!==primary.id));
+  return {primaryRecommendations,secondaryRecommendations};
+}
+function v13RecommendationTechnicalFacts(stock={}){
+  const review=v13RecommendationObject(stock.technicalReview);
+  const shortTerm=v13RecommendationObject(review.shortTermTechnical);
+  const technicalData=v13RecommendationObject(stock.technicalData);
+  const facts=[];
+  const add=text=>{const value=v13RecommendationString(text).trim();if(value&&!facts.includes(value))facts.push(value)};
+  [shortTerm.trendStatus,technicalData.trendStatus,review.finalTechnicalConclusion].forEach(add);
+  v13RecommendationArray(shortTerm.riskFlags).forEach(add);
+  v13RecommendationArray(technicalData.riskFlags).forEach(add);
+  if(shortTerm.actionHint)add(`技术面提示：${shortTerm.actionHint}`);
+  else if(technicalData.actionHint)add(`技术面提示：${technicalData.actionHint}`);
+  return facts;
+}
+function v13RecommendationFromRiskManagement(stock={}){
+  if(v13RecommendationIsCashStock(stock))return null;
+  const risk=v13RecommendationObject(stock.riskManagement);
+  const status=v13RecommendationString(risk.status);
+  const facts=v13RecommendationTechnicalFacts(stock).slice(0,3);
+  const reasonParts=[risk.summary,...v13RecommendationArray(risk.triggerReasons),...facts].filter(Boolean);
+  const reason=reasonParts.join('；');
+  const guideParts=[
+    ...v13RecommendationArray(risk.reviewConditions),
+    ...v13RecommendationArray(risk.protectiveActions),
+    ...v13RecommendationArray(risk.invalidConditions)
+  ].filter(Boolean);
+  const reviewGuide=guideParts.join('；')||'复核风险状态、技术事实、仓位是否偏离目标，以及是否需要进入人工决策。';
+  if(!reason)return null;
+  const base={reason,reviewGuide,source:{objectType:'RiskState',objectId:'riskManagement'}};
+  if(status==='defensive_reduce_review')return normalizeRecommendation({...base,type:'risk_management',priority:'P4'},stock);
+  if(status==='risk_review')return normalizeRecommendation({...base,type:'risk_management',priority:'P3'},stock);
+  if(status==='profit_take_review')return normalizeRecommendation({...base,type:'profit_management',priority:'P3'},stock);
+  if(status==='execute_plan')return normalizeRecommendation({...base,type:'plan_review',priority:'P4'},stock);
+  if(status==='observe'&&(facts.length||guideParts.length))return normalizeRecommendation({...base,type:'observe',priority:'P2'},stock);
+  return null;
+}
+function v13RecommendationPlanReason(plan,level){
+  const trigger=plan&&plan.triggerPrice!==null&&plan.triggerPrice!==undefined?`计划价 ${plan.triggerPrice}`:'计划价缺失';
+  const summary=plan&&plan.summary?`，${plan.summary}`:'';
+  if(level==='triggered')return `${trigger} 已进入正式触发复核区${summary}`;
+  if(level==='level2')return `${trigger} 已进入二级提醒区${summary}`;
+  if(level==='level1')return `${trigger} 已进入一级提醒区${summary}`;
+  return '';
+}
+function v13RecommendationFromPlan(stock={},plan={},priceSnapshot={},ruleConfig={}){
+  if(!plan||plan.versionStatus==='archived')return null;
+  const level=typeof checkPlanTriggerLevel==='function'?checkPlanTriggerLevel(plan,priceSnapshot,ruleConfig):plan.stage;
+  if(!['triggered','level2','level1'].includes(level))return null;
+  const priority=level==='triggered'?'P4':(level==='level2'?'P3':'P2');
+  const reason=v13RecommendationPlanReason(plan,level);
+  if(!reason)return null;
+  return normalizeRecommendation({
+    type:'plan_review',
+    priority,
+    reason,
+    reviewGuide:'复核计划生成依据、当前价格、技术事实、仓位状态和是否需要人工决策。计划触发不代表已经执行。',
+    source:{objectType:'Plan',objectId:plan.id},
+    linkedPlanId:plan.id,
+    legacy:{planType:plan.planType,triggerDirection:plan.triggerDirection,stage:level}
+  },stock);
+}
+function v13RecommendationFromInformationCompleteness(stock={},existingRecommendations=[],options={}){
+  const hasHigher=normalizeRecommendationList(existingRecommendations,stock).some(item=>['P4','P3','P2'].includes(item.priority));
+  if(hasHigher)return null;
+  if(v13RecommendationIsCashStock(stock))return null;
+  if(!options.hasExplicitInformationCompleteness)return null;
+  if(!stock.informationCompleteness||typeof stock.informationCompleteness!=='object')return null;
+  const completeness=v13RecommendationObject(stock.informationCompleteness);
+  if(v13RecommendationString(completeness.overall)!=='low')return null;
+  const missing=v13RecommendationArray(completeness.missingItems||completeness.missingData).filter(Boolean).slice(0,5);
+  const reason=missing.length?`信息完整度偏低，缺失：${missing.join('、')}`:'信息完整度偏低，需要补充关键资料。';
+  return normalizeRecommendation({
+    type:'information_update',
+    priority:'P1',
+    reason,
+    reviewGuide:'优先补充缺失资料；该提示只表示资料不足，不构成操作建议。',
+    source:{objectType:'InformationCompleteness',objectId:'informationCompleteness'}
+  },stock);
+}
+function buildV13DerivedRecommendations(stock={},coreModel={},options={}){
+  if(v13RecommendationIsCashStock(stock))return [];
+  const recommendations=[];
+  const riskRecommendation=v13RecommendationFromRiskManagement(stock);
+  if(riskRecommendation)recommendations.push(riskRecommendation);
+  const priceSnapshot=coreModel.priceSnapshot||(coreModel.priceSnapshots&&coreModel.priceSnapshots[0])||{};
+  const ruleConfig=coreModel.ruleConfig||{};
+  v13RecommendationArray(coreModel.plans).forEach(plan=>{
+    const rec=v13RecommendationFromPlan(stock,plan,priceSnapshot,ruleConfig);
+    if(rec)recommendations.push(rec);
+  });
+  const infoRecommendation=v13RecommendationFromInformationCompleteness(stock,recommendations,options);
+  if(infoRecommendation)recommendations.push(infoRecommendation);
+  const byKey=new Map();
+  sortRecommendationsByPriority(recommendations).forEach(rec=>{
+    const key=[rec.type,rec.source.objectType,rec.source.objectId,rec.linkedPlanId].join('|');
+    if(!byKey.has(key))byKey.set(key,rec);
+  });
+  return sortRecommendationsByPriority(Array.from(byKey.values()));
+}
+
+</script>
+<script>
 const STORAGE_KEY='portfolio_manual_v502_network_price_20260610';
 const OLD_KEYS=[];
 const seedStocks=[];
@@ -2705,28 +2926,47 @@ function buildV13DerivedEvents(stock){
   }
   return events;
 }
-function buildV13DerivedCoreModel(stock,ruleConfig){
+function buildV13DerivedCoreModel(stock,ruleConfig,options={}){
   const base=typeof normalizeV13Stock==='function'?normalizeV13Stock(stock):null;
   if(!base)return null;
   const derivedPlans=buildV13DerivedPlans(stock);
   const derivedRiskState=buildV13DerivedRiskState(stock);
   const derivedEvents=buildV13DerivedEvents(stock);
+  const normalizedRuleConfig=typeof normalizeV13RuleConfig==='function'?normalizeV13RuleConfig(ruleConfig||(state&&state.ruleConfig)||{}):null;
+  const currentPriceSnapshot=(base.priceSnapshots&&base.priceSnapshots[0])||normalizeV13PriceSnapshot({},stock);
   const mergedRiskState={
     ...base.riskState,
     risks:[...(base.riskState&&Array.isArray(base.riskState.risks)?base.riskState.risks:[]),...(derivedRiskState.risks||[])],
     updatedAt:derivedRiskState.updatedAt||base.riskState.updatedAt,
     legacy:{...(base.riskState&&base.riskState.legacy||{}),derivedRiskState}
   };
-  return {
+  const modelForRecommendations={
     ...base,
+    priceSnapshot:currentPriceSnapshot,
+    priceSnapshots:base.priceSnapshots&&base.priceSnapshots.length?base.priceSnapshots:[currentPriceSnapshot],
     plans:[...(base.plans||[])],
     events:[...(base.events||[]),...derivedEvents],
     riskState:mergedRiskState,
-    ruleConfig:typeof normalizeV13RuleConfig==='function'?normalizeV13RuleConfig(ruleConfig||(state&&state.ruleConfig)||{}):null
+    ruleConfig:normalizedRuleConfig
+  };
+  const recommendations=typeof buildV13DerivedRecommendations==='function'?buildV13DerivedRecommendations(stock,modelForRecommendations,options):[];
+  const recommendationAggregation=typeof aggregateV13Recommendations==='function'
+    ? aggregateV13Recommendations(recommendations)
+    : {primaryRecommendations:[],secondaryRecommendations:[]};
+  return {
+    ...base,
+    priceSnapshots:base.priceSnapshots&&base.priceSnapshots.length?base.priceSnapshots:[currentPriceSnapshot],
+    plans:[...(base.plans||[])],
+    events:[...(base.events||[]),...derivedEvents],
+    riskState:mergedRiskState,
+    ruleConfig:normalizedRuleConfig,
+    recommendations,
+    primaryRecommendations:recommendationAggregation.primaryRecommendations,
+    secondaryRecommendations:recommendationAggregation.secondaryRecommendations
   };
 }
-function buildV13CoreModelSnapshot(stock,ruleConfig){
-  const normalized=typeof buildV13DerivedCoreModel==='function'?buildV13DerivedCoreModel(stock,ruleConfig):(typeof normalizeV13Stock==='function'?normalizeV13Stock(stock):null);
+function buildV13CoreModelSnapshot(stock,ruleConfig,options={}){
+  const normalized=typeof buildV13DerivedCoreModel==='function'?buildV13DerivedCoreModel(stock,ruleConfig,options):(typeof normalizeV13Stock==='function'?normalizeV13Stock(stock):null);
   if(!normalized)return null;
   return {
     stock:{
@@ -2741,6 +2981,9 @@ function buildV13CoreModelSnapshot(stock,ruleConfig){
     priceSnapshot:normalized.priceSnapshots[0]||normalizeV13PriceSnapshot({},stock),
     plans:normalized.plans,
     events:normalized.events,
+    recommendations:Array.isArray(normalized.recommendations)?normalized.recommendations:[],
+    primaryRecommendations:Array.isArray(normalized.primaryRecommendations)?normalized.primaryRecommendations:[],
+    secondaryRecommendations:Array.isArray(normalized.secondaryRecommendations)?normalized.secondaryRecommendations:[],
     trades:normalized.trades,
     riskState:normalized.riskState,
     moduleSummary:normalized.moduleSummary,
@@ -2748,6 +2991,7 @@ function buildV13CoreModelSnapshot(stock,ruleConfig){
   };
 }
 function normalizeStockAnalysis(stock,context={}){
+  const hasExplicitInformationCompleteness=stock.informationCompleteness&&typeof stock.informationCompleteness==='object'&&Object.keys(stock.informationCompleteness).length>0;
   stock.strategy=normalizeStrategy(stock.strategy,stock);
   stock.dataFreshness=normalizeDataFreshness(stock.dataFreshness);
   stock.collectionInputs=normalizeCollectionInputs(stock.collectionInputs);
@@ -2775,7 +3019,7 @@ function normalizeStockAnalysis(stock,context={}){
   stock.analysisFramework=normalizeAnalysisFramework(stock.analysisFramework,stock);
   stock.allocationDecision=normalizeAllocationDecision(stock.allocationDecision,stock);
   stock.analysisScore=calculateAnalysisScore(stock.analysisFramework);
-  stock.coreModel=buildV13CoreModelSnapshot(stock,context.ruleConfig);
+  stock.coreModel=buildV13CoreModelSnapshot(stock,context.ruleConfig,{hasExplicitInformationCompleteness});
   return stock;
 }
 function getCurrency(s){if(s&&(s.currency==='HKD'||s.currency==='CNY'))return s.currency;const c=String((s&&s.code)||'').trim().toUpperCase();return c.endsWith('.HK')?'HKD':'CNY'}
@@ -3664,7 +3908,73 @@ function v13EventStockFor(event){
   const id=String(event&&event.stockId||'');
   return state.stocks.find(s=>[s.id,s.code,s.symbol,s.name].map(x=>String(x||'')).includes(id))||null;
 }
+function v13RecommendationPriorityLabel(priority){
+  return {P4:'🔴 P4 立即复核',P3:'🔴 P3 重点复核',P2:'🟡 P2 观察复核',P1:'⚪ P1 信息补全'}[priority]||String(priority||'—');
+}
+function v13RecommendationTypeLabel(type){
+  return {
+    risk_management:'风险复核',
+    profit_management:'收益复核',
+    plan_review:'计划复核',
+    observe:'观察复核',
+    information_update:'信息补全'
+  }[type]||String(type||'复核');
+}
+function v13RecommendationSourceLabel(source){
+  const src=source&&typeof source==='object'?source:{};
+  const type={
+    Plan:'既定计划',
+    RiskState:'风险状态',
+    TechnicalReview:'技术事实',
+    InformationCompleteness:'信息完整度'
+  }[src.objectType]||'其它来源';
+  return type;
+}
+function v13PlanDisplayName(plan){
+  if(!plan||typeof plan!=='object')return '';
+  const name=String(plan.name||plan.title||'').trim();
+  return name&&!/^[a-z0-9_-]+$/i.test(name)?name:'';
+}
+function v13RecommendationPlanDisplayName(stock,rec){
+  const plan=v13DecisionReviewPlanContext(stock,rec);
+  return v13PlanDisplayName(plan);
+}
+function v13HomeRecommendationRows(){
+  const rows=[];
+  (state.stocks||[]).forEach(stock=>{
+    normalizeStockAnalysis(stock);
+    const primary=stock.coreModel&&Array.isArray(stock.coreModel.primaryRecommendations)?stock.coreModel.primaryRecommendations:[];
+    if(primary[0])rows.push({stock,rec:primary[0]});
+  });
+  return rows.sort((a,b)=>{
+    const ar=typeof getRecommendationPriorityRank==='function'?getRecommendationPriorityRank(a.rec):0;
+    const br=typeof getRecommendationPriorityRank==='function'?getRecommendationPriorityRank(b.rec):0;
+    if(br-ar)return br-ar;
+    return String(a.stock.name||a.stock.code||'').localeCompare(String(b.stock.name||b.stock.code||''),'zh-CN');
+  });
+}
+function v13RecommendationRow(item){
+  const stock=item.stock||{};
+  const rec=item.rec||{};
+  const planName=v13RecommendationPlanDisplayName(stock,rec);
+  return `<div class="trig-row" data-v13-rec-stock="${esc(stock.id||'')}" data-v13-rec-id="${esc(rec.id||'')}" style="cursor:pointer"><div class="trig-name">${esc(stock.name||stock.code||stock.symbol||'—')} <span class="muted">· ${esc(stock.code||stock.symbol||'')}</span></div><div class="trig-dist">${esc(v13RecommendationPriorityLabel(rec.priority))}</div><div class="trig-desc"><b>${esc(v13RecommendationTypeLabel(rec.type))}</b> · ${esc(formatChineseText(rec.reason||'暂无完整依据'))}<div class="card-note">来源 ${esc(v13RecommendationSourceLabel(rec.source))}${planName?` · 关联计划 ${esc(planName)}`:''}</div></div></div>`;
+}
+function v13HomeRecommendationTaskPanel(){
+  const rows=v13HomeRecommendationRows();
+  if(!rows.length)return '';
+  const high=rows.filter(x=>['P4','P3'].includes(x.rec.priority));
+  const low=rows.filter(x=>['P2','P1'].includes(x.rec.priority));
+  const byPriority=priority=>high.filter(x=>x.rec.priority===priority);
+  const highSection=priority=>{
+    const list=byPriority(priority);
+    return `<div style="margin-top:10px"><div class="card-note" style="margin-bottom:6px">${esc(v13RecommendationPriorityLabel(priority))}（${list.length}）</div>${list.length?`<div class="trig-list">${list.map(v13RecommendationRow).join('')}</div>`:'<div class="card-note">暂无</div>'}</div>`;
+  };
+  const lowSection=low.length?`<details style="margin-top:10px"><summary class="card-note" style="cursor:pointer">🟡/⚪ 待关注与信息补充（${low.length}）</summary><div class="trig-list" style="margin-top:6px">${low.map(v13RecommendationRow).join('')}</div></details>`:'';
+  return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><div class="card-title">V13 当前复核任务</div><div class="card-note">按复核优先级展示；每只标的只显示一条主任务。点击进入只读决策复核。</div>${highSection('P4')}${highSection('P3')}${lowSection}</div>`;
+}
 function v13HomeEventTaskPanel(){
+  const recommendationPanel=v13HomeRecommendationTaskPanel();
+  if(recommendationPanel)return recommendationPanel;
   if(typeof getHomeVisibleEventsByStock!=='function')return '';
   const events=getHomeVisibleEventsByStock(state.stocks||[]);
   const groups={decision:[],prepare:[],info:[]};
@@ -3675,8 +3985,8 @@ function v13HomeEventTaskPanel(){
   const total=events.length;
   const sourceGroupLabel=event=>{
     const type=String(event&&event.businessObjectType||'').trim();
-    if(type==='Plan')return 'Plan';
-    if(type==='RiskState')return 'RiskState';
+    if(type==='Plan')return '既定计划';
+    if(type==='RiskState')return '风险状态';
     return '其它';
   };
   const row=event=>{
@@ -3684,14 +3994,14 @@ function v13HomeEventTaskPanel(){
     const stockName=stock?(stock.name||stock.code||stock.symbol||'—'):(event.stockId||'—');
     const stockCode=stock?(stock.code||stock.symbol||''):'';
     const targetId=stock&&stock.id?` data-v13-event-stock="${esc(stock.id)}"`:'';
-    return `<div class="trig-row"${targetId} style="${stock?'cursor:pointer':''}"><div class="trig-name">${esc(stockName)} <span class="muted">· ${esc(stockCode||event.businessObjectType||'Event')}</span></div><div class="trig-dist">${esc(v13EventPhaseLabel(event.phase).replace(/^.. /,''))}</div><div class="trig-desc"><b>${esc(event.title||'未命名事件')}</b>${event.summary?` · ${esc(event.summary)}`:''}</div></div>`;
+    return `<div class="trig-row"${targetId} style="${stock?'cursor:pointer':''}"><div class="trig-name">${esc(stockName)} <span class="muted">· ${esc(stockCode||sourceGroupLabel(event)||'事件')}</span></div><div class="trig-dist">${esc(v13EventPhaseLabel(event.phase).replace(/^.. /,''))}</div><div class="trig-desc"><b>${esc(event.title||'未命名事件')}</b>${event.summary?` · ${esc(event.summary)}`:''}</div></div>`;
   };
   const decisionSection=()=>{
     const list=groups.decision||[];
-    const bySource={Plan:[],RiskState:[],其他:[]};
+    const bySource={既定计划:[],风险状态:[],其他:[]};
     list.forEach(event=>bySource[sourceGroupLabel(event)].push(event));
     const sourceBlock=(label,items)=>items.length?`<div style="margin-top:8px"><div class="card-note" style="margin-bottom:6px">${esc(label)}（${items.length}）</div><div class="trig-list">${items.map(row).join('')}</div></div>`:'';
-    return `<div style="margin-top:10px"><div class="card-note" style="margin-bottom:6px">🔴 待处理（${list.length}）</div>${list.length?`${sourceBlock('Plan',bySource.Plan)}${sourceBlock('RiskState',bySource.RiskState)}${sourceBlock('其它',bySource.其他)}`:'<div class="card-note">暂无</div>'}</div>`;
+    return `<div style="margin-top:10px"><div class="card-note" style="margin-bottom:6px">🔴 待处理（${list.length}）</div>${list.length?`${sourceBlock('既定计划',bySource.既定计划)}${sourceBlock('风险状态',bySource.风险状态)}${sourceBlock('其它',bySource.其他)}`:'<div class="card-note">暂无</div>'}</div>`;
   };
   const section=(phase,title)=>{
     const list=groups[phase]||[];
@@ -3699,7 +4009,7 @@ function v13HomeEventTaskPanel(){
   };
   const infoList=groups.info||[];
   const infoSection=infoList.length?`<details style="margin-top:10px"><summary class="card-note" style="cursor:pointer">⚪ 信息（${infoList.length}）</summary><div class="trig-list" style="margin-top:6px">${infoList.map(row).join('')}</div></details>`:`<div style="margin-top:10px"><div class="card-note" style="margin-bottom:6px">⚪ 信息（0）</div><div class="card-note">暂无</div></div>`;
-  return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><div class="card-title">首页任务流（Event Engine）</div>${total?`${decisionSection()}${section('prepare','🟡 待关注')}${infoSection}`:'<div class="card-note">暂无需要处理的事件。</div>'}</div>`;
+  return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><div class="card-title">首页任务流</div>${total?`${decisionSection()}${section('prepare','🟡 待关注')}${infoSection}`:'<div class="card-note">暂无需要处理的事件。</div>'}</div>`;
 }
 function v13EventSourceText(event){
   const parts=[event&&event.businessObjectType,event&&event.businessObjectId].map(x=>String(x||'').trim()).filter(Boolean);
@@ -3741,6 +4051,73 @@ function v13EventDetailContext(stock,event){
       ModuleSummary:event.businessObjectId==='longTermLogic'?'长期逻辑':'信息完整度'
     }[event.businessObjectType]||'对应详情模块'
   };
+}
+function v13RecommendationById(stock,recId){
+  const cm=stock&&stock.coreModel?stock.coreModel:{};
+  const all=[...(Array.isArray(cm.primaryRecommendations)?cm.primaryRecommendations:[]),...(Array.isArray(cm.secondaryRecommendations)?cm.secondaryRecommendations:[]),...(Array.isArray(cm.recommendations)?cm.recommendations:[])];
+  return all.find(rec=>String(rec.id)===String(recId))||null;
+}
+function v13DecisionReviewPlanContext(stock,rec){
+  const cm=stock&&stock.coreModel?stock.coreModel:{};
+  if(!rec||!rec.linkedPlanId)return null;
+  return (cm.plans||[]).find(plan=>String(plan.id)===String(rec.linkedPlanId))||null;
+}
+function v13DecisionReviewSecondaryHtml(stock,primaryRec){
+  const cm=stock&&stock.coreModel?stock.coreModel:{};
+  const secondary=Array.isArray(cm.secondaryRecommendations)?cm.secondaryRecommendations:[];
+  if(!secondary.length)return '<div class="card-note">暂无其它相关复核项。</div>';
+  const rows=secondary.map(rec=>{
+    const planName=v13RecommendationPlanDisplayName(stock,rec);
+    return `<div class="trig-row" style="opacity:.82;background:var(--soft);border-color:var(--line)"><div class="trig-name">${esc(v13RecommendationPriorityLabel(rec.priority))} <span class="muted">· ${esc(v13RecommendationTypeLabel(rec.type))}</span></div><div class="trig-dist">${esc(v13RecommendationSourceLabel(rec.source))}</div><div class="trig-desc">${esc(formatChineseText(rec.reason||'暂无完整依据'))}${planName?`<div class="card-note">关联计划 ${esc(planName)}</div>`:''}</div></div>`;
+  }).join('');
+  return `<div class="trig-list">${rows}</div>`;
+}
+function v13DecisionReviewChecklistHtml(){
+  const items=[
+    '核对当前价格是否仍在触发区',
+    '核对技术事实是否支持复核',
+    '核对当前仓位是否超出目标或计划',
+    '核对相关计划是否仍有效',
+    '最终由用户决定是否记录操作或调整计划'
+  ];
+  return `<ul style="margin:8px 0 0 18px;padding:0">${items.map(item=>`<li style="margin:4px 0">${esc(item)}</li>`).join('')}</ul>`;
+}
+function ensureV13DecisionReviewModal(){
+  let el=document.getElementById('v13DecisionReviewModal');
+  if(el)return el;
+  el=document.createElement('div');
+  el.className='modal-bg import-layer';
+  el.id='v13DecisionReviewModal';
+  el.innerHTML=`<div class="modal"><h2>决策复核</h2><div class="modal-sub">只读复核面板。本弹窗不记录操作、不归档事件、不生成交易。</div><div id="v13DecisionReviewBody"></div><div class="modal-actions"><button class="btn ghost" id="v13DecisionReviewCloseBtn" type="button">关闭</button></div></div>`;
+  document.body.appendChild(el);
+  el.addEventListener('click',e=>{if(e.target.id==='v13DecisionReviewModal')closeV13DecisionReviewModal()});
+  document.getElementById('v13DecisionReviewCloseBtn').addEventListener('click',closeV13DecisionReviewModal);
+  return el;
+}
+function openV13DecisionReview(stockId,recId){
+  const stock=state.stocks.find(x=>String(x.id)===String(stockId))||state.stocks.find(x=>x.id===detailStockId);
+  if(!stock)return;
+  normalizeStockAnalysis(stock);
+  const rec=v13RecommendationById(stock,recId);
+  const modal=ensureV13DecisionReviewModal();
+  const body=document.getElementById('v13DecisionReviewBody');
+  if(!rec){
+    body.innerHTML='<div class="alert">未找到该复核建议，可能数据已刷新。</div>';
+    modal.classList.add('show');
+    return;
+  }
+  const cm=stock.coreModel||{};
+  const plan=v13DecisionReviewPlanContext(stock,rec);
+  const planName=v13PlanDisplayName(plan);
+  const price=cm.priceSnapshot&&cm.priceSnapshot.price!==null&&cm.priceSnapshot.price!==undefined?fmtMaybe(cm.priceSnapshot.price,2):(getComparablePrice(stock)||stockCurrentPrice(stock)||'暂无完整依据');
+  body.innerHTML=`<div class="card" style="margin-bottom:12px"><div class="card-title">当前主要复核任务</div><div class="card-num" style="font-size:20px;white-space:normal">${esc(v13RecommendationTypeLabel(rec.type))}</div><div class="card-note">${esc(v13RecommendationPriorityLabel(rec.priority))} · ${esc(formatChineseText(rec.reason||'暂无完整依据'))}</div></div>`
+    +`<div class="card" style="margin-bottom:12px">${v13EventDetailValue('当前价格',price)}${v13EventDetailValue('来源',v13RecommendationSourceLabel(rec.source))}${planName?v13EventDetailValue('关联计划',planName):''}${v13EventDetailValue('计划价',plan&&plan.triggerPrice!==null&&plan.triggerPrice!==undefined?fmtMaybe(plan.triggerPrice,2):'暂无完整依据')}<div class="card-note"><b>复核清单：</b>${v13DecisionReviewChecklistHtml()}</div></div>`
+    +`<div class="card" style="margin-bottom:12px"><div class="card-title">同标的相关复核依据</div>${v13DecisionReviewSecondaryHtml(stock,rec)}</div>`;
+  modal.classList.add('show');
+}
+function closeV13DecisionReviewModal(){
+  const modal=document.getElementById('v13DecisionReviewModal');
+  if(modal)modal.classList.remove('show');
 }
 function ensureV13EventDetailModal(){
   let el=document.getElementById('v13EventDetailModal');
@@ -4624,6 +5001,7 @@ function renderDashboard(){
   const noPriceHint=noPriceRows.length?`<div class="alert" style="margin-bottom:14px">有 ${noPriceRows.length} 只标的缺少有效价格/市值，仓位和再平衡计算可能不完整。</div>`:'';
   const fxRiskHint=isDefaultFx()?'<div class="alert" style="margin-bottom:14px">汇率使用默认值，港股市值和仓位占比可能有偏差。可到「工具」页更新 HKD→CNY 汇率。</div>':'';
   main.innerHTML=`${v13HomeEventTaskPanel()}${updateChecklistPanel()}${triggeredPanel}${disciplinePanel}${rebalPanel}${noPriceHint}${fxRiskHint}<div class="dash"><div class="card"><div class="card-title">按主题分布</div>${bars(themeRows)}</div><div class="card"><div class="card-title">按仓位角色分布</div>${bars(roleRows)}</div></div>`;
+  document.querySelectorAll('[data-v13-rec-stock]').forEach(el=>el.addEventListener('click',()=>openV13DecisionReview(el.dataset.v13RecStock,el.dataset.v13RecId)));
   document.querySelectorAll('[data-v13-event-stock]').forEach(el=>el.addEventListener('click',()=>openStockDetail(el.dataset.v13EventStock)));
   document.querySelectorAll('[data-execute-stock]').forEach(b=>b.addEventListener('click',()=>executePlan(b.dataset.executeStock,b.dataset.executePlan)));
   document.querySelectorAll('[data-update-stock]').forEach(el=>el.addEventListener('click',()=>openStockDetail(el.dataset.updateStock)));
