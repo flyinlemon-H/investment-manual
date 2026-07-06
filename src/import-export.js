@@ -1,7 +1,7 @@
 function pad2(n){return String(n).padStart(2,'0')}
 function dateStamp(d=new Date()){return `${d.getFullYear()}${pad2(d.getMonth()+1)}${pad2(d.getDate())}`}
 function timeStamp(d=new Date()){return `${dateStamp(d)}-${pad2(d.getHours())}${pad2(d.getMinutes())}`}
-function appVersion(){return 'V13-dev Alpha-1.3'}
+function appVersion(){return 'V13.0 RC1'}
 function backupFilename(prefix='投资作战手册',d=new Date()){return `${prefix}-${appVersion()}-${timeStamp(d)}.json`}
 function downloadJson(data,filename){
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
@@ -14,18 +14,27 @@ function downloadJson(data,filename){
   a.remove();
   URL.revokeObjectURL(url);
 }
+function alpha3ExportSnapshot(data){
+  const source=data&&typeof data==='object'?data:{};
+  const snapshot=JSON.parse(JSON.stringify(source));
+  const normalized=typeof normalize==='function'?normalize(snapshot):snapshot;
+  if(!Array.isArray(normalized.decisionRecords))normalized.decisionRecords=[];
+  if(!Array.isArray(normalized.decisionStates))normalized.decisionStates=[];
+  if(typeof ALPHA3_DATA_VERSION==='string')normalized.alpha3DataVersion=ALPHA3_DATA_VERSION;
+  return normalized;
+}
 function markBackupExported(){
   state.lastBackupAt=Date.now();
   saveState();
 }
 function exportData(){
   markBackupExported();
-  downloadJson(state,backupFilename('投资作战手册'));
+  downloadJson(alpha3ExportSnapshot(state),backupFilename('投资作战手册'));
   render();
 }
 function autoBackupBeforeImport(){
   if(!state||!Array.isArray(state.stocks))return;
-  const snapshot=JSON.parse(JSON.stringify(state));
+  const snapshot=alpha3ExportSnapshot(state);
   snapshot.lastBackupAt=Date.now();
   downloadJson(snapshot,backupFilename('导入前自动备份'));
 }

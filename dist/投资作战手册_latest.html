@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>投资作战手册 V13-dev Alpha-1.3</title>
+<title>投资作战手册 V13.0 RC1</title>
 <style>
 :root{--paper:#F5F1E8;--paper2:#EFEADE;--ink:#1B1B1B;--ink2:#4A4A48;--ink3:#8A857A;--seal:#B83A2B;--sealsoft:rgba(184,58,43,.08);--teal:#2F5D6E;--tealsoft:rgba(47,93,110,.10);--gold:#9A6B24;--goldsoft:rgba(154,107,36,.12);--purple:#6A4C93;--purplesoft:rgba(106,76,147,.11);--line:rgba(27,27,27,.14);--lines:rgba(27,27,27,.28);}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background-image:radial-gradient(rgba(27,27,27,.025) 1px,transparent 1px);background-size:18px 18px}.wrap{max-width:1380px;margin:0 auto;padding:34px 22px 70px}header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--ink);padding-bottom:16px;margin-bottom:18px;gap:16px}.brand{display:flex;gap:14px;align-items:center}.seal{width:42px;height:42px;border-radius:4px;background:var(--seal);color:var(--paper);display:grid;place-items:center;font-size:22px;font-weight:800;transform:rotate(-3deg)}h1{margin:0;font-family:Georgia,"Songti SC",serif;font-size:30px;letter-spacing:3px}.sub,.date{color:var(--ink3);font-size:11px;letter-spacing:1.8px}.date{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap;color:var(--ink2)}.tabs{display:flex;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:14px}.tab{background:0;border:0;padding:13px 18px 11px;margin-bottom:-1px;border-bottom:2px solid transparent;color:var(--ink3);font-weight:700;letter-spacing:1px;white-space:nowrap;cursor:pointer}.tab.active{color:var(--ink);border-bottom-color:var(--seal)}.toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.summary{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;color:var(--ink2)}.summary strong{color:var(--ink)}.actions{display:flex;gap:8px;flex-wrap:wrap}button{font:inherit}.btn{background:var(--ink);color:var(--paper);border:1px solid var(--ink);padding:8px 13px;border-radius:2px;font-weight:700;cursor:pointer;letter-spacing:.8px}.btn:hover{background:var(--seal);border-color:var(--seal)}.btn.ghost{background:transparent;color:var(--ink2);border-color:var(--lines)}.btn.ghost:hover{color:var(--ink);background:transparent;border-color:var(--ink)}.btn.small{font-size:12px;padding:6px 10px}.sync{min-height:14px;color:var(--ink3);font-size:11px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;margin-bottom:14px}.hint{border:1px solid var(--line);background:rgba(255,255,255,.22);padding:12px 14px;margin-bottom:14px;color:var(--ink2);font-size:13px;line-height:1.65}.dash{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}.card{border:1px solid var(--line);background:rgba(245,241,232,.82);padding:14px}.card-title{font-size:11px;color:var(--ink3);font-weight:800;letter-spacing:1.6px;margin-bottom:8px}.card-num{font-size:24px;font-weight:800;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.card-note{font-size:12px;color:var(--ink3);margin-top:4px;line-height:1.5}.bar-list{display:grid;gap:9px}.bar-row{display:grid;grid-template-columns:76px 1fr 48px;gap:8px;align-items:center;font-size:12px}.bar-bg{height:8px;border:1px solid var(--line);background:rgba(255,255,255,.25);overflow:hidden}.bar{height:100%;background:var(--ink)}.bar.ai{background:var(--seal)}.bar.res{background:var(--gold)}.bar.core{background:var(--teal)}.bar.sat{background:var(--purple)}.alert{padding:9px 10px;border-left:3px solid #A65E2E;background:rgba(166,94,46,.08);font-size:12px;color:var(--ink2);line-height:1.5;margin-top:8px}.table-wrap{border:1px solid var(--line);background:rgba(245,241,232,.82);overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:1180px}th{text-align:left;color:var(--ink3);font-size:11px;letter-spacing:1.3px;padding:12px;border-bottom:1px solid var(--ink);white-space:nowrap}td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top}tr:hover{background:rgba(255,255,255,.28)}.name{font-weight:800;font-size:15px;min-width:120px}.num{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap}.muted{color:var(--ink3)}.text{font-size:12px;line-height:1.55;color:var(--ink2);max-width:260px}.chips{display:flex;flex-wrap:wrap;gap:6px;max-width:380px}.chip{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px;border-radius:14px;padding:4px 9px;font-size:12px;line-height:1.35;white-space:normal;max-width:100%;overflow-wrap:anywhere}.chip .price,.chip .shares,.chip .gap{white-space:nowrap}.buy{color:var(--seal);background:var(--sealsoft)}.sell{color:var(--teal);background:var(--tealsoft)}.chip.triggered{background:var(--seal);color:#fff;font-weight:800;box-shadow:0 0 0 2px rgba(184,58,43,.18);animation:pulse 2.4s ease-in-out infinite}.chip.triggered.sell{background:var(--teal);box-shadow:0 0 0 2px rgba(47,93,110,.20)}.chip .gap{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;color:var(--ink3);margin-left:2px;font-weight:700}.chip.triggered .gap{color:inherit}.chip .gap.trig{font-weight:800;letter-spacing:.5px}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.72}}.alert-trig{padding:9px 12px;border-left:3px solid var(--seal);background:rgba(184,58,43,.08);font-size:13px;color:var(--ink);line-height:1.5;margin-bottom:14px;font-weight:600}.trig-list{display:flex;flex-direction:column;gap:8px}.trig-row{padding:10px 12px;background:rgba(184,58,43,.06);border:1px solid rgba(184,58,43,.20);border-left:3px solid var(--seal);display:grid;grid-template-columns:1fr auto;column-gap:10px;row-gap:4px;align-items:baseline}.trig-row.sell{border-left-color:var(--teal);background:rgba(47,93,110,.06);border-color:rgba(47,93,110,.20)}.trig-row .trig-name{font-weight:800;font-size:15px;color:var(--ink)}.trig-row .trig-dist{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:800;font-size:13px;color:var(--seal);white-space:nowrap;text-align:right}.trig-row.sell .trig-dist{color:var(--teal)}.trig-row .trig-desc{grid-column:1/-1;font-size:12px;color:var(--ink2);line-height:1.55}.trig-row .trig-tag{display:inline-block;font-weight:800;margin-right:4px}.trig-row.buy .trig-tag{color:var(--seal)}.trig-row.sell .trig-tag{color:var(--teal)}.trig-action{grid-column:1/-1;text-align:right;margin-top:4px;padding-top:6px;border-top:1px dashed rgba(27,27,27,.12)}.trig-action button{background:transparent;border:1px solid var(--lines);color:var(--ink2);padding:5px 14px;font-size:12px;cursor:pointer;border-radius:2px;font-weight:700;letter-spacing:.5px;font-family:inherit}.trig-action button:hover{background:var(--seal);color:var(--paper);border-color:var(--seal)}.trig-row.sell .trig-action button:hover{background:var(--teal);border-color:var(--teal)}.daily-chg{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;font-weight:800;margin-left:4px;letter-spacing:.3px;white-space:nowrap}.daily-chg.up{color:#C84545}.daily-chg.down{color:#2A7942}.trig-suggest{grid-column:1/-1;margin-top:6px;padding:8px 10px;background:rgba(154,107,36,.10);border-left:2px solid var(--gold);font-size:12.5px;font-weight:700;color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.3px}.trig-suggest .trig-tag{font-weight:800;margin-right:6px;color:var(--gold)}.cell-target .target-line{font-weight:800;font-size:14px;color:var(--ink)}.cell-target .actual-line{font-size:11px;color:var(--ink3);margin-top:3px;line-height:1.4;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.dev-badge{display:inline-block;font-weight:800;font-size:11px;padding:1px 6px;border-radius:3px;margin-top:2px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.5px}.dev-badge.over{color:var(--teal);background:var(--tealsoft)}.dev-badge.under{color:var(--seal);background:var(--sealsoft)}.dev-badge.ok{color:var(--ink3);background:transparent;padding-left:0;padding-right:0}.dev-badge.na{color:var(--ink3);background:transparent;font-style:italic;font-weight:400;padding-left:0;padding-right:0}.stale-list{display:flex;flex-direction:column;gap:0}.stale-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:12px}.stale-row:last-child{border-bottom:0}.stale-name{font-weight:700;color:var(--ink);font-size:13px}.stale-meta{color:var(--ink3);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-align:right;white-space:nowrap}.stale-meta.urgent{color:var(--seal);font-weight:700}.tag{color:var(--purple);background:var(--purplesoft)}.role{color:var(--gold);background:var(--goldsoft)}.price,.shares{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:800}.row-actions{display:flex;gap:8px;white-space:nowrap}.link-btn{background:0;border:0;color:var(--ink2);cursor:pointer;padding:2px 0;font-size:12px}.link-btn:hover{color:var(--seal)}.danger{color:var(--seal)}.empty{text-align:center;padding:60px 20px;color:var(--ink3)}.modal-bg{position:fixed;inset:0;background:rgba(27,27,27,.45);display:none;align-items:center;justify-content:center;z-index:10;padding:16px}.modal-bg.show{display:flex}.modal{width:min(720px,100%);max-height:92vh;overflow:auto;background:var(--paper);border:1px solid var(--ink);box-shadow:6px 6px 0 rgba(27,27,27,.15);padding:22px}.modal h2{margin:0 0 4px;font-family:Georgia,"Songti SC",serif;letter-spacing:2px;font-size:20px}.modal-sub{color:var(--ink3);font-size:11px;letter-spacing:1px;margin-bottom:16px}.form-row{margin-bottom:13px}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}label{display:block;color:var(--ink2);font-size:11px;letter-spacing:1.5px;font-weight:800;margin-bottom:5px}input,textarea,select{width:100%;border:1px solid var(--lines);background:var(--paper);color:var(--ink);padding:9px 11px;border-radius:2px;font-size:14px}textarea{min-height:70px;resize:vertical}input:focus,textarea:focus,select:focus{outline:none;border-color:var(--seal)}.type-toggle{display:flex;border:1px solid var(--lines);overflow:hidden}.type-toggle button{flex:1;border:0;background:transparent;color:var(--ink3);padding:10px;cursor:pointer;font-weight:700}.type-toggle button.active{background:var(--ink);color:var(--paper)}.plan-editor{border:1px solid var(--line);padding:10px}.plan-table{width:100%;min-width:0}.plan-table th,.plan-table td{padding:6px;border-bottom:1px solid var(--line);font-size:12px}.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
@@ -185,7 +185,7 @@ td+td{padding-top:9px;border-top:1px dashed rgba(27,27,27,.10)}
 </style>
 </head>
 <body><div class="wrap">
-<header><div class="brand"><div class="seal">策</div><div><h1>投资作战手册 V13-dev Alpha-1.3</h1><div class="sub">Thesis · Discipline · Action Plan</div></div></div><div class="date" id="dateStamp"></div></header>
+<header><div class="brand"><div class="seal">策</div><div><h1>投资作战手册 V13.0 RC1</h1><div class="sub">Thesis · Discipline · Action Plan</div></div></div><div class="date" id="dateStamp"></div></header>
 <div class="tabs"><button class="tab active" data-tab="dashboard">总览</button><button class="tab" data-tab="holding">个股 <span id="countHolding" class="count">0</span></button><button class="tab" data-tab="etf">ETF <span id="countEtf" class="count">0</span></button><button class="tab" data-tab="watching">观察 <span id="countWatching" class="count">0</span></button></div>
 <div class="toolbar"><div class="summary" id="summary">—</div><div class="actions" id="globalActions"><button class="btn ghost small" id="fxBtn" title="点击设置或刷新 HKD→CNY 汇率">汇率 —</button><button class="btn ghost small" id="importBtn">导入JSON</button><button class="btn ghost small" id="exportBtn">导出</button><button class="btn ghost small" id="socialImportBtn">导入 social_posts.json</button><button class="btn ghost small" id="resetBtn">清空本地数据</button><button class="btn ghost small" id="refreshAllBtn">刷新全部价格</button><button class="btn" id="addBtn">＋ 新增标的</button><input type="file" id="importFile" accept=".json,application/json" style="display:none"><input type="file" id="socialImportFile" accept=".json,application/json" style="display:none"></div></div><div class="sync" id="syncHint"></div><div class="sync" id="socialDataStatus">社媒数据更新时间：—</div><div id="main"></div>
 </div>
@@ -1093,6 +1093,7 @@ const OLD_KEYS=[];
 const seedStocks=[];
 const DEFAULT_CODES={zijin:'2899.HK',xiaomi:'1810.HK',meitu:'1357.HK',fii:'601138.SS',dp:'605499.SS',huaqin:'603296.SS'};
 let state={stocks:[],updatedAt:null},currentTab='dashboard',editingId=null,detailStockId=null,detailSubView='',formType='holding',tempBuy=[],tempSell=[];
+const ALPHA3_DATA_VERSION='v13.alpha3.sprint5';
 const uid=()=>Math.random().toString(36).slice(2,10);
 const fmt=(n,d=2)=>Number(n||0).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
 const fmtMaybe=(n,d=2)=>(n===null||n===undefined||n===''||isNaN(Number(n)))?'—':fmt(Number(n),d);
@@ -3026,16 +3027,352 @@ function getCurrency(s){if(s&&(s.currency==='HKD'||s.currency==='CNY'))return s.
 function fxHKD(){const r=(state&&state.fx)?Number(state.fx.hkdcny):NaN;return (r>0&&isFinite(r))?r:DEFAULT_HKD_CNY}
 function toCNY(v,s){if(v===null||v===undefined||isNaN(v))return v;return getCurrency(s)==='HKD'?v*fxHKD():v}
 function fxLabel(){const f=(state&&state.fx)||{};const base=`HKD→CNY ${fxHKD().toFixed(4)}`;return f.updatedAt?`${base} · ${f.updatedAt}`:`${base} · 默认值`}
-function normalize(s){if(typeof normalizeV13RuleConfig==='function')s.ruleConfig=normalizeV13RuleConfig(s.ruleConfig||s.rules||s.config||{});if(!s.fx||!(Number(s.fx.hkdcny)>0))s.fx={hkdcny:DEFAULT_HKD_CNY,updatedAt:'',source:'默认'};s.stocks=(s.stocks||[]).map(x=>{if(x.currency===undefined)x.currency='';if(x.currentPrice===undefined)x.currentPrice='';if(x.currentValue===undefined)x.currentValue='';if(x.priceUpdatedAt===undefined)x.priceUpdatedAt='';if(x.valueUpdatedAt===undefined)x.valueUpdatedAt='';if(x.code===undefined)x.code=DEFAULT_CODES[x.id]||'';if(x.priceSource===undefined)x.priceSource='';if(x.trimPct===undefined)x.trimPct='';if(x.trimToPct===undefined)x.trimToPct='';if(x.capPct===undefined)x.capPct='';if(x.syncStatus===undefined)x.syncStatus='';if(x.tradePlan!==undefined&&(!x.tradePlan||typeof x.tradePlan!=='object'||Array.isArray(x.tradePlan)))x.tradePlan=null;if(!x.id)x.id=uid();if(!x.type)x.type='holding';if(!x.role)x.role=x.type==='watching'?'观察仓':'核心仓';if(!x.theme)x.theme='其他';if(!Array.isArray(x.plans))x.plans=[];const refPrice=x.type==='etf'?(Number(x.lastUnitPrice)||((Number(x.currentValue)>0&&Number(x.shares)>0)?Number(x.currentValue)/Number(x.shares):null)):(Number(x.currentPrice)||null);x.plans=x.plans.map(p=>{if(!p.triggerOn)p.triggerOn=inferTriggerOn(refPrice,p.price,p.action);return p});if(!x.thesis)x.thesis=x.notes||'';if(!x.buyRule){const buys=x.plans.filter(p=>(p.action||'buy')==='buy');x.buyRule=buys.map(p=>`${p.price}：${p.note||'加仓'}`).join('；')||'低于目标仓位且逻辑未变时再考虑。'}if(!x.sellRule){const sells=x.plans.filter(p=>p.action==='sell');x.sellRule=sells.map(p=>`${p.price}：${p.note||'减仓'}`).join('；')||(x.type==='etf'?'不设机械止损，只按目标仓位再平衡。':'逻辑破坏、估值过热或仓位超标时处理。')}return normalizeStockAnalysis(x,{ruleConfig:s.ruleConfig})});return s}
+function normalizeAlpha3Compatibility(s){s=(s&&typeof s==='object'&&!Array.isArray(s))?s:{};if(!Array.isArray(s.decisionRecords))s.decisionRecords=[];if(!Array.isArray(s.decisionStates))s.decisionStates=[];s.alpha3DataVersion=ALPHA3_DATA_VERSION;return s}
+function normalize(s){s=normalizeAlpha3Compatibility(s);if(typeof normalizeV13RuleConfig==='function')s.ruleConfig=normalizeV13RuleConfig(s.ruleConfig||s.rules||s.config||{});if(!s.fx||!(Number(s.fx.hkdcny)>0))s.fx={hkdcny:DEFAULT_HKD_CNY,updatedAt:'',source:'默认'};s.stocks=(s.stocks||[]).map(x=>{if(x.currency===undefined)x.currency='';if(x.currentPrice===undefined)x.currentPrice='';if(x.currentValue===undefined)x.currentValue='';if(x.priceUpdatedAt===undefined)x.priceUpdatedAt='';if(x.valueUpdatedAt===undefined)x.valueUpdatedAt='';if(x.code===undefined)x.code=DEFAULT_CODES[x.id]||'';if(x.priceSource===undefined)x.priceSource='';if(x.trimPct===undefined)x.trimPct='';if(x.trimToPct===undefined)x.trimToPct='';if(x.capPct===undefined)x.capPct='';if(x.syncStatus===undefined)x.syncStatus='';if(x.tradePlan!==undefined&&(!x.tradePlan||typeof x.tradePlan!=='object'||Array.isArray(x.tradePlan)))x.tradePlan=null;if(!x.id)x.id=uid();if(!x.type)x.type='holding';if(!x.role)x.role=x.type==='watching'?'观察仓':'核心仓';if(!x.theme)x.theme='其他';if(!Array.isArray(x.plans))x.plans=[];const refPrice=x.type==='etf'?(Number(x.lastUnitPrice)||((Number(x.currentValue)>0&&Number(x.shares)>0)?Number(x.currentValue)/Number(x.shares):null)):(Number(x.currentPrice)||null);x.plans=x.plans.map(p=>{if(!p.triggerOn)p.triggerOn=inferTriggerOn(refPrice,p.price,p.action);return p});if(!x.thesis)x.thesis=x.notes||'';if(!x.buyRule){const buys=x.plans.filter(p=>(p.action||'buy')==='buy');x.buyRule=buys.map(p=>`${p.price}：${p.note||'加仓'}`).join('；')||'低于目标仓位且逻辑未变时再考虑。'}if(!x.sellRule){const sells=x.plans.filter(p=>p.action==='sell');x.sellRule=sells.map(p=>`${p.price}：${p.note||'减仓'}`).join('；')||(x.type==='etf'?'不设机械止损，只按目标仓位再平衡。':'逻辑破坏、估值过热或仓位超标时处理。')}return normalizeStockAnalysis(x,{ruleConfig:s.ruleConfig})});return s}
 function loadState(){try{let raw=localStorage.getItem(STORAGE_KEY);state=raw?normalize(JSON.parse(raw)):normalize({stocks:[],updatedAt:null})}catch(e){console.warn(e);state=normalize({stocks:[],updatedAt:null})}}
 function saveState(){state=normalize(state);state.updatedAt=Date.now();localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+
+</script>
+<script>
+const V13_PROCESSING_RESULT_TYPES=['modify_plan','record_operation_result'];
+const V13_PROCESSING_RESULT_LABELS={
+  modify_plan:'调整计划',
+  record_operation_result:'记录操作结果'
+};
+
+const V13ProcessingResultSession={
+  current:null
+};
+
+function v13Alpha3Object(value){
+  return value&&typeof value==='object'&&!Array.isArray(value)?value:{};
+}
+function v13Alpha3Array(value){
+  return Array.isArray(value)?value:[];
+}
+function v13Alpha3String(value){
+  return value===null||value===undefined?'':String(value);
+}
+function v13Alpha3Clone(value){
+  if(value===null||value===undefined)return value;
+  try{return JSON.parse(JSON.stringify(value))}catch(_err){return value}
+}
+
+const RecommendationQueryService={
+  getRecommendations(stock){
+    const cm=v13Alpha3Object(stock&&stock.coreModel);
+    return v13Alpha3Array(cm.recommendations).map(v13Alpha3Clone);
+  },
+  getPrimaryRecommendations(stock){
+    const cm=v13Alpha3Object(stock&&stock.coreModel);
+    return v13Alpha3Array(cm.primaryRecommendations).map(v13Alpha3Clone);
+  },
+  getSecondaryRecommendations(stock){
+    const cm=v13Alpha3Object(stock&&stock.coreModel);
+    return v13Alpha3Array(cm.secondaryRecommendations).map(v13Alpha3Clone);
+  },
+  getRecommendationById(stock,recommendationId){
+    const id=v13Alpha3String(recommendationId);
+    const all=[
+      ...this.getPrimaryRecommendations(stock),
+      ...this.getSecondaryRecommendations(stock),
+      ...this.getRecommendations(stock)
+    ];
+    return all.find(item=>v13Alpha3String(item&&item.id)===id)||null;
+  }
+};
+
+const PlanQueryService={
+  getPlanSnapshot(stock,recommendation){
+    const rec=v13Alpha3Object(recommendation);
+    const linkedPlanId=v13Alpha3String(rec.linkedPlanId);
+    if(!linkedPlanId)return null;
+    const cm=v13Alpha3Object(stock&&stock.coreModel);
+    const plan=v13Alpha3Array(cm.plans).find(item=>v13Alpha3String(item&&item.id)===linkedPlanId);
+    return plan?v13Alpha3Clone(plan):null;
+  },
+  getPlanSnapshots(stock){
+    const cm=v13Alpha3Object(stock&&stock.coreModel);
+    return v13Alpha3Array(cm.plans).map(v13Alpha3Clone);
+  }
+};
+
+const RiskQueryService={
+  getRiskSnapshot(stock){
+    const cm=v13Alpha3Object(stock&&stock.coreModel);
+    return v13Alpha3Clone(cm.riskState||stock&&stock.riskManagement||null);
+  }
+};
+
+const TechnicalFactsQueryService={
+  getTechnicalFactsSnapshot(stock){
+    const technicalReview=v13Alpha3Object(stock&&stock.technicalReview);
+    const technicalData=v13Alpha3Object(stock&&stock.technicalData);
+    const facts=[];
+    const add=value=>{
+      const text=v13Alpha3String(value).trim();
+      if(text&&!facts.includes(text))facts.push(text);
+    };
+    add(technicalReview.finalTechnicalConclusion);
+    add(technicalReview.shortTermTechnical&&technicalReview.shortTermTechnical.trendStatus);
+    add(technicalData.trendStatus);
+    v13Alpha3Array(technicalReview.shortTermTechnical&&technicalReview.shortTermTechnical.riskFlags).forEach(add);
+    v13Alpha3Array(technicalData.riskFlags).forEach(add);
+    return {
+      facts,
+      technicalReview:v13Alpha3Clone(technicalReview),
+      technicalData:v13Alpha3Clone(technicalData)
+    };
+  }
+};
+
+const DecisionReviewService={
+  buildContext(stock,recommendationId){
+    const recommendation=RecommendationQueryService.getRecommendationById(stock,recommendationId);
+    if(!stock||!recommendation)return null;
+    const cm=v13Alpha3Object(stock.coreModel);
+    return {
+      stock:{
+        id:v13Alpha3String(stock.id),
+        code:v13Alpha3String(stock.code||stock.symbol),
+        name:v13Alpha3String(stock.name),
+        type:v13Alpha3String(stock.type)
+      },
+      recommendation:v13Alpha3Clone(recommendation),
+      primaryRecommendations:RecommendationQueryService.getPrimaryRecommendations(stock),
+      secondaryRecommendations:RecommendationQueryService.getSecondaryRecommendations(stock),
+      plan:PlanQueryService.getPlanSnapshot(stock,recommendation),
+      plans:PlanQueryService.getPlanSnapshots(stock),
+      risk:RiskQueryService.getRiskSnapshot(stock),
+      technicalFacts:TechnicalFactsQueryService.getTechnicalFactsSnapshot(stock),
+      positionFacts:v13Alpha3Clone(cm.position||null),
+      informationCompleteness:v13Alpha3Clone(stock.informationCompleteness||null),
+      priceSnapshot:v13Alpha3Clone(cm.priceSnapshot||null)
+    };
+  }
+};
+
+const ProcessingResultService={
+  createSessionResult(input={}){
+    const resultType=v13Alpha3String(input.resultType);
+    if(!V13_PROCESSING_RESULT_TYPES.includes(resultType)){
+      throw new Error('Unsupported ProcessingResult type');
+    }
+    return {
+      objectType:'ProcessingResult',
+      lifecycle:'session',
+      resultType,
+      resultLabel:V13_PROCESSING_RESULT_LABELS[resultType]||resultType,
+      note:v13Alpha3String(input.note),
+      stockId:v13Alpha3String(input.stockId),
+      recommendationId:v13Alpha3String(input.recommendationId),
+      createdAt:(typeof v13NowIso==='function'?v13NowIso():new Date().toISOString())
+    };
+  },
+  setCurrent(result){
+    V13ProcessingResultSession.current=v13Alpha3Clone(result);
+    return V13ProcessingResultSession.current;
+  },
+  getCurrent(){
+    return v13Alpha3Clone(V13ProcessingResultSession.current);
+  },
+  clearCurrent(){
+    V13ProcessingResultSession.current=null;
+  }
+};
+
+const V13_DECISION_RECORD_VERSION='v13.alpha3.sprint3';
+
+function v13DecisionRecordId(){
+  return `decision-record-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`;
+}
+function v13ProcessingResultIsValid(result){
+  return Boolean(result&&typeof result==='object'&&V13_PROCESSING_RESULT_TYPES.includes(v13Alpha3String(result.resultType)));
+}
+function v13DecisionRecordList(targetState){
+  const stateRef=targetState||(typeof state==='object'?state:null);
+  if(!stateRef)return [];
+  if(!Array.isArray(stateRef.decisionRecords))stateRef.decisionRecords=[];
+  return stateRef.decisionRecords;
+}
+function v13DecisionRecordText(value,fallback='暂无完整依据'){
+  const text=v13Alpha3String(value).trim();
+  return text||fallback;
+}
+function v13DecisionRecordTechnicalCheck(context){
+  const facts=context&&context.technicalFacts;
+  const list=v13Alpha3Array(facts&&facts.facts);
+  return {
+    summary:list.length?list.join('；'):'暂无完整依据',
+    facts:list
+  };
+}
+function v13DecisionRecordPriceCheck(context){
+  const price=context&&context.priceSnapshot;
+  return {
+    price:price&&price.price!==undefined?price.price:null,
+    updatedAt:v13Alpha3String(price&&price.updatedAt),
+    summary:price&&price.price!==undefined&&price.price!==null?`当前价格 ${price.price}`:'暂无完整依据'
+  };
+}
+function v13DecisionRecordPlanCheck(context){
+  const plan=context&&context.plan;
+  return {
+    planId:v13Alpha3String(plan&&plan.id),
+    planType:v13Alpha3String(plan&&plan.planType),
+    action:v13Alpha3String(plan&&plan.action),
+    triggerPrice:plan&&plan.triggerPrice!==undefined?plan.triggerPrice:(plan&&plan.price!==undefined?plan.price:null),
+    summary:plan?v13DecisionRecordText(plan.name||plan.title||plan.note||plan.id):'暂无关联计划'
+  };
+}
+function v13DecisionRecordPositionCheck(context){
+  const position=context&&context.positionFacts;
+  return {
+    summary:position?'持仓快照已纳入复核上下文':'暂无完整依据',
+    position:v13Alpha3Clone(position||null)
+  };
+}
+
+const DecisionRecordService={
+  createFromProcessingResult(processingResult,reviewContext){
+    if(!v13ProcessingResultIsValid(processingResult))return null;
+    const rec=v13Alpha3Object(reviewContext&&reviewContext.recommendation);
+    const now=typeof v13NowIso==='function'?v13NowIso():new Date().toISOString();
+    return {
+      id:v13DecisionRecordId(),
+      recommendationId:v13Alpha3String(processingResult.recommendationId||rec.id),
+      recommendationType:v13Alpha3String(rec.type),
+      recommendationPriority:v13Alpha3String(rec.priority),
+      processingLevel:v13Alpha3String(processingResult.resultType),
+      reviewSummary:v13DecisionRecordText(processingResult.note||rec.reason),
+      technicalCheck:v13DecisionRecordTechnicalCheck(reviewContext),
+      priceCheck:v13DecisionRecordPriceCheck(reviewContext),
+      planCheck:v13DecisionRecordPlanCheck(reviewContext),
+      positionCheck:v13DecisionRecordPositionCheck(reviewContext),
+      processingResult:v13Alpha3Clone(processingResult),
+      createdAt:now,
+      createdBy:'user',
+      version:V13_DECISION_RECORD_VERSION
+    };
+  },
+  append(record,targetState){
+    if(!record||!record.id)return null;
+    const records=v13DecisionRecordList(targetState);
+    records.push(v13Alpha3Clone(record));
+    if(typeof saveState==='function')saveState();
+    return v13Alpha3Clone(record);
+  },
+  appendFromProcessingResult(processingResult,reviewContext,targetState){
+    const record=this.createFromProcessingResult(processingResult,reviewContext);
+    if(!record)return null;
+    return this.append(record,targetState);
+  },
+  getAll(targetState){
+    return v13DecisionRecordList(targetState).map(v13Alpha3Clone);
+  },
+  getByRecommendation(recommendationId,targetState){
+    const id=v13Alpha3String(recommendationId);
+    return this.getAll(targetState)
+      .filter(record=>v13Alpha3String(record&&record.recommendationId)===id)
+      .sort((a,b)=>v13Alpha3String(b.createdAt).localeCompare(v13Alpha3String(a.createdAt)));
+  },
+  getLatestByRecommendation(recommendationId,targetState){
+    return this.getByRecommendation(recommendationId,targetState)[0]||null;
+  }
+};
+
+const V13_DECISION_STATE_VERSION='v13.alpha3.sprint4';
+const V13_DECISION_STATE_VALUES=['pending_review','reviewing','result_formed','cooling','closed','retriggered'];
+
+function v13DecisionStateId(recommendationId){
+  return `decision-state-${v13Alpha3String(recommendationId)||Date.now().toString(36)}`;
+}
+function v13DecisionStateList(targetState){
+  const stateRef=targetState||(typeof state==='object'?state:null);
+  if(!stateRef)return [];
+  if(!Array.isArray(stateRef.decisionStates))stateRef.decisionStates=[];
+  return stateRef.decisionStates;
+}
+function v13DecisionStateIsAllowed(value){
+  return V13_DECISION_STATE_VALUES.includes(v13Alpha3String(value));
+}
+function v13DecisionStateNow(){
+  return typeof v13NowIso==='function'?v13NowIso():new Date().toISOString();
+}
+
+const DecisionStateService={
+  create(input={}){
+    const recommendationId=v13Alpha3String(input.recommendationId);
+    if(!recommendationId)return null;
+    const currentState=v13DecisionStateIsAllowed(input.currentState)?v13Alpha3String(input.currentState):'pending_review';
+    return {
+      id:v13Alpha3String(input.id)||v13DecisionStateId(recommendationId),
+      recommendationId,
+      currentState,
+      processingLevel:v13Alpha3String(input.processingLevel),
+      lastDecisionRecordId:v13Alpha3String(input.lastDecisionRecordId),
+      coolingUntil:v13Alpha3String(input.coolingUntil),
+      retriggerReason:v13Alpha3String(input.retriggerReason),
+      updatedAt:v13Alpha3String(input.updatedAt)||v13DecisionStateNow(),
+      version:V13_DECISION_STATE_VERSION
+    };
+  },
+  upsert(input={},targetState){
+    const next=this.create(input);
+    if(!next)return null;
+    const states=v13DecisionStateList(targetState);
+    const index=states.findIndex(item=>v13Alpha3String(item&&item.recommendationId)===next.recommendationId);
+    if(index>=0){
+      states[index]={
+        ...states[index],
+        ...next,
+        id:v13Alpha3String(states[index].id)||next.id,
+        updatedAt:v13DecisionStateNow(),
+        version:V13_DECISION_STATE_VERSION
+      };
+    }else{
+      states.push(next);
+    }
+    if(typeof saveState==='function')saveState();
+    return this.getByRecommendation(next.recommendationId,targetState);
+  },
+  markReviewing(recommendationId,targetState){
+    const current=this.getByRecommendation(recommendationId,targetState);
+    if(current&&['result_formed','cooling','closed'].includes(current.currentState))return current;
+    const latestRecord=typeof DecisionRecordService==='object'&&DecisionRecordService&&typeof DecisionRecordService.getLatestByRecommendation==='function'
+      ? DecisionRecordService.getLatestByRecommendation(recommendationId,targetState)
+      : null;
+    return this.upsert({
+      ...(current||{}),
+      recommendationId,
+      currentState:'reviewing',
+      lastDecisionRecordId:v13Alpha3String(latestRecord&&latestRecord.id)||v13Alpha3String(current&&current.lastDecisionRecordId)
+    },targetState);
+  },
+  markResultFormed(record,targetState){
+    if(!record||!record.id||!record.recommendationId)return null;
+    return this.upsert({
+      recommendationId:record.recommendationId,
+      currentState:'result_formed',
+      processingLevel:record.processingLevel,
+      lastDecisionRecordId:record.id
+    },targetState);
+  },
+  getAll(targetState){
+    return v13DecisionStateList(targetState).map(v13Alpha3Clone);
+  },
+  getByRecommendation(recommendationId,targetState){
+    const id=v13Alpha3String(recommendationId);
+    return this.getAll(targetState).find(item=>v13Alpha3String(item&&item.recommendationId)===id)||null;
+  }
+};
 
 </script>
 <script>
 function pad2(n){return String(n).padStart(2,'0')}
 function dateStamp(d=new Date()){return `${d.getFullYear()}${pad2(d.getMonth()+1)}${pad2(d.getDate())}`}
 function timeStamp(d=new Date()){return `${dateStamp(d)}-${pad2(d.getHours())}${pad2(d.getMinutes())}`}
-function appVersion(){return 'V13-dev Alpha-1.3'}
+function appVersion(){return 'V13.0 RC1'}
 function backupFilename(prefix='投资作战手册',d=new Date()){return `${prefix}-${appVersion()}-${timeStamp(d)}.json`}
 function downloadJson(data,filename){
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
@@ -3048,18 +3385,27 @@ function downloadJson(data,filename){
   a.remove();
   URL.revokeObjectURL(url);
 }
+function alpha3ExportSnapshot(data){
+  const source=data&&typeof data==='object'?data:{};
+  const snapshot=JSON.parse(JSON.stringify(source));
+  const normalized=typeof normalize==='function'?normalize(snapshot):snapshot;
+  if(!Array.isArray(normalized.decisionRecords))normalized.decisionRecords=[];
+  if(!Array.isArray(normalized.decisionStates))normalized.decisionStates=[];
+  if(typeof ALPHA3_DATA_VERSION==='string')normalized.alpha3DataVersion=ALPHA3_DATA_VERSION;
+  return normalized;
+}
 function markBackupExported(){
   state.lastBackupAt=Date.now();
   saveState();
 }
 function exportData(){
   markBackupExported();
-  downloadJson(state,backupFilename('投资作战手册'));
+  downloadJson(alpha3ExportSnapshot(state),backupFilename('投资作战手册'));
   render();
 }
 function autoBackupBeforeImport(){
   if(!state||!Array.isArray(state.stocks))return;
-  const snapshot=JSON.parse(JSON.stringify(state));
+  const snapshot=alpha3ExportSnapshot(state);
   snapshot.lastBackupAt=Date.now();
   downloadJson(snapshot,backupFilename('导入前自动备份'));
 }
@@ -4053,11 +4399,17 @@ function v13EventDetailContext(stock,event){
   };
 }
 function v13RecommendationById(stock,recId){
+  if(typeof RecommendationQueryService==='object'&&RecommendationQueryService&&typeof RecommendationQueryService.getRecommendationById==='function'){
+    return RecommendationQueryService.getRecommendationById(stock,recId);
+  }
   const cm=stock&&stock.coreModel?stock.coreModel:{};
   const all=[...(Array.isArray(cm.primaryRecommendations)?cm.primaryRecommendations:[]),...(Array.isArray(cm.secondaryRecommendations)?cm.secondaryRecommendations:[]),...(Array.isArray(cm.recommendations)?cm.recommendations:[])];
   return all.find(rec=>String(rec.id)===String(recId))||null;
 }
 function v13DecisionReviewPlanContext(stock,rec){
+  if(typeof PlanQueryService==='object'&&PlanQueryService&&typeof PlanQueryService.getPlanSnapshot==='function'){
+    return PlanQueryService.getPlanSnapshot(stock,rec);
+  }
   const cm=stock&&stock.coreModel?stock.coreModel:{};
   if(!rec||!rec.linkedPlanId)return null;
   return (cm.plans||[]).find(plan=>String(plan.id)===String(rec.linkedPlanId))||null;
@@ -4088,17 +4440,154 @@ function ensureV13DecisionReviewModal(){
   el=document.createElement('div');
   el.className='modal-bg import-layer';
   el.id='v13DecisionReviewModal';
-  el.innerHTML=`<div class="modal"><h2>决策复核</h2><div class="modal-sub">只读复核面板。本弹窗不记录操作、不归档事件、不生成交易。</div><div id="v13DecisionReviewBody"></div><div class="modal-actions"><button class="btn ghost" id="v13DecisionReviewCloseBtn" type="button">关闭</button></div></div>`;
+  el.innerHTML=`<div class="modal"><h2>决策复核</h2><div class="modal-sub">本区域只支持复核，不生成交易，不修改持仓，不自动归档计划。</div><div id="v13DecisionReviewBody"></div><div class="modal-actions"><button class="btn ghost" id="v13DecisionReviewCloseBtn" type="button">关闭</button></div></div>`;
   document.body.appendChild(el);
   el.addEventListener('click',e=>{if(e.target.id==='v13DecisionReviewModal')closeV13DecisionReviewModal()});
   document.getElementById('v13DecisionReviewCloseBtn').addEventListener('click',closeV13DecisionReviewModal);
   return el;
 }
+function v13DecisionReviewActionsHtml(stock,rec,plan){
+  const stockId=stock&&stock.id?stock.id:'';
+  const hasPlan=Boolean(plan);
+  return `<div class="card" style="margin-bottom:12px"><div class="card-title">用户复核动作</div><div class="card-note">本阶段允许将合法 ProcessingResult 追加保存为 DecisionRecord；不改变建议状态，不生成交易。</div><div class="modal-actions" style="justify-content:flex-start;flex-wrap:wrap;margin-top:10px"><button class="btn small" type="button" data-v13-review-action="mark-reviewed">标记已复核</button><button class="btn ghost small" type="button" data-v13-review-action="record-decision">记录用户决定</button><button class="btn ghost small" type="button" data-v13-review-action="view-plan"${hasPlan?'':' disabled'}>查看相关计划</button><button class="btn ghost small" type="button" data-v13-review-action="view-analysis">查看完整分析</button></div>${hasPlan?'':'<div class="card-note" style="margin-top:6px">当前复核任务暂无明确关联计划，可进入完整分析查看上下文。</div>'}<div class="card-note" data-v13-review-action-note style="margin-top:8px"></div><input type="hidden" data-v13-review-stock-id value="${esc(stockId)}"></div>`;
+}
+function v13DecisionRecordLatestHtml(rec){
+  if(!rec||typeof DecisionRecordService!=='object'||!DecisionRecordService||typeof DecisionRecordService.getLatestByRecommendation!=='function'){
+    return '<div class="card" style="margin-bottom:12px"><div class="card-title">DecisionRecord</div><div class="card-note">暂无已生成 DecisionRecord。</div></div>';
+  }
+  const record=DecisionRecordService.getLatestByRecommendation(rec.id);
+  if(!record)return '<div class="card" style="margin-bottom:12px"><div class="card-title">DecisionRecord</div><div class="card-note">暂无已生成 DecisionRecord。</div></div>';
+  const result=record.processingResult||{};
+  return `<div class="card" style="margin-bottom:12px"><div class="card-title">最近 DecisionRecord</div>${v13EventDetailValue('处理结果',result.resultLabel||record.processingLevel||'暂无完整依据')}${v13EventDetailValue('生成时间',record.createdAt||'暂无完整依据')}${v13EventDetailValue('复核摘要',record.reviewSummary||'暂无完整依据')}<div class="card-note">历史记录仅追加保存，不作为当前状态，不替代 DecisionState。</div></div>`;
+}
+function refreshV13DecisionRecordLatest(rec){
+  const target=document.getElementById('v13DecisionRecordLatest');
+  if(target)target.innerHTML=v13DecisionRecordLatestHtml(rec);
+}
+function v13DecisionStateLabel(value){
+  return {
+    pending_review:'待复核',
+    reviewing:'复核中',
+    result_formed:'已形成处理结果',
+    cooling:'冷却中',
+    closed:'已关闭',
+    retriggered:'再次触发'
+  }[value]||'暂无状态';
+}
+function v13DecisionStateCurrentHtml(rec){
+  if(!rec||typeof DecisionStateService!=='object'||!DecisionStateService||typeof DecisionStateService.getByRecommendation!=='function'){
+    return '<div class="card" style="margin-bottom:12px"><div class="card-title">DecisionState</div><div class="card-note">暂无当前 DecisionState。</div></div>';
+  }
+  const stateItem=DecisionStateService.getByRecommendation(rec.id);
+  if(!stateItem)return '<div class="card" style="margin-bottom:12px"><div class="card-title">DecisionState</div><div class="card-note">暂无当前 DecisionState。</div></div>';
+  return `<div class="card" style="margin-bottom:12px"><div class="card-title">当前 DecisionState</div>${v13EventDetailValue('当前状态',v13DecisionStateLabel(stateItem.currentState))}${v13EventDetailValue('处理层级',stateItem.processingLevel||'暂无完整依据')}${v13EventDetailValue('最近记录',stateItem.lastDecisionRecordId||'暂无完整依据')}${v13EventDetailValue('更新时间',stateItem.updatedAt||'暂无完整依据')}<div class="card-note">DecisionState 是当前状态，不覆盖历史 DecisionRecord，不修改 Recommendation 或 Plan。</div></div>`;
+}
+function refreshV13DecisionStateCurrent(rec){
+  const target=document.getElementById('v13DecisionStateCurrent');
+  if(target)target.innerHTML=v13DecisionStateCurrentHtml(rec);
+}
+function setV13DecisionReviewActionNote(text){
+  const note=document.querySelector('[data-v13-review-action-note]');
+  if(note)note.textContent=text||'';
+}
+function goV13DecisionReviewStockDetail(stockId){
+  if(!stockId)return;
+  closeV13DecisionReviewModal();
+  openStockDetail(stockId);
+}
+function ensureV13UserDecisionDialog(){
+  let el=document.getElementById('v13UserDecisionDialog');
+  if(el)return el;
+  el=document.createElement('div');
+  el.className='modal-bg import-layer';
+  el.id='v13UserDecisionDialog';
+  el.innerHTML=`<div class="modal"><h2>处理结果</h2><div class="modal-sub">保存会将合法 ProcessingResult 追加为 DecisionRecord；不写入 DecisionState，不改变建议、计划、风险或持仓。</div><div class="form-row"><label>处理结果</label><select id="v13UserDecisionResult"><option value="modify_plan">调整计划</option><option value="record_operation_result">记录操作结果</option></select></div><div class="form-row"><label>用户备注</label><textarea id="v13UserDecisionNote" style="min-height:120px" placeholder="记录本次复核后的处理意图、保留疑问或后续需要检查的事项。"></textarea></div><input type="hidden" id="v13UserDecisionStockId"><input type="hidden" id="v13UserDecisionRecommendationId"><div class="card-note" id="v13UserDecisionMessage"></div><div class="modal-actions"><button class="btn ghost" id="v13UserDecisionCancelBtn" type="button">取消</button><button class="btn" id="v13UserDecisionSaveBtn" type="button">保存</button></div></div>`;
+  document.body.appendChild(el);
+  el.addEventListener('click',e=>{if(e.target.id==='v13UserDecisionDialog')closeV13UserDecisionDialog()});
+  document.getElementById('v13UserDecisionCancelBtn').addEventListener('click',closeV13UserDecisionDialog);
+  document.getElementById('v13UserDecisionSaveBtn').addEventListener('click',saveV13UserDecisionStub);
+  return el;
+}
+function openV13UserDecisionDialog(stock,rec){
+  const el=ensureV13UserDecisionDialog();
+  const result=document.getElementById('v13UserDecisionResult');
+  const note=document.getElementById('v13UserDecisionNote');
+  const message=document.getElementById('v13UserDecisionMessage');
+  const stockId=document.getElementById('v13UserDecisionStockId');
+  const recommendationId=document.getElementById('v13UserDecisionRecommendationId');
+  if(result)result.value='modify_plan';
+  if(note)note.value='';
+  if(message)message.textContent='';
+  if(stockId)stockId.value=stock&&stock.id?stock.id:'';
+  if(recommendationId)recommendationId.value=rec&&rec.id?rec.id:'';
+  el.classList.add('show');
+}
+function closeV13UserDecisionDialog(){
+  const modal=document.getElementById('v13UserDecisionDialog');
+  if(modal)modal.classList.remove('show');
+}
+function saveV13UserDecisionStub(){
+  const resultType=document.getElementById('v13UserDecisionResult')&&document.getElementById('v13UserDecisionResult').value;
+  const note=document.getElementById('v13UserDecisionNote')&&document.getElementById('v13UserDecisionNote').value;
+  const stockId=document.getElementById('v13UserDecisionStockId')&&document.getElementById('v13UserDecisionStockId').value;
+  const recommendationId=document.getElementById('v13UserDecisionRecommendationId')&&document.getElementById('v13UserDecisionRecommendationId').value;
+  let saved=null;
+  let record=null;
+  try{
+    if(typeof ProcessingResultService==='object'&&ProcessingResultService&&typeof ProcessingResultService.createSessionResult==='function'){
+      saved=ProcessingResultService.setCurrent(ProcessingResultService.createSessionResult({resultType,note,stockId,recommendationId}));
+    }
+    const stock=state.stocks.find(x=>String(x.id)===String(stockId));
+    const reviewContext=stock&&typeof DecisionReviewService==='object'&&DecisionReviewService&&typeof DecisionReviewService.buildContext==='function'
+      ? DecisionReviewService.buildContext(stock,recommendationId)
+      : null;
+    if(saved&&reviewContext&&typeof DecisionRecordService==='object'&&DecisionRecordService&&typeof DecisionRecordService.appendFromProcessingResult==='function'){
+      record=DecisionRecordService.appendFromProcessingResult(saved,reviewContext);
+    }
+    if(record&&typeof DecisionStateService==='object'&&DecisionStateService&&typeof DecisionStateService.markResultFormed==='function'){
+      DecisionStateService.markResultFormed(record);
+    }
+  }catch(err){
+    const message=document.getElementById('v13UserDecisionMessage');
+    if(message)message.textContent='DecisionRecord 未生成：当前 ProcessingResult 不合法或复核上下文缺失。';
+    return;
+  }
+  if(!record){
+    const message=document.getElementById('v13UserDecisionMessage');
+    if(message)message.textContent='DecisionRecord 未生成：当前 ProcessingResult 不合法或复核上下文缺失。';
+    return;
+  }
+  closeV13UserDecisionDialog();
+  const label=saved&&saved.resultLabel?saved.resultLabel:'处理结果';
+  setV13DecisionReviewActionNote(`${label} 已追加保存为 DecisionRecord。`);
+  refreshV13DecisionRecordLatest({id:recommendationId});
+  refreshV13DecisionStateCurrent({id:recommendationId});
+}
+function bindV13DecisionReviewActions(stock,rec,plan){
+  const stockId=stock&&stock.id?stock.id:'';
+  document.querySelectorAll('[data-v13-review-action]').forEach(btn=>btn.addEventListener('click',()=>{
+    const action=btn.dataset.v13ReviewAction;
+    if(action==='mark-reviewed'){
+      setV13DecisionReviewActionNote('标记已复核不属于 Sprint 3 DecisionRecord 范围。本阶段不写入 DecisionState。');
+      return;
+    }
+    if(action==='record-decision'){
+      openV13UserDecisionDialog(stock,rec);
+      return;
+    }
+    if(action==='view-plan'||action==='view-analysis'){
+      goV13DecisionReviewStockDetail(stockId);
+    }
+  }));
+}
 function openV13DecisionReview(stockId,recId){
   const stock=state.stocks.find(x=>String(x.id)===String(stockId))||state.stocks.find(x=>x.id===detailStockId);
   if(!stock)return;
   normalizeStockAnalysis(stock);
-  const rec=v13RecommendationById(stock,recId);
+  const reviewContext=typeof DecisionReviewService==='object'&&DecisionReviewService&&typeof DecisionReviewService.buildContext==='function'
+    ? DecisionReviewService.buildContext(stock,recId)
+    : null;
+  const rec=reviewContext&&reviewContext.recommendation?reviewContext.recommendation:v13RecommendationById(stock,recId);
   const modal=ensureV13DecisionReviewModal();
   const body=document.getElementById('v13DecisionReviewBody');
   if(!rec){
@@ -4106,13 +4595,20 @@ function openV13DecisionReview(stockId,recId){
     modal.classList.add('show');
     return;
   }
+  if(typeof DecisionStateService==='object'&&DecisionStateService&&typeof DecisionStateService.markReviewing==='function'){
+    DecisionStateService.markReviewing(rec.id);
+  }
   const cm=stock.coreModel||{};
-  const plan=v13DecisionReviewPlanContext(stock,rec);
+  const plan=reviewContext&&reviewContext.plan?reviewContext.plan:v13DecisionReviewPlanContext(stock,rec);
   const planName=v13PlanDisplayName(plan);
   const price=cm.priceSnapshot&&cm.priceSnapshot.price!==null&&cm.priceSnapshot.price!==undefined?fmtMaybe(cm.priceSnapshot.price,2):(getComparablePrice(stock)||stockCurrentPrice(stock)||'暂无完整依据');
   body.innerHTML=`<div class="card" style="margin-bottom:12px"><div class="card-title">当前主要复核任务</div><div class="card-num" style="font-size:20px;white-space:normal">${esc(v13RecommendationTypeLabel(rec.type))}</div><div class="card-note">${esc(v13RecommendationPriorityLabel(rec.priority))} · ${esc(formatChineseText(rec.reason||'暂无完整依据'))}</div></div>`
     +`<div class="card" style="margin-bottom:12px">${v13EventDetailValue('当前价格',price)}${v13EventDetailValue('来源',v13RecommendationSourceLabel(rec.source))}${planName?v13EventDetailValue('关联计划',planName):''}${v13EventDetailValue('计划价',plan&&plan.triggerPrice!==null&&plan.triggerPrice!==undefined?fmtMaybe(plan.triggerPrice,2):'暂无完整依据')}<div class="card-note"><b>复核清单：</b>${v13DecisionReviewChecklistHtml()}</div></div>`
-    +`<div class="card" style="margin-bottom:12px"><div class="card-title">同标的相关复核依据</div>${v13DecisionReviewSecondaryHtml(stock,rec)}</div>`;
+    +`<div class="card" style="margin-bottom:12px"><div class="card-title">同标的相关复核依据</div>${v13DecisionReviewSecondaryHtml(stock,rec)}</div>`
+    +v13DecisionReviewActionsHtml(stock,rec,plan)
+    +`<div id="v13DecisionStateCurrent">${v13DecisionStateCurrentHtml(rec)}</div>`
+    +`<div id="v13DecisionRecordLatest">${v13DecisionRecordLatestHtml(rec)}</div>`;
+  bindV13DecisionReviewActions(stock,rec,plan);
   modal.classList.add('show');
 }
 function closeV13DecisionReviewModal(){

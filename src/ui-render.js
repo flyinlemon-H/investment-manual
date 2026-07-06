@@ -615,11 +615,17 @@ function v13EventDetailContext(stock,event){
   };
 }
 function v13RecommendationById(stock,recId){
+  if(typeof RecommendationQueryService==='object'&&RecommendationQueryService&&typeof RecommendationQueryService.getRecommendationById==='function'){
+    return RecommendationQueryService.getRecommendationById(stock,recId);
+  }
   const cm=stock&&stock.coreModel?stock.coreModel:{};
   const all=[...(Array.isArray(cm.primaryRecommendations)?cm.primaryRecommendations:[]),...(Array.isArray(cm.secondaryRecommendations)?cm.secondaryRecommendations:[]),...(Array.isArray(cm.recommendations)?cm.recommendations:[])];
   return all.find(rec=>String(rec.id)===String(recId))||null;
 }
 function v13DecisionReviewPlanContext(stock,rec){
+  if(typeof PlanQueryService==='object'&&PlanQueryService&&typeof PlanQueryService.getPlanSnapshot==='function'){
+    return PlanQueryService.getPlanSnapshot(stock,rec);
+  }
   const cm=stock&&stock.coreModel?stock.coreModel:{};
   if(!rec||!rec.linkedPlanId)return null;
   return (cm.plans||[]).find(plan=>String(plan.id)===String(rec.linkedPlanId))||null;
@@ -650,17 +656,154 @@ function ensureV13DecisionReviewModal(){
   el=document.createElement('div');
   el.className='modal-bg import-layer';
   el.id='v13DecisionReviewModal';
-  el.innerHTML=`<div class="modal"><h2>决策复核</h2><div class="modal-sub">只读复核面板。本弹窗不记录操作、不归档事件、不生成交易。</div><div id="v13DecisionReviewBody"></div><div class="modal-actions"><button class="btn ghost" id="v13DecisionReviewCloseBtn" type="button">关闭</button></div></div>`;
+  el.innerHTML=`<div class="modal"><h2>决策复核</h2><div class="modal-sub">本区域只支持复核，不生成交易，不修改持仓，不自动归档计划。</div><div id="v13DecisionReviewBody"></div><div class="modal-actions"><button class="btn ghost" id="v13DecisionReviewCloseBtn" type="button">关闭</button></div></div>`;
   document.body.appendChild(el);
   el.addEventListener('click',e=>{if(e.target.id==='v13DecisionReviewModal')closeV13DecisionReviewModal()});
   document.getElementById('v13DecisionReviewCloseBtn').addEventListener('click',closeV13DecisionReviewModal);
   return el;
 }
+function v13DecisionReviewActionsHtml(stock,rec,plan){
+  const stockId=stock&&stock.id?stock.id:'';
+  const hasPlan=Boolean(plan);
+  return `<div class="card" style="margin-bottom:12px"><div class="card-title">用户复核动作</div><div class="card-note">本阶段允许将合法 ProcessingResult 追加保存为 DecisionRecord；不改变建议状态，不生成交易。</div><div class="modal-actions" style="justify-content:flex-start;flex-wrap:wrap;margin-top:10px"><button class="btn small" type="button" data-v13-review-action="mark-reviewed">标记已复核</button><button class="btn ghost small" type="button" data-v13-review-action="record-decision">记录用户决定</button><button class="btn ghost small" type="button" data-v13-review-action="view-plan"${hasPlan?'':' disabled'}>查看相关计划</button><button class="btn ghost small" type="button" data-v13-review-action="view-analysis">查看完整分析</button></div>${hasPlan?'':'<div class="card-note" style="margin-top:6px">当前复核任务暂无明确关联计划，可进入完整分析查看上下文。</div>'}<div class="card-note" data-v13-review-action-note style="margin-top:8px"></div><input type="hidden" data-v13-review-stock-id value="${esc(stockId)}"></div>`;
+}
+function v13DecisionRecordLatestHtml(rec){
+  if(!rec||typeof DecisionRecordService!=='object'||!DecisionRecordService||typeof DecisionRecordService.getLatestByRecommendation!=='function'){
+    return '<div class="card" style="margin-bottom:12px"><div class="card-title">DecisionRecord</div><div class="card-note">暂无已生成 DecisionRecord。</div></div>';
+  }
+  const record=DecisionRecordService.getLatestByRecommendation(rec.id);
+  if(!record)return '<div class="card" style="margin-bottom:12px"><div class="card-title">DecisionRecord</div><div class="card-note">暂无已生成 DecisionRecord。</div></div>';
+  const result=record.processingResult||{};
+  return `<div class="card" style="margin-bottom:12px"><div class="card-title">最近 DecisionRecord</div>${v13EventDetailValue('处理结果',result.resultLabel||record.processingLevel||'暂无完整依据')}${v13EventDetailValue('生成时间',record.createdAt||'暂无完整依据')}${v13EventDetailValue('复核摘要',record.reviewSummary||'暂无完整依据')}<div class="card-note">历史记录仅追加保存，不作为当前状态，不替代 DecisionState。</div></div>`;
+}
+function refreshV13DecisionRecordLatest(rec){
+  const target=document.getElementById('v13DecisionRecordLatest');
+  if(target)target.innerHTML=v13DecisionRecordLatestHtml(rec);
+}
+function v13DecisionStateLabel(value){
+  return {
+    pending_review:'待复核',
+    reviewing:'复核中',
+    result_formed:'已形成处理结果',
+    cooling:'冷却中',
+    closed:'已关闭',
+    retriggered:'再次触发'
+  }[value]||'暂无状态';
+}
+function v13DecisionStateCurrentHtml(rec){
+  if(!rec||typeof DecisionStateService!=='object'||!DecisionStateService||typeof DecisionStateService.getByRecommendation!=='function'){
+    return '<div class="card" style="margin-bottom:12px"><div class="card-title">DecisionState</div><div class="card-note">暂无当前 DecisionState。</div></div>';
+  }
+  const stateItem=DecisionStateService.getByRecommendation(rec.id);
+  if(!stateItem)return '<div class="card" style="margin-bottom:12px"><div class="card-title">DecisionState</div><div class="card-note">暂无当前 DecisionState。</div></div>';
+  return `<div class="card" style="margin-bottom:12px"><div class="card-title">当前 DecisionState</div>${v13EventDetailValue('当前状态',v13DecisionStateLabel(stateItem.currentState))}${v13EventDetailValue('处理层级',stateItem.processingLevel||'暂无完整依据')}${v13EventDetailValue('最近记录',stateItem.lastDecisionRecordId||'暂无完整依据')}${v13EventDetailValue('更新时间',stateItem.updatedAt||'暂无完整依据')}<div class="card-note">DecisionState 是当前状态，不覆盖历史 DecisionRecord，不修改 Recommendation 或 Plan。</div></div>`;
+}
+function refreshV13DecisionStateCurrent(rec){
+  const target=document.getElementById('v13DecisionStateCurrent');
+  if(target)target.innerHTML=v13DecisionStateCurrentHtml(rec);
+}
+function setV13DecisionReviewActionNote(text){
+  const note=document.querySelector('[data-v13-review-action-note]');
+  if(note)note.textContent=text||'';
+}
+function goV13DecisionReviewStockDetail(stockId){
+  if(!stockId)return;
+  closeV13DecisionReviewModal();
+  openStockDetail(stockId);
+}
+function ensureV13UserDecisionDialog(){
+  let el=document.getElementById('v13UserDecisionDialog');
+  if(el)return el;
+  el=document.createElement('div');
+  el.className='modal-bg import-layer';
+  el.id='v13UserDecisionDialog';
+  el.innerHTML=`<div class="modal"><h2>处理结果</h2><div class="modal-sub">保存会将合法 ProcessingResult 追加为 DecisionRecord；不写入 DecisionState，不改变建议、计划、风险或持仓。</div><div class="form-row"><label>处理结果</label><select id="v13UserDecisionResult"><option value="modify_plan">调整计划</option><option value="record_operation_result">记录操作结果</option></select></div><div class="form-row"><label>用户备注</label><textarea id="v13UserDecisionNote" style="min-height:120px" placeholder="记录本次复核后的处理意图、保留疑问或后续需要检查的事项。"></textarea></div><input type="hidden" id="v13UserDecisionStockId"><input type="hidden" id="v13UserDecisionRecommendationId"><div class="card-note" id="v13UserDecisionMessage"></div><div class="modal-actions"><button class="btn ghost" id="v13UserDecisionCancelBtn" type="button">取消</button><button class="btn" id="v13UserDecisionSaveBtn" type="button">保存</button></div></div>`;
+  document.body.appendChild(el);
+  el.addEventListener('click',e=>{if(e.target.id==='v13UserDecisionDialog')closeV13UserDecisionDialog()});
+  document.getElementById('v13UserDecisionCancelBtn').addEventListener('click',closeV13UserDecisionDialog);
+  document.getElementById('v13UserDecisionSaveBtn').addEventListener('click',saveV13UserDecisionStub);
+  return el;
+}
+function openV13UserDecisionDialog(stock,rec){
+  const el=ensureV13UserDecisionDialog();
+  const result=document.getElementById('v13UserDecisionResult');
+  const note=document.getElementById('v13UserDecisionNote');
+  const message=document.getElementById('v13UserDecisionMessage');
+  const stockId=document.getElementById('v13UserDecisionStockId');
+  const recommendationId=document.getElementById('v13UserDecisionRecommendationId');
+  if(result)result.value='modify_plan';
+  if(note)note.value='';
+  if(message)message.textContent='';
+  if(stockId)stockId.value=stock&&stock.id?stock.id:'';
+  if(recommendationId)recommendationId.value=rec&&rec.id?rec.id:'';
+  el.classList.add('show');
+}
+function closeV13UserDecisionDialog(){
+  const modal=document.getElementById('v13UserDecisionDialog');
+  if(modal)modal.classList.remove('show');
+}
+function saveV13UserDecisionStub(){
+  const resultType=document.getElementById('v13UserDecisionResult')&&document.getElementById('v13UserDecisionResult').value;
+  const note=document.getElementById('v13UserDecisionNote')&&document.getElementById('v13UserDecisionNote').value;
+  const stockId=document.getElementById('v13UserDecisionStockId')&&document.getElementById('v13UserDecisionStockId').value;
+  const recommendationId=document.getElementById('v13UserDecisionRecommendationId')&&document.getElementById('v13UserDecisionRecommendationId').value;
+  let saved=null;
+  let record=null;
+  try{
+    if(typeof ProcessingResultService==='object'&&ProcessingResultService&&typeof ProcessingResultService.createSessionResult==='function'){
+      saved=ProcessingResultService.setCurrent(ProcessingResultService.createSessionResult({resultType,note,stockId,recommendationId}));
+    }
+    const stock=state.stocks.find(x=>String(x.id)===String(stockId));
+    const reviewContext=stock&&typeof DecisionReviewService==='object'&&DecisionReviewService&&typeof DecisionReviewService.buildContext==='function'
+      ? DecisionReviewService.buildContext(stock,recommendationId)
+      : null;
+    if(saved&&reviewContext&&typeof DecisionRecordService==='object'&&DecisionRecordService&&typeof DecisionRecordService.appendFromProcessingResult==='function'){
+      record=DecisionRecordService.appendFromProcessingResult(saved,reviewContext);
+    }
+    if(record&&typeof DecisionStateService==='object'&&DecisionStateService&&typeof DecisionStateService.markResultFormed==='function'){
+      DecisionStateService.markResultFormed(record);
+    }
+  }catch(err){
+    const message=document.getElementById('v13UserDecisionMessage');
+    if(message)message.textContent='DecisionRecord 未生成：当前 ProcessingResult 不合法或复核上下文缺失。';
+    return;
+  }
+  if(!record){
+    const message=document.getElementById('v13UserDecisionMessage');
+    if(message)message.textContent='DecisionRecord 未生成：当前 ProcessingResult 不合法或复核上下文缺失。';
+    return;
+  }
+  closeV13UserDecisionDialog();
+  const label=saved&&saved.resultLabel?saved.resultLabel:'处理结果';
+  setV13DecisionReviewActionNote(`${label} 已追加保存为 DecisionRecord。`);
+  refreshV13DecisionRecordLatest({id:recommendationId});
+  refreshV13DecisionStateCurrent({id:recommendationId});
+}
+function bindV13DecisionReviewActions(stock,rec,plan){
+  const stockId=stock&&stock.id?stock.id:'';
+  document.querySelectorAll('[data-v13-review-action]').forEach(btn=>btn.addEventListener('click',()=>{
+    const action=btn.dataset.v13ReviewAction;
+    if(action==='mark-reviewed'){
+      setV13DecisionReviewActionNote('标记已复核不属于 Sprint 3 DecisionRecord 范围。本阶段不写入 DecisionState。');
+      return;
+    }
+    if(action==='record-decision'){
+      openV13UserDecisionDialog(stock,rec);
+      return;
+    }
+    if(action==='view-plan'||action==='view-analysis'){
+      goV13DecisionReviewStockDetail(stockId);
+    }
+  }));
+}
 function openV13DecisionReview(stockId,recId){
   const stock=state.stocks.find(x=>String(x.id)===String(stockId))||state.stocks.find(x=>x.id===detailStockId);
   if(!stock)return;
   normalizeStockAnalysis(stock);
-  const rec=v13RecommendationById(stock,recId);
+  const reviewContext=typeof DecisionReviewService==='object'&&DecisionReviewService&&typeof DecisionReviewService.buildContext==='function'
+    ? DecisionReviewService.buildContext(stock,recId)
+    : null;
+  const rec=reviewContext&&reviewContext.recommendation?reviewContext.recommendation:v13RecommendationById(stock,recId);
   const modal=ensureV13DecisionReviewModal();
   const body=document.getElementById('v13DecisionReviewBody');
   if(!rec){
@@ -668,13 +811,20 @@ function openV13DecisionReview(stockId,recId){
     modal.classList.add('show');
     return;
   }
+  if(typeof DecisionStateService==='object'&&DecisionStateService&&typeof DecisionStateService.markReviewing==='function'){
+    DecisionStateService.markReviewing(rec.id);
+  }
   const cm=stock.coreModel||{};
-  const plan=v13DecisionReviewPlanContext(stock,rec);
+  const plan=reviewContext&&reviewContext.plan?reviewContext.plan:v13DecisionReviewPlanContext(stock,rec);
   const planName=v13PlanDisplayName(plan);
   const price=cm.priceSnapshot&&cm.priceSnapshot.price!==null&&cm.priceSnapshot.price!==undefined?fmtMaybe(cm.priceSnapshot.price,2):(getComparablePrice(stock)||stockCurrentPrice(stock)||'暂无完整依据');
   body.innerHTML=`<div class="card" style="margin-bottom:12px"><div class="card-title">当前主要复核任务</div><div class="card-num" style="font-size:20px;white-space:normal">${esc(v13RecommendationTypeLabel(rec.type))}</div><div class="card-note">${esc(v13RecommendationPriorityLabel(rec.priority))} · ${esc(formatChineseText(rec.reason||'暂无完整依据'))}</div></div>`
     +`<div class="card" style="margin-bottom:12px">${v13EventDetailValue('当前价格',price)}${v13EventDetailValue('来源',v13RecommendationSourceLabel(rec.source))}${planName?v13EventDetailValue('关联计划',planName):''}${v13EventDetailValue('计划价',plan&&plan.triggerPrice!==null&&plan.triggerPrice!==undefined?fmtMaybe(plan.triggerPrice,2):'暂无完整依据')}<div class="card-note"><b>复核清单：</b>${v13DecisionReviewChecklistHtml()}</div></div>`
-    +`<div class="card" style="margin-bottom:12px"><div class="card-title">同标的相关复核依据</div>${v13DecisionReviewSecondaryHtml(stock,rec)}</div>`;
+    +`<div class="card" style="margin-bottom:12px"><div class="card-title">同标的相关复核依据</div>${v13DecisionReviewSecondaryHtml(stock,rec)}</div>`
+    +v13DecisionReviewActionsHtml(stock,rec,plan)
+    +`<div id="v13DecisionStateCurrent">${v13DecisionStateCurrentHtml(rec)}</div>`
+    +`<div id="v13DecisionRecordLatest">${v13DecisionRecordLatestHtml(rec)}</div>`;
+  bindV13DecisionReviewActions(stock,rec,plan);
   modal.classList.add('show');
 }
 function closeV13DecisionReviewModal(){
