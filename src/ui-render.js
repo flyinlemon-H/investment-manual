@@ -779,17 +779,21 @@ function goV13DecisionReviewStockDetail(stockId,target){
   const recId=document.getElementById('v13UserDecisionRecommendationId')&&document.getElementById('v13UserDecisionRecommendationId').value;
   const activeRecId=(v13ActiveReviewReturn&&String(v13ActiveReviewReturn.stockId)===String(stockId))?v13ActiveReviewReturn.recId:'';
   const currentRecId=activeRecId||recId||'';
-  v13ActiveReviewReturn={stockId,recId:currentRecId,target:target||'overview'};
-  closeV13DecisionReviewModal();
-  openStockDetail(stockId);
   const anchor={
-    plan:'plan',
-    triggeredPlan:'triggered-plan',
-    position:'position',
+    plan:'plan-triggered',
+    triggeredPlan:'plan-triggered',
+    'plan-triggered':'plan-triggered',
+    'plan-current':'plan-current',
+    'plan-original':'plan-original',
+    position:'position-summary',
+    'position-summary':'position-summary',
     technical:'technical',
     risk:'risk',
     analysis:'analysis'
   }[target]||'overview';
+  v13ActiveReviewReturn={stockId,recId:currentRecId,target:anchor};
+  closeV13DecisionReviewModal();
+  openStockDetail(stockId);
   setTimeout(()=>{
     const el=document.querySelector(`[data-v13-detail-anchor="${anchor}"]`);
     if(el&&typeof el.scrollIntoView==='function')el.scrollIntoView({behavior:'smooth',block:'start'});
@@ -798,6 +802,11 @@ function goV13DecisionReviewStockDetail(stockId,target){
 function v13ReviewReturnBanner(stock){
   if(!v13ActiveReviewReturn||!stock||String(v13ActiveReviewReturn.stockId)!==String(stock.id))return '';
   return `<div class="card" data-v13-detail-anchor="review-return" style="margin-bottom:14px;border-left:3px solid var(--seal);background:rgba(255,255,255,.72)"><div class="card-title">正在查看本次复核相关内容</div><div class="card-note">查看完当前区块后，可以直接返回刚才的决策复核。</div><div class="modal-actions" style="justify-content:flex-start;margin-top:8px"><button class="btn small" type="button" data-v13-return-review>返回本次复核</button></div></div>`;
+}
+function v13TargetReviewReturnBanner(stock,anchor){
+  if(!v13ActiveReviewReturn||!stock||String(v13ActiveReviewReturn.stockId)!==String(stock.id))return '';
+  if(v13ActiveReviewReturn.target!==anchor)return '';
+  return `<div class="card" style="margin-bottom:10px;border-left:3px solid var(--seal);background:rgba(255,255,255,.78)"><div class="card-title">本次复核定位</div><div class="card-note">已跳转到本次复核需要查看的区块。</div><div class="modal-actions" style="justify-content:flex-start;margin-top:8px"><button class="btn small" type="button" data-v13-return-review>返回本次复核</button></div></div>`;
 }
 function returnToActiveV13Review(){
   const ctx=v13ActiveReviewReturn;
@@ -898,8 +907,8 @@ function bindV13DecisionReviewActions(stock,rec,plan){
       return;
     }
     if(action==='view-plan'){
-      v13ActiveReviewReturn={stockId,recId:rec&&rec.id?rec.id:'',target:'plan'};
-      goV13DecisionReviewStockDetail(stockId,'plan');
+      v13ActiveReviewReturn={stockId,recId:rec&&rec.id?rec.id:'',target:'plan-triggered'};
+      goV13DecisionReviewStockDetail(stockId,'plan-triggered');
       return;
     }
     if(action==='view-technical'){
@@ -908,8 +917,8 @@ function bindV13DecisionReviewActions(stock,rec,plan){
       return;
     }
     if(action==='view-position'){
-      v13ActiveReviewReturn={stockId,recId:rec&&rec.id?rec.id:'',target:'position'};
-      goV13DecisionReviewStockDetail(stockId,'position');
+      v13ActiveReviewReturn={stockId,recId:rec&&rec.id?rec.id:'',target:'position-summary'};
+      goV13DecisionReviewStockDetail(stockId,'position-summary');
       return;
     }
     if(action==='view-risk'){
@@ -2448,6 +2457,14 @@ function positionPlanPanel(stock){
   const planSummary=tradePlanSummaryText(stock);
   const rows=(stock.plans||[]).slice(0,4).map(p=>`${p.action==='sell'?'减仓':'加仓'} ${fmtInt(p.shares)} @ ${fmtMaybe(p.price)} · ${p.note||'—'}`);
   const main=nearest?`${nearest.p.action==='sell'?'减仓':'加仓'} ${fmtInt(nearest.p.shares)} @ ${fmtMaybe(nearest.p.price)}${nearest.g?(nearest.g.triggered?' · 已触发':` · 距触发 ${fmt(nearest.g.absPct,1)}%`):''}`:'暂无最近触发计划';
+  const total=getEstimatedTotalAssets();
+  const pos=getPositionInfo(stock,total);
+  const positionSummary=pos
+    ?`当前 ${fmtMaybe(pos.actualPct,1)}% · 目标 ${fmtMaybe(pos.target,1)}% · 偏差 ${pos.deviation>=0?'+':''}${fmtMaybe(pos.deviation,1)}%`
+    :'仓位信息不足';
+  const positionStatus=pos
+    ?(pos.status==='overweight'?'当前超配，优先复核风险和减仓计划。':(pos.status==='underweight'?'当前低配，仍需结合技术与触发计划确认。':'仓位接近目标，按当前计划和风险信号处理。'))
+    :'需补充持仓、目标仓位或价格信息。';
   const tp=stock.tradePlan&&typeof stock.tradePlan==='object'?stock.tradePlan:null;
   const label={observe:'观察',hold:'持有',add:'加仓',reduce:'减仓',buy:'加仓',sell:'减仓'};
   const listBlock=(title,items)=>{
@@ -2461,25 +2478,31 @@ function positionPlanPanel(stock){
     const amount=it.amountEstimate!==null&&it.amountEstimate!==undefined?` · 估算 ${fmtMoney(it.amountEstimate)}`:'';
     return `<div class="card" style="margin:8px 0;background:rgba(255,255,255,.55)"><div class="card-title">${esc(action)} <span class="muted" style="font-weight:400">优先级 ${esc(it.priority||'—')}</span></div><div class="card-note">触发价 ${esc(trigger)} · 区间 ${esc(it.priceZone||'—')} · 数量 ${esc(qty)}${amount}</div><div class="text" style="max-width:none;margin-top:6px"><b>条件：</b>${esc(formatChineseText(it.condition||'—'))}<br><b>技术条件：</b>${esc(formatChineseText(it.technicalCondition||'—'))}<br><b>风控：</b>${esc(formatChineseText(it.riskControl||'—'))}<br><b>备注：</b>${esc(formatChineseText(it.note||'—'))}</div></div>`;
   };
-  const imported=tp?(()=>{
+  const importedSections=tp?(()=>{
     const items=(Array.isArray(tp.planItems)?tp.planItems:[]).slice().sort((a,b)=>(Number(a.priority)||999)-(Number(b.priority)||999));
     const textOf=it=>[it.condition,it.technicalCondition,it.note,it.riskControl].map(x=>String(x||'')).join(' ');
     const isReview=it=>/已触发|待复核|人工确认|人工复核|确认/.test(textOf(it));
-    const groups=[
+    const triggered=items.filter(it=>(it.action==='observe'||it.action==='reduce'||it.action==='sell')&&isReview(it));
+    const current=[
       ['当前重点观察',items.filter(it=>it.action==='observe'&&!isReview(it)).slice(0,3)],
       ['当前持仓处理',items.filter(it=>it.action==='hold')],
-      ['已触发待复核计划',items.filter(it=>(it.action==='observe'||it.action==='reduce'||it.action==='sell')&&isReview(it))],
-      ['未触发计划',items.filter(it=>!isReview(it)&&['add','buy','reduce','sell'].includes(it.action))]
+      ['当前未触发计划',items.filter(it=>!isReview(it)&&['add','buy','reduce','sell'].includes(it.action))]
     ];
-    const grouped=groups.map(([title,arr])=>arr.length?`<div style="margin-top:10px"><div class="card-title">${esc(title)}</div>${arr.map(itemCard).join('')}${title==='已触发待复核计划'?'<div class="alert" style="margin-top:6px">以上只表示计划进入复核状态，不构成自动执行建议，需人工确认。</div>':''}</div>`:'').join('');
-    return `<div class="dash" style="margin:0"><div><div class="card-title">计划类型</div><div class="card-num" style="font-size:20px">${esc(label[tp.planType]||formatChineseText(tp.planType||'—'))}</div><div class="card-note">有效期 ${esc(tp.validUntil||'—')}</div></div><div><div class="card-title">复核要求</div><div class="card-note">${tp.reviewRequired?'需要人工复核':'未标记复核'}</div></div><div style="grid-column:span 2"><div class="card-title">计划摘要</div><div class="text" style="max-width:none">${esc(formatChineseText(tp.planSummary||planSummary||'—'))}</div></div></div>${grouped||'<div class="card-note" style="margin-top:10px">暂无结构化计划项</div>'}${listBlock('风险提示',Array.from(new Set(tp.riskFlags||[])))}${listBlock('未触发 / 失效条件',tp.invalidConditions)}`;
-  })():'';
+    return {
+      triggered:triggered.length?`${triggered.map(itemCard).join('')}<div class="alert" style="margin-top:6px">以上只表示计划进入复核状态，不构成自动执行建议，需人工确认。</div>`:'<div class="card-note">暂无已触发或待复核计划。</div>',
+      current:current.map(([title,arr])=>arr.length?`<div style="margin-top:10px"><div class="card-title">${esc(title)}</div>${arr.map(itemCard).join('')}</div>`:'').join('')||'<div class="card-note">暂无当前重点观察或未触发计划。</div>',
+      original:`<div class="dash" style="margin:0"><div><div class="card-title">计划类型</div><div class="card-num" style="font-size:20px">${esc(label[tp.planType]||formatChineseText(tp.planType||'—'))}</div><div class="card-note">有效期 ${esc(tp.validUntil||'—')}</div></div><div><div class="card-title">复核要求</div><div class="card-note">${tp.reviewRequired?'需要人工复核':'未标记复核'}</div></div><div style="grid-column:span 2"><div class="card-title">计划摘要</div><div class="text" style="max-width:none">${esc(formatChineseText(tp.planSummary||planSummary||'—'))}</div></div></div>${listBlock('风险提示',Array.from(new Set(tp.riskFlags||[])))}${listBlock('未触发 / 失效条件',tp.invalidConditions)}`
+    };
+  })():null;
   const buyRows=(stock.plans||[]).filter(p=>(p.action||'buy')!=='sell').map(p=>`${fmtMaybe(p.price)}：${fmtInt(p.shares)} · ${p.note||'—'}`);
   const sellRows=(stock.plans||[]).filter(p=>p.action==='sell').map(p=>`${fmtMaybe(p.price)}：${fmtInt(p.shares)} · ${p.note||'—'}`);
   const planList=arr=>arr.length?'<ul style="margin:6px 0 0 18px;padding:0">'+arr.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':'—';
-  const history=(stock.plans||[]).length?`<details class="card" style="margin-top:10px"><summary class="card-title" style="cursor:pointer">原始计划库 / 历史预设计划</summary><div class="text" style="max-width:none;margin-top:8px"><b>最近触发计划：</b>${esc(main)}<br><b>加仓计划：</b>${planList(buyRows)}<b>减仓计划：</b>${planList(sellRows)}</div></details>`:'';
+  const originalPlanContent=(stock.plans||[]).length?`<details class="card" style="margin-top:10px"><summary class="card-title" style="cursor:pointer">原始计划库 / 历史预设计划</summary><div class="text" style="max-width:none;margin-top:8px"><b>最近触发计划：</b>${esc(main)}<br><b>加仓计划：</b>${planList(buyRows)}<b>减仓计划：</b>${planList(sellRows)}</div></details>`:'<div class="card-note">暂无原始预设计划。</div>';
   const fallback=`<div class="text" style="max-width:none"><b>最近计划：</b>${esc(main)}<br><b>计划摘要：</b>${esc(planSummary||'暂无明确仓位计划')}</div>`;
-  return `<div class="card" style="margin-bottom:14px"><div class="card-title">仓位与加减仓计划</div>${tp?imported:fallback}${history}${tradePlanActionButtons(false)}</div>`;
+  const triggeredContent=tp?(importedSections&&importedSections.triggered):`<div class="text" style="max-width:none"><b>最近触发计划：</b>${esc(main)}</div>`;
+  const currentContent=tp?(importedSections&&importedSections.current):fallback;
+  const originalContent=tp?(importedSections&&importedSections.original):originalPlanContent;
+  return `<div class="card" style="margin-bottom:14px" data-v13-detail-anchor="plan"><div class="card-title">仓位与加减仓计划</div><div data-v13-detail-anchor="position-summary">${v13TargetReviewReturnBanner(stock,'position-summary')}<div class="card" style="margin:8px 0;background:rgba(255,255,255,.48)"><div class="card-title">当前仓位 / 仓位状态</div><div class="card-note">${esc(positionSummary)}</div><div class="text" style="max-width:none;margin-top:6px">${esc(positionStatus)}</div></div></div><div data-v13-detail-anchor="plan-triggered">${v13TargetReviewReturnBanner(stock,'plan-triggered')}<div class="card" style="margin:8px 0;background:rgba(255,255,255,.48)"><div class="card-title">已触发 / 待复核计划</div>${triggeredContent}</div></div><div data-v13-detail-anchor="plan-current">${v13TargetReviewReturnBanner(stock,'plan-current')}<div class="card" style="margin:8px 0;background:rgba(255,255,255,.48)"><div class="card-title">当前重点观察 / 当前计划</div>${currentContent}</div></div><div data-v13-detail-anchor="plan-original">${v13TargetReviewReturnBanner(stock,'plan-original')}<div class="card" style="margin:8px 0;background:rgba(255,255,255,.48)"><div class="card-title">原始计划库 / 历史预设计划</div>${originalContent}</div></div>${tradePlanActionButtons(false)}</div>`;
 }
 const ALLOCATION_DIMENSION_LABELS={macro:'宏观',industry:'行业',company:'公司',financials:'财报',valuation:'估值',sentiment:'情绪',technical:'技术面'};
 const ALLOCATION_TARGET_LABELS={raise:'上调',maintain:'维持',lower:'下调',watch:'观察',reduce:'降低/收缩',unknown:'未知'};
@@ -6029,7 +6052,7 @@ function renderStockDetail(){
   const actual=info&&info.actualPct!==null?info.actualPct:null;
   const deviation=info&&info.deviation!==null?`${info.deviation>=0?'+':''}${info.deviation.toFixed(1)}%`:'—';
   document.getElementById('summary').innerHTML=`标的详情 · <strong>${esc(s.name)}</strong> · ${esc(s.role||'—')} · ${esc(s.theme||'—')}`;
-  document.getElementById('main').innerHTML=`<div data-v13-detail-anchor="overview">${detailHeroPanel(s,mv,actual,deviation)}</div>${v13ReviewReturnBanner(s)}${v13StockEventPanel(s)}<div data-v13-detail-anchor="analysis"></div><div data-v13-detail-anchor="risk">${trendRiskManagementPanel(s)}</div><div data-v13-detail-anchor="technical">${technicalAnalysisPanel(s)}</div>${shortTermCatalystPanel(s)}${shortTermSentimentPanel(s)}${informationCompletenessPanel(s)}<div data-v13-detail-anchor="position"></div><div data-v13-detail-anchor="plan">${positionPlanPanel(s)}</div>${detailResultsArchivePanel(s,cp)}${detailResearchArchivePanel(s,cp)}${detailAdvancedToolsArchivePanel(s)}`;
+  document.getElementById('main').innerHTML=`<div data-v13-detail-anchor="overview">${detailHeroPanel(s,mv,actual,deviation)}</div>${v13ReviewReturnBanner(s)}${v13StockEventPanel(s)}<div data-v13-detail-anchor="analysis"></div><div data-v13-detail-anchor="risk">${v13TargetReviewReturnBanner(s,'risk')}${trendRiskManagementPanel(s)}</div><div data-v13-detail-anchor="technical">${v13TargetReviewReturnBanner(s,'technical')}${technicalAnalysisPanel(s)}</div>${shortTermCatalystPanel(s)}${shortTermSentimentPanel(s)}${informationCompletenessPanel(s)}${positionPlanPanel(s)}${detailResultsArchivePanel(s,cp)}${detailResearchArchivePanel(s,cp)}${detailAdvancedToolsArchivePanel(s)}`;
   document.getElementById('backToListBtn').addEventListener('click',closeStockDetail);
   document.querySelectorAll('[data-v13-return-review]').forEach(btn=>btn.addEventListener('click',returnToActiveV13Review));
   document.querySelectorAll('[data-detail-action]').forEach(b=>b.addEventListener('click',()=>handleDetailAction(b.dataset.detailAction,s)));
