@@ -902,7 +902,7 @@ function v13PlanRefreshPanel(){
     const planCount=x.plans.length;
     return `<div class="trig-row" data-v13-plan-refresh-stock="${esc(stock.id||'')}" style="cursor:pointer"><div class="trig-name">${esc(stock.name||stock.code||'—')} <span class="muted">· ${esc(stock.code||stock.symbol||'')}</span></div><div class="trig-dist">${x.triggered?'旧计划需复核':'计划需刷新'}</div><div class="trig-desc"><b>旧计划可能已过期，请先刷新计划。</b><div class="card-note">${planCount} 条计划需检查 · ${x.reasons.map(esc).join('、')}</div>${actionButtons(stock)}</div></div>`;
   };
-  return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--gold)"><div class="card-title">计划需刷新（${candidates.length} 只 / ${rows.length} 条）</div><div class="card-note">旧计划、过期计划或缺少有效性字段的计划不进入 P4/P3 立即复核；先进入刷新清单。每只标的只显示一次。</div><div class="trig-list">${candidates.slice(0,12).map(row).join('')}</div>${candidates.length>12?`<div class="card-note" style="margin-top:8px">还有 ${candidates.length-12} 只标的需在详情页继续检查。</div>`:''}</div>`;
+  return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--gold)"><div class="card-title">计划需刷新（${candidates.length} 只 / ${rows.length} 条）</div><div class="card-note">旧计划、过期计划或缺少有效性字段的计划不进入 P4/P3 立即复核；先进入刷新清单。每只标的只显示一次。</div><div class="modal-actions" style="justify-content:flex-start;margin:10px 0;flex-wrap:wrap"><button class="btn small" type="button" data-v13-plan-refresh-start>开始刷新计划</button></div><div class="trig-list">${candidates.slice(0,12).map(row).join('')}</div>${candidates.length>12?`<div class="card-note" style="margin-top:8px">还有 ${candidates.length-12} 只标的需在详情页继续检查。</div>`:''}</div>`;
 }
 function ensureV13PlanRefreshToolDialog(){
   let el=document.getElementById('v13PlanRefreshToolDialog');
@@ -2300,6 +2300,10 @@ function renderDashboard(){
   const fxRiskHint=isDefaultFx()?'<div class="alert" style="margin-bottom:14px">汇率使用默认值，港股市值和仓位占比可能有偏差。可到「工具」页更新 HKD→CNY 汇率。</div>':'';
   main.innerHTML=`${v13HomeEventTaskPanel()}${updateChecklistPanel()}${triggeredPanel}${disciplinePanel}${rebalPanel}${noPriceHint}${fxRiskHint}<div class="dash"><div class="card"><div class="card-title">按主题分布</div>${bars(themeRows)}</div><div class="card"><div class="card-title">按仓位角色分布</div>${bars(roleRows)}</div></div>`;
   document.querySelectorAll('[data-v13-rec-stock]').forEach(el=>el.addEventListener('click',()=>openV13DecisionReview(el.dataset.v13RecStock,el.dataset.v13RecId)));
+  document.querySelectorAll('[data-v13-plan-refresh-start]').forEach(btn=>btn.addEventListener('click',e=>{
+    e.stopPropagation();
+    openV13PlanRefreshTool();
+  }));
   document.querySelectorAll('[data-v13-plan-refresh-prompt]').forEach(btn=>btn.addEventListener('click',e=>{
     e.stopPropagation();
     openV13PlanRefreshTool(btn.dataset.v13PlanRefreshPrompt);
