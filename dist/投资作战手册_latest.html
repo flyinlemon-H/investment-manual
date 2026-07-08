@@ -4376,6 +4376,24 @@ function v13DisplayActivePlans(plans){
   const refreshed=active.filter(plan=>String(plan&&plan.source||'')==='ai_plan_refresh');
   return refreshed.length?refreshed:active;
 }
+function v13PlanDisplayCategory(plan){
+  const type=String(plan&&plan.type||'').trim().toLowerCase();
+  const action=String(plan&&plan.action||'').trim().toLowerCase();
+  const text=`${type} ${action}`;
+  if(/risk_review|stop_loss|\brisk\b|止损|风险/.test(text))return 'risk';
+  if(/hold_review|hold|observe|watch|defense|防守|观察/.test(text))return 'observe';
+  if(/reduce_review|take_profit|reduce|sell|trim|减仓|止盈/.test(text))return 'sell';
+  if(/add_review|\badd\b|\bbuy\b|加仓|买入/.test(text))return 'buy';
+  return action==='sell'?'sell':(action==='observe'?'observe':'buy');
+}
+function v13PlanTriggerText(plan){
+  const value=plan&&plan.triggerPrice!==undefined?plan.triggerPrice:(plan&&plan.price!==undefined?plan.price:null);
+  return value===null||value===undefined||value===''?'—':fmtMaybe(value,2);
+}
+function v13PlanQuantityText(plan){
+  const value=plan&&plan.quantity!==undefined?plan.quantity:(plan&&plan.shares!==undefined?plan.shares:null);
+  return value===null||value===undefined||value===''?'数量待复核':fmtInt(value);
+}
 function v13PlanSignature(stock,plan){
   const p=plan&&typeof plan==='object'?plan:{};
   return [
@@ -4599,6 +4617,8 @@ function v13ValidatePlanRefreshPayload(stock,payload){
   else if(!v13StockSymbolMatches(stock,data.symbol))errors.push('symbol 与当前选择标的不一致。');
   if(!Array.isArray(data.plans))errors.push('plans 必须是数组。');
   const plans=Array.isArray(data.plans)?data.plans:[];
+  let emptyTriggerCount=0;
+  let emptyQuantityCount=0;
   plans.forEach((plan,index)=>{
     const prefix=`第 ${index+1} 条 plan`;
     if(!plan||typeof plan!=='object'||Array.isArray(plan)){errors.push(`${prefix} 必须是对象。`);return}
@@ -4609,11 +4629,13 @@ function v13ValidatePlanRefreshPayload(stock,payload){
     if(plan.reviewRequirement&&typeof plan.reviewRequirement!=='object')errors.push(`${prefix} reviewRequirement 必须是对象。`);
     const validityObj=plan.validity&&typeof plan.validity==='object'?plan.validity:{};
     if(!(validityObj.endDate||validityObj.validUntil||validityObj.nextReviewDate||plan.nextReviewDate))errors.push(`${prefix} 缺少有效期结束日期或 nextReviewDate。`);
-    if(plan.triggerPrice===null||plan.triggerPrice===undefined)warnings.push(`${prefix} triggerPrice 为空，将保留为 null。`);
-    if(plan.quantity===null||plan.quantity===undefined)warnings.push(`${prefix} quantity 为空，将保留为 null。`);
+    if(plan.triggerPrice===null||plan.triggerPrice===undefined)emptyTriggerCount++;
+    if(plan.quantity===null||plan.quantity===undefined)emptyQuantityCount++;
     if(!Array.isArray(plan.riskFlags)||!plan.riskFlags.length)warnings.push(`${prefix} riskFlags 为空。`);
     if(!Array.isArray(plan.notes)||!plan.notes.length)warnings.push(`${prefix} notes 为空。`);
   });
+  if(emptyTriggerCount)warnings.push(`${emptyTriggerCount} 条计划 triggerPrice=null，将保留为人工复核条件。`);
+  if(emptyQuantityCount)warnings.push(`${emptyQuantityCount} 条计划 quantity=null，将由人工复核时计算。`);
   return {ok:errors.length===0,errors,warnings,plans,replaceExistingPlans:data.replaceExistingPlans===true,updatedAt:String(data.updatedAt||'')};
 }
 function v13NormalizeImportedRefreshPlan(stock,plan,batchId,updatedAt){
@@ -6744,8 +6766,9 @@ function positionPlanPanel(stock){
   const activePlans=v13DisplayActivePlans(stock.plans);
   const hasRefreshedPlans=activePlans.some(plan=>String(plan&&plan.source||'')==='ai_plan_refresh');
   const planSummary=hasRefreshedPlans?'计划已刷新，当前展示新版有效计划。':tradePlanSummaryText(stock);
-  const rows=activePlans.slice(0,4).map(p=>`${p.action==='sell'?'减仓':'加仓'} ${fmtInt(p.shares)} @ ${fmtMaybe(p.price)} · ${p.note||'—'}`);
-  const main=nearest?`${nearest.p.action==='sell'?'减仓':'加仓'} ${fmtInt(nearest.p.shares)} @ ${fmtMaybe(nearest.p.price)}${nearest.g?(nearest.g.triggered?' · 已触发':` · 距触发 ${fmt(nearest.g.absPct,1)}%`):''}`:'暂无最近触发计划';
+  const planCategoryLabel=plan=>({buy:'加仓',observe:'观察/防守',sell:'减仓',risk:'风险复核'}[v13PlanDisplayCategory(plan)]||'计划');
+  const rows=activePlans.slice(0,4).map(p=>`${planCategoryLabel(p)} ${v13PlanQuantityText(p)} @ ${v13PlanTriggerText(p)} · ${p.note||p.summary||p.actionHint||'—'}`);
+  const main=nearest?`${planCategoryLabel(nearest.p)} ${v13PlanQuantityText(nearest.p)} @ ${v13PlanTriggerText(nearest.p)}${nearest.g?(nearest.g.triggered?' · 已触发':` · 距触发 ${fmt(nearest.g.absPct,1)}%`):''}`:'暂无最近触发计划';
   const total=getEstimatedTotalAssets();
   const pos=getPositionInfo(stock,total);
   const positionSummary=pos
@@ -6783,11 +6806,13 @@ function positionPlanPanel(stock){
       original:`<div class="dash" style="margin:0"><div><div class="card-title">计划类型</div><div class="card-num" style="font-size:20px">${esc(label[tp.planType]||formatChineseText(tp.planType||'—'))}</div><div class="card-note">有效期 ${esc(tp.validUntil||'—')}</div></div><div><div class="card-title">复核要求</div><div class="card-note">${tp.reviewRequired?'需要人工复核':'未标记复核'}</div></div><div style="grid-column:span 2"><div class="card-title">计划摘要</div><div class="text" style="max-width:none">${esc(formatChineseText(tp.planSummary||planSummary||'—'))}</div></div></div>${listBlock('风险提示',Array.from(new Set(tp.riskFlags||[])))}${listBlock('未触发 / 失效条件',tp.invalidConditions)}`
     };
   })():null;
-  const buyRows=activePlans.filter(p=>(p.action||'buy')!=='sell').map(p=>`${fmtMaybe(p.price)}：${fmtInt(p.shares)} · ${p.note||'—'}`);
-  const sellRows=activePlans.filter(p=>p.action==='sell').map(p=>`${fmtMaybe(p.price)}：${fmtInt(p.shares)} · ${p.note||'—'}`);
+  const buyRows=activePlans.filter(p=>v13PlanDisplayCategory(p)==='buy').map(p=>`${v13PlanTriggerText(p)}：${v13PlanQuantityText(p)} · ${p.note||p.summary||p.actionHint||'—'}`);
+  const observeRows=activePlans.filter(p=>v13PlanDisplayCategory(p)==='observe').map(p=>`${v13PlanTriggerText(p)}：${v13PlanQuantityText(p)} · ${p.note||p.summary||p.actionHint||'—'}`);
+  const sellRows=activePlans.filter(p=>v13PlanDisplayCategory(p)==='sell').map(p=>`${v13PlanTriggerText(p)}：${v13PlanQuantityText(p)} · ${p.note||p.summary||p.actionHint||'—'}`);
+  const riskRows=activePlans.filter(p=>v13PlanDisplayCategory(p)==='risk').map(p=>`${v13PlanTriggerText(p)}：${v13PlanQuantityText(p)} · ${p.note||p.summary||p.actionHint||'—'}`);
   const allActiveRows=activePlans.map(p=>`${p.type||p.action||'plan'} ${fmtMaybe(p.triggerPrice!==undefined?p.triggerPrice:p.price)} · ${p.summary||p.actionHint||p.note||'—'}`);
   const planList=arr=>arr.length?'<ul style="margin:6px 0 0 18px;padding:0">'+arr.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':'—';
-  const originalPlanContent=activePlans.length?`<details class="card" style="margin-top:10px" open><summary class="card-title" style="cursor:pointer">当前有效计划</summary><div class="text" style="max-width:none;margin-top:8px"><b>有效计划：</b>${planList(allActiveRows)}<b>加仓/观察：</b>${planList(buyRows)}<b>减仓计划：</b>${planList(sellRows)}</div></details>`:'<div class="card-note">暂无当前有效计划。</div>';
+  const originalPlanContent=activePlans.length?`<details class="card" style="margin-top:10px" open><summary class="card-title" style="cursor:pointer">当前有效计划</summary><div class="text" style="max-width:none;margin-top:8px"><b>有效计划：</b>${planList(allActiveRows)}<b>加仓计划：</b>${planList(buyRows)}<b>观察/防守计划：</b>${planList(observeRows)}<b>减仓计划：</b>${planList(sellRows)}<b>风险复核计划：</b>${planList(riskRows)}</div></details>`:'<div class="card-note">暂无当前有效计划。</div>';
   const fallback=`<div class="text" style="max-width:none"><b>最近计划：</b>${esc(main)}<br><b>计划摘要：</b>${esc(planSummary||'暂无明确仓位计划')}</div>`;
   const triggeredContent=tp?(importedSections&&importedSections.triggered):`<div class="text" style="max-width:none"><b>最近触发计划：</b>${esc(main)}</div>`;
   const currentContent=tp?(importedSections&&importedSections.current):fallback;
@@ -8245,10 +8270,27 @@ function closeStockDetail(){
   detailSubView='';
   render();
 }
+function v13CurrentActivePlanSummaryPanel(stock){
+  const plans=v13DisplayActivePlans(stock&&stock.plans);
+  if(!plans.length)return '';
+  const label={buy:'加仓',observe:'观察/防守',sell:'减仓',risk:'风险复核'};
+  const order=['buy','observe','sell','risk'];
+  const grouped=order.map(key=>({key,items:plans.filter(plan=>v13PlanDisplayCategory(plan)===key)})).filter(group=>group.items.length);
+  if(!grouped.length)return '';
+  const row=plan=>{
+    const type=plan.type||plan.action||'plan';
+    const trigger=v13PlanTriggerText(plan);
+    const qty=v13PlanQuantityText(plan);
+    const summary=String(plan.summary||plan.actionHint||plan.note||'—').trim();
+    return `<div class="trig-row"><div class="trig-name">${esc(type)} · ${esc(trigger)}</div><div class="trig-dist">${esc(qty)}</div><div class="trig-desc">${esc(formatChineseText(summary.length>90?summary.slice(0,90)+'…':summary))}</div></div>`;
+  };
+  const block=group=>`<div class="card" style="background:rgba(255,255,255,.56)"><div class="card-title">${esc(label[group.key])}</div><div class="trig-list">${group.items.map(row).join('')}</div></div>`;
+  return `<div class="card" style="margin-bottom:14px" data-v13-detail-anchor="active-plans"><div class="card-title">当前有效计划</div><div class="card-note">只展示 active plans；存在 AI 刷新版计划时，仅展示新版 active plans，历史已归档计划不进入本区。</div><div class="dash" style="margin-top:10px">${grouped.map(block).join('')}</div></div>`;
+}
 function planListHtml(plans,type,cp){
-  const arr=v13DisplayActivePlans(plans).filter(p=>type==='buy'?(p.action||'buy')==='buy':p.action==='sell').sort((a,b)=>Number(b.price||0)-Number(a.price||0));
+  const arr=v13DisplayActivePlans(plans).filter(p=>v13PlanDisplayCategory(p)===type).sort((a,b)=>Number(b.price||0)-Number(a.price||0));
   if(!arr.length)return '<div class="empty" style="padding:18px 0">暂无计划</div>';
-  return `<div class="trig-list">${arr.map(p=>{const g=planGap(cp,p.price,p.action,p.triggerOn);const tag=type==='buy'?'加仓':'减仓';const gap=g?(g.triggered?'已触发':`${g.direction==='below'?'低于':'高于'}目标 ${g.absPct.toFixed(1)}%`):'未计算';return `<div class="trig-row ${type==='sell'?'sell':'buy'}"><div class="trig-name">${tag} · ${fmtMaybe(p.price)}</div><div class="trig-dist">${gap}</div><div class="trig-desc">数量 ${fmtInt(p.shares)}${p.note?' · '+esc(p.note):''}</div></div>`}).join('')}</div>`;
+  return `<div class="trig-list">${arr.map(p=>{const g=planGap(cp,p.price,p.action,p.triggerOn);const tag={buy:'加仓',sell:'减仓',observe:'观察/防守',risk:'风险复核'}[type]||'计划';const gap=g?(g.triggered?'已触发':`${g.direction==='below'?'低于':'高于'}目标 ${g.absPct.toFixed(1)}%`):'未计算';return `<div class="trig-row ${type==='sell'?'sell':'buy'}"><div class="trig-name">${tag} · ${v13PlanTriggerText(p)}</div><div class="trig-dist">${gap}</div><div class="trig-desc">${v13PlanQuantityText(p)}${p.note||p.summary||p.actionHint?' · '+esc(p.note||p.summary||p.actionHint):''}</div></div>`}).join('')}</div>`;
 }
 function stockExecutionRows(name){
   const rows=(Array.isArray(state.executionLog)?state.executionLog:[]).filter(x=>x.stock===name).sort((a,b)=>(Number(b.t)||0)-(Number(a.t)||0));
@@ -10162,7 +10204,7 @@ function detailResultsArchivePanel(s,cp){
 }
 function detailResearchArchivePanel(s,cp){
   const discipline=`<div class="dash"><div class="card" style="grid-column:span 2"><div class="card-title">纪律规则</div><div class="text" style="max-width:none"><b>持有逻辑：</b>${esc(s.thesis||s.notes||'—')}<br><br><b>卖出/降仓：</b>${esc(s.sellRule||'—')}<br><br><b>加仓规则：</b>${esc(s.buyRule||'—')}</div></div><div class="card" style="grid-column:span 2"><div class="card-title">社媒舆情</div>${stockSocialSummary(s)}</div></div>`;
-  const plans=`<div class="dash"><div class="card" style="grid-column:span 2"><div class="card-title">加仓计划</div>${planListHtml(s.plans,'buy',cp)}</div><div class="card" style="grid-column:span 2"><div class="card-title">减仓计划</div>${planListHtml(s.plans,'sell',cp)}</div></div><div class="card"><div class="card-title">操作记录</div>${stockExecutionRows(s.name)}</div>`;
+  const plans=`<div class="dash"><div class="card" style="grid-column:span 2"><div class="card-title">加仓计划</div>${planListHtml(s.plans,'buy',cp)}</div><div class="card" style="grid-column:span 2"><div class="card-title">观察/防守计划</div>${planListHtml(s.plans,'observe',cp)}</div><div class="card" style="grid-column:span 2"><div class="card-title">减仓计划</div>${planListHtml(s.plans,'sell',cp)}</div><div class="card" style="grid-column:span 2"><div class="card-title">风险复核计划</div>${planListHtml(s.plans,'risk',cp)}</div></div><div class="card"><div class="card-title">操作记录</div>${stockExecutionRows(s.name)}</div>`;
   return collapsibleCard('深度资料、规则与记录',`${discipline}${analysisInputsPanel(s)}${analysisFrameworkPanel(s)}${plans}`,false,'默认折叠。这里保留九模块、原始分析资料、纪律规则、完整计划表和操作记录。');
 }
 function detailAdvancedToolsArchivePanel(s){
@@ -10342,7 +10384,7 @@ function renderStockDetail(){
   const actual=info&&info.actualPct!==null?info.actualPct:null;
   const deviation=info&&info.deviation!==null?`${info.deviation>=0?'+':''}${info.deviation.toFixed(1)}%`:'—';
   document.getElementById('summary').innerHTML=`标的详情 · <strong>${esc(s.name)}</strong> · ${esc(s.role||'—')} · ${esc(s.theme||'—')}`;
-  document.getElementById('main').innerHTML=`<div data-v13-detail-anchor="overview">${detailHeroPanel(s,mv,actual,deviation)}</div>${v13ReviewReturnBanner(s)}${v13StockEventPanel(s)}<div data-v13-detail-anchor="analysis"></div><div data-v13-detail-anchor="risk">${v13TargetReviewReturnBanner(s,'risk')}${trendRiskManagementPanel(s)}</div><div data-v13-detail-anchor="technical">${v13TargetReviewReturnBanner(s,'technical')}${technicalAnalysisPanel(s)}</div>${shortTermCatalystPanel(s)}${shortTermSentimentPanel(s)}${informationCompletenessPanel(s)}${positionPlanPanel(s)}${detailResultsArchivePanel(s,cp)}${detailResearchArchivePanel(s,cp)}${detailAdvancedToolsArchivePanel(s)}`;
+  document.getElementById('main').innerHTML=`<div data-v13-detail-anchor="overview">${detailHeroPanel(s,mv,actual,deviation)}</div>${v13ReviewReturnBanner(s)}${v13StockEventPanel(s)}${v13CurrentActivePlanSummaryPanel(s)}<div data-v13-detail-anchor="analysis"></div><div data-v13-detail-anchor="risk">${v13TargetReviewReturnBanner(s,'risk')}${trendRiskManagementPanel(s)}</div><div data-v13-detail-anchor="technical">${v13TargetReviewReturnBanner(s,'technical')}${technicalAnalysisPanel(s)}</div>${shortTermCatalystPanel(s)}${shortTermSentimentPanel(s)}${informationCompletenessPanel(s)}${positionPlanPanel(s)}${detailResultsArchivePanel(s,cp)}${detailResearchArchivePanel(s,cp)}${detailAdvancedToolsArchivePanel(s)}`;
   document.getElementById('backToListBtn').addEventListener('click',closeStockDetail);
   document.querySelectorAll('[data-v13-return-review]').forEach(btn=>btn.addEventListener('click',returnToActiveV13Review));
   document.querySelectorAll('[data-detail-action]').forEach(b=>b.addEventListener('click',()=>handleDetailAction(b.dataset.detailAction,s)));
