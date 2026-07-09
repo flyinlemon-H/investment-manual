@@ -8335,6 +8335,15 @@ function v13PlanCenterSummary(stock){
   const groupHtml=group=>`<section class="card" style="background:rgba(255,255,255,.58)"><div class="card-title">${esc(labels[group.key])}</div>${group.items.map((plan,index)=>`<div class="trig-row ${group.key==='sell'?'sell':'buy'}"><div class="trig-name">${index+1}. ${v13PlanTriggerText(plan)}</div><div class="trig-dist">${v13PlanQuantityText(plan)}</div><div class="trig-desc">${esc(v13PlanCenterShortText(plan))}</div></div>`).join('')}</section>`;
   return `<div class="dash" style="margin-top:10px">${groups.map(groupHtml).join('')}</div>`;
 }
+function v13PlanCompactSummary(stock){
+  const plans=v13DisplayActivePlans(stock&&stock.plans);
+  if(!plans.length)return '<div class="card-note">暂无当前有效计划。</div>';
+  const labels={buy:'加仓',observe:'观察',sell:'减仓',risk:'风险'};
+  const order=['buy','observe','sell','risk'];
+  const groups=order.map(key=>({key,items:plans.filter(plan=>v13PlanDisplayCategory(plan)===key)})).filter(group=>group.items.length);
+  const priceText=plan=>v13PlanTriggerText(plan).replace(/^触发\s*/,'').replace(/^—$/,'待定');
+  return `<div class="chips">${groups.map(group=>`<span class="chip ${group.key==='sell'?'sell':(group.key==='risk'?'warn':'role')}">${esc(labels[group.key])}：${esc(group.items.map(priceText).join(' / '))}</span>`).join('')}</div>`;
+}
 function v13PlanCenterDetailSections(stock){
   const plans=v13DisplayActivePlans(stock&&stock.plans);
   if(!plans.length)return '<div class="empty">暂无详细计划</div>';
@@ -8374,42 +8383,75 @@ function stockWorkspaceSection(key,title,summary,body,color){
   const active=detailWorkspace===key;
   return `<section class="card" style="margin-bottom:12px;border-left:4px solid ${color}"><button class="link-btn" data-workspace="${esc(key)}" type="button" style="display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;text-align:left;padding:0"><span><span class="card-title">${esc(active?'▼':'▶')} ${esc(title)}</span><span class="card-note" style="display:block;margin-top:4px">${esc(summary)}</span></span><span class="chip ${active?'role':'tag'}">${active?'展开':'折叠'}</span></button>${active?`<div style="margin-top:12px">${body}</div>`:''}</section>`;
 }
+function workspaceDetails(title,body){
+  return `<details class="card" style="margin-bottom:12px;background:rgba(255,255,255,.42)"><summary class="card-title" style="cursor:pointer">${esc(title)}</summary><div style="margin-top:10px">${body}</div></details>`;
+}
+function v13StockEventCompactPanel(stock){
+  if(typeof getStockVisibleEvents!=='function')return '';
+  const events=getStockVisibleEvents(stock);
+  if(!events.length)return `<div class="card" style="margin-bottom:12px;border-left:3px solid var(--seal)"><div class="card-title">当前事件</div><div class="card-note">暂无未处理事件。</div></div>`;
+  const priority=e=>String(e.priority||e.level||e.phase||'').toUpperCase();
+  const top=events[0];
+  const summary=events.length===1
+    ?`${v13EventPhaseLabel(top.phase)}：${top.title||'未命名事件'}`
+    :`当前有 ${events.length} 条事件，最高优先级：${priority(top)||v13EventPhaseLabel(top.phase)||'—'}`;
+  return `<div class="card" style="margin-bottom:12px;border-left:3px solid var(--seal)"><div class="card-title">当前事件摘要</div><div class="card-note">${esc(formatChineseText(summary))}</div>${workspaceDetails('查看事件详情',v13StockEventPanel(stock))}</div>`;
+}
 function planWorkspacePanel(stock){
   const plans=v13DisplayActivePlans(stock&&stock.plans);
   const refresh=v13PlanCenterRefreshInfo(stock,plans);
-  const refreshPanel=`<div class="card" style="margin-bottom:12px;background:rgba(255,255,255,.56)"><div class="card-title">刷新计划</div><div class="card-note">复制 Prompt，粘贴 AI 返回 JSON，导入后仍停留在当前详情页并刷新计划显示。</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px"><button class="btn small" type="button" data-detail-action="open-plan-refresh">刷新计划</button></div></div>`;
-  const refreshInfo=`<div class="card" style="margin-bottom:12px;background:rgba(255,255,255,.56)"><div class="card-title">最近刷新</div><div class="card-note">刷新时间 ${esc(refresh.updated||'尚未刷新')} · 下次建议刷新 ${esc(refresh.validUntil||'尚未刷新')}</div></div>`;
-  return `${v13StockEventPanel(stock)}${refreshPanel}${refreshInfo}<div class="card" style="margin-bottom:12px"><div class="card-title">当前有效计划</div>${v13PlanCenterSummary(stock)}</div><details class="card" style="margin-bottom:12px"><summary class="card-title" style="cursor:pointer">详细计划</summary><div style="margin-top:10px">${v13PlanCenterDetailSections(stock)}</div></details><details class="card" style="margin-bottom:12px"><summary class="card-title" style="cursor:pointer">历史计划</summary><div style="margin-top:10px">${v13PlanCenterHistory(stock)}</div></details>${positionPlanPanel(stock)}`;
+  const refreshPanel=`<div class="card" style="margin-bottom:12px;background:rgba(255,255,255,.56)"><div class="card-title">刷新计划</div><div class="card-note">刷新时间 ${esc(refresh.updated||'尚未刷新')} · 下次建议刷新 ${esc(refresh.validUntil||'尚未刷新')}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px"><button class="btn small" type="button" data-detail-action="open-plan-refresh">刷新计划</button></div></div>`;
+  const planSummary=`<div class="card" style="margin-bottom:12px"><div class="card-title">当前有效计划摘要</div>${v13PlanCompactSummary(stock)}</div>`;
+  return `${refreshPanel}${v13StockEventCompactPanel(stock)}${planSummary}${workspaceDetails('查看详细计划',v13PlanCenterDetailSections(stock))}${workspaceDetails('查看历史计划',v13PlanCenterHistory(stock))}${workspaceDetails('查看仓位与计划详情',positionPlanPanel(stock))}`;
+}
+function workspaceSummaryCard(title,items,detailTitle,detailBody,color='var(--teal)'){
+  const rows=(Array.isArray(items)?items:[]).filter(Boolean).slice(0,4);
+  return `<div class="card" style="margin-bottom:12px;border-left:4px solid ${color}"><div class="card-title">${esc(title)}</div>${rows.length?`<div class="chips">${rows.map(x=>`<span class="chip role">${esc(formatChineseText(x))}</span>`).join('')}</div>`:'<div class="card-note">暂无摘要。</div>'}</div>${workspaceDetails(detailTitle,detailBody)}`;
 }
 function technicalWorkspacePanel(stock){
-  return `${technicalAnalysisPanel(stock)}${trendRiskManagementPanel(stock)}${technicalSignalPanel(stock)}`;
+  const review=normalizeTechnicalReview(stock.technicalReview,stock);
+  const st=review.shortTermTechnical||{};
+  const cy=review.cycleTechnical||{};
+  const body=`${technicalAnalysisPanel(stock)}${trendRiskManagementPanel(stock)}${technicalSignalPanel(stock)}`;
+  return workspaceSummaryCard('技术面摘要',[review.finalTechnicalConclusion||st.technicalSummary||'待补充技术结论',`趋势 ${zhTrendStatus(st.trendStatus)||'—'}`,`周期 ${cyclePositionText(cy.cyclePosition)}`,st.actionHint||'继续观察'],'查看技术面详情 / Prompt / JSON 导入',body,'var(--teal)');
 }
 function newsWorkspacePanel(stock){
-  return `${shortTermCatalystPanel(stock)}${shortTermSentimentPanel(stock)}${informationCompletenessPanel(stock)}`;
+  const rc=normalizeRecentCatalyst(stock.recentCatalyst,stock);
+  const st=normalizeShortTermSentiment(stock.shortTermSentiment,stock);
+  const info=normalizeInformationCompleteness(stock.informationCompleteness,stock);
+  const body=`${shortTermCatalystPanel(stock)}${shortTermSentimentPanel(stock)}${informationCompletenessPanel(stock)}`;
+  return workspaceSummaryCard('新闻催化摘要',[rc.todayCatalyst||'未发现明确当日催化',`新闻 ${info.news} · 催化 ${info.catalyst}`,st.marketMood?`情绪 ${st.marketMood}`:'情绪资料待补充',st.fundFlowView?`资金 ${st.fundFlowView}`:'资金流待补充'],'查看新闻催化详情 / Prompt / JSON 导入',body,'var(--seal)');
 }
 function fundamentalWorkspacePanel(stock){
   const main=stock.type==='etf'?etfIndexAnalysisPanel(stock):fundamentalAnalysisPanel(stock);
   const financial=stock.type==='etf'?'':financialSignalPanel(stock);
   const flow=stock.type==='etf'?'':financialAnalysisFlowPanel();
-  return `${main}${financial}${flow}`;
+  const f=fundamentalAnalysis(stock);
+  const body=`${main}${financial}${flow}`;
+  return workspaceSummaryCard('基本面摘要',[f.finalSummary||f.summary||'基本面资料待补充',`综合 ${fmtMaybe(f.score,1)} / 10`,f.financialSummary?`财务 ${f.financialSummary}`:'财务质量待补充',f.valuationSummary?`估值 ${f.valuationSummary}`:'估值资料待补充'],'查看基本面详情 / Prompt / JSON 导入',body,'var(--purple)');
 }
 function valuationAllocationWorkspacePanel(stock){
   const total=getEstimatedTotalAssets();
   const info=getPositionInfo(stock,total);
   const strategy=normalizeStrategy(stock.strategy,stock);
   const positionSummary=`<div class="card" style="margin-bottom:14px"><div class="card-title">仓位与配置摘要</div><div class="dash" style="margin:0"><div><div class="card-title">当前仓位</div><div class="card-num" style="font-size:20px">${info&&info.actualPct!==null?fmtMaybe(info.actualPct,1)+'%':'—'}</div></div><div><div class="card-title">目标仓位</div><div class="card-num" style="font-size:20px">${fmtMaybe(strategy.targetWeight,1)}%</div></div><div><div class="card-title">最大仓位</div><div class="card-note">${fmtMaybe(strategy.maxWeight,1)}%</div></div><div><div class="card-title">仓位偏离</div><div class="card-note">${info&&info.deviation!==null?(info.deviation>=0?'+':'')+fmtMaybe(info.deviation,1)+'%':'—'}</div></div></div></div>`;
-  return `${valuationAnalysisPanel(stock)}${valuationSignalPanel(stock)}${allocationDecisionPanel(stock)}${positionSummary}${positionManagementReviewPanel(stock)}`;
+  const ad=normalizeAllocationDecision(stock.allocationDecision,stock);
+  const vd=normalizeValuationData(stock.valuationData);
+  const body=`${valuationAnalysisPanel(stock)}${valuationSignalPanel(stock)}${allocationDecisionPanel(stock)}${positionSummary}${positionManagementReviewPanel(stock)}`;
+  return workspaceSummaryCard('估值/配置摘要',[vd.valuationConclusion||'暂无估值结论',ad.conclusion||'暂无配置决策',`当前 ${info&&info.actualPct!==null?fmtMaybe(info.actualPct,1)+'%':'—'} · 目标 ${fmtMaybe(strategy.targetWeight,1)}%`,info&&info.deviation!==null?`偏离 ${(info.deviation>=0?'+':'')+fmtMaybe(info.deviation,1)}%`:'仓位偏离待计算'],'查看估值/配置详情 / Prompt / JSON 导入',body,'var(--ink2)');
 }
 function longTermMemoPanel(stock){
   const risks=[stock.sellRule,stock.riskNotes,stock.notes].map(x=>String(x||'').trim()).filter(Boolean);
   return `<div class="card" style="margin-bottom:14px"><div class="card-title">投资备忘录</div><div class="text" style="max-width:none"><b>持有逻辑：</b>${esc(formatChineseText(stock.thesis||stock.notes||'—'))}<br><br><b>加仓规则：</b>${esc(formatChineseText(stock.buyRule||'—'))}<br><br><b>卖出/降仓：</b>${esc(formatChineseText(stock.sellRule||'—'))}</div>${risks.length?`<div class="card-note" style="margin-top:10px">长期风险线索：${risks.slice(0,3).map(formatChineseText).map(esc).join('；')}</div>`:''}</div>`;
 }
 function longTermWorkspacePanel(stock){
-  return `${longTermLogicPanel(stock)}${longTermMemoPanel(stock)}`;
+  const l=normalizeLongTermLogic(stock.longTermLogic,stock);
+  const body=`${longTermLogicPanel(stock)}${longTermMemoPanel(stock)}`;
+  return workspaceSummaryCard('长期逻辑摘要',[l.investmentThesis?longLogicThesisExcerpt(l.investmentThesis):'待补充长期逻辑',`状态 ${longLogicStatusText(l.logicStatus)}`,`有效期 ${l.validUntil||'—'}`,`长期风险 ${l.longTermRisks.length} 项`],'查看长期逻辑详情 / Prompt / JSON 导入',body,'var(--purple)');
 }
 function stockWorkspaceAccordion(stock){
   const activeTitle={plan:'计划',technical:'技术面',news:'新闻催化',fundamental:'基本面',valuation:'估值/配置',longterm:'长期逻辑'}[detailWorkspace]||'计划';
-  return `<div class="hint" style="margin-bottom:12px"><b>当前工作区：</b>${esc(activeTitle)}。一次只展开一个工作区，减少手机页面长度。</div>${stockWorkspaceSection('plan','Plan Workspace','当前事件、刷新计划、当前有效计划、详细计划、历史计划',planWorkspacePanel(stock),'var(--gold)')}${stockWorkspaceSection('technical','Technical Workspace','技术判断、风险、机会、依据、Prompt 与导入',technicalWorkspacePanel(stock),'var(--teal)')}${stockWorkspaceSection('news','News Workspace','新闻、催化、情绪资金、Prompt 与导入',newsWorkspacePanel(stock),'var(--seal)')}${stockWorkspaceSection('fundamental','Fundamental Workspace','财报复核、财务质量、盈利能力、现金流、基本面风险',fundamentalWorkspacePanel(stock),'var(--purple)')}${stockWorkspaceSection('valuation','Valuation / Allocation Workspace','估值复核、配置建议、仓位偏离、估值风险',valuationAllocationWorkspacePanel(stock),'var(--ink2)')}${stockWorkspaceSection('longterm','Long-term Workspace','长期逻辑、投资备忘录、长期风险',longTermWorkspacePanel(stock),'var(--ink)')}`;
+  return `<div class="hint" style="margin-bottom:12px"><b>当前工作区：</b>${esc(activeTitle)}。一次只展开一个工作区，默认显示摘要，详情可展开。</div>${stockWorkspaceSection('plan','计划工作区','刷新计划、当前事件摘要、当前有效计划摘要',planWorkspacePanel(stock),'var(--gold)')}${stockWorkspaceSection('technical','技术面工作区','技术判断、风险、机会摘要',technicalWorkspacePanel(stock),'var(--teal)')}${stockWorkspaceSection('news','新闻催化工作区','新闻、催化、情绪资金摘要',newsWorkspacePanel(stock),'var(--seal)')}${stockWorkspaceSection('fundamental','基本面工作区','财报复核、财务质量、现金流摘要',fundamentalWorkspacePanel(stock),'var(--purple)')}${stockWorkspaceSection('valuation','估值/配置工作区','估值复核、配置建议、仓位偏离摘要',valuationAllocationWorkspacePanel(stock),'var(--ink2)')}${stockWorkspaceSection('longterm','长期逻辑工作区','长期逻辑、投资备忘录、长期风险摘要',longTermWorkspacePanel(stock),'var(--ink)')}`;
 }
 function planListHtml(plans,type,cp){
   const arr=v13DisplayActivePlans(plans).filter(p=>v13PlanDisplayCategory(p)===type).sort((a,b)=>Number(b.price||0)-Number(a.price||0));
