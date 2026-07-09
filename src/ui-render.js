@@ -1246,18 +1246,26 @@ function v13DecisionReviewDateSources(stock,plan){
   const financial=stock&&stock.financialData?stock.financialData:{};
   const longTerm=normalizeLongTermLogic(stock&&stock.longTermLogic,stock);
   const planValidity=plan?v13DerivedPlanValidity(stock,plan):null;
-  const planExpired=Boolean(planValidity&&planValidity.refreshNeeded);
+  const planStatus=(()=>{
+    if(!plan)return '未更新';
+    const hasValidity=Boolean(plan.validity||plan.validUntil||plan.nextReviewDate);
+    if(!hasValidity)return '缺有效期';
+    if(planValidity&&planValidity.status==='legacy_stale')return '需刷新';
+    if(planValidity&&planValidity.refreshNeeded)return '已过期';
+    if(plan.source==='ai_plan_refresh'||plan.refreshBatchId)return '已刷新';
+    return plan.updatedAt||plan.createdAt?'已刷新':'未更新';
+  })();
   return [
     {label:'技术面',value:v13ReviewDateText(st.priceUpdatedAt||tech.updatedAt||f.technicalUpdatedAt)},
     {label:'新闻催化',value:v13ReviewDateText(catalyst.analysisDate||catalyst.latestSourceDate||f.newsUpdatedAt)},
     {label:'基本面',value:v13ReviewDateText(financial.lastUpdated||financial.updatedAt||f.financialUpdatedAt)},
     {label:'长期逻辑',value:v13ReviewDateText(longTerm.updatedAt||f.personalViewUpdatedAt)},
-    {label:'当前计划',value:v13ReviewDateText(plan&&(plan.updatedAt||plan.createdAt||plan.validUntil||plan.nextReviewDate),planExpired)}
+    {label:'当前计划',value:planStatus}
   ];
 }
 function v13DecisionReviewDateSourcesHtml(stock,plan){
   const rows=v13DecisionReviewDateSources(stock,plan).map(item=>{
-    const cls=item.value==='已过期'?'sell':(item.value==='未更新'?'tag':'role');
+    const cls=/已过期|需刷新|缺有效期/.test(item.value)?'sell':(item.value==='未更新'?'tag':'role');
     return `<span class="chip ${cls}">${esc(item.label)}：${esc(item.value)}</span>`;
   }).join('');
   return `<div class="chips" style="margin-top:8px">${rows}</div>`;
@@ -1271,7 +1279,7 @@ function v13DecisionReviewSummary(stock,rec,plan){
   const priority=String(rec&&rec.priority||'').toUpperCase();
   if(stalePlan){
     return {
-      conclusion:'刷新计划',
+      conclusion:'计划需刷新，暂不建议直接操作。',
       reason:'当前关联计划可能已过期或缺少有效性信息，先刷新计划再做复核。',
       actionLabel:'刷新计划',
       action:'refresh-plan',
@@ -1279,30 +1287,30 @@ function v13DecisionReviewSummary(stock,rec,plan){
     };
   }
   if(category==='buy'){
-    return {conclusion:'进入加仓复核',reason:task||'当前价格或计划条件接近加仓复核区，需要人工确认。',actionLabel:'查看加仓计划',action:'view-plan',notSuggest:'不自动加仓，不生成交易。'};
+    return {conclusion:'进入加仓复核，但需人工确认条件。',reason:task||'当前价格或计划条件接近加仓复核区，需要人工确认。',actionLabel:'进入加仓复核',action:'view-plan',notSuggest:'不自动加仓，不生成交易。'};
   }
   if(category==='sell'){
-    return {conclusion:'进入减仓复核',reason:task||'当前价格或计划条件接近减仓复核区，需要人工确认。',actionLabel:'查看减仓计划',action:'view-plan',notSuggest:'不自动减仓，不生成交易。'};
+    return {conclusion:'进入减仓复核，但需人工确认仓位与估值。',reason:task||'当前价格或计划条件接近减仓复核区，需要人工确认。',actionLabel:'进入减仓复核',action:'view-plan',notSuggest:'不自动减仓，不生成交易。'};
   }
   if(workspace==='news'){
-    return {conclusion:'查看新闻催化',reason:task||'本次复核主要由新闻、催化或情绪资金变化触发。',actionLabel:'查看新闻依据',action:'view-news',notSuggest:'暂不建议直接交易。'};
+    return {conclusion:'暂不交易，先复核新闻催化。',reason:task||'本次复核主要由新闻、催化或情绪资金变化触发。',actionLabel:'查看新闻依据',action:'view-news',notSuggest:'暂不建议直接交易。'};
   }
   if(workspace==='fundamental'){
-    return {conclusion:'补充基本面复核',reason:task||'本次复核依赖财报、基本面或公司质量信息。',actionLabel:'查看基本面依据',action:'view-fundamental',notSuggest:'暂不建议直接交易。'};
+    return {conclusion:'暂不交易，先补充基本面复核。',reason:task||'本次复核依赖财报、基本面或公司质量信息。',actionLabel:'查看基本面依据',action:'view-fundamental',notSuggest:'暂不建议直接交易。'};
   }
   if(workspace==='valuation'){
-    return {conclusion:'查看估值/配置复核',reason:task||'本次复核与估值、仓位或配置偏离有关。',actionLabel:'查看估值/配置',action:'view-valuation',notSuggest:'不自动调整持仓。'};
+    return {conclusion:'暂不调整仓位，先复核估值与配置。',reason:task||'本次复核与估值、仓位或配置偏离有关。',actionLabel:'查看估值/配置',action:'view-valuation',notSuggest:'不自动调整持仓。'};
   }
   if(workspace==='longterm'){
-    return {conclusion:'查看长期逻辑复核',reason:task||'本次复核与长期逻辑或投资备忘录有关。',actionLabel:'查看长期逻辑',action:'view-longterm',notSuggest:'暂不建议直接交易。'};
+    return {conclusion:'暂不交易，先确认长期逻辑是否变化。',reason:task||'本次复核与长期逻辑或投资备忘录有关。',actionLabel:'查看长期逻辑',action:'view-longterm',notSuggest:'暂不建议直接交易。'};
   }
   if(workspace==='technical'||v13RecommendationBusinessTag(rec)==='风险'){
-    return {conclusion:'查看技术依据',reason:task||'本次复核需要先确认趋势、均线、支撑压力或风险状态。',actionLabel:'查看技术依据',action:'view-technical',notSuggest:'暂不建议直接交易。'};
+    return {conclusion:'暂不交易，先复核技术与计划。',reason:task||'本次复核需要先确认趋势、均线、支撑压力或风险状态。',actionLabel:'查看技术依据',action:'view-technical',notSuggest:'暂不建议直接交易。'};
   }
   if(priority==='P4'||priority==='P3'){
-    return {conclusion:'进入人工复核',reason:task||'该任务优先级较高，需要人工确认处理方向。',actionLabel:'选择处理结果',action:'record-decision',notSuggest:'不自动执行任何交易。'};
+    return {conclusion:'需要人工复核，暂不自动处理。',reason:task||'该任务优先级较高，需要人工确认处理方向。',actionLabel:'选择处理结果',action:'record-decision',notSuggest:'不自动执行任何交易。'};
   }
-  return {conclusion:'继续观察',reason:task||'当前信息不足以形成明确处理动作，建议保持观察并按需查看依据。',actionLabel:'确认继续观察',action:'confirm-observe',notSuggest:'暂不建议加仓、减仓或交易。'};
+  return {conclusion:'当前建议继续观察。',reason:task||'当前信息不足以形成明确处理动作，建议保持观察并按需查看依据。',actionLabel:'确认继续观察',action:'confirm-observe',notSuggest:'暂不建议加仓、减仓或交易。'};
 }
 function v13DecisionReviewSummaryHtml(stock,rec,plan){
   const summary=v13DecisionReviewSummary(stock,rec,plan);
@@ -1326,7 +1334,7 @@ function ensureV13DecisionReviewModal(){
 }
 function v13DecisionReviewActionsHtml(stock,rec,plan){
   const stockId=stock&&stock.id?stock.id:'';
-  return `<div class="card" style="margin-bottom:12px"><div class="card-title">人工确认</div><div class="card-note">确认动作只记录或提示人工复核方向；不生成交易，不修改建议、计划或持仓。</div><div class="modal-actions" style="justify-content:flex-start;flex-wrap:wrap;margin-top:10px"><button class="btn small" type="button" data-v13-review-action="record-decision">选择处理结果</button><button class="btn ghost small" type="button" data-v13-review-action="confirm-observe">确认继续观察</button><button class="btn ghost small" type="button" data-v13-review-action="defer-review">稍后处理</button><button class="btn ghost small" type="button" data-v13-review-action="close-review">关闭</button></div><div class="card-note" data-v13-review-action-note style="margin-top:8px"></div><input type="hidden" data-v13-review-stock-id value="${esc(stockId)}"></div>`;
+  return `<div class="card" style="margin-bottom:12px"><div class="card-title">人工确认</div><div class="card-note">确认动作只记录或提示人工复核方向；不生成交易，不修改建议、计划或持仓。</div><div class="modal-actions" style="justify-content:flex-start;flex-wrap:wrap;margin-top:10px"><button class="btn small" type="button" data-v13-review-action="record-decision">选择处理结果</button><button class="btn ghost small" type="button" data-v13-review-action="confirm-observe">确认继续观察</button><button class="btn ghost small" type="button" data-v13-review-action="defer-review">稍后处理</button></div><div class="card-note" data-v13-review-action-note style="margin-top:8px"></div><input type="hidden" data-v13-review-stock-id value="${esc(stockId)}"></div>`;
 }
 function v13DecisionRecordLatestHtml(rec){
   if(!rec||typeof DecisionRecordService!=='object'||!DecisionRecordService||typeof DecisionRecordService.getLatestByRecommendation!=='function'){
@@ -1564,10 +1572,6 @@ function bindV13DecisionReviewActions(stock,rec,plan){
     }
     if(action==='defer-review'){
       setV13DecisionReviewActionNote('已标记为稍后处理提示。本阶段不写入持久记录，不修改任务优先级。');
-      return;
-    }
-    if(action==='close-review'){
-      closeV13DecisionReviewModal();
       return;
     }
     if(action==='refresh-plan'){
