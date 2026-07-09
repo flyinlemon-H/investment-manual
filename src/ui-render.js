@@ -1237,7 +1237,7 @@ function ensureV13DecisionReviewModal(){
   el=document.createElement('div');
   el.className='modal-bg import-layer';
   el.id='v13DecisionReviewModal';
-  el.innerHTML=`<div class="modal" style="position:relative"><button class="btn ghost" id="v13DecisionReviewCloseTopBtn" type="button" aria-label="关闭决策复核" style="position:absolute;right:14px;top:12px;min-width:44px;min-height:44px;padding:0;font-size:24px;line-height:1">×</button><h2 style="padding-right:56px">决策复核</h2><div class="modal-sub">本区域只支持复核，不生成交易，不修改持仓，不自动归档计划。</div><div id="v13DecisionReviewBody"></div><div class="modal-actions"><button class="btn ghost" id="v13DecisionReviewCloseBtn" type="button">关闭</button></div></div>`;
+  el.innerHTML=`<div class="modal" style="position:relative"><button id="v13DecisionReviewCloseTopBtn" type="button" aria-label="关闭决策复核" title="关闭" style="position:absolute;right:14px;top:12px;width:46px;height:46px;min-width:46px;min-height:46px;padding:0;border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);display:grid;place-items:center;font-size:28px;font-weight:800;line-height:1;z-index:3;box-shadow:0 2px 8px rgba(27,27,27,.22);cursor:pointer">×</button><h2 style="padding-right:62px">决策复核</h2><div class="modal-sub">本区域只支持复核，不生成交易，不修改持仓，不自动归档计划。</div><div id="v13DecisionReviewBody"></div><div class="modal-actions"><button class="btn ghost" id="v13DecisionReviewCloseBtn" type="button">关闭</button></div></div>`;
   document.body.appendChild(el);
   el.addEventListener('click',e=>{if(e.target.id==='v13DecisionReviewModal')closeV13DecisionReviewModal()});
   document.getElementById('v13DecisionReviewCloseTopBtn').addEventListener('click',closeV13DecisionReviewModal);
