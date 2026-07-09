@@ -3008,7 +3008,8 @@ function shortTermCatalystPanel(stock){
     opportunities:rc.weeklyCatalysts.length?rc.weeklyCatalysts.slice(0,3).map(x=>typeof x==='object'?(x.summary||x.title||x.keyPoint||'近期催化'):x):['暂无近期机会催化记录'],
     actionHint:rc.actionHint||'新闻层仅作为辅助依据，需结合技术、计划和仓位复核。',
     details,
-    actions:'<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-recent-catalyst-prompt">复制短期新闻催化 Prompt</button><button class="btn ghost small" data-detail-action="import-recent-catalyst-json">导入新闻/催化 JSON</button></div>',
+    copyAction:'copy-recent-catalyst-prompt',
+    importAction:'import-recent-catalyst-json',
     borderColor:'var(--gold)'
   });
 }
@@ -3035,7 +3036,8 @@ function shortTermSentimentPanel(stock){
     opportunities:[st.sectorHeat?`板块热度：${st.sectorHeat}`:'',st.institutionalView?`机构视角：${st.institutionalView}`:'',st.marketMood?`市场情绪：${st.marketMood}`:''].filter(Boolean).slice(0,3).concat(has?[]:['暂无明确情绪机会记录']),
     actionHint:st.actionHint||'情绪资金仅作为辅助依据，今日处理仍需回到技术、计划和仓位复核。',
     details,
-    actions:'<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" data-detail-action="copy-short-term-sentiment-prompt">复制短期情绪资金 Prompt</button><button class="btn ghost small" data-detail-action="import-short-term-sentiment-json">导入情绪资金 JSON</button></div>',
+    copyAction:'copy-short-term-sentiment-prompt',
+    importAction:'import-short-term-sentiment-json',
     borderColor:'var(--gold)'
   });
 }
@@ -3312,7 +3314,7 @@ function allocationDecisionPanel(stock){
   const empty=!(ad.conclusion||ad.recommendedWeightRange||ad.recommendedTargetWeight!==null||ad.recommendedMaxWeight!==null||ad.allocationReasons.length||ad.keyRisks.length||ad.suggestedActions.length||ad.notes);
   const listText=arr=>arr&&arr.length?arr.slice(0,3).map(formatChineseText).map(esc).join('；'):'—';
   const detail=empty?'':`<div class="text" style="max-width:none;margin-top:10px"><b>建议角色：</b>${esc(zhStrategyRole(ad.recommendedRole)||formatChineseText(ad.recommendedRole)||'—')}<br><b>配置理由：</b>${listText(ad.allocationReasons)}<br><b>核心风险：</b>${listText(ad.keyRisks)}<br><b>建议动作：</b>${listText(ad.suggestedActions)}<br><b>备注：</b>${esc(formatChineseText(ad.notes||'—'))}</div>`;
-  return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--gold)">${moduleTitleActions('配置决策','copy-allocation-prompt','import-allocation-json')}<div class="dash" style="margin:0"><div><div class="card-title">配置结论</div><div class="text" style="max-width:none">${esc(formatChineseText(ad.conclusion||'暂无配置决策'))}</div><div class="card-note">更新：${esc(ad.updatedAt||'—')} · 置信度 ${esc(zhConfidence(ad.confidence||'low'))}</div></div><div><div class="card-title">配置区间</div><div class="card-num" style="font-size:20px">${esc(ad.recommendedWeightRange||'—')}</div><div class="card-note">建议目标 ${allocationPercentText(ad.recommendedTargetWeight)} · 最大 ${allocationPercentText(ad.recommendedMaxWeight)}</div></div><div><div class="card-title">目标调整</div><div class="card-note">${esc(zhTargetAdjustment(ad.targetAdjustment||'unknown'))}</div></div><div><div class="card-title">新增资金观点</div><div class="card-note">${esc(zhCapitalView(ad.capitalAllocationView||'unknown'))}</div></div></div>${detail}${empty?'<div class="card-note" style="margin-top:10px">尚未导入配置决策。可复制 Prompt 给 GPT 复核后导入 JSON。</div>':''}<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="view-allocation-detail">查看完整配置分析</button><button class="btn ghost small" data-detail-action="copy-allocation-prompt">复制配置决策 Prompt</button><button class="btn ghost small" data-detail-action="import-allocation-json">导入配置决策 JSON</button></div></div>`;
+  return `<div class="card" style="margin-bottom:14px;border-left:4px solid var(--gold)">${moduleTitleActions('配置决策','copy-allocation-prompt','import-allocation-json')}<div class="dash" style="margin:0"><div><div class="card-title">配置结论</div><div class="text" style="max-width:none">${esc(formatChineseText(ad.conclusion||'暂无配置决策'))}</div><div class="card-note">更新：${esc(ad.updatedAt||'—')} · 置信度 ${esc(zhConfidence(ad.confidence||'low'))}</div></div><div><div class="card-title">配置区间</div><div class="card-num" style="font-size:20px">${esc(ad.recommendedWeightRange||'—')}</div><div class="card-note">建议目标 ${allocationPercentText(ad.recommendedTargetWeight)} · 最大 ${allocationPercentText(ad.recommendedMaxWeight)}</div></div><div><div class="card-title">目标调整</div><div class="card-note">${esc(zhTargetAdjustment(ad.targetAdjustment||'unknown'))}</div></div><div><div class="card-title">新增资金观点</div><div class="card-note">${esc(zhCapitalView(ad.capitalAllocationView||'unknown'))}</div></div></div>${detail}${empty?'<div class="card-note" style="margin-top:10px">尚未导入配置决策。可复制 Prompt 给 GPT 复核后导入 JSON。</div>':''}<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="view-allocation-detail">查看完整配置分析</button></div></div>`;
 }
 function detailHeroPanel(s,mv,actual,deviation){
   const category=s.type==='etf'?'ETF':(s.type==='watching'?'观察标的':'个股');
@@ -4038,8 +4040,9 @@ function highFrequencyItemsHtml(items){
 function highFrequencySectionHtml(title,items){
   return `<div class="card" style="margin:8px 0;background:rgba(255,255,255,.45)"><div class="card-title">${esc(title)}</div>${highFrequencyItemsHtml(items)}</div>`;
 }
-function highFrequencyAnalysisCard({title,conclusion,meta,focus,changes,risks,opportunities,actionHint,details,actions,borderColor='var(--teal)'}){
-  return `<div class="card" style="margin-bottom:14px;border-left:4px solid ${borderColor}"><div class="card-title">${title}</div><div class="dash" style="margin:0"><div style="grid-column:span 2"><div class="card-title">一句结论</div><div class="text" style="max-width:none;font-weight:800;color:var(--ink)">${esc(formatChineseText(conclusion||'暂无结论'))}</div></div><div><div class="card-title">操作提示</div><div class="card-note">${esc(formatChineseText(actionHint||'继续观察'))}</div></div><div><div class="card-title">更新</div><div class="card-note">${esc(meta||'—')}</div></div></div>${highFrequencySectionHtml('今日重点',focus)}${highFrequencySectionHtml('今日变化',changes)}<div class="dash" style="margin:8px 0 0"><div style="grid-column:span 2">${highFrequencySectionHtml('风险',risks)}</div><div style="grid-column:span 2">${highFrequencySectionHtml('机会',opportunities)}</div></div><details class="card" style="margin-top:10px"><summary class="card-title" style="cursor:pointer">详细依据</summary><div style="margin-top:10px">${details||'<div class="card-note">暂无详细依据。</div>'}</div></details>${actions||''}</div>`;
+function highFrequencyAnalysisCard({title,conclusion,meta,focus,changes,risks,opportunities,actionHint,details,copyAction,importAction,borderColor='var(--teal)'}){
+  const header=copyAction&&importAction?moduleTitleActions(title,copyAction,importAction):`<div class="card-title">${esc(title)}</div>`;
+  return `<div class="card" style="margin-bottom:14px;border-left:4px solid ${borderColor}">${header}<div class="dash" style="margin:0"><div style="grid-column:span 2"><div class="card-title">一句结论</div><div class="text" style="max-width:none;font-weight:800;color:var(--ink)">${esc(formatChineseText(conclusion||'暂无结论'))}</div></div><div><div class="card-title">操作提示</div><div class="card-note">${esc(formatChineseText(actionHint||'继续观察'))}</div></div><div><div class="card-title">更新</div><div class="card-note">${esc(meta||'—')}</div></div></div>${highFrequencySectionHtml('今日重点',focus)}${highFrequencySectionHtml('今日变化',changes)}<div class="dash" style="margin:8px 0 0"><div style="grid-column:span 2">${highFrequencySectionHtml('风险',risks)}</div><div style="grid-column:span 2">${highFrequencySectionHtml('机会',opportunities)}</div></div><details class="card" style="margin-top:10px"><summary class="card-title" style="cursor:pointer">详细依据</summary><div style="margin-top:10px">${details||'<div class="card-note">暂无详细依据。</div>'}</div></details></div>`;
 }
 function technicalAnalysisPanel(stock){
   const review=normalizeTechnicalReview(stock.technicalReview,stock);
@@ -4069,7 +4072,8 @@ function technicalAnalysisPanel(stock){
     opportunities:[holdHint,addHint,reduceHint].filter(Boolean),
     actionHint,
     details,
-    actions:'<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-technical-prompt">复制技术面判断 Prompt</button><button class="btn ghost small" data-detail-action="import-technical-json">导入技术面 JSON</button></div>'
+    copyAction:'copy-technical-prompt',
+    importAction:'import-technical-json'
   });
 }
 function valuationSignalPanel(stock){
@@ -4090,7 +4094,7 @@ function valuationAnalysisPanel(stock){
   const completeness=getValuationCompleteness(vd);
   const valNum=(v,d=2)=>v===null||v===undefined||v===''||!(Number(v)>0)?'—':fmtMaybe(v,d);
   const levelText=completeness.level==='complete'?'较完整':(completeness.level==='partial'?'部分完整':'缺失');
-  return `<div class="card" style="margin-bottom:14px">${moduleTitleActions('估值分析','copy-valuation-lookup-prompt','import-valuation-json')}<div class="dash" style="margin:0"><div><div class="card-title">估值结论</div><div class="text" style="max-width:none">${esc(formatChineseText(vd.valuationConclusion||'暂无估值结论'))}</div><div class="card-note">更新：${esc(vd.updatedAt||vd.lastUpdated||'—')} · ${esc(vd.currency||'—')}</div></div><div><div class="card-title">当前市值</div><div class="card-num" style="font-size:20px">${vd.marketCap===null?'—':fmtMoney(vd.marketCap)}</div><div class="card-note">历史分位 ${vd.historicalPercentile===null?'—':fmtMaybe(vd.historicalPercentile,1)+'%'}</div></div><div><div class="card-title">估值指标</div><div class="card-note">PE TTM ${vd.peTtm===null?valNum(vd.pe,2):valNum(vd.peTtm,2)} · Forward PE ${valNum(vd.forwardPe,2)}</div><div class="card-note">PB ${valNum(vd.pb,2)} · PS ${valNum(vd.ps,2)} · EV/EBITDA ${valNum(vd.evEbitda,2)} · 股息率 ${vd.dividendYield===null||vd.dividendYield===undefined?'—':fmtMaybe(vd.dividendYield,2)+'%'}</div></div><div><div class="card-title">完整度</div><div class="card-note">${esc(levelText)} ${completeness.score}%</div><div class="card-note">缺失：${esc(completeness.missingFields.join('、')||'—')}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>已有字段：</b>${esc(completeness.completedFields.join('、')||'—')}<br><b>同行业对比：</b>${esc(vd.peerComparison||'—')}<br><b>估值摘要：</b>${esc(formatChineseText(vr.summary||vd.valuationNote||'—'))}<br><b>估值风险：</b>${risks}<br><b>操作提示：</b>${esc(formatChineseText(vr.actionHint||'—'))}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-valuation-lookup-prompt">复制估值查找 Prompt</button><button class="btn ghost small" data-detail-action="import-valuation-json">导入估值 JSON</button></div></div>`;
+  return `<div class="card" style="margin-bottom:14px">${moduleTitleActions('估值分析','copy-valuation-lookup-prompt','import-valuation-json')}<div class="dash" style="margin:0"><div><div class="card-title">估值结论</div><div class="text" style="max-width:none">${esc(formatChineseText(vd.valuationConclusion||'暂无估值结论'))}</div><div class="card-note">更新：${esc(vd.updatedAt||vd.lastUpdated||'—')} · ${esc(vd.currency||'—')}</div></div><div><div class="card-title">当前市值</div><div class="card-num" style="font-size:20px">${vd.marketCap===null?'—':fmtMoney(vd.marketCap)}</div><div class="card-note">历史分位 ${vd.historicalPercentile===null?'—':fmtMaybe(vd.historicalPercentile,1)+'%'}</div></div><div><div class="card-title">估值指标</div><div class="card-note">PE TTM ${vd.peTtm===null?valNum(vd.pe,2):valNum(vd.peTtm,2)} · Forward PE ${valNum(vd.forwardPe,2)}</div><div class="card-note">PB ${valNum(vd.pb,2)} · PS ${valNum(vd.ps,2)} · EV/EBITDA ${valNum(vd.evEbitda,2)} · 股息率 ${vd.dividendYield===null||vd.dividendYield===undefined?'—':fmtMaybe(vd.dividendYield,2)+'%'}</div></div><div><div class="card-title">完整度</div><div class="card-note">${esc(levelText)} ${completeness.score}%</div><div class="card-note">缺失：${esc(completeness.missingFields.join('、')||'—')}</div></div></div><div class="text" style="max-width:none;margin-top:10px"><b>已有字段：</b>${esc(completeness.completedFields.join('、')||'—')}<br><b>同行业对比：</b>${esc(vd.peerComparison||'—')}<br><b>估值摘要：</b>${esc(formatChineseText(vr.summary||vd.valuationNote||'—'))}<br><b>估值风险：</b>${risks}<br><b>操作提示：</b>${esc(formatChineseText(vr.actionHint||'—'))}</div></div>`;
 }
 function positionManagementReviewPanel(stock){
   const r=normalizePositionManagementReview(stock.positionManagementReview);
@@ -4125,7 +4129,8 @@ function fundamentalAnalysisPanel(stock){
     opportunities:[financialLine,valuationReviewSummary,financialReviewSummary].filter(Boolean),
     actionHint:'基本面用于解释“为什么”，今日是否处理仍回到技术、计划和仓位复核。',
     details,
-    actions:'<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-fundamental-prompt">复制基本面分析 Prompt</button><button class="btn ghost small" data-detail-action="import-fundamental-json">导入基本面 JSON</button></div>'
+    copyAction:'copy-fundamental-prompt',
+    importAction:'import-fundamental-json'
   });
 }
 function etfIndexAnalysisPanel(stock){
@@ -4679,23 +4684,24 @@ function planWorkspacePanel(stock){
   const planSummary=`<div class="card" style="margin-bottom:12px"><div class="card-title">当前有效计划摘要</div>${v13PlanCompactSummary(stock)}</div>`;
   return `${refreshPanel}${v13StockEventCompactPanel(stock)}${planSummary}${workspaceDetails('查看详细计划',v13PlanCenterDetailSections(stock))}${workspaceDetails('查看历史计划',v13PlanCenterHistory(stock))}${workspaceDetails('查看仓位与计划详情',positionPlanPanel(stock))}`;
 }
-function workspaceSummaryCard(title,items,detailTitle,detailBody,color='var(--teal)'){
+function workspaceSummaryCard(title,items,detailTitle,detailBody,color='var(--teal)',copyAction='',importAction=''){
   const rows=(Array.isArray(items)?items:[]).filter(Boolean).slice(0,4);
-  return `<div class="card" style="margin-bottom:12px;border-left:4px solid ${color}"><div class="card-title">${esc(title)}</div>${rows.length?`<div class="chips">${rows.map(x=>`<span class="chip role">${esc(formatChineseText(x))}</span>`).join('')}</div>`:'<div class="card-note">暂无摘要。</div>'}</div>${workspaceDetails(detailTitle,detailBody)}`;
+  const header=copyAction&&importAction?moduleTitleActions(title,copyAction,importAction):`<div class="card-title">${esc(title)}</div>`;
+  return `<div class="card" style="margin-bottom:12px;border-left:4px solid ${color}">${header}${rows.length?`<div class="chips">${rows.map(x=>`<span class="chip role">${esc(formatChineseText(x))}</span>`).join('')}</div>`:'<div class="card-note">暂无摘要。</div>'}</div>${workspaceDetails(detailTitle,detailBody)}`;
 }
 function technicalWorkspacePanel(stock){
   const review=normalizeTechnicalReview(stock.technicalReview,stock);
   const st=review.shortTermTechnical||{};
   const cy=review.cycleTechnical||{};
   const body=`${technicalAnalysisPanel(stock)}${trendRiskManagementPanel(stock)}${technicalSignalPanel(stock)}`;
-  return workspaceSummaryCard('技术面摘要',[review.finalTechnicalConclusion||st.technicalSummary||'待补充技术结论',`趋势 ${zhTrendStatus(st.trendStatus)||'—'}`,`周期 ${cyclePositionText(cy.cyclePosition)}`,st.actionHint||'继续观察'],'查看技术面详情 / Prompt / JSON 导入',body,'var(--teal)');
+  return workspaceSummaryCard('技术面摘要',[review.finalTechnicalConclusion||st.technicalSummary||'待补充技术结论',`趋势 ${zhTrendStatus(st.trendStatus)||'—'}`,`周期 ${cyclePositionText(cy.cyclePosition)}`,st.actionHint||'继续观察'],'查看技术面详情 / Prompt / JSON 导入',body,'var(--teal)','copy-technical-prompt','import-technical-json');
 }
 function newsWorkspacePanel(stock){
   const rc=normalizeRecentCatalyst(stock.recentCatalyst,stock);
   const st=normalizeShortTermSentiment(stock.shortTermSentiment,stock);
   const info=normalizeInformationCompleteness(stock.informationCompleteness,stock);
   const body=`${shortTermCatalystPanel(stock)}${shortTermSentimentPanel(stock)}${informationCompletenessPanel(stock)}`;
-  return workspaceSummaryCard('新闻催化摘要',[rc.todayCatalyst||'未发现明确当日催化',`新闻 ${info.news} · 催化 ${info.catalyst}`,st.marketMood?`情绪 ${st.marketMood}`:'情绪资料待补充',st.fundFlowView?`资金 ${st.fundFlowView}`:'资金流待补充'],'查看新闻催化详情 / Prompt / JSON 导入',body,'var(--seal)');
+  return workspaceSummaryCard('新闻催化摘要',[rc.todayCatalyst||'未发现明确当日催化',`新闻 ${info.news} · 催化 ${info.catalyst}`,st.marketMood?`情绪 ${st.marketMood}`:'情绪资料待补充',st.fundFlowView?`资金 ${st.fundFlowView}`:'资金流待补充'],'查看新闻催化详情 / Prompt / JSON 导入',body,'var(--seal)','copy-recent-catalyst-prompt','import-recent-catalyst-json');
 }
 function fundamentalWorkspacePanel(stock){
   const main=stock.type==='etf'?etfIndexAnalysisPanel(stock):fundamentalAnalysisPanel(stock);
@@ -4703,7 +4709,7 @@ function fundamentalWorkspacePanel(stock){
   const flow=stock.type==='etf'?'':financialAnalysisFlowPanel();
   const f=fundamentalAnalysis(stock);
   const body=`${main}${financial}${flow}`;
-  return workspaceSummaryCard('基本面摘要',[f.finalSummary||f.summary||'基本面资料待补充',`综合 ${fmtMaybe(f.score,1)} / 10`,f.financialSummary?`财务 ${f.financialSummary}`:'财务质量待补充',f.valuationSummary?`估值 ${f.valuationSummary}`:'估值资料待补充'],'查看基本面详情 / Prompt / JSON 导入',body,'var(--purple)');
+  return workspaceSummaryCard('基本面摘要',[f.finalSummary||f.summary||'基本面资料待补充',`综合 ${fmtMaybe(f.score,1)} / 10`,f.financialSummary?`财务 ${f.financialSummary}`:'财务质量待补充',f.valuationSummary?`估值 ${f.valuationSummary}`:'估值资料待补充'],'查看基本面详情 / Prompt / JSON 导入',body,'var(--purple)','copy-fundamental-prompt','import-fundamental-json');
 }
 function valuationAllocationWorkspacePanel(stock){
   const total=getEstimatedTotalAssets();
@@ -4713,7 +4719,7 @@ function valuationAllocationWorkspacePanel(stock){
   const ad=normalizeAllocationDecision(stock.allocationDecision,stock);
   const vd=normalizeValuationData(stock.valuationData);
   const body=`${valuationAnalysisPanel(stock)}${valuationSignalPanel(stock)}${allocationDecisionPanel(stock)}${positionSummary}${positionManagementReviewPanel(stock)}`;
-  return workspaceSummaryCard('估值/配置摘要',[vd.valuationConclusion||'暂无估值结论',ad.conclusion||'暂无配置决策',`当前 ${info&&info.actualPct!==null?fmtMaybe(info.actualPct,1)+'%':'—'} · 目标 ${fmtMaybe(strategy.targetWeight,1)}%`,info&&info.deviation!==null?`偏离 ${(info.deviation>=0?'+':'')+fmtMaybe(info.deviation,1)}%`:'仓位偏离待计算'],'查看估值/配置详情 / Prompt / JSON 导入',body,'var(--ink2)');
+  return workspaceSummaryCard('估值/配置摘要',[vd.valuationConclusion||'暂无估值结论',ad.conclusion||'暂无配置决策',`当前 ${info&&info.actualPct!==null?fmtMaybe(info.actualPct,1)+'%':'—'} · 目标 ${fmtMaybe(strategy.targetWeight,1)}%`,info&&info.deviation!==null?`偏离 ${(info.deviation>=0?'+':'')+fmtMaybe(info.deviation,1)}%`:'仓位偏离待计算'],'查看估值/配置详情 / Prompt / JSON 导入',body,'var(--ink2)','copy-valuation-lookup-prompt','import-valuation-json');
 }
 function longTermMemoPanel(stock){
   const risks=[stock.sellRule,stock.riskNotes,stock.notes].map(x=>String(x||'').trim()).filter(Boolean);
@@ -4722,7 +4728,7 @@ function longTermMemoPanel(stock){
 function longTermWorkspacePanel(stock){
   const l=normalizeLongTermLogic(stock.longTermLogic,stock);
   const body=`${longTermLogicPanel(stock)}${longTermMemoPanel(stock)}`;
-  return workspaceSummaryCard('长期逻辑摘要',[l.investmentThesis?longLogicThesisExcerpt(l.investmentThesis):'待补充长期逻辑',`状态 ${longLogicStatusText(l.logicStatus)}`,`有效期 ${l.validUntil||'—'}`,`长期风险 ${l.longTermRisks.length} 项`],'查看长期逻辑详情 / Prompt / JSON 导入',body,'var(--purple)');
+  return workspaceSummaryCard('长期逻辑摘要',[l.investmentThesis?longLogicThesisExcerpt(l.investmentThesis):'待补充长期逻辑',`状态 ${longLogicStatusText(l.logicStatus)}`,`有效期 ${l.validUntil||'—'}`,`长期风险 ${l.longTermRisks.length} 项`],'查看长期逻辑详情 / Prompt / JSON 导入',body,'var(--purple)','copy-long-term-logic-prompt','import-long-term-logic-json');
 }
 function stockWorkspaceAccordion(stock){
   const activeTitle={plan:'计划',technical:'技术面',news:'新闻催化',fundamental:'基本面',valuation:'估值/配置',longterm:'长期逻辑'}[detailWorkspace]||'计划';
@@ -6760,7 +6766,8 @@ function longTermLogicPanel(stock){
     opportunities:[...industryDrivers.slice(0,2),...companyDrivers.slice(0,2),...portfolioDrivers.slice(0,2)],
     actionHint:l.logicStatus==='broken'?'长期逻辑失效，需要重新评估持仓理由。':(l.logicStatus==='weakening'?'长期逻辑减弱，需要提前复核。':'长期逻辑继续作为持有依据，今日处理仍看技术、计划和仓位。'),
     details,
-    actions:'<div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" data-detail-action="copy-long-term-logic-prompt">复制长期逻辑整理 Prompt</button><button class="btn ghost small" data-detail-action="import-long-term-logic-json">导入长期逻辑 JSON</button></div>',
+    copyAction:'copy-long-term-logic-prompt',
+    importAction:'import-long-term-logic-json',
     borderColor:'var(--purple)'
   });
 }
