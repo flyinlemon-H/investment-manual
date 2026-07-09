@@ -3801,6 +3801,7 @@ let editCenterTypeFilter='';
 let editCenterSearch='';
 let editModalReturnTab='';
 let v13ActiveReviewReturn=null;
+let detailWorkspace='plan';
 function backupReminderText(){
   const t=Number(state.lastBackupAt);
   if(!t)return ' · 建议导出备份';
@@ -7046,7 +7047,8 @@ function detailHeroPanel(s,mv,actual,deviation){
   const chg=(typeof s.dailyChange==='number'&&!isNaN(s.dailyChange))?`${s.dailyChange>=0?'+':''}${s.dailyChange.toFixed(2)}%`:'—';
   const currency=getCurrency(s)||'—';
   const actualText=actual===null?'—':actual.toFixed(1)+'%';
-  return `<div class="card detail-title-card"><div class="entry-head"><div><div class="entry-name">${esc(s.name||'未命名标的')}</div><div class="entry-code">${esc(s.code||'无代码')} · ${esc(category)}</div></div><div class="detail-title-actions"><button class="btn small" data-detail-action="copy-ai-discussion-prompt" type="button">AI讨论</button><button class="btn ghost small" data-detail-action="long-logic" type="button">长期逻辑</button><button class="btn small" data-detail-action="refresh" type="button">${s.type==='etf'?'刷新市值':'刷新价格'}</button><button class="btn ghost small" data-detail-action="view-plan-center" type="button">查看计划</button></div></div></div><div class="card core-summary-card"><div class="card-title">核心数据摘要</div><div class="core-summary-grid"><div class="core-summary-item"><span>成本</span><strong>${fmtMaybe(s.avgCost)}</strong></div><div class="core-summary-item"><span>现价</span><strong>${current}</strong></div><div class="core-summary-item"><span>持仓</span><strong>${fmtInt(s.shares)}</strong></div><div class="core-summary-item"><span>市值</span><strong>${fmtMoney(mv)}</strong></div><div class="core-summary-item"><span>目标</span><strong>${fmtMaybe(s.targetPct,1)}%</strong></div><div class="core-summary-item"><span>实际</span><strong>${actualText}</strong></div></div><div class="core-summary-meta">更新 ${esc(date||'—')} · ${esc(s.code||'无代码')} · ${esc(currency)} · ${esc(chg)} · 偏差 ${esc(deviation)}</div></div>`;
+  const wsBtn=(key,label,color)=>`<button class="btn ${detailWorkspace===key?'':'ghost'} small" style="border-color:${color};${detailWorkspace===key?`background:${color};color:#fff`:''}" data-workspace="${esc(key)}" type="button">${esc(label)}</button>`;
+  return `<div class="card detail-title-card"><div class="entry-head"><div><div class="entry-name">${esc(s.name||'未命名标的')}</div><div class="entry-code">${esc(s.code||'无代码')} · ${esc(category)}</div></div><div class="detail-title-actions"><button class="btn small" data-detail-action="copy-ai-discussion-prompt" type="button">AI讨论</button>${wsBtn('plan','计划','var(--gold)')}${wsBtn('technical','技术面','var(--teal)')}${wsBtn('news','新闻催化','var(--seal)')}${wsBtn('longterm','长期逻辑','var(--purple)')}<button class="btn small" data-detail-action="refresh" type="button">${s.type==='etf'?'刷新市值':'刷新价格'}</button></div></div></div><div class="card core-summary-card"><div class="card-title">核心数据摘要</div><div class="core-summary-grid"><div class="core-summary-item"><span>成本</span><strong>${fmtMaybe(s.avgCost)}</strong></div><div class="core-summary-item"><span>现价</span><strong>${current}</strong></div><div class="core-summary-item"><span>持仓</span><strong>${fmtInt(s.shares)}</strong></div><div class="core-summary-item"><span>市值</span><strong>${fmtMoney(mv)}</strong></div><div class="core-summary-item"><span>目标</span><strong>${fmtMaybe(s.targetPct,1)}%</strong></div><div class="core-summary-item"><span>实际</span><strong>${actualText}</strong></div></div><div class="core-summary-meta">更新 ${esc(date||'—')} · ${esc(s.code||'无代码')} · ${esc(currency)} · ${esc(chg)} · 偏差 ${esc(deviation)}</div></div>`;
 }
 function detailToolsPanel(s){
   return `<details class="card" style="margin-top:14px;margin-bottom:14px"><summary class="card-title" style="cursor:pointer">详情工具</summary><div class="card-note" style="margin:8px 0 12px">这些是维护、导入和生成提示词工具，已从首屏下移，避免干扰日常分析。</div><div class="actions"><button class="btn small" data-detail-action="ai-assistant">AI助手</button><button class="btn ghost small" data-detail-action="financial-source">财报助手</button><button class="btn ghost small" data-detail-action="valuation-source">估值助手</button><button class="btn ghost small" data-detail-action="template">套用分析模板</button><button class="btn ghost small" data-detail-action="ai-prompt">生成分析提示词</button><button class="btn ghost small" data-detail-action="ai-import">导入AI分析JSON</button><button class="btn ghost small" data-detail-action="ai-strategy-import">导入AI策略JSON</button><button class="btn ghost small" data-detail-action="refresh">${s.type==='etf'?'刷新市值':'刷新价格'}</button><button class="btn ghost small" data-detail-action="edit">编辑标的</button></div></details>`;
@@ -8272,6 +8274,7 @@ function renderAnalysisOverview(){
 function openStockDetail(id){
   detailStockId=id;
   detailSubView='';
+  detailWorkspace='plan';
   render();
 }
 function openStockPlanCenter(id){
@@ -8366,6 +8369,34 @@ function renderPlanCenter(){
   document.getElementById('main').innerHTML=`<div class="card detail-title-card"><div class="entry-head"><div><div class="entry-name">${esc(s.name||'未命名标的')}</div><div class="entry-code">计划中心 · ${esc(s.code||s.symbol||'无代码')}</div></div><div class="detail-title-actions"><button class="btn small" id="planCenterRefreshBtn" type="button">刷新计划</button><button class="btn ghost small" id="planCenterBackBtn" type="button">返回分析</button></div></div></div><div class="card" style="margin-bottom:14px;border-left:4px solid var(--gold)"><div class="card-title">最近刷新</div><div class="dash" style="margin:0"><div><div class="card-title">刷新时间</div><div class="card-num" style="font-size:20px">${esc(refresh.updated||'尚未刷新')}</div></div><div><div class="card-title">有效期</div><div class="card-note">${refresh.validUntil?`至 ${esc(refresh.validUntil)}`:'—'}</div><div class="card-note">${refresh.maxDays?`约 ${esc(refresh.maxDays)} 天`:'—'}</div></div><div style="grid-column:span 2"><div class="card-title">下次建议刷新</div><div class="card-note">${esc(refresh.validUntil||'尚未刷新')}</div></div></div></div><div class="card" style="margin-bottom:14px"><div class="card-title">当前有效计划</div><div class="card-note">数据来源：v13DisplayActivePlans()。只展示 active plans；如存在 AI 刷新版计划，仅展示新版 active plans。</div>${v13PlanCenterSummary(s)}</div><details class="card" style="margin-bottom:14px"><summary class="card-title" style="cursor:pointer">查看详细计划</summary><div style="margin-top:10px">${v13PlanCenterDetailSections(s)}</div></details><details class="card" style="margin-bottom:14px"><summary class="card-title" style="cursor:pointer">历史计划</summary><div style="margin-top:10px">${v13PlanCenterHistory(s)}</div></details>`;
   document.getElementById('planCenterRefreshBtn').addEventListener('click',()=>openV13PlanRefreshTool(s.id));
   document.getElementById('planCenterBackBtn').addEventListener('click',closePlanCenter);
+}
+function stockWorkspaceSection(key,title,summary,body,color){
+  const active=detailWorkspace===key;
+  return `<section class="card" style="margin-bottom:12px;border-left:4px solid ${color}"><button class="link-btn" data-workspace="${esc(key)}" type="button" style="display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;text-align:left;padding:0"><span><span class="card-title">${esc(active?'▼':'▶')} ${esc(title)}</span><span class="card-note" style="display:block;margin-top:4px">${esc(summary)}</span></span><span class="chip ${active?'role':'tag'}">${active?'展开':'折叠'}</span></button>${active?`<div style="margin-top:12px">${body}</div>`:''}</section>`;
+}
+function planWorkspacePanel(stock){
+  const plans=v13DisplayActivePlans(stock&&stock.plans);
+  const refresh=v13PlanCenterRefreshInfo(stock,plans);
+  const refreshPanel=`<div class="card" style="margin-bottom:12px;background:rgba(255,255,255,.56)"><div class="card-title">刷新计划</div><div class="card-note">复制 Prompt，粘贴 AI 返回 JSON，导入后仍停留在当前详情页并刷新计划显示。</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px"><button class="btn small" type="button" data-detail-action="open-plan-refresh">刷新计划</button></div></div>`;
+  const refreshInfo=`<div class="card" style="margin-bottom:12px;background:rgba(255,255,255,.56)"><div class="card-title">最近刷新</div><div class="card-note">刷新时间 ${esc(refresh.updated||'尚未刷新')} · 下次建议刷新 ${esc(refresh.validUntil||'尚未刷新')}</div></div>`;
+  return `${v13StockEventPanel(stock)}${refreshPanel}${refreshInfo}<div class="card" style="margin-bottom:12px"><div class="card-title">当前有效计划</div>${v13PlanCenterSummary(stock)}</div><details class="card" style="margin-bottom:12px"><summary class="card-title" style="cursor:pointer">详细计划</summary><div style="margin-top:10px">${v13PlanCenterDetailSections(stock)}</div></details><details class="card" style="margin-bottom:12px"><summary class="card-title" style="cursor:pointer">历史计划</summary><div style="margin-top:10px">${v13PlanCenterHistory(stock)}</div></details>${positionPlanPanel(stock)}`;
+}
+function technicalWorkspacePanel(stock){
+  return `${technicalAnalysisPanel(stock)}${trendRiskManagementPanel(stock)}${technicalSignalPanel(stock)}`;
+}
+function newsWorkspacePanel(stock){
+  return `${shortTermCatalystPanel(stock)}${shortTermSentimentPanel(stock)}${informationCompletenessPanel(stock)}`;
+}
+function longTermMemoPanel(stock){
+  const risks=[stock.sellRule,stock.riskNotes,stock.notes].map(x=>String(x||'').trim()).filter(Boolean);
+  return `<div class="card" style="margin-bottom:14px"><div class="card-title">投资备忘录</div><div class="text" style="max-width:none"><b>持有逻辑：</b>${esc(formatChineseText(stock.thesis||stock.notes||'—'))}<br><br><b>加仓规则：</b>${esc(formatChineseText(stock.buyRule||'—'))}<br><br><b>卖出/降仓：</b>${esc(formatChineseText(stock.sellRule||'—'))}</div>${risks.length?`<div class="card-note" style="margin-top:10px">长期风险线索：${risks.slice(0,3).map(formatChineseText).map(esc).join('；')}</div>`:''}</div>`;
+}
+function longTermWorkspacePanel(stock){
+  return `${longTermLogicPanel(stock)}${longTermMemoPanel(stock)}${stock.type==='etf'?etfIndexAnalysisPanel(stock):fundamentalAnalysisPanel(stock)}${allocationDecisionPanel(stock)}${valuationAnalysisPanel(stock)}`;
+}
+function stockWorkspaceAccordion(stock){
+  const activeTitle={plan:'计划',technical:'技术面',news:'新闻催化',longterm:'长期逻辑'}[detailWorkspace]||'计划';
+  return `<div class="hint" style="margin-bottom:12px"><b>当前工作区：</b>${esc(activeTitle)}。一次只展开一个工作区，减少手机页面长度。</div>${stockWorkspaceSection('plan','Plan Workspace','当前事件、刷新计划、当前有效计划、详细计划、历史计划',planWorkspacePanel(stock),'var(--gold)')}${stockWorkspaceSection('technical','Technical Workspace','技术判断、风险、机会、依据、Prompt 与导入',technicalWorkspacePanel(stock),'var(--teal)')}${stockWorkspaceSection('news','News Workspace','新闻、催化、情绪资金、Prompt 与导入',newsWorkspacePanel(stock),'var(--seal)')}${stockWorkspaceSection('longterm','Long-term Workspace','长期逻辑、投资备忘录、长期风险',longTermWorkspacePanel(stock),'var(--purple)')}`;
 }
 function planListHtml(plans,type,cp){
   const arr=v13DisplayActivePlans(plans).filter(p=>v13PlanDisplayCategory(p)===type).sort((a,b)=>Number(b.price||0)-Number(a.price||0));
@@ -10408,6 +10439,7 @@ function handleDetailAction(action,stock){
   if(!action)return;
   if(action==='refresh'&&s)refreshOnePrice(s.id);
   if(action==='view-plan-center'&&s)openPlanCenter();
+  if(action==='open-plan-refresh'&&s)openV13PlanRefreshTool(s.id);
   if(action==='long-logic')openLongLogicModal();
   if(action==='copy-ai-discussion-prompt')copyAiDiscussionPrompt();
   if(action==='edit'&&s)openModal(s.id);
@@ -10509,11 +10541,15 @@ function renderStockDetail(){
   const actual=info&&info.actualPct!==null?info.actualPct:null;
   const deviation=info&&info.deviation!==null?`${info.deviation>=0?'+':''}${info.deviation.toFixed(1)}%`:'—';
   document.getElementById('summary').innerHTML=`标的详情 · <strong>${esc(s.name)}</strong> · ${esc(s.role||'—')} · ${esc(s.theme||'—')}`;
-  document.getElementById('main').innerHTML=`<div data-v13-detail-anchor="overview">${detailHeroPanel(s,mv,actual,deviation)}</div>${v13ReviewReturnBanner(s)}${v13StockEventPanel(s)}${v13CurrentActivePlanSummaryPanel(s)}<div data-v13-detail-anchor="analysis"></div><div data-v13-detail-anchor="risk">${v13TargetReviewReturnBanner(s,'risk')}${trendRiskManagementPanel(s)}</div><div data-v13-detail-anchor="technical">${v13TargetReviewReturnBanner(s,'technical')}${technicalAnalysisPanel(s)}</div>${shortTermCatalystPanel(s)}${shortTermSentimentPanel(s)}${informationCompletenessPanel(s)}${positionPlanPanel(s)}${detailResultsArchivePanel(s,cp)}${detailResearchArchivePanel(s,cp)}${detailAdvancedToolsArchivePanel(s)}`;
+  document.getElementById('main').innerHTML=`<div data-v13-detail-anchor="overview">${detailHeroPanel(s,mv,actual,deviation)}</div>${v13ReviewReturnBanner(s)}${stockWorkspaceAccordion(s)}${detailAdvancedToolsArchivePanel(s)}`;
   const backToListBtn=document.getElementById('backToListBtn');
   if(backToListBtn)backToListBtn.addEventListener('click',closeStockDetail);
   document.querySelectorAll('[data-v13-return-review]').forEach(btn=>btn.addEventListener('click',returnToActiveV13Review));
   document.querySelectorAll('[data-detail-action]').forEach(b=>b.addEventListener('click',()=>handleDetailAction(b.dataset.detailAction,s)));
+  document.querySelectorAll('[data-workspace]').forEach(b=>b.addEventListener('click',()=>{
+    detailWorkspace=b.dataset.workspace||'plan';
+    renderStockDetail();
+  }));
   document.querySelectorAll('[data-v13-detail-event]').forEach(row=>row.addEventListener('click',()=>openV13EventDecisionReview(row.dataset.v13DetailStock,row.dataset.v13DetailEvent)));
   document.querySelectorAll('[data-collection-action="save"]').forEach(b=>b.addEventListener('click',saveCollectionInputs));
   document.querySelectorAll('[data-collection-prompt]').forEach(b=>b.addEventListener('click',()=>copyCollectionPrompt(b.dataset.collectionPrompt)));
