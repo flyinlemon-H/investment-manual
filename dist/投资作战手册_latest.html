@@ -3782,7 +3782,7 @@ function handleSocialImport(e){
 
 </script>
 <script>
-let logStockFilter='';
+﻿let logStockFilter='';
 let analysisSortMode='score_desc';
 let analysisRoleFilter='';
 let analysisStatusFilter='';
@@ -3801,6 +3801,7 @@ let editCenterTypeFilter='';
 let editCenterSearch='';
 let editModalReturnTab='';
 let v13ActiveReviewReturn=null;
+let v13DecisionReviewCloseContext=null;
 let detailWorkspace='plan';
 function backupReminderText(){
   const t=Number(state.lastBackupAt);
@@ -5020,9 +5021,10 @@ function ensureV13DecisionReviewModal(){
   el=document.createElement('div');
   el.className='modal-bg import-layer';
   el.id='v13DecisionReviewModal';
-  el.innerHTML=`<div class="modal"><h2>决策复核</h2><div class="modal-sub">本区域只支持复核，不生成交易，不修改持仓，不自动归档计划。</div><div id="v13DecisionReviewBody"></div><div class="modal-actions"><button class="btn ghost" id="v13DecisionReviewCloseBtn" type="button">关闭</button></div></div>`;
+  el.innerHTML=`<div class="modal" style="position:relative"><button class="btn ghost" id="v13DecisionReviewCloseTopBtn" type="button" aria-label="关闭决策复核" style="position:absolute;right:14px;top:12px;min-width:44px;min-height:44px;padding:0;font-size:24px;line-height:1">×</button><h2 style="padding-right:56px">决策复核</h2><div class="modal-sub">本区域只支持复核，不生成交易，不修改持仓，不自动归档计划。</div><div id="v13DecisionReviewBody"></div><div class="modal-actions"><button class="btn ghost" id="v13DecisionReviewCloseBtn" type="button">关闭</button></div></div>`;
   document.body.appendChild(el);
   el.addEventListener('click',e=>{if(e.target.id==='v13DecisionReviewModal')closeV13DecisionReviewModal()});
+  document.getElementById('v13DecisionReviewCloseTopBtn').addEventListener('click',closeV13DecisionReviewModal);
   document.getElementById('v13DecisionReviewCloseBtn').addEventListener('click',closeV13DecisionReviewModal);
   return el;
 }
@@ -5130,7 +5132,7 @@ function goV13DecisionReviewStockDetail(stockId,target,recArg){
   const cfg=v13ReviewTargetConfig(target,rec);
   detailWorkspace=cfg.workspace||'plan';
   v13ActiveReviewReturn={stockId,recId:currentRecId,target:cfg.anchor,workspace:cfg.workspace};
-  closeV13DecisionReviewModal();
+  closeV13DecisionReviewModal(false);
   openStockDetail(stockId);
   setTimeout(()=>{
     const el=document.querySelector(`[data-v13-detail-anchor="${cfg.anchor}"]`)||document.querySelector(`[data-workspace-section="${cfg.workspace}"]`);
@@ -5150,6 +5152,30 @@ function returnToActiveV13Review(){
   const ctx=v13ActiveReviewReturn;
   if(!ctx||!ctx.stockId)return;
   openV13DecisionReview(ctx.stockId,ctx.recId||'');
+}
+function captureV13DecisionReviewCloseContext(stockId){
+  return {
+    tab:currentTab,
+    detailStockId:detailStockId||'',
+    detailSubView:detailSubView||'',
+    detailWorkspace:detailWorkspace||'plan',
+    stockId:stockId||''
+  };
+}
+function restoreV13DecisionReviewCloseContext(){
+  const ctx=v13DecisionReviewCloseContext;
+  if(!ctx)return;
+  if(ctx.detailStockId){
+    detailStockId=ctx.detailStockId;
+    detailSubView=ctx.detailSubView||'';
+    detailWorkspace=ctx.detailWorkspace||'plan';
+    render();
+    return;
+  }
+  detailStockId=null;
+  detailSubView='';
+  currentTab=ctx.tab||currentTab;
+  render();
 }
 function ensureV13UserDecisionDialog(){
   let el=document.getElementById('v13UserDecisionDialog');
@@ -5284,6 +5310,7 @@ function bindV13DecisionReviewActions(stock,rec,plan){
 function openV13DecisionReview(stockId,recId){
   const stock=state.stocks.find(x=>String(x.id)===String(stockId))||state.stocks.find(x=>x.id===detailStockId);
   if(!stock)return;
+  v13DecisionReviewCloseContext=captureV13DecisionReviewCloseContext(stock.id);
   normalizeStockAnalysis(stock);
   const reviewContext=typeof DecisionReviewService==='object'&&DecisionReviewService&&typeof DecisionReviewService.buildContext==='function'
     ? DecisionReviewService.buildContext(stock,recId)
@@ -5310,9 +5337,10 @@ function openV13DecisionReview(stockId,recId){
   bindV13DecisionReviewActions(stock,rec,plan);
   modal.classList.add('show');
 }
-function closeV13DecisionReviewModal(){
+function closeV13DecisionReviewModal(restoreContext=true){
   const modal=document.getElementById('v13DecisionReviewModal');
   if(modal)modal.classList.remove('show');
+  if(restoreContext)restoreV13DecisionReviewCloseContext();
 }
 function openV13EventDecisionReview(stockId,eventId){
   const stock=state.stocks.find(x=>String(x.id)===String(stockId))||state.stocks.find(x=>x.id===detailStockId);
