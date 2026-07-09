@@ -1220,7 +1220,15 @@ function v13DecisionReviewFactPanelHtml(stock,rec,plan,price){
   const riskState=stock&&stock.coreModel&&stock.coreModel.riskState?stock.coreModel.riskState:null;
   const riskFact=riskState&&(riskState.summary||riskState.status||riskState.level)?`${riskState.summary||'风险状态待复核'} · ${riskState.status||riskState.level||'暂无状态'}`:'当前任务由风险状态触发，需查看风险管理区。';
   const riskRow=riskRelated?row('风险事实核对',riskFact,'风险相关任务应先查看趋势风险管理，再形成处理结果。','view-risk','查看风险管理'): '';
-  return `<div class="card" style="margin-bottom:12px"><div class="card-title">可执行复核面板</div><div class="card-note">每项直接展示当前事实、当前判断和下一步入口；不生成交易，不修改计划或持仓。</div>${row('价格触发判断',`当前价格 ${price||'—'} · 计划价 ${planPrice?fmtMaybe(planPrice,2):'—'}`,stalePlan?'旧计划可能已过期，请先刷新计划，不按价格接近直接处理。':priceJudgement,'view-plan','查看相关计划',!plan)}${row('技术事实核对',`趋势 ${zhTrendStatus(trend)||trend} · ${st.ma5!==null&&st.ma5!==undefined?`MA5 ${fmtMaybe(st.ma5,2)}`:'MA5 —'} · ${st.ma20!==null&&st.ma20!==undefined?`MA20 ${fmtMaybe(st.ma20,2)}`:'MA20 —'}`,trendJudgement,'view-technical','查看技术面分析')}${row('仓位状态核对',positionFact,positionJudgement,'view-position','查看仓位与计划')}${riskRow}${row('相关计划核对',planFact,planJudgement,'view-plan','查看相关计划',!plan)}${row('处理结果入口','复核完成后需要形成明确处理方向','选择“修改计划”或“记录操作结果”，当前页面不直接执行后续模块','record-decision','选择处理结果')}</div>`;
+  const relatedWorkspace=v13ReviewWorkspaceForRecommendation(rec);
+  const workspaceRows={
+    news:row('新闻/催化事实核对','本次复核与新闻、催化或情绪资金有关','应先查看新闻催化工作区，再形成处理结果。','view-news','查看新闻催化'),
+    fundamental:row('基本面事实核对','本次复核与财报、基本面或公司质量有关','应先查看基本面工作区，再形成处理结果。','view-fundamental','查看基本面'),
+    valuation:row('估值/配置事实核对','本次复核与估值、配置或仓位有关','应先查看估值/配置工作区，再形成处理结果。','view-valuation','查看估值/配置'),
+    longterm:row('长期逻辑事实核对','本次复核与长期逻辑或投资备忘录有关','应先查看长期逻辑工作区，再形成处理结果。','view-longterm','查看长期逻辑')
+  };
+  const relatedRow=workspaceRows[relatedWorkspace]||'';
+  return `<div class="card" style="margin-bottom:12px"><div class="card-title">可执行复核面板</div><div class="card-note">每项直接展示当前事实、当前判断和下一步入口；不生成交易，不修改计划或持仓。</div>${row('价格触发判断',`当前价格 ${price||'—'} · 计划价 ${planPrice?fmtMaybe(planPrice,2):'—'}`,stalePlan?'旧计划可能已过期，请先刷新计划，不按价格接近直接处理。':priceJudgement,'view-plan','查看相关计划')}${row('技术事实核对',`趋势 ${zhTrendStatus(trend)||trend} · ${st.ma5!==null&&st.ma5!==undefined?`MA5 ${fmtMaybe(st.ma5,2)}`:'MA5 —'} · ${st.ma20!==null&&st.ma20!==undefined?`MA20 ${fmtMaybe(st.ma20,2)}`:'MA20 —'}`,trendJudgement,'view-technical','查看技术面分析')}${row('仓位状态核对',positionFact,positionJudgement,'view-position','查看估值/配置')}${riskRow}${relatedRow}${row('相关计划核对',planFact,planJudgement,'view-plan','查看相关计划')}${row('处理结果入口','复核完成后需要形成明确处理方向','选择“修改计划”或“记录操作结果”，当前页面不直接执行后续模块','record-decision','选择处理结果')}</div>`;
 }
 function ensureV13DecisionReviewModal(){
   let el=document.getElementById('v13DecisionReviewModal');
@@ -1240,7 +1248,7 @@ function v13DecisionReviewActionsHtml(stock,rec,plan){
   const canMark=v13ReviewAllowsMarkReviewed(rec);
   const markButton=canMark?'<button class="btn ghost small" type="button" data-v13-review-action="mark-reviewed">标记已复核</button>':'';
   const resultHint=canMark?'低风险信息类任务可标记已复核；需要处理的任务仍应选择处理结果。':'该任务需要形成明确处理结果，不能直接标记已复核。';
-  return `<div class="card" style="margin-bottom:12px"><div class="card-title">用户复核动作</div><div class="card-note">本区域只记录复核后的处理方向；不生成交易，不修改建议、计划或持仓。${esc(resultHint)}</div><div class="modal-actions" style="justify-content:flex-start;flex-wrap:wrap;margin-top:10px"><button class="btn small" type="button" data-v13-review-action="record-decision">选择处理结果</button>${markButton}<button class="btn ghost small" type="button" data-v13-review-action="view-plan"${hasPlan?'':' disabled'}>查看相关计划</button><button class="btn ghost small" type="button" data-v13-review-action="view-analysis">查看完整分析</button></div>${hasPlan?'':'<div class="card-note" style="margin-top:6px">当前复核任务暂无明确关联计划，可进入完整分析查看上下文。</div>'}<div class="card-note" data-v13-review-action-note style="margin-top:8px"></div><input type="hidden" data-v13-review-stock-id value="${esc(stockId)}"></div>`;
+  return `<div class="card" style="margin-bottom:12px"><div class="card-title">用户复核动作</div><div class="card-note">本区域只记录复核后的处理方向；不生成交易，不修改建议、计划或持仓。${esc(resultHint)}</div><div class="modal-actions" style="justify-content:flex-start;flex-wrap:wrap;margin-top:10px"><button class="btn small" type="button" data-v13-review-action="record-decision">选择处理结果</button>${markButton}<button class="btn ghost small" type="button" data-v13-review-action="view-plan">查看相关计划</button><button class="btn ghost small" type="button" data-v13-review-action="view-analysis">查看完整分析</button></div>${hasPlan?'':'<div class="card-note" style="margin-top:6px">当前复核任务暂无明确关联计划，仍可进入计划工作区查看当前有效计划和刷新入口。</div>'}<div class="card-note" data-v13-review-action-note style="margin-top:8px"></div><input type="hidden" data-v13-review-stock-id value="${esc(stockId)}"></div>`;
 }
 function v13DecisionRecordLatestHtml(rec){
   if(!rec||typeof DecisionRecordService!=='object'||!DecisionRecordService||typeof DecisionRecordService.getLatestByRecommendation!=='function'){
@@ -1281,28 +1289,67 @@ function setV13DecisionReviewActionNote(text){
   const note=document.querySelector('[data-v13-review-action-note]');
   if(note)note.textContent=text||'';
 }
-function goV13DecisionReviewStockDetail(stockId,target){
+function v13ReviewWorkspaceForRecommendation(rec){
+  const source=rec&&rec.source?rec.source:{};
+  const raw=[
+    rec&&rec.type,
+    rec&&rec.title,
+    rec&&rec.summary,
+    rec&&rec.reason,
+    source.objectType,
+    source.type,
+    source.module,
+    source.label,
+    source.reason
+  ].map(x=>String(x||'')).join(' ').toLowerCase();
+  if(/news|catalyst|sentiment|social|fund.?flow|新闻|催化|情绪|资金/.test(raw))return 'news';
+  if(/long|thesis|memo|长期|投资逻辑|备忘录/.test(raw))return 'longterm';
+  if(/fundamental|financial|earnings|report|财报|基本面|盈利|现金流|公司质量/.test(raw))return 'fundamental';
+  if(/valuation|allocation|position|weight|估值|配置|仓位|目标仓位|权重/.test(raw))return 'valuation';
+  if(/technical|trend|risk|ma\d+|技术|趋势|风险|均线/.test(raw))return 'technical';
+  if(/plan|trigger|计划|触发/.test(raw))return 'plan';
+  return '';
+}
+function v13ReviewTargetConfig(target,rec){
+  const normalized=String(target||'').trim();
+  const byTarget={
+    plan:{workspace:'plan',anchor:'workspace-plan'},
+    triggeredPlan:{workspace:'plan',anchor:'workspace-plan'},
+    'plan-triggered':{workspace:'plan',anchor:'workspace-plan'},
+    'plan-current':{workspace:'plan',anchor:'workspace-plan'},
+    'plan-original':{workspace:'plan',anchor:'workspace-plan'},
+    position:{workspace:'valuation',anchor:'workspace-valuation'},
+    'position-summary':{workspace:'valuation',anchor:'workspace-valuation'},
+    technical:{workspace:'technical',anchor:'workspace-technical'},
+    risk:{workspace:'technical',anchor:'workspace-technical'},
+    news:{workspace:'news',anchor:'workspace-news'},
+    catalyst:{workspace:'news',anchor:'workspace-news'},
+    fundamental:{workspace:'fundamental',anchor:'workspace-fundamental'},
+    valuation:{workspace:'valuation',anchor:'workspace-valuation'},
+    allocation:{workspace:'valuation',anchor:'workspace-valuation'},
+    longterm:{workspace:'longterm',anchor:'workspace-longterm'},
+    analysis:null
+  };
+  if(normalized==='analysis'){
+    const ws=v13ReviewWorkspaceForRecommendation(rec)||'plan';
+    return {workspace:ws,anchor:`workspace-${ws}`};
+  }
+  return byTarget[normalized]||{workspace:'plan',anchor:'workspace-plan'};
+}
+function goV13DecisionReviewStockDetail(stockId,target,recArg){
   if(!stockId)return;
   const recId=document.getElementById('v13UserDecisionRecommendationId')&&document.getElementById('v13UserDecisionRecommendationId').value;
   const activeRecId=(v13ActiveReviewReturn&&String(v13ActiveReviewReturn.stockId)===String(stockId))?v13ActiveReviewReturn.recId:'';
-  const currentRecId=activeRecId||recId||'';
-  const anchor={
-    plan:'plan-triggered',
-    triggeredPlan:'plan-triggered',
-    'plan-triggered':'plan-triggered',
-    'plan-current':'plan-current',
-    'plan-original':'plan-original',
-    position:'position-summary',
-    'position-summary':'position-summary',
-    technical:'technical',
-    risk:'risk',
-    analysis:'analysis'
-  }[target]||'overview';
-  v13ActiveReviewReturn={stockId,recId:currentRecId,target:anchor};
+  const currentRecId=(recArg&&recArg.id)||activeRecId||recId||'';
+  const stock=state.stocks.find(x=>String(x.id)===String(stockId));
+  const rec=recArg||(stock?v13RecommendationById(stock,currentRecId):null);
+  const cfg=v13ReviewTargetConfig(target,rec);
+  detailWorkspace=cfg.workspace||'plan';
+  v13ActiveReviewReturn={stockId,recId:currentRecId,target:cfg.anchor,workspace:cfg.workspace};
   closeV13DecisionReviewModal();
   openStockDetail(stockId);
   setTimeout(()=>{
-    const el=document.querySelector(`[data-v13-detail-anchor="${anchor}"]`);
+    const el=document.querySelector(`[data-v13-detail-anchor="${cfg.anchor}"]`)||document.querySelector(`[data-workspace-section="${cfg.workspace}"]`);
     if(el&&typeof el.scrollIntoView==='function')el.scrollIntoView({behavior:'smooth',block:'start'});
   },80);
 }
@@ -1414,28 +1461,39 @@ function bindV13DecisionReviewActions(stock,rec,plan){
       return;
     }
     if(action==='view-plan'){
-      v13ActiveReviewReturn={stockId,recId:rec&&rec.id?rec.id:'',target:'plan-triggered'};
-      goV13DecisionReviewStockDetail(stockId,'plan-triggered');
+      goV13DecisionReviewStockDetail(stockId,'plan-triggered',rec);
       return;
     }
     if(action==='view-technical'){
-      v13ActiveReviewReturn={stockId,recId:rec&&rec.id?rec.id:'',target:'technical'};
-      goV13DecisionReviewStockDetail(stockId,'technical');
+      goV13DecisionReviewStockDetail(stockId,'technical',rec);
       return;
     }
     if(action==='view-position'){
-      v13ActiveReviewReturn={stockId,recId:rec&&rec.id?rec.id:'',target:'position-summary'};
-      goV13DecisionReviewStockDetail(stockId,'position-summary');
+      goV13DecisionReviewStockDetail(stockId,'valuation',rec);
       return;
     }
     if(action==='view-risk'){
-      v13ActiveReviewReturn={stockId,recId:rec&&rec.id?rec.id:'',target:'risk'};
-      goV13DecisionReviewStockDetail(stockId,'risk');
+      goV13DecisionReviewStockDetail(stockId,'risk',rec);
+      return;
+    }
+    if(action==='view-news'){
+      goV13DecisionReviewStockDetail(stockId,'news',rec);
+      return;
+    }
+    if(action==='view-fundamental'){
+      goV13DecisionReviewStockDetail(stockId,'fundamental',rec);
+      return;
+    }
+    if(action==='view-valuation'){
+      goV13DecisionReviewStockDetail(stockId,'valuation',rec);
+      return;
+    }
+    if(action==='view-longterm'){
+      goV13DecisionReviewStockDetail(stockId,'longterm',rec);
       return;
     }
     if(action==='view-analysis'){
-      v13ActiveReviewReturn={stockId,recId:rec&&rec.id?rec.id:'',target:'analysis'};
-      goV13DecisionReviewStockDetail(stockId,'analysis');
+      goV13DecisionReviewStockDetail(stockId,'analysis',rec);
     }
   }));
 }
@@ -4597,7 +4655,8 @@ function renderPlanCenter(){
 }
 function stockWorkspaceSection(key,title,summary,body,color){
   const active=detailWorkspace===key;
-  return `<section class="card" style="margin-bottom:12px;border-left:4px solid ${color}"><button class="link-btn" data-workspace="${esc(key)}" type="button" style="display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;text-align:left;padding:0"><span><span class="card-title">${esc(active?'▼':'▶')} ${esc(title)}</span><span class="card-note" style="display:block;margin-top:4px">${esc(summary)}</span></span><span class="chip ${active?'role':'tag'}">${active?'展开':'折叠'}</span></button>${active?`<div style="margin-top:12px">${body}</div>`:''}</section>`;
+  const anchor=`workspace-${key}`;
+  return `<section class="card" data-workspace-section="${esc(key)}" data-v13-detail-anchor="${esc(anchor)}" style="margin-bottom:12px;border-left:4px solid ${color}"><button class="link-btn" data-workspace="${esc(key)}" type="button" style="display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;text-align:left;padding:0"><span><span class="card-title">${esc(active?'▼':'▶')} ${esc(title)}</span><span class="card-note" style="display:block;margin-top:4px">${esc(summary)}</span></span><span class="chip ${active?'role':'tag'}">${active?'展开':'折叠'}</span></button>${active?`<div style="margin-top:12px">${v13TargetReviewReturnBanner(state.stocks.find(x=>x.id===detailStockId),anchor)}${body}</div>`:''}</section>`;
 }
 function workspaceDetails(title,body){
   return `<details class="card" style="margin-bottom:12px;background:rgba(255,255,255,.42)"><summary class="card-title" style="cursor:pointer">${esc(title)}</summary><div style="margin-top:10px">${body}</div></details>`;
