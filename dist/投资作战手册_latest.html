@@ -3801,6 +3801,7 @@ let editCenterTypeFilter='';
 let editCenterSearch='';
 let editModalReturnTab='';
 let v13ActiveReviewReturn=null;
+let v13DecisionReviewDirty={};
 let v13DecisionReviewCloseContext=null;
 let detailWorkspace='plan';
 function backupReminderText(){
@@ -4824,6 +4825,7 @@ function importV13PlanRefreshJson(){
     setV13PlanRefreshMessage('导入失败：'+result.errors.join('；'),true);
     return;
   }
+  markV13DecisionReviewDirty(stock.id,'plans');
   closeV13PlanRefreshToolDialog();
   alert(`计划导入成功：归档旧计划 ${result.oldPlansArchivedCount} 条，导入新计划 ${result.newPlansImportedCount} 条。${result.warnings.length?' 警告：'+result.warnings.join('；'):''}`);
 }
@@ -5235,7 +5237,40 @@ function v13TargetReviewReturnBanner(stock,anchor){
 function returnToActiveV13Review(){
   const ctx=v13ActiveReviewReturn;
   if(!ctx||!ctx.stockId)return;
-  openV13DecisionReview(ctx.stockId,ctx.recId||'');
+  openV13DecisionReview(ctx.stockId,ctx.recId||'',{forceFresh:true});
+}
+function markV13DecisionReviewDirty(stockId,moduleName){
+  if(!stockId)return;
+  const key=String(stockId);
+  const current=v13DecisionReviewDirty[key]||{modules:[],updatedAt:0};
+  const moduleText=String(moduleName||'data');
+  if(!current.modules.includes(moduleText))current.modules.push(moduleText);
+  current.updatedAt=Date.now();
+  v13DecisionReviewDirty[key]=current;
+  if(v13ActiveReviewReturn&&String(v13ActiveReviewReturn.stockId)===key){
+    v13ActiveReviewReturn={...v13ActiveReviewReturn,dirtyAt:current.updatedAt,dirtyModules:current.modules.slice()};
+  }
+}
+function consumeV13DecisionReviewDirty(stockId){
+  const key=String(stockId||'');
+  const current=v13DecisionReviewDirty[key]||null;
+  if(current)delete v13DecisionReviewDirty[key];
+  return current;
+}
+function v13FreshReviewRecommendation(stock,recId){
+  normalizeStockAnalysis(stock);
+  const rec=v13RecommendationById(stock,recId);
+  if(rec)return {rec,changed:false};
+  const cm=stock&&stock.coreModel?stock.coreModel:{};
+  const all=[cm.primaryRecommendations,cm.recommendations,cm.secondaryRecommendations]
+    .flatMap(list=>Array.isArray(list)?list:[])
+    .filter(Boolean);
+  const sorted=all.slice().sort((a,b)=>{
+    const ar=typeof getRecommendationPriorityRank==='function'?getRecommendationPriorityRank(a):0;
+    const br=typeof getRecommendationPriorityRank==='function'?getRecommendationPriorityRank(b):0;
+    return br-ar;
+  });
+  return {rec:sorted[0]||null,changed:Boolean(sorted[0])};
 }
 function captureV13DecisionReviewCloseContext(stockId){
   return {
@@ -5404,21 +5439,27 @@ function bindV13DecisionReviewActions(stock,rec,plan){
     }
   }));
 }
-function openV13DecisionReview(stockId,recId){
+function openV13DecisionReview(stockId,recId,options={}){
   const stock=state.stocks.find(x=>String(x.id)===String(stockId))||state.stocks.find(x=>x.id===detailStockId);
   if(!stock)return;
   v13DecisionReviewCloseContext=captureV13DecisionReviewCloseContext(stock.id);
   normalizeStockAnalysis(stock);
+  const freshRec=v13FreshReviewRecommendation(stock,recId);
+  const currentRecId=freshRec.rec&&freshRec.rec.id?freshRec.rec.id:recId;
   const reviewContext=typeof DecisionReviewService==='object'&&DecisionReviewService&&typeof DecisionReviewService.buildContext==='function'
-    ? DecisionReviewService.buildContext(stock,recId)
+    ? DecisionReviewService.buildContext(stock,currentRecId)
     : null;
-  const rec=reviewContext&&reviewContext.recommendation?reviewContext.recommendation:v13RecommendationById(stock,recId);
+  const rec=reviewContext&&reviewContext.recommendation?reviewContext.recommendation:freshRec.rec;
+  const dirtyInfo=consumeV13DecisionReviewDirty(stock.id);
   const modal=ensureV13DecisionReviewModal();
   const body=document.getElementById('v13DecisionReviewBody');
   if(!rec){
-    body.innerHTML='<div class="alert">未找到该复核建议，可能数据已刷新。</div>';
+    body.innerHTML='<div class="alert">相关资料已更新，但当前没有可复核任务。请返回首页重新确认今日任务。</div>';
     modal.classList.add('show');
     return;
+  }
+  if(v13ActiveReviewReturn&&String(v13ActiveReviewReturn.stockId)===String(stock.id)){
+    v13ActiveReviewReturn={...v13ActiveReviewReturn,recId:rec.id||currentRecId||''};
   }
   if(typeof DecisionStateService==='object'&&DecisionStateService&&typeof DecisionStateService.markReviewing==='function'){
     DecisionStateService.markReviewing(rec.id);
@@ -5427,7 +5468,11 @@ function openV13DecisionReview(stockId,recId){
   const plan=reviewContext&&reviewContext.plan?reviewContext.plan:v13DecisionReviewPlanContext(stock,rec);
   const planName=v13PlanDisplayName(plan);
   const price=cm.priceSnapshot&&cm.priceSnapshot.price!==null&&cm.priceSnapshot.price!==undefined?fmtMaybe(cm.priceSnapshot.price,2):(getComparablePrice(stock)||stockCurrentPrice(stock)||'暂无完整依据');
-  body.innerHTML=v13DecisionReviewSummaryHtml(stock,rec,plan)
+  const refreshNotice=(dirtyInfo||freshRec.changed||options.forceFresh)
+    ?`<div class="alert" style="margin-bottom:12px">相关资料已更新，以下结论已基于当前最新数据重新生成。${freshRec.changed?'原复核任务已变化，请重新确认本次任务。':''}</div>`
+    :'';
+  body.innerHTML=refreshNotice
+    +v13DecisionReviewSummaryHtml(stock,rec,plan)
     +`<div class="card" style="margin-bottom:12px"><div class="card-title">本次任务</div><div class="card-note">${esc(v13RecommendationPriorityLabel(rec.priority))} · ${esc(v13RecommendationTypeLabel(rec.type))} · 来源 ${esc(v13RecommendationSourceLabel(rec.source))}${planName?` · 关联计划 ${esc(planName)}`:''}</div></div>`
     +v13DecisionReviewEvidenceHtml(stock,rec,plan,price)
     +v13DecisionReviewActionsHtml(stock,rec,plan);
@@ -9441,6 +9486,8 @@ function importTechnicalJson(){
     stock.technicalData=technicalDataFromReview(stock.technicalReview,stock);
     if(!stock.technicalData.symbol)stock.technicalData.symbol=stock.code||stock.symbol||'';
     touchDataFreshness(stock,'technicalUpdatedAt',stock.technicalReview.shortTermTechnical.priceUpdatedAt||todayDate());
+    normalizeStockAnalysis(stock);
+    markV13DecisionReviewDirty(stock.id,'technicalReview');
     saveState();
     closeTechnicalJsonImportModal();
     render();
@@ -9525,6 +9572,8 @@ function handlePriceHistoryCsvImport(e){
     stock.priceHistory=normalizePriceHistory(parsed.records);
     const result=updateTechnicalDataFromPriceHistory(stock);
     touchDataFreshness(stock,'technicalUpdatedAt');
+    normalizeStockAnalysis(stock);
+    markV13DecisionReviewDirty(stock.id,'technicalReview');
     saveState();
     render();
     const warnings=[...(parsed.warnings||[]),...(result.warnings||[])];
@@ -9538,6 +9587,8 @@ function updateTechnicalFromHistoryForDetail(){
   if(!stock)return;
   const result=updateTechnicalDataFromPriceHistory(stock);
   touchDataFreshness(stock,'technicalUpdatedAt');
+  normalizeStockAnalysis(stock);
+  markV13DecisionReviewDirty(stock.id,'technicalReview');
   saveState();
   render();
   alert(`技术数据已从历史价格更新。${result.warnings.length?'\n提醒：'+result.warnings.slice(0,4).join('；'):''}`);
@@ -9649,6 +9700,7 @@ function importValuationJson(){
     if(!hasData&&!hasReview&&!looksLikeData)throw new Error('未识别 valuationData 或 valuationReview。');
     touchDataFreshness(stock,'valuationUpdatedAt');
     normalizeStockAnalysis(stock);
+    markV13DecisionReviewDirty(stock.id,'valuationReview');
     saveState();
     closeValuationImportModal();
     render();
@@ -9717,6 +9769,7 @@ function importAllocationDecisionJson(){
   stock.allocationDecision=next;
   stock.strategy=normalizeStrategy(JSON.parse(beforeStrategy),stock);
   normalizeStockAnalysis(stock);
+  markV13DecisionReviewDirty(stock.id,'allocationDecision');
   saveState();
   closeAllocationDecisionImportModal();
   render();
@@ -9764,6 +9817,8 @@ function saveFinancialData(){
   payload.lastUpdated=new Date().toISOString();
   stock.financialData=normalizeFinancialData(payload);
   touchDataFreshness(stock,'financialUpdatedAt');
+  normalizeStockAnalysis(stock);
+  markV13DecisionReviewDirty(stock.id,'financialData');
   saveState();
   closeFinancialDataModal();
   render();
@@ -9859,6 +9914,7 @@ function importFundamentalJson(){
   try{
     const flags=applyFundamentalPayload(stock,parsed);
     normalizeStockAnalysis(stock);
+    markV13DecisionReviewDirty(stock.id,'fundamentalReview');
     saveState();
     closeFundamentalImportModal();
     render();
@@ -9976,6 +10032,8 @@ function importFinancialJson(){
       stock.aiReviews.financialReview=review;
     }
     touchDataFreshness(stock,'financialUpdatedAt');
+    normalizeStockAnalysis(stock);
+    markV13DecisionReviewDirty(stock.id,'financialData');
     saveState();
     closeFinancialImportModal();
     render();
@@ -10014,6 +10072,8 @@ function importFinancialIntegratedJson(){
     if(!review)throw new Error('financialReview 格式不正确。');
     stock.aiReviews.financialReview=review;
     touchDataFreshness(stock,'financialUpdatedAt');
+    normalizeStockAnalysis(stock);
+    markV13DecisionReviewDirty(stock.id,'financialData');
     saveState();
     render();
     alert('财报一体化 JSON 已导入：financialData 与 financialReview 已更新。九模块评分和操作建议未自动修改。');
@@ -10574,6 +10634,7 @@ function importSentimentPayloadFromText(text,options={}){
     if(options.onlyLongTerm&&!looksLikeLongTerm)throw new Error('未识别 longTermLogic。请粘贴包含 longTermLogic 的 JSON，或直接粘贴长期逻辑对象。');
     if(!changed)throw new Error('未识别到可导入字段。情绪资金 JSON 请包含 shortTermSentiment，或包含 marketMood / marketSentiment / fundFlowView / fundFlow / sectorHeat / institutionalView 等字段。');
     normalizeStockAnalysis(stock);
+    markV13DecisionReviewDirty(stock.id,options.onlyLongTerm?'longTermLogic':'recentCatalyst');
     saveState();
     if(options.closeLongTerm)closeLongTermLogicImportModal();
     else closeSentimentImportModal();
