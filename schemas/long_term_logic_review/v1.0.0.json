@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "long_term_logic_review.v1.0.0",
+  "title": "Long Term Logic Review Draft",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "updatedAt",
+    "validUntil",
+    "status",
+    "confidence",
+    "investmentThesis",
+    "coreDrivers",
+    "fundamentalSupport",
+    "longTermRisks",
+    "invalidationConditions",
+    "nextReviewDate",
+    "informationGaps",
+    "notes"
+  ],
+  "properties": {
+    "updatedAt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "validUntil": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": ["valid", "needs_review", "weakened", "invalid", "insufficient_information"]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    },
+    "investmentThesis": {
+      "type": "string",
+      "minLength": 1
+    },
+    "coreDrivers": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "fundamentalSupport": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "valuationView": {
+      "type": "string"
+    },
+    "longTermRisks": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "invalidationConditions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "nextReviewDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "informationGaps": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}
+

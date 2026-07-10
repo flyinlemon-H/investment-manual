@@ -97,6 +97,28 @@ class MockAIProvider:
     ) -> dict[str, Any]:
         if isinstance(metadata.get("mockContent"), dict):
             return dict(metadata["mockContent"])
+        if task_name == "long_term_logic_review":
+            if metadata.get("simulateSchemaFailure"):
+                return {
+                    "updatedAt": "2026-07-10",
+                    "status": "needs_review",
+                    "confidence": "medium",
+                }
+            return {
+                "updatedAt": "2026-07-10",
+                "validUntil": "2027-01-10",
+                "status": "needs_review",
+                "confidence": "medium",
+                "investmentThesis": "基于现有资料形成的长期逻辑草案。",
+                "coreDrivers": ["行业长期需求"],
+                "fundamentalSupport": ["现有基本面资料支持有限"],
+                "valuationView": "当前估值结论需结合最新数据复核。",
+                "longTermRisks": ["行业景气波动"],
+                "invalidationConditions": ["核心业务长期竞争力明显下降"],
+                "nextReviewDate": "2026-10-10",
+                "informationGaps": ["缺少最新财报数据"],
+                "notes": ["仅为 Mock 草案，不构成投资建议。"],
+            }
         content = dict(self.default_content)
         content.update(
             {
@@ -116,4 +138,3 @@ class MockAIProvider:
                 output_tokens=int(usage.get("outputTokens") or 0),
             )
         return standard_usage(input_tokens=0, cached_input_tokens=0, output_tokens=0)
-
