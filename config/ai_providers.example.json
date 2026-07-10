@@ -1,0 +1,63 @@
+{
+  "ai": {
+    "default": "mock",
+    "fallback": [],
+    "providers": {
+      "mock": {
+        "enabled": true,
+        "model": "mock-model",
+        "timeoutSeconds": 10,
+        "retry": {
+          "enabled": false,
+          "maxAttempts": 0
+        }
+      },
+      "openai": {
+        "enabled": false,
+        "model": "",
+        "timeoutSeconds": 30,
+        "retry": {
+          "enabled": true,
+          "maxAttempts": 2
+        }
+      },
+      "deepseek": {
+        "enabled": false,
+        "model": "",
+        "timeoutSeconds": 30,
+        "retry": {
+          "enabled": true,
+          "maxAttempts": 2
+        }
+      },
+      "anthropic": {
+        "enabled": false,
+        "model": "",
+        "timeoutSeconds": 30,
+        "retry": {
+          "enabled": true,
+          "maxAttempts": 2
+        }
+      },
+      "gemini": {
+        "enabled": false,
+        "model": "",
+        "timeoutSeconds": 30,
+        "retry": {
+          "enabled": true,
+          "maxAttempts": 2
+        }
+      },
+      "zhipu": {
+        "enabled": false,
+        "model": "",
+        "timeoutSeconds": 30,
+        "retry": {
+          "enabled": true,
+          "maxAttempts": 2
+        }
+      }
+    }
+  }
+}
+

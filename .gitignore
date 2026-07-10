@@ -6,6 +6,9 @@ archive/
 __pycache__/
 *.pyc
 config/remote_secret.txt
+config/secrets*
+config/api_keys*
+*.key
 .env
 .DS_Store
 Thumbs.db
