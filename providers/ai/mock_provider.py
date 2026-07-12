@@ -101,13 +101,16 @@ class MockAIProvider:
             if metadata.get("simulateSchemaFailure"):
                 return {
                     "updatedAt": "2026-07-10",
-                    "status": "needs_review",
+                    "draft_status": "draft",
+                    "logic_status": "unknown_status",
                     "confidence": "medium",
                 }
             return {
+                "draft_status": "draft",
+                "logic_status": "valid",
+                "summary": "长期逻辑仍有效",
                 "updatedAt": "2026-07-10",
                 "validUntil": "2027-01-10",
-                "status": "needs_review",
                 "confidence": "medium",
                 "investmentThesis": "基于现有资料形成的长期逻辑草案。",
                 "coreDrivers": ["行业长期需求"],

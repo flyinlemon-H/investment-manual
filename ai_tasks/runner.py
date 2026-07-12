@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -11,6 +12,8 @@ from ai_context.long_term_logic_context import build_long_term_logic_context
 from providers.ai.base import AIResponse, repo_root, write_ai_json_artifact
 from providers.ai.mock_provider import MockAIProvider
 from providers.ai.registry import ProviderRegistry, create_default_registry
+from src.ai.response_normalizer import normalize_ai_response
+from src.queue.review_schema import DEFAULT_AVAILABLE_ACTIONS, validate_review_task
 
 from .registry import AITaskDefinition, AITaskRegistry, create_default_task_registry
 
@@ -32,6 +35,16 @@ FORBIDDEN_DRAFT_FIELDS = {
 }
 
 CONFIDENCE_VALUES = {"high", "medium", "low"}
+DRAFT_STATUS_VALUES = {"draft", "validated", "failed"}
+REVIEW_STATUS_VALUES = {"pending_review", "approved", "rejected"}
+LOGIC_STATUS_VALUES = {"valid", "weakened", "invalid", "insufficient_information"}
+LEGACY_LOGIC_STATUS_MAP = {
+    "valid": "valid",
+    "needs_review": "insufficient_information",
+    "weakened": "weakened",
+    "invalid": "invalid",
+    "insufficient_information": "insufficient_information",
+}
 LOCAL_TZ = timezone(timedelta(hours=8))
 
 
@@ -40,6 +53,7 @@ def run_ai_task(
     task_name: str,
     stock: dict[str, Any],
     provider_name: str | None = None,
+    model_name: str | None = None,
     task_registry: AITaskRegistry | None = None,
     provider_registry: ProviderRegistry | None = None,
     root_dir: str | Path | None = None,
@@ -48,6 +62,7 @@ def run_ai_task(
 ) -> dict[str, Any]:
     root = Path(root_dir) if root_dir is not None else repo_root()
     data_root = Path(output_data_dir) if output_data_dir is not None else root / "data"
+    review_root = root / "review_queue" if output_data_dir is None else data_root / "review_queue"
     tasks = task_registry or create_default_task_registry()
     providers = provider_registry or create_default_registry()
     task = tasks.get(task_name)
@@ -57,9 +72,10 @@ def run_ai_task(
     schema = _read_json(root / task.schemaPath)
     context = _build_context(task, stock, metadata)
     user_prompt = json.dumps(context, ensure_ascii=False, sort_keys=True)
+    selected_model = model_name or task.defaultModel
     provider_result = provider.generate(
         task_name=task.taskName,
-        model=task.defaultModel,
+        model=selected_model,
         system_prompt=prompt,
         user_prompt=user_prompt,
         response_schema=schema,
@@ -78,6 +94,8 @@ def run_ai_task(
 
     try:
         draft = _parse_content(provider_result["content"])
+        draft = normalize_ai_response(draft, task_name=task.taskName)
+        draft = _normalize_draft(task, draft)
         jsonschema.validate(instance=draft, schema=schema)
         warnings = _business_validate(task, draft, context)
     except Exception as exc:
@@ -99,16 +117,21 @@ def run_ai_task(
         request_id=provider_result.get("requestId") or "no_request_id",
         payload=draft_package,
     )
+    review_task_path = _write_review_task(review_root, draft_package, draft_path)
     return {
         "ok": True,
         "status": "pending_review",
         "exitCode": SUCCESS_EXIT,
         "draftPath": str(draft_path),
+        "reviewTaskPath": str(review_task_path),
         "failurePath": None,
         "requestId": provider_result.get("requestId"),
         "provider": provider_result.get("provider"),
         "model": provider_result.get("model"),
         "validation": draft_package["validation"],
+        "usage": draft_package["usage"],
+        "durationMs": draft_package["duration_ms"],
+        "estimatedCost": draft_package["estimated_cost"],
     }
 
 
@@ -123,6 +146,16 @@ def create_mock_provider_registry(*, log_dir: str | Path | None = None, metadata
         default=True,
     )
     return registry
+
+
+def create_live_provider_registry(*, provider_name: str, log_dir: str | Path | None = None) -> ProviderRegistry:
+    registry = ProviderRegistry(default_name=provider_name)
+    if provider_name == "deepseek":
+        from providers.ai.deepseek_provider import DeepSeekProvider
+
+        registry.register("deepseek", DeepSeekProvider(log_dir=log_dir), default=True)
+        return registry
+    raise ValueError(f"Live provider '{provider_name}' is not supported.")
 
 
 def _build_context(task: AITaskDefinition, stock: dict[str, Any], metadata: dict[str, Any] | None) -> dict[str, Any]:
@@ -154,14 +187,42 @@ def _parse_content(content: Any) -> dict[str, Any]:
     raise ValueError("Provider content must be a JSON object.")
 
 
+def _normalize_draft(task: AITaskDefinition, draft: dict[str, Any]) -> dict[str, Any]:
+    if task.taskName != "long_term_logic_review":
+        return draft
+    normalized = dict(draft)
+    legacy_status = str(normalized.get("status") or "").strip()
+    if "draft_status" not in normalized and legacy_status in DRAFT_STATUS_VALUES:
+        normalized["draft_status"] = legacy_status
+    if "draft_status" not in normalized:
+        normalized["draft_status"] = "draft"
+    if "logic_status" not in normalized and legacy_status in LEGACY_LOGIC_STATUS_MAP:
+        normalized["logic_status"] = LEGACY_LOGIC_STATUS_MAP[legacy_status]
+    if "logic_status" not in normalized:
+        normalized["logic_status"] = "insufficient_information"
+    if "summary" not in normalized:
+        normalized["summary"] = str(normalized.get("investmentThesis") or "长期逻辑待人工复核")
+    normalized.pop("status", None)
+    return normalized
+
+
 def _business_validate(task: AITaskDefinition, draft: dict[str, Any], context: dict[str, Any]) -> list[str]:
     if not task.requiresHumanApproval:
         raise ValueError("Task must require human approval.")
     forbidden = sorted(_find_forbidden_fields(draft))
     if forbidden:
         raise ValueError(f"Draft contains forbidden fields: {', '.join(forbidden)}.")
-    if draft.get("confidence") not in CONFIDENCE_VALUES:
+    if draft.get("confidence") is not None and draft.get("confidence") not in CONFIDENCE_VALUES:
         raise ValueError("Draft confidence is not allowed.")
+    if task.taskName == "long_term_logic_review":
+        if draft.get("draft_status") not in DRAFT_STATUS_VALUES:
+            raise ValueError("Draft draft_status is not allowed.")
+        if draft.get("draft_status") == "failed":
+            raise ValueError("Failed AI draft cannot enter review.")
+        if draft.get("review_status") is not None and draft.get("review_status") not in REVIEW_STATUS_VALUES:
+            raise ValueError("Draft review_status is not allowed.")
+        if draft.get("logic_status") not in LOGIC_STATUS_VALUES:
+            raise ValueError("Draft logic_status is not allowed.")
     if _date_less_than(draft.get("nextReviewDate"), draft.get("updatedAt")):
         raise ValueError("nextReviewDate must not be earlier than updatedAt.")
     if _date_less_than(draft.get("validUntil"), draft.get("updatedAt")):
@@ -203,28 +264,97 @@ def _draft_package(
     draft: dict[str, Any],
     warnings: list[str],
 ) -> dict[str, Any]:
+    usage = provider_result.get("usage") or {}
+    latency_ms = int(provider_result.get("latencyMs") or 0)
+    draft_id = _safe_id("draft", task.taskName, context["symbol"], provider_result.get("requestId") or "no_request_id")
+    created_at = datetime.now(LOCAL_TZ).isoformat()
     return {
+        "draft_id": draft_id,
+        "task_type": task.taskName,
         "taskName": task.taskName,
         "taskVersion": task.version,
         "status": "pending_review",
+        "draft_status": "validated",
+        "review_status": "pending_review",
         "requiresHumanApproval": True,
         "symbol": context["symbol"],
-        "generatedAt": datetime.now(LOCAL_TZ).isoformat(),
+        "created_at": created_at,
+        "generatedAt": created_at,
         "provider": provider_result.get("provider"),
         "model": provider_result.get("model"),
         "requestId": provider_result.get("requestId"),
         "promptVersion": task.promptVersion,
         "schemaVersion": task.schemaVersion,
         "basedOn": context.get("basedOn") or {},
-        "usage": provider_result.get("usage") or {},
-        "latencyMs": provider_result.get("latencyMs") or 0,
+        "usage": usage,
+        "latencyMs": latency_ms,
+        "duration_ms": latency_ms,
+        "result": draft,
         "draft": draft,
+        "validation_status": "passed",
+        "input_tokens": int(usage.get("inputTokens") or 0),
+        "output_tokens": int(usage.get("outputTokens") or 0),
+        "cached_tokens": int(usage.get("cachedInputTokens") or 0),
+        "estimated_cost": None,
+        "error_message": None,
         "validation": {
             "schemaValid": True,
             "businessValid": True,
             "warnings": warnings,
         },
     }
+
+
+def _write_review_task(review_root: Path, draft_package: dict[str, Any], draft_path: Path) -> Path:
+    result = draft_package.get("result") or {}
+    review_id = _safe_id("review", draft_package["draft_id"])
+    review_task = {
+        "review_id": review_id,
+        "source_input_id": draft_package["draft_id"],
+        "created_at": datetime.now(LOCAL_TZ).isoformat(),
+        "symbol": draft_package["symbol"],
+        "task_type": draft_package["task_type"],
+        "priority": "normal",
+        "status": "pending",
+        "summary": _review_summary(draft_package["symbol"], result),
+        "payload": {
+            "ai_draft_path": str(draft_path),
+            "draft_id": draft_package["draft_id"],
+            "result": result,
+            "validation_status": draft_package["validation_status"],
+            "usage": draft_package["usage"],
+            "duration_ms": draft_package["duration_ms"],
+            "estimated_cost": draft_package["estimated_cost"],
+        },
+        "available_actions": list(DEFAULT_AVAILABLE_ACTIONS),
+    }
+    validate_review_task(review_task)
+    pending_dir = review_root / "pending"
+    pending_dir.mkdir(parents=True, exist_ok=True)
+    review_path = pending_dir / f"{review_id}.json"
+    review_path.write_text(json.dumps(review_task, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
+    return review_path
+
+
+def _review_summary(symbol: str, result: dict[str, Any]) -> str:
+    thesis = str(result.get("investmentThesis") or "").strip()
+    if thesis:
+        return f"{symbol} 长期逻辑草案：{thesis[:80]}"
+    logic_status = str(result.get("logic_status") or "insufficient_information")
+    return f"{symbol} 长期逻辑草案待复核，逻辑状态：{logic_status}"
+
+
+def _safe_id(*parts: str) -> str:
+    raw = "_".join(str(part or "") for part in parts)
+    return re.sub(r"[^A-Za-z0-9_.-]+", "_", raw).strip("_") or "review_task"
+
+
+def _review_summary(symbol: str, result: dict[str, Any]) -> str:
+    thesis = str(result.get("summary") or result.get("investmentThesis") or "").strip()
+    if thesis:
+        return f"{symbol} 长期逻辑草案：{thesis[:80]}"
+    logic_status = str(result.get("logic_status") or "insufficient_information")
+    return f"{symbol} 长期逻辑草案待复核，逻辑状态：{logic_status}"
 
 
 def _write_failure(
@@ -268,9 +398,13 @@ def _write_failure(
         "status": "failed",
         "exitCode": exit_code,
         "draftPath": None,
+        "reviewTaskPath": None,
         "failurePath": str(failure_path),
         "requestId": provider_result.get("requestId"),
         "provider": provider_result.get("provider"),
         "model": provider_result.get("model"),
         "validation": payload["validation"],
+        "usage": provider_result.get("usage") or {},
+        "durationMs": provider_result.get("latencyMs") or 0,
+        "estimatedCost": None,
     }

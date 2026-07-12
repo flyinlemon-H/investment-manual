@@ -23,7 +23,7 @@
       },
       "deepseek": {
         "enabled": false,
-        "model": "",
+        "model": "deepseek-v4-flash",
         "timeoutSeconds": 30,
         "retry": {
           "enabled": true,
@@ -60,4 +60,3 @@
     }
   }
 }
-

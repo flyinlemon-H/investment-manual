@@ -5,39 +5,39 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "updatedAt",
-    "validUntil",
-    "status",
-    "confidence",
-    "investmentThesis",
-    "coreDrivers",
-    "fundamentalSupport",
-    "longTermRisks",
-    "invalidationConditions",
-    "nextReviewDate",
-    "informationGaps",
-    "notes"
+    "draft_status",
+    "logic_status",
+    "summary"
   ],
   "properties": {
-    "updatedAt": {
+    "draft_status": {
+      "type": "string",
+      "enum": ["draft", "validated", "failed"]
+    },
+    "review_status": {
+      "type": "string",
+      "enum": ["pending_review", "approved", "rejected"]
+    },
+    "logic_status": {
+      "type": "string",
+      "enum": ["valid", "weakened", "invalid", "insufficient_information"]
+    },
+    "summary": {
       "type": "string",
       "minLength": 1
+    },
+    "updatedAt": {
+      "type": "string"
     },
     "validUntil": {
-      "type": "string",
-      "minLength": 1
-    },
-    "status": {
-      "type": "string",
-      "enum": ["valid", "needs_review", "weakened", "invalid", "insufficient_information"]
+      "type": "string"
     },
     "confidence": {
       "type": "string",
       "enum": ["high", "medium", "low"]
     },
     "investmentThesis": {
-      "type": "string",
-      "minLength": 1
+      "type": "string"
     },
     "coreDrivers": {
       "type": "array",
@@ -59,8 +59,7 @@
       "items": { "type": "string" }
     },
     "nextReviewDate": {
-      "type": "string",
-      "minLength": 1
+      "type": "string"
     },
     "informationGaps": {
       "type": "array",

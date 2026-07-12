@@ -55,9 +55,9 @@ class ProviderRegistry:
 
 
 def create_default_registry(config: dict[str, Any] | None = None) -> ProviderRegistry:
-    """Create the Sprint01-A default registry.
+    """Create the default registry.
 
-    Only the mock provider is enabled in this foundation sprint.
+    Live providers are only registered when explicitly enabled by the caller.
     """
 
     from .mock_provider import MockAIProvider
@@ -66,5 +66,14 @@ def create_default_registry(config: dict[str, Any] | None = None) -> ProviderReg
     default_name = ai_config.get("default") or "mock"
     registry = ProviderRegistry(default_name=default_name)
     registry.register("mock", MockAIProvider(), default=True)
-    return registry
+    providers_config = ai_config.get("providers") or {}
+    deepseek_config = providers_config.get("deepseek") or {}
+    if deepseek_config.get("enabled") and ai_config.get("liveEnabled"):
+        from .deepseek_provider import DeepSeekProvider
 
+        registry.register(
+            "deepseek",
+            DeepSeekProvider(timeout_seconds=int(deepseek_config.get("timeoutSeconds") or 60)),
+            default=default_name == "deepseek",
+        )
+    return registry

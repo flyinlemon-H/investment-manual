@@ -5,13 +5,14 @@ added behind the registry boundary in later API sprints.
 """
 
 from .base import AIProvider, ensure_ai_runtime_dirs
+from .deepseek_provider import DeepSeekProvider
 from .mock_provider import MockAIProvider
 from .registry import ProviderRegistry
 
 __all__ = [
     "AIProvider",
+    "DeepSeekProvider",
     "MockAIProvider",
     "ProviderRegistry",
     "ensure_ai_runtime_dirs",
 ]
-
