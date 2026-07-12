@@ -7125,6 +7125,21 @@ function closeLongLogicModal(){
   const modal=document.getElementById('longLogicModal');
   if(modal)modal.classList.remove('show');
 }
+function bindStockDetailActions(stock){
+  const mainEl=document.getElementById('main');
+  if(!mainEl)return;
+  mainEl.querySelectorAll('[data-workspace]').forEach(btn=>btn.addEventListener('click',e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    detailWorkspace=btn.dataset.workspace||'plan';
+    renderStockDetail();
+  }));
+  mainEl.querySelectorAll('[data-detail-action]').forEach(btn=>btn.addEventListener('click',e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    handleDetailAction(btn.dataset.detailAction,stock);
+  }));
+}
 function renderStockDetail(){
   const s=state.stocks.find(x=>x.id===detailStockId);
   if(!s){detailStockId=null;render();return}
@@ -7141,23 +7156,7 @@ function renderStockDetail(){
   if(backToListBtn)backToListBtn.addEventListener('click',closeStockDetail);
   document.querySelectorAll('[data-v13-return-review]').forEach(btn=>btn.addEventListener('click',returnToActiveV13Review));
   document.querySelectorAll('[data-v13-ai-discussion-review]').forEach(btn=>btn.addEventListener('click',()=>copyV13AiDiscussionPrompt(btn.dataset.v13AiDiscussionReview)));
-  const mainEl=document.getElementById('main');
-  if(mainEl)mainEl.onclick=e=>{
-    const workspaceBtn=e.target.closest&&e.target.closest('[data-workspace]');
-    if(workspaceBtn){
-      e.preventDefault();
-      e.stopPropagation();
-      detailWorkspace=workspaceBtn.dataset.workspace||'plan';
-      renderStockDetail();
-      return;
-    }
-    const actionBtn=e.target.closest&&e.target.closest('[data-detail-action]');
-    if(actionBtn){
-      e.preventDefault();
-      e.stopPropagation();
-      handleDetailAction(actionBtn.dataset.detailAction,s);
-    }
-  };
+  bindStockDetailActions(s);
   document.querySelectorAll('[data-v13-detail-event]').forEach(row=>row.addEventListener('click',()=>openV13EventDecisionReview(row.dataset.v13DetailStock,row.dataset.v13DetailEvent)));
   document.querySelectorAll('[data-collection-action="save"]').forEach(b=>b.addEventListener('click',saveCollectionInputs));
   document.querySelectorAll('[data-collection-prompt]').forEach(b=>b.addEventListener('click',()=>copyCollectionPrompt(b.dataset.collectionPrompt)));
