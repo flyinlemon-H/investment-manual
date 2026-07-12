@@ -12,6 +12,7 @@ from src.decision.decision_integration import (
     decision_outcome_to_plan_update_request,
     discussion_result_to_decision_outcome,
 )
+from src.decision.discussion_result_import import import_discussion_result_to_decision_outcome
 from src.decision.decision_schema import (
     validate_decision_result,
     validate_discussion_result,
@@ -66,6 +67,82 @@ class DecisionIntegrationTests(unittest.TestCase):
         self.assertEqual(outcome["source_review_id"], "review-1")
         self.assertEqual(outcome["symbol"], "601138.SS")
         validate_decision_result(outcome)
+
+    def test_import_discussion_result_no_change(self) -> None:
+        discussion = create_discussion_result(
+            discussion_id="discussion-import-no-change",
+            source_review_id="review-import-no-change",
+            symbol="601138.SS",
+            final_conclusion="\u7ee7\u7eed\u89c2\u5bdf\u3002",
+            user_constraints=[],
+            change_required=False,
+            operation_required=False,
+            created_at="2026-07-12T16:00:00+08:00",
+        )
+
+        outcome = import_discussion_result_to_decision_outcome(
+            discussion,
+            task_type="long_term_logic_review",
+            created_at="2026-07-12T16:01:00+08:00",
+        )
+
+        self.assertEqual(outcome["outcome_type"], "no_change")
+        self.assertEqual(outcome["conclusion"], discussion["final_conclusion"])
+        validate_decision_result(outcome)
+
+    def test_import_discussion_result_plan_update(self) -> None:
+        raw_json = (
+            "{"
+            '"discussion_id":"discussion-import-plan",'
+            '"source_review_id":"review-import-plan",'
+            '"symbol":"601138.SS",'
+            '"final_conclusion":"\u9700\u8981\u66f4\u65b0\u8ba1\u5212\u3002",'
+            '"user_constraints":["\u4e0d\u6267\u884c\u4ea4\u6613"],'
+            '"change_required":true,'
+            '"operation_required":false,'
+            '"created_at":"2026-07-12T16:00:00+08:00"'
+            "}"
+        )
+
+        outcome = import_discussion_result_to_decision_outcome(
+            raw_json,
+            task_type="long_term_logic_review",
+            created_at="2026-07-12T16:01:00+08:00",
+        )
+
+        self.assertEqual(outcome["outcome_type"], "plan_update")
+        validate_decision_result(outcome)
+
+    def test_import_discussion_result_operation_request(self) -> None:
+        discussion = create_discussion_result(
+            discussion_id="discussion-import-operation",
+            source_review_id="review-import-operation",
+            symbol="601138.SS",
+            final_conclusion="\u9700\u8981\u8fdb\u5165\u64cd\u4f5c\u5f55\u5165\u3002",
+            user_constraints=[],
+            change_required=False,
+            operation_required=True,
+            created_at="2026-07-12T16:00:00+08:00",
+        )
+
+        outcome = import_discussion_result_to_decision_outcome(discussion, task_type="long_term_logic_review")
+
+        self.assertEqual(outcome["outcome_type"], "operation_request")
+        validate_decision_result(outcome)
+
+    def test_invalid_discussion_result_import_does_not_generate_outcome(self) -> None:
+        invalid = {
+            "discussion_id": "discussion-invalid",
+            "source_review_id": "review-invalid",
+            "symbol": "601138.SS",
+            "final_conclusion": "\u7f3a\u5c11 operation_required",
+            "user_constraints": [],
+            "change_required": False,
+            "created_at": "2026-07-12T16:00:00+08:00",
+        }
+
+        with self.assertRaisesRegex(ValueError, "operation_required"):
+            import_discussion_result_to_decision_outcome(invalid, task_type="long_term_logic_review")
 
     def test_discussion_result_to_plan_update_decision_outcome(self) -> None:
         discussion = create_discussion_result(

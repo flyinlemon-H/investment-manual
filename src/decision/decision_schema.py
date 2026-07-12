@@ -10,6 +10,7 @@ DISCUSSION_RESULT_REQUIRED_FIELDS = [
     "final_conclusion",
     "user_constraints",
     "change_required",
+    "operation_required",
     "created_at",
 ]
 
@@ -65,6 +66,8 @@ def validate_discussion_result(result: dict[str, Any]) -> None:
         raise ValueError("discussion result user_constraints must only contain strings")
     if not isinstance(result["change_required"], bool):
         raise ValueError("discussion result change_required must be a boolean")
+    if not isinstance(result["operation_required"], bool):
+        raise ValueError("discussion result operation_required must be a boolean")
 
 
 def validate_decision_result(result: dict[str, Any]) -> None:

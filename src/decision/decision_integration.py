@@ -32,6 +32,7 @@ def create_discussion_result(
     final_conclusion: str,
     user_constraints: list[str] | None = None,
     change_required: bool = False,
+    operation_required: bool = False,
     created_at: str | None = None,
 ) -> dict[str, Any]:
     result = {
@@ -41,6 +42,7 @@ def create_discussion_result(
         "final_conclusion": final_conclusion,
         "user_constraints": user_constraints or [],
         "change_required": change_required,
+        "operation_required": operation_required,
         "created_at": created_at or now_iso(),
     }
     validate_discussion_result(result)
@@ -115,6 +117,8 @@ def decision_outcome_to_operation_request(
 
 
 def infer_outcome_type(discussion_result: dict[str, Any]) -> str:
+    if discussion_result.get("operation_required"):
+        return "operation_request"
     if not discussion_result.get("change_required"):
         return "no_change"
     text = " ".join(

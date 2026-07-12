@@ -1093,6 +1093,27 @@ function v13HomeRecommendationTaskPanel(){
   const lowSection=low.length?`<details style="margin-top:10px"><summary class="card-note" style="cursor:pointer">🟡/⚪ 待关注与信息补充（${low.length}）</summary><div class="trig-list" style="margin-top:6px">${low.map(v13RecommendationRow).join('')}</div></details>`:'';
   return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--seal)"><div class="card-title">V13 当前复核任务</div><div class="card-note">按复核优先级展示；每只标的只显示一条主任务。计划类任务必须先通过计划有效性判断。</div>${highSection('P4')}${highSection('P3')}${lowSection}</div>${refreshPanel}`;
 }
+function v13AiDecisionReviewRows(){
+  if(!window.AiDecisionReviewReader||typeof window.AiDecisionReviewReader.pendingRecords!=='function')return [];
+  return window.AiDecisionReviewReader.pendingRecords();
+}
+function v13AiDecisionReviewStockFor(record){
+  const symbol=String(record&&record.symbol||'').trim().toUpperCase();
+  if(!symbol)return null;
+  return (state.stocks||[]).find(stock=>[stock.code,stock.symbol,stock.id,stock.name].map(x=>String(x||'').trim().toUpperCase()).includes(symbol))||null;
+}
+function v13AiDecisionReviewHomePanel(){
+  const rows=v13AiDecisionReviewRows();
+  if(!rows.length)return '';
+  const rowHtml=rows.slice(0,6).map(record=>{
+    const stock=v13AiDecisionReviewStockFor(record);
+    const stockName=stock?(stock.name||stock.code||record.symbol):(record.symbol||'未匹配标的');
+    const stockId=stock&&stock.id?stock.id:'';
+    return `<div class="trig-row" data-v13-ai-review-stock="${esc(stockId)}" style="${stockId?'cursor:pointer':''}"><div class="trig-name">${esc(stockName)} <span class="muted">· ${esc(record.taskTypeLabel||'AI复核')}</span></div><div class="trig-dist">${esc(record.reviewStatusLabel||'待复核')}</div><div class="trig-desc"><b>${esc(formatChineseText(record.aiConclusion||'暂无 AI 结论'))}</b><div class="card-note">AI判断：${esc(record.businessStatusLabel||'—')} · 下一步：${esc(record.outcomeLabel||'等待讨论确认')}</div></div></div>`;
+  }).join('');
+  const extra=rows.length>6?`<div class="card-note" style="margin-top:8px">还有 ${rows.length-6} 条 AI 决策复核任务未展示。</div>`:'';
+  return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--purple)"><div class="card-title">AI决策复核待处理任务（${rows.length}）</div><div class="card-note">只读读取 AI Draft / Review Task / Decision Outcome；不写入长期逻辑、计划、持仓或交易。</div><div class="trig-list" style="margin-top:8px">${rowHtml}</div>${extra}</div>`;
+}
 function v13HomeEventTaskPanel(){
   const recommendationPanel=v13HomeRecommendationTaskPanel();
   if(recommendationPanel)return recommendationPanel;
@@ -2594,8 +2615,16 @@ function renderDashboard(){
   const disciplinePanel=disciplineRows.length?`<div class="card" style="margin-bottom:14px;border-left:3px solid var(--gold)"><div class="card-title">纪律规则提醒（${disciplineRows.length} 项）</div><div class="trig-list">${disciplineRows.join('')}</div></div>`:'';
   const noPriceHint=noPriceRows.length?`<div class="alert" style="margin-bottom:14px">有 ${noPriceRows.length} 只标的缺少有效价格/市值，仓位和再平衡计算可能不完整。</div>`:'';
   const fxRiskHint=isDefaultFx()?'<div class="alert" style="margin-bottom:14px">汇率使用默认值，港股市值和仓位占比可能有偏差。可到「工具」页更新 HKD→CNY 汇率。</div>':'';
-  main.innerHTML=`${v13HomeEventTaskPanel()}${updateChecklistPanel()}${triggeredPanel}${disciplinePanel}${rebalPanel}${noPriceHint}${fxRiskHint}<div class="dash"><div class="card"><div class="card-title">按主题分布</div>${bars(themeRows)}</div><div class="card"><div class="card-title">按仓位角色分布</div>${bars(roleRows)}</div></div>`;
+  main.innerHTML=`${v13AiDecisionReviewHomePanel()}${v13HomeEventTaskPanel()}${updateChecklistPanel()}${triggeredPanel}${disciplinePanel}${rebalPanel}${noPriceHint}${fxRiskHint}<div class="dash"><div class="card"><div class="card-title">按主题分布</div>${bars(themeRows)}</div><div class="card"><div class="card-title">按仓位角色分布</div>${bars(roleRows)}</div></div>`;
   document.querySelectorAll('[data-v13-rec-stock]').forEach(el=>el.addEventListener('click',()=>openV13DecisionReview(el.dataset.v13RecStock,el.dataset.v13RecId)));
+  document.querySelectorAll('[data-v13-ai-review-stock]').forEach(el=>el.addEventListener('click',()=>{
+    if(!el.dataset.v13AiReviewStock)return;
+    openStockDetail(el.dataset.v13AiReviewStock);
+    setTimeout(()=>{
+      const target=document.querySelector('[data-v13-ai-review-panel]');
+      if(target&&typeof target.scrollIntoView==='function')target.scrollIntoView({behavior:'smooth',block:'start'});
+    },80);
+  }));
   document.querySelectorAll('[data-v13-plan-refresh-start]').forEach(btn=>btn.addEventListener('click',e=>{
     e.stopPropagation();
     openV13PlanRefreshTool();
@@ -4827,6 +4856,25 @@ function renderPlanCenter(){
   document.getElementById('main').innerHTML=`<div class="card detail-title-card"><div class="entry-head"><div><div class="entry-name">${esc(s.name||'未命名标的')}</div><div class="entry-code">计划中心 · ${esc(s.code||s.symbol||'无代码')}</div></div><div class="detail-title-actions"><button class="btn small" id="planCenterRefreshBtn" type="button">刷新计划</button><button class="btn ghost small" id="planCenterBackBtn" type="button">返回分析</button></div></div></div><div class="card" style="margin-bottom:14px;border-left:4px solid var(--gold)"><div class="card-title">最近刷新</div><div class="dash" style="margin:0"><div><div class="card-title">刷新时间</div><div class="card-num" style="font-size:20px">${esc(refresh.updated||'尚未刷新')}</div></div><div><div class="card-title">有效期</div><div class="card-note">${refresh.validUntil?`至 ${esc(refresh.validUntil)}`:'—'}</div><div class="card-note">${refresh.maxDays?`约 ${esc(refresh.maxDays)} 天`:'—'}</div></div><div style="grid-column:span 2"><div class="card-title">下次建议刷新</div><div class="card-note">${esc(refresh.validUntil||'尚未刷新')}</div></div></div></div><div class="card" style="margin-bottom:14px"><div class="card-title">当前有效计划</div><div class="card-note">数据来源：v13DisplayActivePlans()。只展示 active plans；如存在 AI 刷新版计划，仅展示新版 active plans。</div>${v13PlanCenterSummary(s)}</div><details class="card" style="margin-bottom:14px"><summary class="card-title" style="cursor:pointer">查看详细计划</summary><div style="margin-top:10px">${v13PlanCenterDetailSections(s)}</div></details><details class="card" style="margin-bottom:14px"><summary class="card-title" style="cursor:pointer">历史计划</summary><div style="margin-top:10px">${v13PlanCenterHistory(s)}</div></details>`;
   document.getElementById('planCenterRefreshBtn').addEventListener('click',()=>openV13PlanRefreshTool(s.id));
   document.getElementById('planCenterBackBtn').addEventListener('click',closePlanCenter);
+}
+function v13AiDecisionReviewDetailPanel(stock){
+  if(!window.AiDecisionReviewReader||typeof window.AiDecisionReviewReader.recordsForStock!=='function')return '';
+  const rows=window.AiDecisionReviewReader.recordsForStock(stock);
+  if(!rows.length){
+    return `<div class="card" data-v13-ai-review-panel style="margin-bottom:12px;border-left:4px solid var(--purple)"><div class="card-title">AI决策复核</div><div class="card-note">当前标的暂无 AI Draft / Review Task / Decision Outcome。</div></div>`;
+  }
+  const latest=rows[0];
+  const aiResultDetails=record=>`<details style="margin-top:10px"><summary class="card-note" style="cursor:pointer">查看完整AI结果</summary><pre class="text" style="white-space:pre-wrap;max-width:none;margin-top:8px">${esc(JSON.stringify(record.result||{},null,2))}</pre></details>`;
+  const current=`<div class="card" style="margin-top:10px;background:rgba(255,255,255,.5)"><div class="card-title">当前AI复核</div><div class="card-note">${esc(latest.createdAt||'—')} · ${esc(latest.taskTypeLabel||'AI复核')}</div><div class="text" style="max-width:none;margin-top:8px"><b>AI结论：</b>${esc(formatChineseText(latest.aiConclusion||'暂无 AI 结论'))}${latest.outcomeConclusion?`<br><b>下一步说明：</b>${esc(formatChineseText(latest.outcomeConclusion))}`:''}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" type="button" data-v13-ai-discussion-review="${esc(latest.reviewId||'')}" ${latest.discussionPrompt?'':'disabled'}>与AI讨论</button></div>${aiResultDetails(latest)}</div>`;
+  const history=rows.length>1?`<details style="margin-top:10px"><summary class="card-note" style="cursor:pointer">历史AI复核记录（${rows.length-1}）</summary><div style="margin-top:8px">${rows.slice(1,6).map(record=>`<div class="trig-row"><div class="trig-name">${esc(record.createdAt||'—')} <span class="muted">· ${esc(record.taskTypeLabel||'AI复核')}</span></div><div class="trig-dist">${esc(record.reviewStatusLabel||'待复核')}</div><div class="trig-desc">${esc(formatChineseText(record.aiConclusion||'暂无 AI 结论'))}<div class="card-note">AI判断：${esc(record.businessStatusLabel||'—')} · 下一步：${esc(record.outcomeLabel||'等待讨论确认')}</div></div></div>`).join('')}</div></details>`:'';
+  return `<div class="card" data-v13-ai-review-panel style="margin-bottom:12px;border-left:4px solid var(--purple)"><div class="card-title">AI决策复核</div><div class="card-note">只读展示 AI Draft / Review Task / Decision Outcome；不执行审批，不写正式投资数据。</div><div class="dash" style="margin:10px 0 0"><div><div class="card-title">AI判断</div><div class="card-note">${esc(latest.businessStatusLabel||'—')}</div></div><div><div class="card-title">处理状态</div><div class="card-note">${esc(latest.reviewStatusLabel||'待复核')}</div></div><div style="grid-column:span 2"><div class="card-title">下一步</div><div class="card-note">${esc(latest.outcomeLabel||'等待讨论确认')}</div></div></div>${current}${history}</div>`;
+}
+function copyV13AiDiscussionPrompt(reviewId){
+  const prompt=window.AiDecisionReviewReader&&typeof window.AiDecisionReviewReader.discussionPromptForReview==='function'
+    ?window.AiDecisionReviewReader.discussionPromptForReview(reviewId)
+    :'';
+  if(!prompt)return alert('当前 AI 复核尚未生成讨论 Prompt。');
+  copyText(prompt,'与AI讨论 Prompt 已复制。');
 }
 function stockWorkspaceSection(key,title,summary,body,color){
   const active=detailWorkspace===key;
@@ -7064,10 +7112,11 @@ function renderStockDetail(){
   const actual=info&&info.actualPct!==null?info.actualPct:null;
   const deviation=info&&info.deviation!==null?`${info.deviation>=0?'+':''}${info.deviation.toFixed(1)}%`:'—';
   document.getElementById('summary').innerHTML=`标的详情 · <strong>${esc(s.name)}</strong> · ${esc(s.role||'—')} · ${esc(s.theme||'—')}`;
-  document.getElementById('main').innerHTML=`<div data-v13-detail-anchor="overview">${detailHeroPanel(s,mv,actual,deviation)}</div>${v13ReviewReturnBanner(s)}${stockWorkspaceAccordion(s)}`;
+  document.getElementById('main').innerHTML=`<div data-v13-detail-anchor="overview">${detailHeroPanel(s,mv,actual,deviation)}</div>${v13ReviewReturnBanner(s)}${v13AiDecisionReviewDetailPanel(s)}${stockWorkspaceAccordion(s)}`;
   const backToListBtn=document.getElementById('backToListBtn');
   if(backToListBtn)backToListBtn.addEventListener('click',closeStockDetail);
   document.querySelectorAll('[data-v13-return-review]').forEach(btn=>btn.addEventListener('click',returnToActiveV13Review));
+  document.querySelectorAll('[data-v13-ai-discussion-review]').forEach(btn=>btn.addEventListener('click',()=>copyV13AiDiscussionPrompt(btn.dataset.v13AiDiscussionReview)));
   document.querySelectorAll('[data-detail-action]').forEach(b=>b.addEventListener('click',()=>handleDetailAction(b.dataset.detailAction,s)));
   document.querySelectorAll('[data-workspace]').forEach(b=>b.addEventListener('click',()=>{
     detailWorkspace=b.dataset.workspace||'plan';

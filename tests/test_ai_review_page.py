@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from scripts.generate_ai_review_page import render_decision_outcome_viewer
+from scripts.generate_ai_review_page import discussion_import_js, render_decision_outcome_viewer, render_discussion_result_import
 
 
 class AIReviewPageTests(unittest.TestCase):
@@ -37,6 +37,27 @@ class AIReviewPageTests(unittest.TestCase):
         self.assertIn("\u8fdb\u5165\u64cd\u4f5c\u6d41\u7a0b", html)
         self.assertIn("\u8fdb\u5165\u64cd\u4f5c\u5f55\u5165", html)
         self.assertNotIn("\u67e5\u770b\u8ba1\u5212\u66f4\u65b0\u8bf7\u6c42", html)
+
+    def test_discussion_result_import_entry_is_rendered(self) -> None:
+        html = render_discussion_result_import(
+            review_id="review-1",
+            task_type="long_term_logic_review",
+            symbol="601138.SS",
+        )
+
+        self.assertIn("\u5bfc\u5165\u8ba8\u8bba\u7ed3\u679c", html)
+        self.assertIn('data-discussion-import="1"', html)
+        self.assertIn('data-source-review-id="review-1"', html)
+        self.assertIn('data-symbol="601138.SS"', html)
+
+    def test_discussion_result_import_script_contains_required_rules(self) -> None:
+        script = discussion_import_js()
+
+        self.assertIn("operation_required", script)
+        self.assertIn("change_required", script)
+        self.assertIn("operation_request", script)
+        self.assertIn("plan_update", script)
+        self.assertIn("no_change", script)
 
 
 if __name__ == "__main__":
