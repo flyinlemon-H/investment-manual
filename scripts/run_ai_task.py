@@ -13,6 +13,7 @@ if str(ROOT) not in sys.path:
 from ai_tasks.registry import create_default_task_registry
 from ai_tasks.runner import INPUT_ERROR_EXIT, create_live_provider_registry, create_mock_provider_registry, run_ai_task
 from providers.ai.deepseek_provider import DEEPSEEK_DEFAULT_MODEL
+from scripts.generate_ai_decision_review_data import DEFAULT_OUTPUT, main as generate_ai_decision_review_data
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -72,6 +73,16 @@ def main(argv: list[str] | None = None) -> int:
         print(f"reviewTaskPath: {result['reviewTaskPath']}")
     if result.get("failurePath"):
         print(f"failurePath: {result['failurePath']}")
+    if result.get("ok"):
+        bridge_ok, bridge_message = refresh_bridge_data()
+        print(f"bridgeData: {'success' if bridge_ok else 'failed'}")
+        print(f"bridgeDataPath: {DEFAULT_OUTPUT}")
+        if bridge_message:
+            print(f"bridgeDataMessage: {bridge_message}")
+        print("nextStep: 刷新或重新打开 index.html 查看 AI决策复核结果。")
+    else:
+        print("bridgeData: skipped")
+        print("bridgeDataMessage: AI调用或校验失败，未刷新桥接数据；请检查 failurePath。")
     usage = result.get("usage") or {}
     print(f"inputTokens: {usage.get('inputTokens', 0)}")
     print(f"cachedTokens: {usage.get('cachedInputTokens', 0)}")
@@ -79,6 +90,16 @@ def main(argv: list[str] | None = None) -> int:
     print(f"durationMs: {result.get('durationMs', 0)}")
     print(f"estimatedCost: {result.get('estimatedCost')}")
     return int(result.get("exitCode") or 0)
+
+
+def refresh_bridge_data() -> tuple[bool, str]:
+    try:
+        exit_code = generate_ai_decision_review_data()
+        if exit_code == 0:
+            return True, "AI 决策复核桥接数据已刷新。"
+        return False, f"generate_ai_decision_review_data exited with {exit_code}"
+    except Exception as exc:
+        return False, str(exc)
 
 
 def find_stock(data: dict[str, Any], symbol: str) -> dict[str, Any]:

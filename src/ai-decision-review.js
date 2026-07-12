@@ -207,6 +207,34 @@
     return records().filter(record=>!['approved','rejected'].includes(record.reviewStatus));
   }
 
+  function isValidHomeRecord(record){
+    const draft=obj(record&&record.raw&&record.raw.draft);
+    const provider=text(record&&record.provider||draft.provider,'').toLowerCase();
+    const model=text(record&&record.model||draft.model,'').toLowerCase();
+    const validation=text(draft.validation_status||draft.validationStatus||record&&record.raw&&record.raw.reviewTask&&record.raw.reviewTask.payload&&record.raw.reviewTask.payload.validation_status,'').toLowerCase();
+    const conclusion=text(record&&record.aiConclusion,'');
+    return record&&record.source==='ai_draft'
+      && record.symbol
+      && record.taskType
+      && validation==='passed'
+      && conclusion
+      && conclusion!=='暂无 AI 结论'
+      && provider!=='mock'
+      && model!=='mock-model'
+      && provider.indexOf('mock')<0
+      && model.indexOf('mock')<0;
+  }
+
+  function homePendingRecords(){
+    const byKey={};
+    pendingRecords().filter(isValidHomeRecord).forEach(record=>{
+      const key=stockKey(record.symbol)+'|'+text(record.taskType,'');
+      const current=byKey[key];
+      if(!current||String(record.createdAt||'').localeCompare(String(current.createdAt||''))>0)byKey[key]=record;
+    });
+    return Object.values(byKey).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+  }
+
   function recordsForStock(stock){
     return records().filter(record=>matchesStock(stock,record.symbol));
   }
@@ -214,6 +242,7 @@
   window.AiDecisionReviewReader={
     records,
     pendingRecords,
+    homePendingRecords,
     recordsForStock,
     outcomeMessage,
     businessStatusLabel,

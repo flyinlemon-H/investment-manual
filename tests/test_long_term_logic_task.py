@@ -243,6 +243,9 @@ class LongTermLogicTaskTests(unittest.TestCase):
 
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
         self.assertIn("draftPath:", completed.stdout)
+        self.assertIn("bridgeData: success", completed.stdout)
+        self.assertIn("nextStep:", completed.stdout)
+        self.assertTrue((ROOT / "data" / "ai_decision_review_data.js").exists())
 
     def test_cli_input_error_returns_four(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
