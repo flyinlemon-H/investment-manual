@@ -1109,10 +1109,10 @@ function v13AiDecisionReviewHomePanel(){
     const stock=v13AiDecisionReviewStockFor(record);
     const stockName=stock?(stock.name||stock.code||record.symbol):(record.symbol||'未匹配标的');
     const stockId=stock&&stock.id?stock.id:'';
-    return `<div class="trig-row" data-v13-ai-review-stock="${esc(stockId)}" style="${stockId?'cursor:pointer':''}"><div class="trig-name">${esc(stockName)} <span class="muted">· ${esc(record.taskTypeLabel||'AI复核')}</span></div><div class="trig-dist">${esc(record.reviewStatusLabel||'待复核')}</div><div class="trig-desc"><b>${esc(formatChineseText(record.aiConclusion||'暂无 AI 结论'))}</b><div class="card-note">AI判断：${esc(record.businessStatusLabel||'—')} · 下一步：${esc(record.outcomeLabel||'等待讨论确认')}</div></div></div>`;
+    return `<div class="trig-row" data-v13-ai-review-stock="${esc(stockId)}" style="${stockId?'cursor:pointer':''}"><div class="trig-name">${esc(stockName)} <span class="muted">· ${esc(record.taskTypeLabel||'AI复核')}</span></div><div class="trig-dist">${esc(record.priority==='urgent'?'优先处理':'待处理')}</div><div class="trig-desc"><b>${esc(formatChineseText(record.userSummary||record.aiConclusion||'暂无 AI 结论'))}</b></div></div>`;
   }).join('');
   const extra=rows.length>6?`<div class="card-note" style="margin-top:8px">还有 ${rows.length-6} 条 AI 决策复核任务未展示。</div>`:'';
-  return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--purple)"><div class="card-title">AI决策复核待处理任务（${rows.length}）</div><div class="card-note">只读展示 AI 复核草案、处理状态和下一步；不写入长期逻辑、计划、持仓或交易。</div><div class="trig-list" style="margin-top:8px">${rowHtml}</div>${extra}</div>`;
+  return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--purple)"><div class="card-title">待处理任务（${rows.length}）</div><div class="card-note">仅显示仍需人工决策且尚未完成的 AI 复核任务。</div><div class="trig-list" style="margin-top:8px">${rowHtml}</div>${extra}</div>`;
 }
 function v13HomeEventTaskPanel(){
   const recommendationPanel=v13HomeRecommendationTaskPanel();
@@ -4863,15 +4863,24 @@ function renderPlanCenter(){
 function v13AiDecisionReviewDetailPanel(stock){
   if(!window.AiDecisionReviewReader||typeof window.AiDecisionReviewReader.recordsForStock!=='function')return '';
   const rows=window.AiDecisionReviewReader.recordsForStock(stock);
-  if(!rows.length){
-    return `<div class="card" data-v13-ai-review-panel style="margin-bottom:12px;border-left:4px solid var(--purple)"><div class="card-title">AI决策复核</div><div class="card-note">当前标的暂无 AI 复核任务。</div></div>`;
-  }
-  const latest=rows[0];
+  if(!rows.length)return '';
+  const latest=rows.find(record=>record.isCurrent)||rows[0];
+  const resolutionLabel=record=>window.AiDecisionReviewReader&&typeof window.AiDecisionReviewReader.resolutionLabel==='function'?window.AiDecisionReviewReader.resolutionLabel(record.resolutionType):'';
   const aiResultDetails=record=>`<details style="margin-top:10px"><summary class="card-note" style="cursor:pointer">查看完整AI结果</summary><pre class="text" style="white-space:pre-wrap;max-width:none;margin-top:8px">${esc(JSON.stringify(record.result||{},null,2))}</pre></details>`;
-  const current=`<div class="card" style="margin-top:10px;background:rgba(255,255,255,.5)"><div class="card-title">当前AI复核</div><div class="card-note">${esc(latest.createdAt||'—')} · ${esc(latest.taskTypeLabel||'AI复核')}</div><div class="text" style="max-width:none;margin-top:8px"><b>AI结论：</b>${esc(formatChineseText(latest.aiConclusion||'暂无 AI 结论'))}${latest.outcomeConclusion?`<br><b>下一步说明：</b>${esc(formatChineseText(latest.outcomeConclusion))}`:''}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" type="button" data-v13-ai-discussion-review="${esc(latest.reviewId||'')}" ${latest.discussionPrompt?'':'disabled'}>与AI讨论</button></div>${aiResultDetails(latest)}</div>`;
-  const history=rows.length>1?`<details style="margin-top:10px"><summary class="card-note" style="cursor:pointer">历史AI复核记录（${rows.length-1}）</summary><div style="margin-top:8px">${rows.slice(1,6).map(record=>`<div class="trig-row"><div class="trig-name">${esc(record.createdAt||'—')} <span class="muted">· ${esc(record.taskTypeLabel||'AI复核')}</span></div><div class="trig-dist">${esc(record.reviewStatusLabel||'待复核')}</div><div class="trig-desc">${esc(formatChineseText(record.aiConclusion||'暂无 AI 结论'))}<div class="card-note">AI判断：${esc(record.businessStatusLabel||'—')} · 下一步：${esc(record.outcomeLabel||'等待讨论确认')}</div></div></div>`).join('')}</div></details>`:'';
-  return `<div class="card" data-v13-ai-review-panel style="margin-bottom:12px;border-left:4px solid var(--purple)"><div class="card-title">AI决策复核</div><div class="card-note">只读展示 AI 判断、处理状态和下一步；不执行审批，不写正式投资数据。</div><div class="dash" style="margin:10px 0 0"><div><div class="card-title">AI判断</div><div class="card-note">${esc(latest.businessStatusLabel||'—')}</div></div><div><div class="card-title">处理状态</div><div class="card-note">${esc(latest.reviewStatusLabel||'待复核')}</div></div><div style="grid-column:span 2"><div class="card-title">下一步</div><div class="card-note">${esc(latest.outcomeLabel||'等待讨论确认')}</div></div></div>${current}${history}</div>`;
+  const row=record=>`<div class="trig-row"><div class="trig-name">${esc(record.createdAt||'—')} <span class="muted">· ${esc(record.taskTypeLabel||'AI复核')}</span></div><div class="trig-dist">${esc(resolutionLabel(record)||(record.actionable?'待处理':'历史'))}</div><div class="trig-desc">${esc(formatChineseText(record.userSummary||record.aiConclusion||'暂无 AI 结论'))}${record.resolvedAt?`<div class="card-note">完成时间：${esc(record.resolvedAt)}</div>`:''}<div class="modal-actions" style="justify-content:flex-start;margin-top:6px"><button class="btn ghost small" type="button" data-v13-ai-discussion-review="${esc(record.reviewId||'')}" ${record.discussionPrompt?'':'disabled'}>与AI讨论</button></div>${aiResultDetails(record)}</div></div>`;
+  return `<details class="card" data-v13-ai-review-panel style="margin-bottom:12px;border-left:4px solid var(--purple)"><summary class="card-title" style="cursor:pointer">AI处理历史（${rows.length}）</summary><div class="card-note" style="margin-top:8px">历史复核和技术审计信息；不会自动写入正式投资数据。</div><div class="trig-list" style="margin-top:8px">${rows.map(row).join('')}</div>${latest.actionable&&!latest.resolved?v13PlanUpdateDraftPanel(stock,latest):''}</details>`;
 }
+function v13PlanUpdateDraftPanel(stock,record){
+  if(!record||record.outcomeType!=='plan_update')return '';
+  const module=window.PlanUpdateDraft,ctx=module&&module.context?module.context(record.reviewId,stock):null;
+  if(!module||!module.eligible(ctx))return '<div class="alert" style="margin-top:10px">尚未形成计划更新请求。本页面不会生成空白计划草案。</div>';
+  const saved=module.saved(ctx.request.request_id),validation=saved&&saved.validation||null;
+  const applied=v13PlanApplicationStatus(saved&&saved.draft&&saved.draft.draft_id);
+  const status=applied?`计划更新已应用：${applied.applied_at||'—'}，新增 ${arrSafe(applied.created_plan_ids).length} 条，归档 ${arrSafe(applied.archived_plan_ids).length} 条，审计记录 ${applied.application_id||'—'}。`:(saved&&saved.status==='application_request_generated'?'已生成计划应用请求，尚未写入正式计划。':(saved?(validation&&validation.business_valid?'计划草案已通过校验，尚未写入正式计划。':'草案存在，但尚未通过校验。'):'等待生成Prompt并导入计划草案。'));
+  return `<div class="card" style="margin-top:10px;border-left:4px solid var(--gold)"><div class="card-title">计划更新草案</div><div class="card-note">来源决策：${esc(ctx.outcome.decision_id||'—')} · 请求：${esc(ctx.request.request_id||'—')}</div><div class="text" style="max-width:none;margin-top:8px">${esc(status)}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn small" type="button" data-detail-action="generate-plan-update-prompt">生成计划更新Prompt</button><button class="btn ghost small" type="button" data-detail-action="import-plan-update-draft">导入计划草案</button><button class="btn ghost small" type="button" data-detail-action="view-plan-update-diff" ${saved&&validation&&validation.business_valid?'':'disabled'}>查看计划差异</button></div></div>`;
+}
+function arrSafe(value){return Array.isArray(value)?value:[]}
+function v13PlanApplicationStatus(draftId){const payload=window.PLAN_APPLICATION_STATUS,rows=payload&&Array.isArray(payload.applications)?payload.applications:[];return rows.find(row=>row&&row.draft_id===draftId&&row.result==='applied')||null}
 function copyV13AiDiscussionPrompt(reviewId){
   const prompt=window.AiDecisionReviewReader&&typeof window.AiDecisionReviewReader.discussionPromptForReview==='function'
     ?window.AiDecisionReviewReader.discussionPromptForReview(reviewId)
@@ -4918,12 +4927,24 @@ function v13StockEventCompactPanel(stock){
     :`当前有 ${events.length} 条事件，最高优先级：${priority(top)||v13EventPhaseLabel(top.phase)||'—'}`;
   return `<div class="card" style="margin-bottom:12px;border-left:3px solid var(--seal)"><div class="card-title">当前事件摘要</div><div class="card-note">${esc(formatChineseText(summary))}</div>${workspaceDetails('查看事件详情',v13StockEventPanel(stock))}</div>`;
 }
+function v13WorkspaceAiReviewSummary(stock,taskTypes,title){
+  if(!window.AiDecisionReviewReader||typeof window.AiDecisionReviewReader.recordsForStock!=='function')return '';
+  const accepted=Array.isArray(taskTypes)?taskTypes:[];
+  const rows=window.AiDecisionReviewReader.recordsForStock(stock).filter(record=>accepted.includes(record.taskType));
+  if(!rows.length)return '';
+  const latest=rows.find(record=>record.isCurrent)||rows[0];
+  const resolution=window.AiDecisionReviewReader.resolutionLabel?window.AiDecisionReviewReader.resolutionLabel(latest.resolutionType):'';
+  return `<div class="card" style="margin-bottom:12px;border-left:4px solid var(--purple)"><div class="card-title">${esc(title)}</div><div class="text" style="max-width:none;margin-top:6px"><b>${esc(formatChineseText(latest.userSummary||latest.aiConclusion||'复核结果待确认'))}</b></div><div class="card-note" style="margin-top:6px">${esc(resolution||(latest.actionable?'仍需人工处理':'已转入历史'))} · ${esc(latest.createdAt||'—')}</div></div>`;
+}
 function planWorkspacePanel(stock){
   const plans=v13DisplayActivePlans(stock&&stock.plans);
   const refresh=v13PlanCenterRefreshInfo(stock,plans);
   const refreshPanel=`<div class="card" style="margin-bottom:12px;background:rgba(255,255,255,.56)"><div class="card-title">刷新计划</div><div class="card-note">刷新时间 ${esc(refresh.updated||'尚未刷新')} · 下次建议刷新 ${esc(refresh.validUntil||'尚未刷新')}</div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px"><button class="btn small" type="button" data-detail-action="open-plan-refresh">刷新计划</button></div></div>`;
   const planSummary=`<div class="card" style="margin-bottom:12px"><div class="card-title">当前有效计划摘要</div>${v13PlanCompactSummary(stock)}</div>`;
-  return `${refreshPanel}${v13StockEventCompactPanel(stock)}${planSummary}${workspaceDetails('查看详细计划',v13PlanCenterDetailSections(stock))}${workspaceDetails('查看历史计划',v13PlanCenterHistory(stock))}${workspaceDetails('查看仓位与计划详情',positionPlanPanel(stock))}`;
+  const reviewRows=window.AiDecisionReviewReader&&typeof window.AiDecisionReviewReader.recordsForStock==='function'?window.AiDecisionReviewReader.recordsForStock(stock):[];
+  const planReview=reviewRows.find(record=>record.isCurrent&&record.outcomeType==='plan_update')||reviewRows.find(record=>record.outcomeType==='plan_update');
+  const planUpdate=planReview?(planReview.resolutionType==='plan_applied'?`<div class="card" style="margin-bottom:12px;border-left:4px solid var(--gold)"><div class="card-title">计划更新已应用</div><div class="card-note">应用时间 ${esc(planReview.applicationAppliedAt||planReview.resolvedAt||'—')} · 新增 ${esc(planReview.createdPlanCount||0)} 条 · 归档 ${esc(planReview.archivedPlanCount||0)} 条 · 审计编号 ${esc(planReview.applicationAuditId||planReview.sourceApplicationId||'—')}</div></div>`:v13PlanUpdateDraftPanel(stock,planReview)):'';
+  return `${refreshPanel}${v13StockEventCompactPanel(stock)}${planUpdate}${planSummary}${workspaceDetails('查看详细计划',v13PlanCenterDetailSections(stock))}${workspaceDetails('查看历史计划',v13PlanCenterHistory(stock))}${workspaceDetails('查看仓位与计划详情',positionPlanPanel(stock))}`;
 }
 function workspaceSummaryCard(title,items,detailTitle,detailBody,color='var(--teal)',copyAction='',importAction='',extraAction='',extraLabel=''){
   const rows=(Array.isArray(items)?items:[]).filter(Boolean).slice(0,4);
@@ -4935,7 +4956,7 @@ function technicalWorkspacePanel(stock){
   const st=review.shortTermTechnical||{};
   const cy=review.cycleTechnical||{};
   const body=`${technicalAnalysisPanel(stock)}${trendRiskManagementPanel(stock)}${technicalSignalPanel(stock)}`;
-  return workspaceSummaryCard('技术面摘要',[review.finalTechnicalConclusion||st.technicalSummary||'待补充技术结论',`趋势 ${zhTrendStatus(st.trendStatus)||'—'}`,`周期 ${cyclePositionText(cy.cyclePosition)}`,st.actionHint||'继续观察'],'查看技术面详情 / Prompt / JSON 导入',body,'var(--teal)','copy-technical-prompt','import-technical-json');
+  return `${marketDataFreshnessPanel(stock)}${v13WorkspaceAiReviewSummary(stock,['technical_review'],'最近技术复核')}${workspaceSummaryCard('技术面摘要',[review.finalTechnicalConclusion||st.technicalSummary||'待补充技术结论',`趋势 ${zhTrendStatus(st.trendStatus)||'—'}`,`周期 ${cyclePositionText(cy.cyclePosition)}`,st.actionHint||'继续观察'],'查看技术面详情 / Prompt / JSON 导入',body,'var(--teal)','copy-technical-prompt','import-technical-json')}`;
 }
 function newsWorkspacePanel(stock){
   const rc=normalizeRecentCatalyst(stock.recentCatalyst,stock);
@@ -4950,7 +4971,7 @@ function fundamentalWorkspacePanel(stock){
   const flow=stock.type==='etf'?'':financialAnalysisFlowPanel();
   const f=fundamentalAnalysis(stock);
   const body=`${main}${financial}${flow}`;
-  return workspaceSummaryCard('基本面摘要',[f.finalSummary||f.summary||'基本面资料待补充',`综合 ${fmtMaybe(f.score,1)} / 10`,f.financialSummary?`财务 ${f.financialSummary}`:'财务质量待补充',f.valuationSummary?`估值 ${f.valuationSummary}`:'估值资料待补充'],'查看基本面详情 / Prompt / JSON 导入',body,'var(--purple)','copy-fundamental-prompt','import-fundamental-json');
+  return `${v13WorkspaceAiReviewSummary(stock,['fundamental_review'],'最近基本面复核')}${workspaceSummaryCard('基本面摘要',[f.finalSummary||f.summary||'基本面资料待补充',`综合 ${fmtMaybe(f.score,1)} / 10`,f.financialSummary?`财务 ${f.financialSummary}`:'财务质量待补充',f.valuationSummary?`估值 ${f.valuationSummary}`:'估值资料待补充'],'查看基本面详情 / Prompt / JSON 导入',body,'var(--purple)','copy-fundamental-prompt','import-fundamental-json')}`;
 }
 function valuationAllocationWorkspacePanel(stock){
   const total=getEstimatedTotalAssets();
@@ -4960,16 +4981,27 @@ function valuationAllocationWorkspacePanel(stock){
   const ad=normalizeAllocationDecision(stock.allocationDecision,stock);
   const vd=normalizeValuationData(stock.valuationData);
   const body=`${valuationAnalysisPanel(stock)}${valuationSignalPanel(stock)}${allocationDecisionPanel(stock)}${positionSummary}${positionManagementReviewPanel(stock)}`;
-  return workspaceSummaryCard('估值/配置摘要',[vd.valuationConclusion||'暂无估值结论',ad.conclusion||'暂无配置决策',`当前 ${info&&info.actualPct!==null?fmtMaybe(info.actualPct,1)+'%':'—'} · 目标 ${fmtMaybe(strategy.targetWeight,1)}%`,info&&info.deviation!==null?`偏离 ${(info.deviation>=0?'+':'')+fmtMaybe(info.deviation,1)}%`:'仓位偏离待计算'],'查看估值/配置详情 / Prompt / JSON 导入',body,'var(--ink2)','copy-valuation-lookup-prompt','import-valuation-json');
+  return `${v13WorkspaceAiReviewSummary(stock,['valuation_review'],'最近估值/配置复核')}${workspaceSummaryCard('估值/配置摘要',[vd.valuationConclusion||'暂无估值结论',ad.conclusion||'暂无配置决策',`当前 ${info&&info.actualPct!==null?fmtMaybe(info.actualPct,1)+'%':'—'} · 目标 ${fmtMaybe(strategy.targetWeight,1)}%`,info&&info.deviation!==null?`偏离 ${(info.deviation>=0?'+':'')+fmtMaybe(info.deviation,1)}%`:'仓位偏离待计算'],'查看估值/配置详情 / Prompt / JSON 导入',body,'var(--ink2)','copy-valuation-lookup-prompt','import-valuation-json')}`;
 }
 function longTermMemoPanel(stock){
   const risks=[stock.sellRule,stock.riskNotes,stock.notes].map(x=>String(x||'').trim()).filter(Boolean);
   return `<div class="card" style="margin-bottom:14px"><div class="card-title">投资备忘录</div><div class="text" style="max-width:none"><b>持有逻辑：</b>${esc(formatChineseText(stock.thesis||stock.notes||'—'))}<br><br><b>加仓规则：</b>${esc(formatChineseText(stock.buyRule||'—'))}<br><br><b>卖出/降仓：</b>${esc(formatChineseText(stock.sellRule||'—'))}</div>${risks.length?`<div class="card-note" style="margin-top:10px">长期风险线索：${risks.slice(0,3).map(formatChineseText).map(esc).join('；')}</div>`:''}</div>`;
 }
+function v13LongTermReviewSummary(stock){
+  if(!window.AiDecisionReviewReader||typeof window.AiDecisionReviewReader.recordsForStock!=='function')return '';
+  const rows=window.AiDecisionReviewReader.recordsForStock(stock).filter(record=>record.taskType==='long_term_logic_review');
+  if(!rows.length)return '';
+  const latest=rows.find(record=>record.isCurrent)||rows[0];
+  const status=latest.userSummary||latest.aiConclusion||'长期逻辑复核结果待确认';
+  const next=latest.nextReviewDue||((latest.actionable&&!latest.resolved)?'待本次任务处理':'未安排');
+  return `<div class="card" style="margin-bottom:12px;border-left:4px solid var(--purple)"><div class="card-title">最近复核</div><div class="text" style="max-width:none;margin-top:6px"><b>${esc(formatChineseText(status))}</b></div><div class="dash" style="margin:10px 0 0"><div><div class="card-title">最近复核时间</div><div class="card-note">${esc(latest.lastReviewedAt||latest.createdAt||'—')}</div></div><div><div class="card-title">下次建议复核</div><div class="card-note">${esc(next)}</div></div></div><div class="card-note" style="margin-top:8px">AI摘要：${esc(formatChineseText(latest.aiConclusion||'暂无摘要'))}</div></div>`;
+}
 function longTermWorkspacePanel(stock){
   const l=normalizeLongTermLogic(stock.longTermLogic,stock);
-  const body=`${longTermLogicPanel(stock)}${longTermMemoPanel(stock)}`;
-  return workspaceSummaryCard('长期逻辑摘要',[l.investmentThesis?longLogicThesisExcerpt(l.investmentThesis):'待补充长期逻辑',`状态 ${longLogicStatusText(l.logicStatus)}`,`有效期 ${l.validUntil||'—'}`,`长期风险 ${l.longTermRisks.length} 项`],'查看长期逻辑详情 / Prompt / JSON 导入',body,'var(--purple)','copy-long-term-logic-prompt','import-long-term-logic-json','api-long-term-logic-review','API更新');
+  const reviewRows=window.AiDecisionReviewReader&&typeof window.AiDecisionReviewReader.recordsForStock==='function'?window.AiDecisionReviewReader.recordsForStock(stock).filter(record=>record.taskType==='long_term_logic_review'):[];
+  const review=reviewRows.find(record=>record.isCurrent)||reviewRows[0];
+  const body=`${v13LongTermReviewSummary(stock)}${longTermLogicPanel(stock)}${longTermMemoPanel(stock)}`;
+  return workspaceSummaryCard('长期逻辑摘要',[review&&review.userSummary?review.userSummary:(l.investmentThesis?longLogicThesisExcerpt(l.investmentThesis):'待补充长期逻辑'),`状态 ${longLogicStatusText(l.logicStatus)}`,review&&review.nextReviewDue?`下次复核 ${review.nextReviewDue}`:`有效期 ${l.validUntil||'—'}`,`长期风险 ${l.longTermRisks.length} 项`],'查看长期逻辑详情 / Prompt / JSON 导入',body,'var(--purple)','copy-long-term-logic-prompt','import-long-term-logic-json','api-long-term-logic-review','API更新');
 }
 function stockWorkspaceAccordion(stock){
   const activeTitle={plan:'计划',technical:'技术面',news:'新闻催化',fundamental:'基本面',valuation:'估值/配置',longterm:'长期逻辑'}[detailWorkspace]||'计划';
@@ -7032,6 +7064,10 @@ function handleDetailAction(action,stock){
   const s=stock||state.stocks.find(x=>x.id===detailStockId);
   if(!action)return;
   if(action==='refresh'&&s)refreshOnePrice(s.id);
+  if(action==='update-daily-kline'&&s)copyDailyKlineUpdateCommand(s);
+  if(action==='generate-plan-update-prompt'&&s)generatePlanUpdatePromptForStock(s);
+  if(action==='import-plan-update-draft'&&s)openPlanUpdateDraftImport(s);
+  if(action==='view-plan-update-diff'&&s)openPlanUpdateDraftDiff(s);
   if(action==='view-plan-center'&&s)openPlanCenter();
   if(action==='open-plan-refresh'&&s)openV13PlanRefreshTool(s.id);
   if(action==='long-logic')openLongLogicModal();
@@ -7081,6 +7117,95 @@ function handleDetailAction(action,stock){
   if(action==='import-financial')openFinancialImportModal();
   if(action==='apply-financial')applyFinancialSignalToAnalysis();
 }
+function marketDataFreshnessPanel(stock){
+  const freshness=stock&&stock.marketDataFreshness&&typeof stock.marketDataFreshness==='object'?stock.marketDataFreshness:{};
+  const klineStatus={current:'最新',stale:'需更新',failed:'更新失败'}[freshness.kline_status]||'尚未同步';
+  const technicalDate=freshness.technical_analysis_updated_at||normalizeDataFreshness(stock.dataFreshness).technicalUpdatedAt||'未更新';
+  const advice=freshness.technical_analysis_stale?'日K已变化，建议更新技术面分析':'技术面依据未落后于最新完整日K';
+  const task=window.MARKET_TASK_STATUS&&typeof window.MARKET_TASK_STATUS==='object'?window.MARKET_TASK_STATUS:null;
+  const automatic=!task?'状态未知':(task.task_exists&&task.enabled?'已启用':'未启用');
+  const run=task&&task.latest_run||{};
+  const runResult=run.status==='success'?'成功':(run.status==='failed'?'失败':'尚无记录');
+  const logTime=run.finished_at||task&&task.last_run_time||'';
+  return `<div class="card" style="margin-bottom:12px;border-left:4px solid var(--teal)"><div class="card-title">日K与技术面新鲜度</div><div class="dash" style="margin:8px 0 0"><div><div class="card-title">日K更新时间</div><div class="card-note">${esc(freshness.fetched_at?String(freshness.fetched_at).replace('T',' ').slice(0,19):'尚未更新')}</div></div><div><div class="card-title">最新完整交易日</div><div class="card-note">${esc(freshness.last_trade_date||'尚未更新')}</div></div><div><div class="card-title">数据来源</div><div class="card-note">${esc(freshness.provider||'—')}</div></div><div><div class="card-title">数据状态</div><div class="card-note">${esc(klineStatus)}</div></div><div><div class="card-title">技术分析更新时间</div><div class="card-note">${esc(technicalDate)}</div></div><div><div class="card-title">建议</div><div class="card-note">${esc(advice)}</div></div></div><div class="card" style="margin-top:10px;background:rgba(255,255,255,.5)"><div class="card-title">盘后自动更新</div><div class="chips"><span class="chip ${automatic==='已启用'?'role':'tag'}">自动更新：${esc(automatic)}</span><span class="chip tag">上次结果：${esc(runResult)}</span></div><div class="card-note" style="margin-top:8px">下次运行：${esc(task&&task.next_run_time||'—')} · 上次运行：${esc(task&&task.last_run_time||run.started_at||'—')} · 最新日志时间：${esc(logTime||'—')}</div></div><div class="modal-actions" style="justify-content:flex-start;margin-top:10px;flex-wrap:wrap"><button class="btn ghost small" type="button" data-detail-action="update-daily-kline">更新日K</button><button class="btn small" type="button" data-detail-action="copy-technical-prompt">更新技术面</button></div><div class="card-note" style="margin-top:8px">更新日K只复制本地运行命令，不调用 AI；自动任务状态来自只读桥接，浏览器不直接控制 Windows Task Scheduler。</div></div>`;
+}
+function copyDailyKlineUpdateCommand(stock){
+  const symbol=String(stock&& (stock.code||stock.symbol)||'').trim();
+  if(!symbol)return alert('当前标的缺少行情代码，无法生成日K更新命令。');
+  const command=`python scripts/update_daily_kline.py --symbol ${symbol}`;
+  copyText(command,'日K更新命令已复制。请在项目根目录终端运行；完成后重新加载主程序。');
+}
+function latestPlanUpdateContext(stock){
+  if(!window.PlanUpdateDraft||!window.AiDecisionReviewReader)return null;
+  const record=window.AiDecisionReviewReader.recordsForStock(stock).find(item=>item.outcomeType==='plan_update');
+  return record?window.PlanUpdateDraft.context(record.reviewId,stock):null;
+}
+async function generatePlanUpdatePromptForStock(stock){
+  const ctx=latestPlanUpdateContext(stock);
+  if(!ctx||!window.PlanUpdateDraft.eligible(ctx))return alert('尚未形成有效的计划更新请求。');
+  try{
+    const generatedAt=new Date().toISOString(),text=window.PlanUpdateDraft.prompt(ctx.record.reviewId,stock);
+    const snapshot=await window.PlanUpdateDraft.snapshotHash(stock.plans||[]);
+    window.PlanUpdateDraft.savePromptMeta(ctx.request.request_id,ctx.outcome.decision_id,snapshot);
+    copyText(text,`计划更新 Prompt 已复制。生成时间：${generatedAt}；来源决策：${ctx.outcome.decision_id}。`);
+    renderStockDetail();
+  }catch(err){alert('生成失败：'+(err&&err.message?err.message:String(err)))}
+}
+function ensurePlanUpdateDraftImportModal(){
+  let el=document.getElementById('planUpdateDraftImportModal');
+  if(el)return el;
+  el=document.createElement('div');el.className='modal-bg import-layer';el.id='planUpdateDraftImportModal';
+  el.innerHTML=`<div class="modal"><h2>导入计划更新草案</h2><div class="modal-sub" id="planUpdateDraftImportMeta">草案只保存在当前浏览器，不写入正式计划。</div><div class="form-row"><label>粘贴计划草案 JSON</label><textarea id="planUpdateDraftImportText" style="min-height:300px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px"></textarea></div><div class="form-row"><label>或选择本地 JSON 文件</label><input id="planUpdateDraftFile" type="file" accept=".json,application/json"></div><div id="planUpdateDraftValidation" class="card-note"></div><div class="modal-actions"><button class="btn ghost" id="planUpdateDraftCancel" type="button">取消</button><button class="btn ghost" id="planUpdateDraftExport" type="button">导出草案JSON</button><button class="btn" id="planUpdateDraftValidate" type="button">校验并保存草案</button></div></div>`;
+  document.body.appendChild(el);
+  el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show')});
+  document.getElementById('planUpdateDraftCancel').addEventListener('click',()=>el.classList.remove('show'));
+  document.getElementById('planUpdateDraftFile').addEventListener('change',e=>{const file=e.target.files&&e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{document.getElementById('planUpdateDraftImportText').value=String(reader.result||'')};reader.readAsText(file,'utf-8')});
+  document.getElementById('planUpdateDraftValidate').addEventListener('click',validateAndSavePlanUpdateDraft);
+  document.getElementById('planUpdateDraftExport').addEventListener('click',exportPlanUpdateDraftJson);
+  return el;
+}
+let planUpdateDraftModalStockId='';
+function openPlanUpdateDraftImport(stock){
+  const ctx=latestPlanUpdateContext(stock);if(!ctx||!window.PlanUpdateDraft.eligible(ctx))return alert('尚未形成有效的计划更新请求。');
+  planUpdateDraftModalStockId=stock.id;const modal=ensurePlanUpdateDraftImportModal(),saved=window.PlanUpdateDraft.saved(ctx.request.request_id);
+  document.getElementById('planUpdateDraftImportMeta').textContent=`标的 ${stock.name||stock.code} · 来源决策 ${ctx.outcome.decision_id} · 草案不会写入正式 plans。`;
+  document.getElementById('planUpdateDraftImportText').value=saved&&saved.draft?JSON.stringify(saved.draft,null,2):'';
+  document.getElementById('planUpdateDraftValidation').textContent='';modal.classList.add('show');
+}
+async function validateAndSavePlanUpdateDraft(){
+  const stock=state.stocks.find(item=>item.id===planUpdateDraftModalStockId);if(!stock)return;
+  const ctx=latestPlanUpdateContext(stock);let draft;
+  try{draft=JSON.parse(document.getElementById('planUpdateDraftImportText').value)}catch(err){document.getElementById('planUpdateDraftValidation').textContent='JSON解析失败：'+err.message;return}
+  const validation=window.PlanUpdateDraft.validate(draft,ctx),box=document.getElementById('planUpdateDraftValidation');
+  if(validation.errors.length){box.innerHTML=`<div class="alert">校验失败：${validation.errors.map(esc).join('；')}</div>${validation.warnings.length?`<div class="card-note">提醒：${validation.warnings.map(esc).join('；')}</div>`:''}`;return}
+  const snapshot=await window.PlanUpdateDraft.snapshotHash(stock.plans||[]);
+  window.PlanUpdateDraft.saveRequestDraft(ctx.request.request_id,draft,validation,snapshot);
+  box.innerHTML=`<div class="hint">计划草案已通过校验，尚未写入正式计划。${validation.warnings.length?` 提醒：${validation.warnings.map(esc).join('；')}`:''}</div>`;
+  renderStockDetail();
+}
+function exportPlanUpdateDraftJson(){
+  const stock=state.stocks.find(item=>item.id===planUpdateDraftModalStockId);if(!stock)return;
+  const ctx=latestPlanUpdateContext(stock),saved=ctx&&window.PlanUpdateDraft.saved(ctx.request.request_id);if(!saved||!saved.draft)return alert('当前没有可导出的计划草案。');
+  const blob=new Blob([JSON.stringify(saved.draft,null,2)],{type:'application/json;charset=utf-8'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=`plan_update_draft_${ctx.request.symbol}_${todayDate()}.json`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function planDraftValue(plan){return {action:plan&& (plan.action_type||plan.type||plan.action||'—'),price:plan&& (plan.trigger_price??plan.triggerPrice??plan.price??null),quantity:plan&& (plan.quantity??plan.shares??null),status:plan&& (plan.status||'active'),reason:plan&& (plan.reason||plan.summary||plan.note||'—')}}
+function planDraftActionLabel(action){return {add_review:'加仓复核',add:'加仓',buy:'加仓',reduce_review:'减仓复核',reduce:'减仓',sell:'减仓',take_profit:'利润兑现',hold_review:'观察/防守',hold:'观察',observe:'观察',risk_review:'风险复核',stop_loss:'趋势防守',risk:'风险复核'}[action]||action||'计划'}
+function openPlanUpdateDraftDiff(stock){
+  const ctx=latestPlanUpdateContext(stock),saved=ctx&&window.PlanUpdateDraft.saved(ctx.request.request_id);if(!saved||!saved.validation||!saved.validation.business_valid)return alert('计划草案尚未通过校验。');
+  const rows=window.PlanUpdateDraft.diff(stock.plans,saved.draft),el=ensureAnalysisModal();
+  const card=row=>{const old=planDraftValue(row.current),next=planDraftValue(row.proposed);return `<div class="trig-row"><div class="trig-name"><span class="chip ${row.change==='新增'?'buy':row.change==='归档'?'sell':'tag'}">${esc(row.change)}</span> ${esc(planDraftActionLabel(next.action||old.action))}</div><div class="trig-dist">${next.price!==null?esc(next.price)+'元':'价格待复核'}</div><div class="trig-desc"><b>当前：</b>${esc(planDraftActionLabel(old.action))} ${old.price!==null?esc(old.price)+'元':'—'} · 数量 ${old.quantity??'待复核'} · ${esc(old.reason)}<br><b>建议：</b>${esc(planDraftActionLabel(next.action))} ${next.price!==null?esc(next.price)+'元':'—'} · 数量 ${next.quantity??'待复核'} · ${esc(next.reason)}<br><span class="muted">变化原因：${esc(next.reason||'保留原计划')}</span></div></div>`};
+  const counts=rows.reduce((out,row)=>(out[row.change]=(out[row.change]||0)+1,out),{}),unitWarnings=arrSafe(saved.validation.warnings).filter(x=>/单位|minTradeUnit|quantity|数量/i.test(x));
+  el.innerHTML=`<div class="modal"><h2>计划差异与应用前复核</h2><div class="modal-sub">当前为应用前复核。查看差异不会修改正式计划。</div><div class="chips"><span class="chip tag">保留 ${counts['保留']||0}</span><span class="chip tag">修改 ${counts['修改']||0}</span><span class="chip buy">新增 ${counts['新增']||0}</span><span class="chip sell">归档 ${counts['归档']||0}</span><span class="chip sell">删除建议 ${counts['删除建议']||0}</span></div>${arrSafe(saved.draft.risk_flags).length?`<div class="alert" style="margin-top:10px">风险提示：${arrSafe(saved.draft.risk_flags).map(esc).join('；')}</div>`:''}${unitWarnings.length?`<div class="alert" style="margin-top:10px">数量与交易单位提醒：${unitWarnings.map(esc).join('；')}</div>`:''}<div style="margin-top:10px">${rows.map(card).join('')||'<div class="empty">暂无差异。</div>'}</div><div class="alert" style="margin-top:10px">确认后将修改正式计划，但不会执行交易或改变持仓。浏览器只生成应用请求，仍需本地Python脚本执行。</div><div class="modal-actions"><button class="btn ghost" id="planUpdateDraftAbandon" type="button">放弃本次草案</button><button class="btn ghost" id="planUpdateDiffClose" type="button">关闭</button><button class="btn" id="planUpdateConfirmApplication" type="button">确认应用计划更新</button></div></div>`;el.classList.add('show');document.getElementById('planUpdateDiffClose').addEventListener('click',()=>el.classList.remove('show'));document.getElementById('planUpdateDraftAbandon').addEventListener('click',()=>abandonPlanUpdateDraft(stock,ctx,el));document.getElementById('planUpdateConfirmApplication').addEventListener('click',()=>confirmPlanUpdateApplication(stock,ctx,saved,rows,el));
+}
+function abandonPlanUpdateDraft(stock,ctx,modal){if(!confirm('确认放弃本次计划草案？正式计划不会变化。'))return;window.PlanUpdateDraft.abandon(ctx.request.request_id);modal.classList.remove('show');renderStockDetail()}
+async function confirmPlanUpdateApplication(stock,ctx,saved,rows,modal){
+  if(saved.status!=='pending_confirmation')return alert('当前草案不是待确认状态，无法生成应用请求。');
+  const currentHash=await window.PlanUpdateDraft.snapshotHash(stock.plans||[]);if(currentHash!==saved.current_plan_snapshot_hash)return alert('当前计划已变化，请重新生成计划草案。');
+  if(!confirm('二次确认：确认后将生成正式计划应用请求，但不会执行交易或改变持仓。是否继续？'))return;
+  const now=new Date().toISOString(),application={application_id:`plan_application_${Date.now()}_${Math.random().toString(36).slice(2,8)}`,draft_id:saved.draft.draft_id,source_request_id:ctx.request.request_id,source_decision_id:ctx.outcome.decision_id,symbol:ctx.request.symbol,current_plan_snapshot_hash:currentHash,confirmed_changes:{draft:saved.draft,validation:saved.validation,diff:rows},user_confirmed_at:now,source_draft_status:'pending_confirmation',status:'confirmed_pending_application',created_at:now};
+  window.PlanUpdateDraft.markApplicationRequest(ctx.request.request_id,application);downloadPlanApplicationRequest(application);modal.classList.remove('show');renderStockDetail();alert('已生成计划应用请求，尚未写入正式计划。请先运行 apply_plan_update.py --dry-run，确认后再使用 --apply。');
+}
+function downloadPlanApplicationRequest(application){const blob=new Blob([JSON.stringify(application,null,2)],{type:'application/json;charset=utf-8'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=`plan_application_${application.symbol}_${todayDate()}.json`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function ensureLongLogicModal(){
   let el=document.getElementById('longLogicModal');
   if(el)return el;

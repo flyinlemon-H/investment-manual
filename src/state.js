@@ -1002,7 +1002,23 @@ function normalizePriceHistory(stockOrHistory){
   raw.forEach(row=>{
     const date=normalizePriceDate(row&&row.date);
     const close=normalizeClosePrice(row&&row.close);
-    if(date&&close>0)byDate.set(date,{date,close});
+    if(!date||!(close>0))return;
+    const numberOrNull=value=>{
+      const number=Number(value);
+      return isFinite(number)?number:null;
+    };
+    const normalized={...row,date,close};
+    ['open','high','low','volume','amount'].forEach(key=>{
+      const value=numberOrNull(row&&row[key]);
+      if(value!==null)normalized[key]=value;
+      else delete normalized[key];
+    });
+    normalized.adjustment=String(row&&row.adjustment||'unknown');
+    normalized.price_basis=String(row&&row.price_basis||'unknown');
+    normalized.provider=String(row&&row.provider||'manual');
+    normalized.fetched_at=String(row&&row.fetched_at||'');
+    normalized.is_complete_bar=row&&row.is_complete_bar!==undefined?Boolean(row.is_complete_bar):true;
+    byDate.set(date,normalized);
   });
   return Array.from(byDate.values()).sort((a,b)=>a.date.localeCompare(b.date));
 }

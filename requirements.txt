@@ -1,0 +1,14 @@
+# Cloud
+supabase
+
+# Configuration
+python-dotenv
+
+# Data Analysis
+pandas
+
+# HTTP
+requests
+
+# Excel
+openpyxl

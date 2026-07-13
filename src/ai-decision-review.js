@@ -20,7 +20,13 @@
       aiDrafts:arr(bridged.aiDrafts).concat(arr(appState.aiDrafts),arr(nested.aiDrafts)),
       reviewTasks:arr(bridged.reviewTasks).concat(arr(appState.reviewTasks),arr(nested.reviewTasks)),
       decisionOutcomes:arr(bridged.decisionOutcomes).concat(arr(appState.decisionOutcomes),arr(nested.decisionOutcomes)),
-      discussionRecords:arr(bridged.discussionRecords).concat(arr(appState.discussionRecords),arr(nested.discussionRecords))
+      discussionRecords:arr(bridged.discussionRecords).concat(arr(appState.discussionRecords),arr(nested.discussionRecords)),
+      planUpdateRequests:arr(bridged.planUpdateRequests).concat(arr(appState.planUpdateRequests),arr(nested.planUpdateRequests)),
+      taskResolutions:arr(bridged.taskResolutions).concat(arr(appState.taskResolutions),arr(nested.taskResolutions)),
+      taskProjections:arr(bridged.taskProjections).concat(arr(appState.taskProjections),arr(nested.taskProjections)),
+      homeTaskProjections:arr(bridged.homeTaskProjections),
+      historyProjections:arr(bridged.historyProjections),
+      systemIssues:arr(bridged.systemIssues)
     };
   }
 
@@ -171,6 +177,13 @@
     const tasksByDraft={};
     const outcomesByReview={};
     const discussionsByReview={};
+    const planRequestsByDecision={};
+    const projectionsByReview={};
+    data.taskProjections.forEach(projection=>{
+      const p=obj(projection);
+      const reviewId=text(p.reviewId||p.source_review_id,'');
+      if(reviewId&&!projectionsByReview[reviewId])projectionsByReview[reviewId]=p;
+    });
     data.reviewTasks.forEach(task=>{
       const t=obj(task);
       const sourceId=text(t.source_input_id,'');
@@ -186,16 +199,45 @@
       const reviewId=text(d.source_review_id,'');
       if(reviewId&&!discussionsByReview[reviewId])discussionsByReview[reviewId]=d;
     });
+    data.planUpdateRequests.forEach(request=>{
+      const r=obj(request);
+      const decisionId=text(r.source_decision_id,'');
+      if(decisionId&&!planRequestsByDecision[decisionId])planRequestsByDecision[decisionId]=r;
+    });
     const seenTasks=new Set();
     const output=data.aiDrafts.map(draft=>{
       const rec=normalizeRecordFromDraft(draft,tasksByDraft,outcomesByReview);
       if(rec.reviewId)seenTasks.add(rec.reviewId);
+      rec.raw.planUpdateRequest=obj(planRequestsByDecision[rec.raw.decisionOutcome&&rec.raw.decisionOutcome.decision_id]);
       return attachDiscussion(rec,discussionsByReview);
     });
     data.reviewTasks.forEach(task=>{
       const reviewId=text(task&&task.review_id,'');
       if(reviewId&&seenTasks.has(reviewId))return;
-      output.push(attachDiscussion(normalizeRecordFromTask(task,outcomesByReview),discussionsByReview));
+      const rec=normalizeRecordFromTask(task,outcomesByReview);
+      rec.raw.planUpdateRequest=obj(planRequestsByDecision[rec.raw.decisionOutcome&&rec.raw.decisionOutcome.decision_id]);
+      output.push(attachDiscussion(rec,discussionsByReview));
+    });
+    output.forEach(record=>{
+      const projection=obj(projectionsByReview[record.reviewId]);
+      record.actionable=projection.actionable===true;
+      record.resolved=projection.resolved===true;
+      record.resolutionType=text(projection.resolutionType,'');
+      record.resolutionId=text(projection.resolutionId,'');
+      record.resolvedAt=text(projection.resolvedAt,'');
+      record.isCurrent=projection.isCurrent===true;
+      record.priority=text(projection.priority,'normal');
+      record.userSummary=text(projection.userSummary,record.aiConclusion);
+      record.lastReviewedAt=text(projection.lastReviewedAt,record.createdAt);
+      record.nextReviewDue=text(projection.nextReviewDue,'');
+      record.reviewDueStatus=text(projection.reviewDueStatus,'unknown');
+      record.reviewIntervalDays=projection.reviewIntervalDays===null?null:Number(projection.reviewIntervalDays||0)||null;
+      record.sourceApplicationId=text(projection.sourceApplicationId,'');
+      record.applicationAppliedAt=text(projection.applicationAppliedAt,'');
+      record.archivedPlanCount=Number(projection.archivedPlanCount||0);
+      record.createdPlanCount=Number(projection.createdPlanCount||0);
+      record.applicationAuditId=text(projection.applicationAuditId,'');
+      record.raw.taskProjection=projection;
     });
     return output
       .filter(record=>record.symbol||record.reviewId||record.draftId)
@@ -204,7 +246,7 @@
   }
 
   function pendingRecords(){
-    return records().filter(record=>!['approved','rejected'].includes(record.reviewStatus));
+    return records().filter(record=>!record.resolved&&!['approved','rejected'].includes(record.reviewStatus));
   }
 
   function isValidHomeRecord(record){
@@ -227,7 +269,7 @@
 
   function homePendingRecords(){
     const byKey={};
-    pendingRecords().filter(isValidHomeRecord).forEach(record=>{
+    pendingRecords().filter(isValidHomeRecord).filter(record=>record.actionable&&record.isCurrent).forEach(record=>{
       const key=stockKey(record.symbol)+'|'+text(record.taskType,'');
       const current=byKey[key];
       if(!current||String(record.createdAt||'').localeCompare(String(current.createdAt||''))>0)byKey[key]=record;
@@ -248,9 +290,22 @@
     businessStatusLabel,
     reviewStatusLabel,
     taskTypeLabel,
+    resolutionLabel:function(type){
+      return {
+        no_action_required:'本次复核已完成，无需调整',
+        plan_applied:'计划更新已应用',
+        dismissed:'本次任务已结束',
+        superseded:'已有更新的复核结果，本记录转入历史'
+      }[text(type,'')]||'';
+    },
     discussionPromptForReview:function(reviewId){
       const match=records().find(record=>record.reviewId===reviewId);
       return match?match.discussionPrompt:'';
+    },
+    planUpdateContextForReview:function(reviewId){
+      const match=records().find(record=>record.reviewId===reviewId);
+      if(!match)return null;
+      return {record:match,request:obj(match.raw&&match.raw.planUpdateRequest),outcome:obj(match.raw&&match.raw.decisionOutcome),discussion:obj(match.raw&&match.raw.discussionRecord)};
     }
   };
 })();
