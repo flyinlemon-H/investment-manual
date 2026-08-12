@@ -13,7 +13,7 @@ if str(ROOT) not in sys.path:
 from ai_tasks.registry import create_default_task_registry
 from ai_tasks.runner import INPUT_ERROR_EXIT, create_live_provider_registry, create_mock_provider_registry, run_ai_task
 from providers.ai.deepseek_provider import DEEPSEEK_DEFAULT_MODEL
-from scripts.generate_ai_decision_review_data import DEFAULT_OUTPUT, main as generate_ai_decision_review_data
+from scripts.generate_ai_decision_review_data import DEFAULT_OUTPUT, refresh_bridge
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -74,9 +74,10 @@ def main(argv: list[str] | None = None) -> int:
     if result.get("failurePath"):
         print(f"failurePath: {result['failurePath']}")
     if result.get("ok"):
-        bridge_ok, bridge_message = refresh_bridge_data()
+        bridge_output_dir = Path(args.output_dir) if args.output_dir else None
+        bridge_ok, bridge_message, bridge_path = refresh_bridge_data(bridge_output_dir)
         print(f"bridgeData: {'success' if bridge_ok else 'failed'}")
-        print(f"bridgeDataPath: {DEFAULT_OUTPUT}")
+        print(f"bridgeDataPath: {bridge_path}")
         if bridge_message:
             print(f"bridgeDataMessage: {bridge_message}")
         print("nextStep: 刷新或重新打开 index.html 查看 AI决策复核结果。")
@@ -92,14 +93,22 @@ def main(argv: list[str] | None = None) -> int:
     return int(result.get("exitCode") or 0)
 
 
-def refresh_bridge_data() -> tuple[bool, str]:
+def refresh_bridge_data(output_data_dir: Path | None = None) -> tuple[bool, str, Path]:
+    bridge_path = DEFAULT_OUTPUT if output_data_dir is None else output_data_dir / "ai_decision_review_data.js"
     try:
-        exit_code = generate_ai_decision_review_data()
+        if output_data_dir is None:
+            exit_code = refresh_bridge()
+        else:
+            exit_code = refresh_bridge(
+                data_root=output_data_dir,
+                review_dirs=[output_data_dir / "review_queue" / "pending"],
+                output=bridge_path,
+            )
         if exit_code == 0:
-            return True, "AI 决策复核桥接数据已刷新。"
-        return False, f"generate_ai_decision_review_data exited with {exit_code}"
+            return True, "AI 决策复核桥接数据已刷新。", bridge_path
+        return False, f"generate_ai_decision_review_data exited with {exit_code}", bridge_path
     except Exception as exc:
-        return False, str(exc)
+        return False, str(exc), bridge_path
 
 
 def find_stock(data: dict[str, Any], symbol: str) -> dict[str, Any]:

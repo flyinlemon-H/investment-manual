@@ -11,7 +11,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.plan_update.application import apply_plan_update, atomic_write_json, build_application_preview, create_backup, load_json, write_application_bridge
-from scripts.generate_ai_decision_review_data import main as refresh_ai_decision_review_bridge
+from scripts.generate_ai_decision_review_data import refresh_bridge as refresh_ai_decision_review_bridge
 
 
 def main(argv: list[str] | None = None) -> int:

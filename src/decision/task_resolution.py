@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 
-RESOLUTION_TYPES = {"no_action_required", "plan_applied", "dismissed", "superseded"}
+RESOLUTION_TYPES = {"no_action_required", "plan_applied", "operation_recorded", "dismissed", "superseded"}
 ACTIONABLE_LOGIC_STATUSES = {"weakened", "invalid", "insufficient_information"}
 
 
@@ -21,6 +21,7 @@ def build_task_resolution_projection(
     plan_application_audits: list[dict[str, Any]],
     existing_resolutions: list[dict[str, Any]],
     *,
+    operation_application_audits: list[dict[str, Any]] | None = None,
     now: datetime | None = None,
 ) -> dict[str, Any]:
     current_time = now or datetime.now(timezone.utc)
@@ -44,9 +45,10 @@ def build_task_resolution_projection(
         for request in plan_update_requests
         if request.get("source_decision_id")
     }
+    operation_audits = operation_application_audits or []
     audits_by_application = {
         _text(audit.get("application_id")): audit
-        for audit in plan_application_audits
+        for audit in [*plan_application_audits, *operation_audits]
         if audit.get("application_id")
     }
     resolutions = [item for item in existing_resolutions if _valid_resolution(item)]
@@ -90,6 +92,29 @@ def build_task_resolution_projection(
             **schedule,
         }
         projections.append(projection)
+
+    # Recording the broker's latest position facts closes an operation request without creating a Trade.
+    for audit in operation_audits:
+        if _text(audit.get("result")) != "applied":
+            continue
+        if _text(audit.get("source_type") or "operation_request") != "operation_request":
+            continue
+        decision_id = _text(audit.get("source_decision_id"))
+        outcome = outcomes_by_id.get(decision_id, {})
+        review_id = _text(audit.get("source_review_id") or outcome.get("source_review_id"))
+        projection = next((item for item in projections if item["reviewId"] == review_id), None)
+        if not projection:
+            continue
+        resolution = _make_resolution(
+            projection,
+            "operation_recorded",
+            _text(audit.get("applied_at")) or current_time.isoformat(),
+            source_decision_id=decision_id,
+            source_request_id=_text(audit.get("source_request_id")),
+            source_application_id=_text(audit.get("application_id")),
+            summary="实际操作结果已记录",
+        )
+        _append_resolution(resolutions, resolution_keys, resolution)
 
     # A successful formal plan audit resolves its source review without changing source objects.
     for audit in plan_application_audits:
@@ -169,6 +194,12 @@ def build_task_resolution_projection(
         projection["archivedPlanCount"] = len(audit.get("archived_plan_ids") or [])
         projection["createdPlanCount"] = len(audit.get("created_plan_ids") or [])
         projection["applicationAuditId"] = _text(audit.get("application_id"))
+        projection["operationDate"] = _text(audit.get("operation_date"))
+        projection["previousShares"] = audit.get("previous_shares")
+        projection["newShares"] = audit.get("new_shares")
+        projection["previousAvgCost"] = audit.get("previous_avg_cost")
+        projection["newAvgCost"] = audit.get("new_avg_cost")
+        projection["operationAuditId"] = _text(audit.get("application_id")) if projection["resolutionType"] == "operation_recorded" else ""
         projection["actionable"] = bool(projection["actionable"] and not projection["resolved"])
 
     home = [
@@ -258,6 +289,47 @@ def validate_resolution(resolution: dict[str, Any]) -> None:
             raise ValueError(f"resolution {field} must be non-empty")
 
 
+def operation_resolution_from_audit(audit: dict[str, Any]) -> dict[str, Any]:
+    if _text(audit.get("source_type") or "operation_request") != "operation_request":
+        raise ValueError("manual operation audit must not create a task resolution")
+    required = {
+        "application_id",
+        "source_review_id",
+        "source_decision_id",
+        "source_request_id",
+        "symbol",
+        "task_type",
+        "applied_at",
+        "result",
+    }
+    missing = sorted(required - set(audit))
+    if missing:
+        raise ValueError("operation audit missing fields: " + ", ".join(missing))
+    if _text(audit.get("result")) != "applied":
+        raise ValueError("operation audit result must be applied")
+    projection = {
+        "reviewId": _text(audit.get("source_review_id")),
+        "symbol": _text(audit.get("symbol")).upper(),
+        "taskType": _text(audit.get("task_type")),
+        "lastReviewedAt": "",
+        "reviewIntervalDays": None,
+        "nextReviewDue": "",
+        "reviewDueStatus": "unknown",
+        "reviewTriggerReason": "",
+    }
+    resolution = _make_resolution(
+        projection,
+        "operation_recorded",
+        _text(audit.get("applied_at")),
+        source_decision_id=_text(audit.get("source_decision_id")),
+        source_request_id=_text(audit.get("source_request_id")),
+        source_application_id=_text(audit.get("application_id")),
+        summary="实际操作结果已记录",
+    )
+    validate_resolution(resolution)
+    return resolution
+
+
 def _make_resolution(
     projection: dict[str, Any],
     resolution_type: str,
@@ -304,7 +376,7 @@ def _resolution_key(item: dict[str, Any]) -> tuple[str, str, str]:
 
 def _resolution_for(review_id: str, resolutions: list[dict[str, Any]]) -> dict[str, Any]:
     matches = [item for item in resolutions if _text(item.get("source_review_id")) == review_id]
-    order = {"plan_applied": 4, "dismissed": 3, "no_action_required": 2, "superseded": 1}
+    order = {"operation_recorded": 5, "plan_applied": 4, "dismissed": 3, "no_action_required": 2, "superseded": 1}
     return max(matches, key=lambda item: order.get(_text(item.get("resolution_type")), 0), default={})
 
 

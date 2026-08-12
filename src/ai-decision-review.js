@@ -22,6 +22,8 @@
       decisionOutcomes:arr(bridged.decisionOutcomes).concat(arr(appState.decisionOutcomes),arr(nested.decisionOutcomes)),
       discussionRecords:arr(bridged.discussionRecords).concat(arr(appState.discussionRecords),arr(nested.discussionRecords)),
       planUpdateRequests:arr(bridged.planUpdateRequests).concat(arr(appState.planUpdateRequests),arr(nested.planUpdateRequests)),
+      operationRequests:arr(bridged.operationRequests).concat(arr(appState.operationRequests),arr(nested.operationRequests)),
+      operationApplicationAudits:arr(bridged.operationApplicationAudits).concat(arr(appState.operationApplicationAudits),arr(nested.operationApplicationAudits)),
       taskResolutions:arr(bridged.taskResolutions).concat(arr(appState.taskResolutions),arr(nested.taskResolutions)),
       taskProjections:arr(bridged.taskProjections).concat(arr(appState.taskProjections),arr(nested.taskProjections)),
       homeTaskProjections:arr(bridged.homeTaskProjections),
@@ -178,6 +180,8 @@
     const outcomesByReview={};
     const discussionsByReview={};
     const planRequestsByDecision={};
+    const operationRequestsByDecision={};
+    const operationAuditsByDecision={};
     const projectionsByReview={};
     data.taskProjections.forEach(projection=>{
       const p=obj(projection);
@@ -204,11 +208,23 @@
       const decisionId=text(r.source_decision_id,'');
       if(decisionId&&!planRequestsByDecision[decisionId])planRequestsByDecision[decisionId]=r;
     });
+    data.operationRequests.forEach(request=>{
+      const r=obj(request);
+      const decisionId=text(r.source_decision_id,'');
+      if(decisionId&&!operationRequestsByDecision[decisionId])operationRequestsByDecision[decisionId]=r;
+    });
+    data.operationApplicationAudits.forEach(audit=>{
+      const a=obj(audit);
+      const decisionId=text(a.source_decision_id,'');
+      if(decisionId&&!operationAuditsByDecision[decisionId])operationAuditsByDecision[decisionId]=a;
+    });
     const seenTasks=new Set();
     const output=data.aiDrafts.map(draft=>{
       const rec=normalizeRecordFromDraft(draft,tasksByDraft,outcomesByReview);
       if(rec.reviewId)seenTasks.add(rec.reviewId);
       rec.raw.planUpdateRequest=obj(planRequestsByDecision[rec.raw.decisionOutcome&&rec.raw.decisionOutcome.decision_id]);
+      rec.raw.operationRequest=obj(operationRequestsByDecision[rec.raw.decisionOutcome&&rec.raw.decisionOutcome.decision_id]);
+      rec.raw.operationApplicationAudit=obj(operationAuditsByDecision[rec.raw.decisionOutcome&&rec.raw.decisionOutcome.decision_id]);
       return attachDiscussion(rec,discussionsByReview);
     });
     data.reviewTasks.forEach(task=>{
@@ -216,6 +232,8 @@
       if(reviewId&&seenTasks.has(reviewId))return;
       const rec=normalizeRecordFromTask(task,outcomesByReview);
       rec.raw.planUpdateRequest=obj(planRequestsByDecision[rec.raw.decisionOutcome&&rec.raw.decisionOutcome.decision_id]);
+      rec.raw.operationRequest=obj(operationRequestsByDecision[rec.raw.decisionOutcome&&rec.raw.decisionOutcome.decision_id]);
+      rec.raw.operationApplicationAudit=obj(operationAuditsByDecision[rec.raw.decisionOutcome&&rec.raw.decisionOutcome.decision_id]);
       output.push(attachDiscussion(rec,discussionsByReview));
     });
     output.forEach(record=>{
@@ -237,6 +255,12 @@
       record.archivedPlanCount=Number(projection.archivedPlanCount||0);
       record.createdPlanCount=Number(projection.createdPlanCount||0);
       record.applicationAuditId=text(projection.applicationAuditId,'');
+      record.operationDate=text(projection.operationDate,'');
+      record.previousShares=projection.previousShares;
+      record.newShares=projection.newShares;
+      record.previousAvgCost=projection.previousAvgCost;
+      record.newAvgCost=projection.newAvgCost;
+      record.operationAuditId=text(projection.operationAuditId,'');
       record.raw.taskProjection=projection;
     });
     return output
@@ -294,6 +318,7 @@
       return {
         no_action_required:'本次复核已完成，无需调整',
         plan_applied:'计划更新已应用',
+        operation_recorded:'实际操作结果已记录',
         dismissed:'本次任务已结束',
         superseded:'已有更新的复核结果，本记录转入历史'
       }[text(type,'')]||'';
@@ -306,6 +331,11 @@
       const match=records().find(record=>record.reviewId===reviewId);
       if(!match)return null;
       return {record:match,request:obj(match.raw&&match.raw.planUpdateRequest),outcome:obj(match.raw&&match.raw.decisionOutcome),discussion:obj(match.raw&&match.raw.discussionRecord)};
+    },
+    operationContextForReview:function(reviewId){
+      const match=records().find(record=>record.reviewId===reviewId);
+      if(!match)return null;
+      return {record:match,request:obj(match.raw&&match.raw.operationRequest),outcome:obj(match.raw&&match.raw.decisionOutcome),audit:obj(match.raw&&match.raw.operationApplicationAudit)};
     }
   };
 })();
