@@ -37,6 +37,32 @@ function ensureToolsTab(){
   tabs.appendChild(btn);
 }
 
+const backendHealthState={status:'unknown',checkedAt:'',environment:'',errorType:''};
+async function checkBackendHealth(){
+  backendHealthState.status='checking';
+  if(typeof renderSyncHint==='function')renderSyncHint();
+  try{
+    if(!window.InvestmentApi||!window.InvestmentApi.health){
+      const errors=window.InvestmentApi&&window.InvestmentApi.errors;
+      throw errors&&typeof errors.create==='function'?errors.create('configuration_error','Health API is unavailable.'):{type:'configuration_error'};
+    }
+    const result=await window.InvestmentApi.health.check();
+    backendHealthState.status='available';
+    backendHealthState.environment=result.environment;
+    backendHealthState.errorType='';
+  }catch(error){
+    const normalized=window.InvestmentApi&&window.InvestmentApi.errors?window.InvestmentApi.errors.normalize(error):{type:'unknown_error'};
+    backendHealthState.status=normalized.type==='configuration_error'?'unconfigured':'unavailable';
+    backendHealthState.environment='';
+    backendHealthState.errorType=normalized.type;
+  }finally{
+    backendHealthState.checkedAt=new Date().toISOString();
+    if(typeof renderSyncHint==='function')renderSyncHint();
+  }
+  return backendHealthState.status;
+}
+window.BackendHealth=Object.freeze({state:backendHealthState,check:checkBackendHealth});
+
 ensureAnalysisOverviewTab();
 ensureExecutionLogTab();
 ensureEditCenterTab();
@@ -62,5 +88,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();if(typ
 loadState();
 if(typeof applyMarketDataBridge==='function')applyMarketDataBridge();
 render();
+void checkBackendHealth();
 if(typeof updateSocialDataStatus==='function')updateSocialDataStatus();
 if(typeof loadSocialPosts==='function')loadSocialPosts().then(()=>{render();updateSocialDataStatus()});

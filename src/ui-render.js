@@ -37,6 +37,20 @@ function priceRiskWarnings(s){
   if(s.syncStatus==='failed')out.push('刷新失败，当前仍使用旧价格');
   return out;
 }
+function backendHealthText(){
+  const health=window.BackendHealth&&window.BackendHealth.state;
+  if(!health||health.status==='unknown')return 'Backend：未知';
+  if(health.status==='checking')return 'Backend：检测中';
+  if(health.status==='available')return `Backend：可用${health.environment?'（'+health.environment+'）':''}`;
+  if(health.status==='unconfigured')return 'Backend：未配置';
+  return 'Backend：不可用';
+}
+function renderSyncHint(){
+  const el=document.getElementById('syncHint');
+  if(!el)return;
+  const local=(state.updatedAt?'最后修改 · '+new Date(state.updatedAt).toLocaleString('zh-CN'):'')+backupReminderText();
+  el.textContent=[local,backendHealthText()].filter(Boolean).join(' · ');
+}
 const ZH_ENUM_MAP={
   uptrend:'上升趋势',downtrend:'下降趋势',sideways:'震荡整理',rebound:'反弹修复',recovery:'修复反弹',breakdown:'破位下行',reversal:'反转观察',unknown:'未知',
   low_base:'低位筑底',early_uptrend:'初期上升',mid_uptrend:'中段趋势',high_level_rebreakout:'高位二次上攻',high_level_overextension:'高位过热',distribution_risk:'派发风险',unclear:'待判断',
@@ -2545,7 +2559,7 @@ function render(){
   document.getElementById('countHolding').textContent=state.stocks.filter(s=>s.type==='holding').length;
   document.getElementById('countEtf').textContent=state.stocks.filter(s=>s.type==='etf').length;
   document.getElementById('countWatching').textContent=state.stocks.filter(s=>s.type==='watching').length;
-  document.getElementById('syncHint').textContent=(state.updatedAt?'最后修改 · '+new Date(state.updatedAt).toLocaleString('zh-CN'):'')+backupReminderText();
+  renderSyncHint();
   const fxBtn=document.getElementById('fxBtn');
   if(fxBtn)fxBtn.textContent=fxLabel();
   const actions=document.getElementById('globalActions');
