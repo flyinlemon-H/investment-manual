@@ -1,4 +1,9 @@
 (function(root){
   if(root.BACKEND_CONFIG)return;
-  root.BACKEND_CONFIG=Object.freeze({baseUrl:''});
+  root.BACKEND_CONFIG=Object.freeze({
+    schemaVersion:'1.0',
+    status:'UNAVAILABLE',
+    reason:'backend_not_configured',
+    baseUrl:''
+  });
 })(window);

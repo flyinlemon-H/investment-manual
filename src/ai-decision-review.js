@@ -1,4 +1,11 @@
 (function(){
+  const PROJECTION_COLLECTIONS=[
+    'aiDrafts','reviewTasks','decisionOutcomes','discussionRecords',
+    'planUpdateRequests','operationRequests','planApplicationAudits',
+    'operationApplicationAudits','taskResolutions','taskProjections',
+    'homeTaskProjections','historyProjections','systemIssues'
+  ];
+
   function arr(value){
     return Array.isArray(value)?value:[];
   }
@@ -10,6 +17,20 @@
   function text(value,fallback){
     const s=String(value===undefined||value===null?'':value).trim();
     return s||fallback||'';
+  }
+
+  function projectionState(){
+    const raw=window.AI_DECISION_REVIEW_DATA;
+    if(!raw||typeof raw!=='object'||Array.isArray(raw)){
+      return {status:'UNAVAILABLE',reason:'projection_missing',recordCount:0};
+    }
+    const recordCount=PROJECTION_COLLECTIONS.reduce((count,key)=>count+arr(raw[key]).length,0);
+    if(recordCount>0)return {status:'LOADED',reason:'',recordCount};
+    const declared=text(raw.status,'').toUpperCase();
+    if(declared==='UNAVAILABLE'){
+      return {status:'UNAVAILABLE',reason:text(raw.reason,'private_runtime_unavailable'),recordCount:0};
+    }
+    return {status:'EMPTY',reason:text(raw.reason,''),recordCount:0};
   }
 
   function sourceData(){
@@ -306,6 +327,7 @@
   }
 
   window.AiDecisionReviewReader={
+    projectionState,
     records,
     pendingRecords,
     homePendingRecords,

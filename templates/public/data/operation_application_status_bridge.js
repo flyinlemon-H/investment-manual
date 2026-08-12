@@ -1,0 +1,9 @@
+(function(root){
+  if(root.OPERATION_APPLICATION_STATUS)return;
+  root.OPERATION_APPLICATION_STATUS=Object.freeze({
+    schemaVersion:'1.0',
+    status:'UNAVAILABLE',
+    reason:'private_runtime_unavailable',
+    applications:Object.freeze([])
+  });
+})(window);

@@ -1,0 +1,22 @@
+(function(root){
+  if(root.AI_DECISION_REVIEW_DATA)return;
+  const empty=()=>Object.freeze([]);
+  root.AI_DECISION_REVIEW_DATA=Object.freeze({
+    schemaVersion:'1.0',
+    status:'UNAVAILABLE',
+    reason:'private_runtime_unavailable',
+    aiDrafts:empty(),
+    reviewTasks:empty(),
+    decisionOutcomes:empty(),
+    discussionRecords:empty(),
+    planUpdateRequests:empty(),
+    operationRequests:empty(),
+    planApplicationAudits:empty(),
+    operationApplicationAudits:empty(),
+    taskResolutions:empty(),
+    taskProjections:empty(),
+    homeTaskProjections:empty(),
+    historyProjections:empty(),
+    systemIssues:empty()
+  });
+})(window);

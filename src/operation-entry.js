@@ -79,17 +79,28 @@
     const now=new Date().toISOString(),draft=savedItem.draft;
     return {application_id:uuid(),draft_id:draft.draft_id,source_type:draft.source_type,source_request_id:draft.source_request_id,source_decision_id:draft.source_decision_id,source_review_id:draft.source_review_id,symbol:draft.symbol,task_type:sourceType(ctx)==='operation_request'?ctx.record.taskType:'manual_operation',current_position_snapshot_hash:currentHash,previous_shares:draft.previous_shares,new_shares:draft.new_shares,previous_avg_cost:draft.previous_avg_cost,new_avg_cost:validation.normalized_new_avg_cost,operation_date:draft.operation_date,note:draft.note,user_confirmed_at:now,status:'confirmed_pending_application',created_at:now,schema_version:'1.0'};
   }
+  function projectionState(){
+    const raw=window.OPERATION_APPLICATION_STATUS;
+    if(!raw||typeof raw!=='object'||Array.isArray(raw))return {status:'UNAVAILABLE',reason:'projection_missing',recordCount:0};
+    const rows=arr(raw.applications);
+    if(rows.length)return {status:'LOADED',reason:'',recordCount:rows.length};
+    if(text(raw.error))return {status:'UNAVAILABLE',reason:'runtime_projection_error',recordCount:0};
+    if(text(raw.status).toUpperCase()==='UNAVAILABLE')return {status:'UNAVAILABLE',reason:text(raw.reason)||'private_runtime_unavailable',recordCount:0};
+    return {status:'EMPTY',reason:text(raw.reason),recordCount:0};
+  }
   function appliedStatus(ctx){
     const audit=obj(ctx&&ctx.record&&ctx.record.raw&&ctx.record.raw.operationApplicationAudit);
     if(audit.result==='applied')return {source:'audit',...audit};
     const rows=arr(window.OPERATION_APPLICATION_STATUS&&window.OPERATION_APPLICATION_STATUS.applications),bridge=rows.find(item=>symbol(item&&item.symbol)===symbol(ctx&&ctx.stock&&(ctx.stock.code||ctx.stock.symbol))&&item.status==='applied');
     if(bridge)return {source:'bridge',...bridge};
     const local=saved(contextKey(ctx));
-    return local&&local.status==='application_request_generated'?{source:'local',status:'application_request_generated',application_id:local.application_request&&local.application_request.application_id}:null;
+    if(local&&local.status==='application_request_generated')return {source:'local',status:'application_request_generated',application_id:local.application_request&&local.application_request.application_id};
+    const projection=projectionState();
+    return projection.status==='UNAVAILABLE'?{source:'runtime_projection',...projection}:null;
   }
   function positionChange(previous,current){if(!Number.isInteger(previous)||!Number.isInteger(current))return 'unknown';if(previous===current)return 'unchanged';if(current===0)return 'cleared';return current>previous?'increased':'decreased'}
   function valueEqual(left,right){const ln=left===''||left===null||left===undefined?null:Number(left),rn=right===''||right===null||right===undefined?null:Number(right);return Number.isFinite(ln)&&Number.isFinite(rn)?ln===rn:left===right}
   function zeroCostAllowed(formal,value){if(typeof formal==='string')return value===''||value===null||Number(value)===0;if(formal===null)return value===null||value===''||Number(value)===0;return value===''||value===null||Number(value)===0}
   function uuid(){if(crypto.randomUUID)return crypto.randomUUID();const values=new Uint8Array(16);crypto.getRandomValues(values);values[6]=(values[6]&15)|64;values[8]=(values[8]&63)|128;const hex=Array.from(values).map(v=>v.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20)}
-  window.OperationEntry={context,manualContext,latestContext,eligible,contextKey,defaultDraft,validate,saveDraft,saved,abandon,snapshotHash,createApplicationRequest,markApplicationRequest,appliedStatus,positionPayload,positionChange,storageKey:STORAGE_KEY};
+  window.OperationEntry={context,manualContext,latestContext,eligible,contextKey,defaultDraft,validate,saveDraft,saved,abandon,snapshotHash,createApplicationRequest,markApplicationRequest,projectionState,appliedStatus,positionPayload,positionChange,storageKey:STORAGE_KEY};
 })();
