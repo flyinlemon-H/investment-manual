@@ -1,5 +1,16 @@
 # social_collector
 
+## 每日股票简报
+
+每日复核简报脚本见 `scripts/generate_daily_brief.py`，支持盘前/盘中双时点：
+
+```powershell
+python scripts\generate_daily_brief.py --input data\latest_export.json --mode premarket
+python scripts\generate_daily_brief.py --input data\latest_export.json --mode intraday
+```
+
+默认只打印到 stdout；需要保存 `md/json` 时加 `--save`。详细说明见 `docs/daily_brief.md`。
+
 `social_collector` 是投资作战手册配套的本地数据整理工具。它把 CSV、公开 RSS/新闻源整理成投资手册可直接读取的两个文件：
 
 - `social_posts.json`：个股详情页展示原帖/原文摘要。
