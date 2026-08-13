@@ -57,6 +57,7 @@ def main(argv: list[str] | None = None) -> int:
             root_dir=ROOT,
             output_data_dir=output_dir,
             metadata=metadata,
+            context_forbidden_values=other_stock_identity_values(data, stock),
         )
     except Exception as exc:
         print(f"AI task input error: {exc}")
@@ -117,18 +118,64 @@ def find_stock(data: dict[str, Any], symbol: str) -> dict[str, Any]:
         stocks = (data.get("portfolio") or {}).get("stocks")
     if not isinstance(stocks, list):
         raise ValueError("Input JSON does not contain a stocks array.")
+    query = str(symbol or "").strip()
+    query_identity = query.upper()
+    valid_stocks = [stock for stock in stocks if isinstance(stock, dict)]
+
+    symbol_matches = [
+        stock
+        for stock in valid_stocks
+        if query_identity in {
+            str(stock.get("symbol") or "").strip().upper(),
+            str(stock.get("code") or "").strip().upper(),
+        }
+    ]
+    if len(symbol_matches) > 1:
+        raise ValueError(f"Symbol '{query}' is duplicated in input JSON.")
+    if symbol_matches:
+        return symbol_matches[0]
+
+    id_matches = [stock for stock in valid_stocks if str(stock.get("id") or "").strip() == query]
+    if len(id_matches) > 1:
+        raise ValueError(f"Identifier '{query}' is duplicated in input JSON.")
+    if id_matches:
+        return id_matches[0]
+
+    normalized_name = query.casefold()
+    name_matches = [stock for stock in valid_stocks if str(stock.get("name") or "").strip().casefold() == normalized_name]
+    if len(name_matches) > 1:
+        raise ValueError(f"Name '{query}' is ambiguous in input JSON.")
+    if name_matches:
+        return name_matches[0]
+    raise ValueError(f"Symbol '{symbol}' was not found in input JSON.")
+
+
+def other_stock_identity_values(data: dict[str, Any], target: dict[str, Any]) -> list[str]:
+    stocks = data.get("stocks")
+    if not isinstance(stocks, list):
+        stocks = (data.get("portfolio") or {}).get("stocks")
+    if not isinstance(stocks, list):
+        return []
+    target_symbol = str(target.get("symbol") or target.get("code") or target.get("id") or "").strip().upper()
+    values: set[str] = set()
     for stock in stocks:
         if not isinstance(stock, dict):
             continue
-        candidates = {
-            str(stock.get("symbol") or ""),
-            str(stock.get("code") or ""),
-            str(stock.get("id") or ""),
-            str(stock.get("name") or ""),
-        }
-        if symbol in candidates:
-            return stock
-    raise ValueError(f"Symbol '{symbol}' was not found in input JSON.")
+        symbol = str(stock.get("symbol") or stock.get("code") or stock.get("id") or "").strip()
+        if symbol.upper() == target_symbol:
+            continue
+        for value in (stock.get("symbol"), stock.get("code"), stock.get("name"), stock.get("displayName")):
+            text = str(value or "").strip()
+            if len(text) >= 2:
+                values.add(text)
+        aliases = stock.get("aliases") or stock.get("alias") or []
+        if not isinstance(aliases, list):
+            aliases = [aliases]
+        for value in aliases:
+            text = str(value or "").strip()
+            if len(text) >= 2:
+                values.add(text)
+    return sorted(values)
 
 
 if __name__ == "__main__":

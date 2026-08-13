@@ -8,7 +8,7 @@ from typing import Any
 
 import jsonschema
 
-from ai_context.long_term_logic_context import build_long_term_logic_context
+from ai_tasks.long_term_logic_context import build_long_term_logic_context, validate_context_privacy
 from providers.ai.base import AIResponse, repo_root, write_ai_json_artifact
 from providers.ai.mock_provider import MockAIProvider
 from providers.ai.registry import ProviderRegistry, create_default_registry
@@ -59,6 +59,7 @@ def run_ai_task(
     root_dir: str | Path | None = None,
     output_data_dir: str | Path | None = None,
     metadata: dict[str, Any] | None = None,
+    context_forbidden_values: list[str] | None = None,
 ) -> dict[str, Any]:
     root = Path(root_dir) if root_dir is not None else repo_root()
     data_root = Path(output_data_dir) if output_data_dir is not None else root / "data"
@@ -71,6 +72,7 @@ def run_ai_task(
     prompt = _read_text(root / task.promptPath)
     schema = _read_json(root / task.schemaPath)
     context = _build_context(task, stock, metadata)
+    validate_context_privacy(context, forbidden_values=context_forbidden_values)
     user_prompt = json.dumps(context, ensure_ascii=False, sort_keys=True)
     selected_model = model_name or task.defaultModel
     provider_result = provider.generate(
@@ -160,7 +162,12 @@ def create_live_provider_registry(*, provider_name: str, log_dir: str | Path | N
 
 def _build_context(task: AITaskDefinition, stock: dict[str, Any], metadata: dict[str, Any] | None) -> dict[str, Any]:
     if task.taskName == "long_term_logic_review":
-        return build_long_term_logic_context(stock, metadata)
+        return build_long_term_logic_context(
+            stock,
+            metadata,
+            task_type=task.taskName,
+            schema_version=task.schemaVersion,
+        )
     raise ValueError(f"Unsupported AI task context builder: {task.taskName}")
 
 
