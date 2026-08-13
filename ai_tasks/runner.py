@@ -95,10 +95,12 @@ def run_ai_task(
         )
 
     try:
-        draft = _parse_content(provider_result["content"])
-        draft = normalize_ai_response(draft, task_name=task.taskName)
-        draft = _normalize_draft(task, draft)
+        draft = normalize_ai_response(provider_result["content"], task_name=task.taskName)
+        if isinstance(draft, dict):
+            draft = _normalize_draft(task, draft)
         jsonschema.validate(instance=draft, schema=schema)
+        if not isinstance(draft, dict):
+            raise ValueError("Validated AI draft must be a JSON object.")
         warnings = _business_validate(task, draft, context)
     except Exception as exc:
         return _write_failure(
@@ -182,16 +184,6 @@ def _read_json(path: Path) -> dict[str, Any]:
 def _provider_response_shape_valid(result: AIResponse) -> bool:
     required = {"ok", "provider", "model", "content", "usage", "latencyMs", "requestId", "error", "metadata"}
     return isinstance(result, dict) and required.issubset(result.keys())
-
-
-def _parse_content(content: Any) -> dict[str, Any]:
-    if isinstance(content, dict):
-        return content
-    if isinstance(content, str):
-        parsed = json.loads(content)
-        if isinstance(parsed, dict):
-            return parsed
-    raise ValueError("Provider content must be a JSON object.")
 
 
 def _normalize_draft(task: AITaskDefinition, draft: dict[str, Any]) -> dict[str, Any]:

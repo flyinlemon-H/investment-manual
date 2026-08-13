@@ -179,11 +179,20 @@ def _deepseek_success_result(
     latency_ms: int,
     metadata: dict[str, Any],
 ) -> AIResponse:
+    if not isinstance(response_data, dict):
+        raise ValueError("DeepSeek response envelope must be an object.")
     choices = response_data.get("choices") or []
-    if not choices:
+    if not isinstance(choices, list) or not choices:
         raise ValueError("DeepSeek response has no choices.")
-    message = (choices[0] or {}).get("message") or {}
+    choice = choices[0]
+    if not isinstance(choice, dict):
+        raise ValueError("DeepSeek response choice must be an object.")
+    message = choice.get("message") or {}
+    if not isinstance(message, dict):
+        raise ValueError("DeepSeek response message must be an object.")
     content = message.get("content")
+    if not isinstance(content, str):
+        raise ValueError("DeepSeek response message.content must be a string.")
     usage = response_data.get("usage") or {}
     return standard_success(
         provider=DEEPSEEK_PROVIDER_NAME,
