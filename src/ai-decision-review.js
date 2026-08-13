@@ -1,4 +1,5 @@
 (function(){
+  const BRIDGE_URL='data/ai_decision_review_data.js';
   const PROJECTION_COLLECTIONS=[
     'aiDrafts','reviewTasks','decisionOutcomes','discussionRecords',
     'planUpdateRequests','operationRequests','planApplicationAudits',
@@ -313,6 +314,28 @@
     return stableRecordId(right).localeCompare(stableRecordId(left));
   }
 
+  function refreshBridge(){
+    return new Promise(resolve=>{
+      const doc=typeof document==='object'&&document?document:null;
+      const parent=doc&&(doc.head||doc.documentElement);
+      if(!doc||!parent||typeof doc.createElement!=='function'||typeof parent.appendChild!=='function'){
+        resolve(false);
+        return;
+      }
+      const script=doc.createElement('script');
+      script.src=BRIDGE_URL+'?refresh='+Date.now().toString(36);
+      script.async=true;
+      script.setAttribute('data-ai-decision-bridge-refresh','true');
+      const finish=result=>{
+        if(typeof script.remove==='function')script.remove();
+        resolve(result);
+      };
+      script.onload=()=>finish(true);
+      script.onerror=()=>finish(false);
+      parent.appendChild(script);
+    });
+  }
+
   function records(){
     const data=sourceData();
     const tasksByDraft={};
@@ -462,6 +485,7 @@
   }
 
   window.AiDecisionReviewReader={
+    refreshBridge,
     projectionState,
     canonicalEntityKey,
     records,

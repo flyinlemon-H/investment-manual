@@ -88,6 +88,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();if(typ
 loadState();
 if(typeof applyMarketDataBridge==='function')applyMarketDataBridge();
 render();
+if(window.AiDecisionReviewReader&&typeof window.AiDecisionReviewReader.refreshBridge==='function'){
+  void window.AiDecisionReviewReader.refreshBridge().then(refreshed=>{if(refreshed)render()});
+}
 void checkBackendHealth();
 if(typeof updateSocialDataStatus==='function')updateSocialDataStatus();
 if(typeof loadSocialPosts==='function')loadSocialPosts().then(()=>{render();updateSocialDataStatus()});
