@@ -302,6 +302,12 @@
     setTimeout(()=>document.getElementById('batchTechnicalReviewText').focus(),50);
   }
 
+  function openWithInput(raw){
+    openModal();
+    document.getElementById('batchTechnicalReviewText').value=String(raw??'');
+    previewBatch();
+  }
+
   function closeModal(){
     const modal=document.getElementById('batchTechnicalReviewModal');
     if(modal)modal.classList.remove('show');
@@ -354,4 +360,5 @@
 
   const button=document.getElementById('batchTechnicalReviewBtn');
   if(button)button.addEventListener('click',openModal);
+  root.BatchTechnicalReviewUI=Object.freeze({open:openModal,openWithInput,close:closeModal});
 })(typeof globalThis!=='undefined'?globalThis:this);

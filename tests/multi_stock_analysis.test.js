@@ -1,0 +1,61 @@
+'use strict';
+
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const test=require('node:test');
+const Multi=require('../src/multi-stock-analysis.js');
+
+const stocks=[
+  {id:'a',code:'601138.SS',name:'工业富联',type:'holding',currentPrice:55,priceUpdatedAt:'2026-08-14',dataFreshness:{priceUpdatedAt:'2026-08-14',technicalUpdatedAt:'2026-08-14'},technicalData:{ma20:52,ma60:48,trendStatus:'uptrend'},technicalReview:{finalTechnicalConclusion:'旧结论 A'},priceHistory:[{date:'2026-08-13',close:54},{date:'2026-08-14',close:55}]},
+  {id:'b',code:'2899.HK',name:'紫金矿业',type:'holding',lastUnitPrice:30,dataFreshness:{priceUpdatedAt:'2026-08-14'},technicalData:{ma20:28},technicalReview:{finalTechnicalConclusion:'旧结论 B'}},
+  {id:'cash',name:'现金',type:'cash',currentValue:1000},
+  {id:'missing',name:'无代码',type:'watching'}
+];
+
+test('selectable stocks exclude cash and missing symbols',()=>{
+  assert.deepEqual(Multi.selectableStocks(stocks).map(stock=>stock.id),['a','b']);
+});
+
+test('builds one unified request with exact symbols and existing batch schema',()=>{
+  const request=Multi.buildRequest(stocks);
+  assert.match(request,/601138\.SS/);
+  assert.match(request,/2899\.HK/);
+  assert.match(request,/"technicalReviews"/);
+  assert.match(request,/每个输入 symbol 必须原样、精确地输出一次/);
+  assert.doesNotMatch(request,/"symbol": "无代码"/);
+  assert.equal((request.match(/股票上下文：/g)||[]).length,1);
+});
+
+test('request context includes technical data, freshness, and recent price history',()=>{
+  const request=Multi.buildRequest(stocks.slice(0,2));
+  assert.match(request,/"ma20": 52/);
+  assert.match(request,/"technicalUpdatedAt": "2026-08-14"/);
+  assert.match(request,/"close": 55/);
+  assert.match(request,/"previousTechnicalReview"/);
+});
+
+test('requires at least two exact-symbol stocks',()=>{
+  assert.throws(()=>Multi.buildRequest(stocks.slice(0,1)),/至少选择两只/);
+  assert.throws(()=>Multi.buildRequest(stocks.slice(2)),/至少选择两只/);
+});
+
+test('recent history is bounded and invalid rows are omitted',()=>{
+  const history=Array.from({length:130},(_,index)=>({date:`d${index}`,close:index+1}));
+  history.push({date:'bad',close:null});
+  const recent=Multi.recentPriceHistory({priceHistory:history},120);
+  assert.equal(recent.length,120);
+  assert.equal(recent[0].close,11);
+  assert.equal(recent.at(-1).close,130);
+});
+
+test('browser integration exposes one-copy and one-paste path into batch preview',()=>{
+  const source=fs.readFileSync(path.resolve(__dirname,'../src/multi-stock-analysis.js'),'utf8');
+  const batch=fs.readFileSync(path.resolve(__dirname,'../src/batch-technical-review.js'),'utf8');
+  const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
+  assert.match(source,/复制统一请求/);
+  assert.match(source,/AI 返回的 Batch JSON/);
+  assert.match(source,/BatchTechnicalReviewUI\.openWithInput/);
+  assert.match(batch,/openWithInput/);
+  assert.match(html,/src\/multi-stock-analysis\.js/);
+});
