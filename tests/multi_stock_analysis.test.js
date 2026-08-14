@@ -56,7 +56,14 @@ test('browser integration exposes one-copy and one-paste path into batch preview
   assert.match(source,/复制统一请求/);
   assert.match(source,/AI 返回的 Batch JSON/);
   assert.match(source,/BatchTechnicalReviewUI\.openWithInput/);
+  assert.match(source,/multiStockAnalysisQuickBtn/);
+  assert.match(source,/m05aMobileStyles/);
+  assert.match(source,/max-height:100dvh/);
+  assert.match(source,/min-height:44px/);
+  assert.match(source,/统一分析请求已准备（通常无需展开）/);
   assert.match(batch,/openWithInput/);
+  assert.match(batch,/Batch JSON 输入（预览后自动收起）/);
+  assert.match(batch,/inputDetails\.open=false/);
   assert.match(html,/src\/multi-stock-analysis\.js/);
 });
 

@@ -128,16 +128,44 @@
   function defaults(){return root.MultiStockAnalysis.selectableStocks(appStocks())}
   function idOf(stock){return String(stock&&(stock.id||stock.code||stock.symbol)||'')}
 
-  function ensureButton(){
-    const actions=document.getElementById('globalActions');
-    if(!actions||document.getElementById('multiStockAnalysisBtn'))return;
+  function ensureStyles(){
+    if(document.getElementById('m05aMobileStyles'))return;
+    const style=document.createElement('style');
+    style.id='m05aMobileStyles';
+    style.textContent=`
+      .m05a-tab-entry{flex:0 0 auto;min-height:44px;border:0;border-bottom:2px solid var(--seal);padding:11px 16px 9px;background:var(--paper);color:var(--seal);font-weight:900;letter-spacing:1px;white-space:nowrap;cursor:pointer}
+      .m05a-request-details,.m05a-batch-input-details{margin-bottom:13px;border:1px solid var(--line);background:rgba(255,255,255,.18)}
+      .m05a-request-details summary,.m05a-batch-input-details summary{min-height:44px;display:flex;align-items:center;padding:9px 11px;color:var(--ink2);font-size:12px;font-weight:800;cursor:pointer}
+      .m05a-request-details textarea,.m05a-batch-input-details textarea{border-width:1px 0 0;margin:0}
+      @media(max-width:640px){
+        #multiStockAnalysisModal,#batchTechnicalReviewModal{padding:0;align-items:stretch;overflow:hidden}
+        #multiStockAnalysisModal>.modal,#batchTechnicalReviewModal>.modal{width:100%;height:100vh;height:100dvh;max-height:100vh;max-height:100dvh;margin:0;padding:16px 14px 24px;border:0;box-shadow:none;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+        #multiStockAnalysisModal button,#batchTechnicalReviewModal button{min-height:44px}
+        #multiStockAnalysisModal .modal-actions,#batchTechnicalReviewModal .modal-actions{flex-wrap:wrap;gap:8px}
+        #multiStockAnalysisModal .modal-actions .btn,#batchTechnicalReviewModal .modal-actions .btn{flex:1 1 140px}
+        #multiStockAnalysisModal textarea,#batchTechnicalReviewModal textarea{font-size:16px}
+        #multiStockAnalysisModal .m05a-stock-grid{grid-template-columns:1fr!important}
+        #batchTechnicalReviewResult .card{padding:12px;overflow-wrap:anywhere}
+        #batchTechnicalReviewResult .card-note{font-size:13px;line-height:1.6}
+      }`;
+    document.head.appendChild(style);
+  }
+
+  function makeEntry(id,className){
     const button=document.createElement('button');
-    button.className='btn small';
-    button.id='multiStockAnalysisBtn';
+    button.className=className;
+    button.id=id;
     button.type='button';
     button.textContent='今日分析';
-    actions.insertBefore(button,actions.firstChild);
     button.addEventListener('click',openModal);
+    return button;
+  }
+
+  function ensureButton(){
+    const tabs=document.querySelector('.tabs');
+    const actions=document.getElementById('globalActions');
+    if(tabs&&!document.getElementById('multiStockAnalysisQuickBtn'))tabs.insertBefore(makeEntry('multiStockAnalysisQuickBtn','m05a-tab-entry'),tabs.firstChild);
+    if(actions&&!document.getElementById('multiStockAnalysisBtn'))actions.insertBefore(makeEntry('multiStockAnalysisBtn','btn small'),actions.firstChild);
   }
 
   function ensureModal(){
@@ -146,7 +174,7 @@
     modal=document.createElement('div');
     modal.className='modal-bg import-layer';
     modal.id='multiStockAnalysisModal';
-    modal.innerHTML=`<div class="modal"><h2>今日多股分析</h2><div class="modal-sub">1 选择股票 · 2 刷新并生成 · 3 一次复制 / 粘贴 · 4 预览并一次保存</div><div id="multiStockSelection"></div><div class="form-row"><label>统一分析请求</label><textarea id="multiStockRequestText" readonly style="min-height:220px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px"></textarea></div><div class="modal-actions" style="justify-content:flex-start;flex-wrap:wrap"><button class="btn ghost" id="multiStockCloseBtn" type="button">关闭</button><button class="btn ghost" id="multiStockRefreshBtn" type="button">刷新并生成请求</button><button class="btn" id="multiStockCopyBtn" type="button">复制统一请求</button></div><div class="form-row" style="margin-top:16px"><label>粘贴 AI 返回的统一 Batch JSON</label><textarea id="multiStockResultText" style="min-height:180px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{"technicalReviews":[...]}'></textarea></div><div class="modal-actions"><button class="btn" id="multiStockPreviewBtn" type="button">查看统一结果</button></div><div class="card-note" id="multiStockStatus" style="white-space:pre-line;margin-top:10px"></div></div>`;
+    modal.innerHTML=`<div class="modal"><h2>今日多股分析</h2><div class="modal-sub">1 选择股票 · 2 刷新并生成 · 3 一次复制 / 粘贴 · 4 预览并一次保存</div><div id="multiStockSelection"></div><details class="m05a-request-details"><summary>统一分析请求已准备（通常无需展开）</summary><textarea id="multiStockRequestText" aria-label="统一分析请求" readonly style="min-height:220px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px"></textarea></details><div class="modal-actions" style="justify-content:flex-start;flex-wrap:wrap"><button class="btn ghost" id="multiStockCloseBtn" type="button">关闭</button><button class="btn ghost" id="multiStockRefreshBtn" type="button">刷新并生成请求</button><button class="btn" id="multiStockCopyBtn" type="button">复制统一请求</button></div><div class="form-row" style="margin-top:16px"><label for="multiStockResultText">粘贴 AI 返回的统一 Batch JSON</label><textarea id="multiStockResultText" style="min-height:180px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{"technicalReviews":[...]}'></textarea></div><div class="modal-actions"><button class="btn" id="multiStockPreviewBtn" type="button">查看统一结果</button></div><div class="card-note" id="multiStockStatus" style="white-space:pre-line;margin-top:10px"></div></div>`;
     document.body.appendChild(modal);
     modal.addEventListener('click',event=>{if(event.target===modal)closeModal()});
     document.getElementById('multiStockCloseBtn').addEventListener('click',closeModal);
@@ -159,7 +187,7 @@
   function renderSelection(){
     const stocks=defaults();
     const target=document.getElementById('multiStockSelection');
-    target.innerHTML=`<div class="form-row"><label>分析股票（已选 ${selectedIds.size} / ${stocks.length}）</label><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px">${stocks.map(stock=>`<label style="display:flex;align-items:center;gap:8px;min-height:42px;border:1px solid var(--line);padding:8px;margin:0"><input type="checkbox" data-multi-stock-id="${idOf(stock).replace(/"/g,'&quot;')}" style="width:auto"${selectedIds.has(idOf(stock))?' checked':''}><span>${String(stock.name||stock.code||stock.symbol).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}<small style="display:block;color:var(--ink3)">${String(stock.code||stock.symbol||'')}</small></span></label>`).join('')}</div></div>`;
+    target.innerHTML=`<div class="form-row"><label>分析股票（已选 ${selectedIds.size} / ${stocks.length}）</label><div class="m05a-stock-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px">${stocks.map(stock=>`<label style="display:flex;align-items:center;gap:8px;min-height:44px;border:1px solid var(--line);padding:8px;margin:0"><input type="checkbox" data-multi-stock-id="${idOf(stock).replace(/"/g,'&quot;')}" style="width:auto"${selectedIds.has(idOf(stock))?' checked':''}><span>${String(stock.name||stock.code||stock.symbol).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}<small style="display:block;color:var(--ink3)">${String(stock.code||stock.symbol||'')}</small></span></label>`).join('')}</div></div>`;
     target.querySelectorAll('[data-multi-stock-id]').forEach(input=>input.addEventListener('change',()=>{
       if(input.checked)selectedIds.add(input.dataset.multiStockId);else selectedIds.delete(input.dataset.multiStockId);
       renderSelection();
@@ -252,6 +280,7 @@
   }
   function closeModal(){const modal=document.getElementById('multiStockAnalysisModal');if(modal)modal.classList.remove('show')}
 
+  ensureStyles();
   ensureButton();
   root.MultiStockAnalysisUI=Object.freeze({open:openModal,close:closeModal,generateRequest,refreshSelectedData,previewResult});
 })(typeof globalThis!=='undefined'?globalThis:this);

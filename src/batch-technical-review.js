@@ -253,7 +253,7 @@
     modal=document.createElement('div');
     modal.className='modal-bg import-layer';
     modal.id='batchTechnicalReviewModal';
-    modal.innerHTML=`<div class="modal"><h2>批量技术复核</h2><div class="modal-sub">先严格匹配、校验和预览；确认后仅批量更新可应用的技术复核。</div><div class="form-row"><label>批量 JSON</label><textarea id="batchTechnicalReviewText" style="min-height:260px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{"technicalReviews":[{"symbol":"601138.SS","technicalReview":{}}]}'></textarea></div><div class="modal-actions"><button class="btn ghost" id="batchTechnicalReviewCloseBtn" type="button">关闭</button><button class="btn ghost" id="batchTechnicalReviewPreviewBtn" type="button">解析并预览</button><button class="btn" id="batchTechnicalReviewConfirmBtn" type="button" disabled>确认批量更新</button></div><div id="batchTechnicalReviewStatus" style="margin-top:14px"></div><div id="batchTechnicalReviewResult" style="margin-top:14px"></div></div>`;
+    modal.innerHTML=`<div class="modal"><h2>批量技术复核</h2><div class="modal-sub">先严格匹配、校验和预览；确认后仅批量更新可应用的技术复核。</div><details class="m05a-batch-input-details" id="batchTechnicalReviewInputDetails" open><summary>Batch JSON 输入（预览后自动收起）</summary><textarea id="batchTechnicalReviewText" aria-label="批量 JSON" style="min-height:260px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{"technicalReviews":[{"symbol":"601138.SS","technicalReview":{}}]}'></textarea></details><div class="modal-actions"><button class="btn ghost" id="batchTechnicalReviewCloseBtn" type="button">关闭</button><button class="btn ghost" id="batchTechnicalReviewPreviewBtn" type="button">解析并预览</button><button class="btn" id="batchTechnicalReviewConfirmBtn" type="button" disabled>确认批量更新</button></div><div id="batchTechnicalReviewStatus" style="margin-top:14px"></div><div id="batchTechnicalReviewResult" style="margin-top:14px"></div></div>`;
     document.body.appendChild(modal);
     modal.addEventListener('click',event=>{if(event.target===modal)closeModal()});
     document.getElementById('batchTechnicalReviewCloseBtn').addEventListener('click',closeModal);
@@ -296,6 +296,8 @@
     const modal=ensureModal();
     currentPreview=null;
     document.getElementById('batchTechnicalReviewResult').innerHTML='';
+    const inputDetails=document.getElementById('batchTechnicalReviewInputDetails');
+    if(inputDetails)inputDetails.open=true;
     setStatus('');
     setSaving(false);
     modal.classList.add('show');
@@ -322,6 +324,8 @@
     currentPreview=result;
     document.getElementById('batchTechnicalReviewResult').innerHTML=root.BatchTechnicalReview.renderResult(result);
     const eligible=root.BatchTechnicalReview.eligibleEntries(result).length;
+    const inputDetails=document.getElementById('batchTechnicalReviewInputDetails');
+    if(inputDetails&&eligible>0)inputDetails.open=false;
     setStatus(eligible?`可更新 ${eligible} 只股票；确认后将一次保存全部变更。`:'No eligible technical reviews to update.');
     setSaving(false);
   }
