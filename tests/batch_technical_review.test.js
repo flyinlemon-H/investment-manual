@@ -14,18 +14,19 @@ const stocks=Array.from({length:10},(_,index)=>({
   technicalReview:{finalTechnicalConclusion:`原结论 ${index+1}`}
 }));
 
-function loadSingleStockValidator(){
+function loadSingleStockRuntime(){
   const context={console,window:{},globalThis:null,setTimeout:()=>0,clearTimeout:()=>{}};
   context.globalThis=context;
   vm.createContext(context);
   const root=path.resolve(__dirname,'..');
   vm.runInContext(fs.readFileSync(path.join(root,'src/state.js'),'utf8'),context,{filename:'state.js'});
   vm.runInContext(fs.readFileSync(path.join(root,'src/ui-render.js'),'utf8'),context,{filename:'ui-render.js'});
-  vm.runInContext('globalThis.validator=validateSingleStockTechnicalReview;',context);
-  return context.validator;
+  vm.runInContext('globalThis.singleStockRuntime={validator:validateSingleStockTechnicalReview,apply:applyTechnicalReviewToStock};',context);
+  return context.singleStockRuntime;
 }
 
-const singleStockValidator=loadSingleStockValidator();
+const singleStockRuntime=loadSingleStockRuntime();
+const singleStockValidator=singleStockRuntime.validator;
 const validReview=index=>({
   inputCoverage:{hasRecentKline:true,hasCycleKline:false},
   shortTermTechnical:{trendStatus:'sideways',technicalSummary:`技术摘要 ${index}`,supportLevels:[index],resistanceLevels:[index+1]},
@@ -169,11 +170,252 @@ test('rendered preview exposes summary and every failure reason',()=>{
   assert.doesNotMatch(html,/保存成功|导入成功/);
 });
 
-test('foundation source has no persistence calls and UI exposes preview only',()=>{
+test('persistence UI exposes explicit confirmation and critical candidate save',()=>{
   const source=fs.readFileSync(path.resolve(__dirname,'../src/batch-technical-review.js'),'utf8');
   const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
-  assert.doesNotMatch(source,/saveState\s*\(|localStorage\s*\.|indexedDB\s*\.|criticalSave\s*\(/);
   assert.match(source,/解析并预览/);
+  assert.match(source,/确认批量更新/);
+  assert.match(source,/saveState\(candidate,options\)/);
+  assert.match(source,/critical:true/);
+  assert.doesNotMatch(source,/localStorage\s*\.|indexedDB\s*\./);
   assert.match(html,/batchTechnicalReviewBtn/);
   assert.match(html,/src\/batch-technical-review\.js/);
+});
+
+function simpleApply(stock,review){
+  stock.technicalReview=JSON.parse(JSON.stringify(review));
+}
+
+function commitDeps(overrides={}){
+  const events=[];
+  const holder={authoritative:null,saveCalls:0,renderCalls:0};
+  return {
+    events,
+    holder,
+    deps:{
+      applyTechnicalReview:simpleApply,
+      saveCandidate:async(candidate,options)=>{
+        holder.saveCalls++;
+        events.push('save');
+        assert.equal(options.critical,true);
+        return candidate;
+      },
+      adoptCandidate:candidate=>{
+        events.push('adopt');
+        holder.authoritative=candidate;
+      },
+      render:()=>{
+        events.push('render');
+        holder.renderCalls++;
+      },
+      ...overrides
+    }
+  };
+}
+
+test('commits multiple valid entries through one critical save before adopt and render',async()=>{
+  const current={stocks:stocks.slice(0,3).map(stock=>({...stock,notes:`保留 ${stock.id}`})),portfolioStrategy:{name:'保持不变'}};
+  const before=JSON.stringify(current);
+  const preview=Batch.process(envelope([item(1),item(2),item(3)]),current.stocks,singleStockValidator);
+  const fixture=commitDeps();
+  fixture.holder.authoritative=current;
+  const result=await Batch.commit(preview,current,fixture.deps);
+  assert.equal(result.status,'completed');
+  assert.deepEqual(result.summary,{updated:3,skipped:0,warnings:0,failed:0});
+  assert.equal(fixture.holder.saveCalls,1);
+  assert.deepEqual(fixture.events,['save','adopt','render']);
+  assert.equal(JSON.stringify(current),before);
+  assert.equal(fixture.holder.authoritative.stocks[0].technicalReview.finalTechnicalConclusion,'技术结论 1');
+  assert.equal(fixture.holder.authoritative.stocks[1].technicalReview.finalTechnicalConclusion,'技术结论 2');
+  assert.equal(fixture.holder.authoritative.stocks[2].notes,'保留 stock-3');
+  assert.deepEqual(fixture.holder.authoritative.portfolioStrategy,{name:'保持不变'});
+});
+
+test('valid entries persist while invalid and unmatched entries are skipped without creating stocks',async()=>{
+  const current={stocks:stocks.slice(0,3).map(stock=>JSON.parse(JSON.stringify(stock)))};
+  const preview=Batch.process(envelope([
+    item(1),
+    {symbol:'TEST2.SS',technicalReview:[]},
+    {symbol:'UNKNOWN.SS',technicalReview:validReview(9)},
+    item(3)
+  ]),current.stocks,singleStockValidator);
+  const fixture=commitDeps();
+  fixture.holder.authoritative=current;
+  const result=await Batch.commit(preview,current,fixture.deps);
+  assert.equal(result.status,'completed');
+  assert.deepEqual(result.summary,{updated:2,skipped:2,warnings:0,failed:0});
+  assert.equal(fixture.holder.saveCalls,1);
+  assert.equal(fixture.holder.authoritative.stocks.length,3);
+  assert.equal(fixture.holder.authoritative.stocks[0].technicalReview.finalTechnicalConclusion,'技术结论 1');
+  assert.equal(fixture.holder.authoritative.stocks[1].technicalReview.finalTechnicalConclusion,'原结论 2');
+  assert.equal(fixture.holder.authoritative.stocks[2].technicalReview.finalTechnicalConclusion,'技术结论 3');
+});
+
+test('persistence keeps exact-symbol protection for similar code and stock-name inputs',async()=>{
+  const current={stocks:stocks.slice(0,3).map(stock=>JSON.parse(JSON.stringify(stock)))};
+  const preview=Batch.process(envelope([
+    item(1),
+    {symbol:'test2.ss',technicalReview:validReview(2)},
+    {symbol:'测试标的 3',technicalReview:validReview(3)}
+  ]),current.stocks,singleStockValidator);
+  const fixture=commitDeps();
+  fixture.holder.authoritative=current;
+  const result=await Batch.commit(preview,current,fixture.deps);
+  assert.equal(result.status,'completed');
+  assert.deepEqual(result.summary,{updated:1,skipped:2,warnings:0,failed:0});
+  assert.equal(fixture.holder.authoritative.stocks[0].technicalReview.finalTechnicalConclusion,'技术结论 1');
+  assert.equal(fixture.holder.authoritative.stocks[1].technicalReview.finalTechnicalConclusion,'原结论 2');
+  assert.equal(fixture.holder.authoritative.stocks[2].technicalReview.finalTechnicalConclusion,'原结论 3');
+});
+
+test('duplicate conflicts exclude every entry for that exact symbol from persistence',async()=>{
+  const current={stocks:stocks.slice(0,2).map(stock=>JSON.parse(JSON.stringify(stock)))};
+  const preview=Batch.process(envelope([item(1),item(1)]),current.stocks,singleStockValidator);
+  assert.deepEqual(preview.items.map(entry=>entry.status),['valid','duplicate_symbol']);
+  assert.deepEqual(Batch.eligibleEntries(preview),[]);
+  const fixture=commitDeps();
+  fixture.holder.authoritative=current;
+  const result=await Batch.commit(preview,current,fixture.deps);
+  assert.equal(result.status,'no_eligible');
+  assert.equal(fixture.holder.saveCalls,0);
+  assert.equal(fixture.holder.renderCalls,0);
+  assert.equal(fixture.holder.authoritative,current);
+});
+
+test('no eligible entries do not save, adopt, or render success',async()=>{
+  const current={stocks:stocks.slice(0,2).map(stock=>JSON.parse(JSON.stringify(stock)))};
+  const preview=Batch.process(envelope([
+    {symbol:'UNKNOWN.SS',technicalReview:validReview(1)},
+    {symbol:'TEST2.SS',technicalReview:[]}
+  ]),current.stocks,singleStockValidator);
+  const fixture=commitDeps();
+  fixture.holder.authoritative=current;
+  const result=await Batch.commit(preview,current,fixture.deps);
+  assert.equal(result.status,'no_eligible');
+  assert.deepEqual(result.summary,{updated:0,skipped:2,warnings:0,failed:0});
+  assert.equal(fixture.holder.saveCalls,0);
+  assert.deepEqual(fixture.events,[]);
+});
+
+test('critical save failure preserves authoritative state and never renders candidate',async()=>{
+  const current={stocks:stocks.slice(0,2).map(stock=>JSON.parse(JSON.stringify(stock)))};
+  const before=JSON.stringify(current);
+  const preview=Batch.process(envelope([item(1),item(2)]),current.stocks,singleStockValidator);
+  let authoritative=current;
+  let saveCalls=0;
+  let adoptCalls=0;
+  let renderCalls=0;
+  const result=await Batch.commit(preview,current,{
+    applyTechnicalReview:simpleApply,
+    saveCandidate:async()=>{saveCalls++;throw new Error('storage unavailable')},
+    adoptCandidate:candidate=>{adoptCalls++;authoritative=candidate},
+    render:()=>{renderCalls++}
+  });
+  assert.equal(result.status,'failed');
+  assert.equal(result.stage,'save');
+  assert.equal(saveCalls,1);
+  assert.equal(adoptCalls,0);
+  assert.equal(renderCalls,0);
+  assert.equal(authoritative,current);
+  assert.equal(JSON.stringify(current),before);
+});
+
+test('candidate application failure occurs before save and preserves original state',async()=>{
+  const current={stocks:stocks.slice(0,2).map(stock=>JSON.parse(JSON.stringify(stock)))};
+  const before=JSON.stringify(current);
+  const preview=Batch.process(envelope([item(1),item(2)]),current.stocks,singleStockValidator);
+  const fixture=commitDeps({applyTechnicalReview:()=>{throw new Error('apply failed')}});
+  fixture.holder.authoritative=current;
+  const result=await Batch.commit(preview,current,fixture.deps);
+  assert.equal(result.status,'failed');
+  assert.equal(result.stage,'candidate');
+  assert.equal(fixture.holder.saveCalls,0);
+  assert.deepEqual(fixture.events,[]);
+  assert.equal(JSON.stringify(current),before);
+});
+
+test('a render error after save is reported as persisted instead of save failure',async()=>{
+  const current={stocks:stocks.slice(0,1).map(stock=>JSON.parse(JSON.stringify(stock)))};
+  const preview=Batch.process(envelope([item(1)]),current.stocks,singleStockValidator);
+  const fixture=commitDeps({render:()=>{fixture.events.push('render');throw new Error('render failed')}});
+  fixture.holder.authoritative=current;
+  const result=await Batch.commit(preview,current,fixture.deps);
+  assert.equal(result.status,'saved_render_failed');
+  assert.deepEqual(fixture.events,['save','adopt','render']);
+  assert.notEqual(fixture.holder.authoritative,current);
+  assert.equal(fixture.holder.authoritative.stocks[0].technicalReview.finalTechnicalConclusion,'技术结论 1');
+});
+
+test('commit controller rejects a repeated click while the first save is pending',async()=>{
+  let release;
+  let calls=0;
+  const controller=Batch.createCommitController(()=>{
+    calls++;
+    return new Promise(resolve=>{release=resolve});
+  });
+  const first=controller.run('first');
+  assert.equal(controller.pending,true);
+  const second=await controller.run('second');
+  assert.equal(second.status,'busy');
+  assert.equal(calls,1);
+  release({status:'completed'});
+  assert.equal((await first).status,'completed');
+  assert.equal(controller.pending,false);
+});
+
+test('shared single-stock apply helper preserves unrelated fields and writes derived technical data',()=>{
+  const stock={
+    ...JSON.parse(JSON.stringify(stocks[0])),
+    notes:'不得修改',
+    dataFreshness:{priceUpdatedAt:'2026-08-01'},
+    technicalData:{symbol:'TEST1.SS',ma20:10,ma60:20}
+  };
+  const validation=singleStockValidator(validReview(1),stock);
+  assert.equal(validation.valid,true);
+  singleStockRuntime.apply(stock,validation.normalized);
+  assert.equal(stock.notes,'不得修改');
+  assert.equal(stock.technicalReview.finalTechnicalConclusion,'技术结论 1');
+  assert.equal(stock.technicalData.symbol,'TEST1.SS');
+  assert.equal(stock.technicalData.technicalSummary,'技术摘要 1');
+  assert(stock.dataFreshness.technicalUpdatedAt);
+});
+
+function loadStatePersistence(setItem){
+  const context={console,localStorage:{getItem:()=>null,setItem},globalThis:null};
+  context.globalThis=context;
+  vm.createContext(context);
+  vm.runInContext(fs.readFileSync(path.resolve(__dirname,'../src/state.js'),'utf8'),context,{filename:'state.js'});
+  vm.runInContext('globalThis.persistenceRuntime={save:saveState,getState:()=>state,setState:value=>{state=value}};',context);
+  return context.persistenceRuntime;
+}
+
+test('critical candidate save returns persisted state without adopting it implicitly',()=>{
+  let persisted='';
+  const runtime=loadStatePersistence((key,value)=>{persisted=value});
+  const authoritative={stocks:[],marker:'authoritative'};
+  const candidate={stocks:[],marker:'candidate'};
+  runtime.setState(authoritative);
+  const saved=runtime.save(candidate,{critical:true});
+  assert.equal(runtime.getState(),authoritative);
+  assert.equal(saved.marker,'candidate');
+  assert.equal(JSON.parse(persisted).marker,'candidate');
+});
+
+test('critical candidate storage failure leaves authoritative state untouched',()=>{
+  const runtime=loadStatePersistence(()=>{throw new Error('quota exceeded')});
+  const authoritative={stocks:[],marker:'authoritative'};
+  runtime.setState(authoritative);
+  assert.throws(()=>runtime.save({stocks:[],marker:'candidate'},{critical:true}),/quota exceeded/);
+  assert.equal(runtime.getState(),authoritative);
+  assert.equal(runtime.getState().marker,'authoritative');
+});
+
+test('legacy saveState call still normalizes and adopts the live state',()=>{
+  let persisted='';
+  const runtime=loadStatePersistence((key,value)=>{persisted=value});
+  const authoritative={stocks:[],marker:'legacy'};
+  runtime.setState(authoritative);
+  const saved=runtime.save();
+  assert.equal(runtime.getState(),saved);
+  assert.equal(JSON.parse(persisted).marker,'legacy');
 });

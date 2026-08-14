@@ -5846,11 +5846,7 @@ function importTechnicalJson(){
     const payload=(parsed&&typeof parsed==='object'&&parsed.technicalData&&typeof parsed.technicalData==='object')?parsed.technicalData:parsed;
     const validation=validateSingleStockTechnicalReview(payload,stock);
     if(!validation.valid)throw new Error(validation.error);
-    stock.technicalReview=validation.normalized;
-    stock.technicalData=technicalDataFromReview(stock.technicalReview,stock);
-    if(!stock.technicalData.symbol)stock.technicalData.symbol=stock.code||stock.symbol||'';
-    touchDataFreshness(stock,'technicalUpdatedAt',stock.technicalReview.shortTermTechnical.priceUpdatedAt||todayDate());
-    normalizeStockAnalysis(stock);
+    applyTechnicalReviewToStock(stock,validation.normalized);
     markV13DecisionReviewDirty(stock.id,'technicalReview');
     saveState();
     closeTechnicalJsonImportModal();
