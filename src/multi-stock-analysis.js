@@ -84,7 +84,38 @@
     ].join('\n');
   }
 
-  return {OUTPUT_EXAMPLE,selectableStocks,recentPriceHistory,stockContext,buildRequest};
+  async function refreshSelectedStocks(stocks,refreshOne,options={}){
+    if(typeof refreshOne!=='function')throw new Error('缺少行情刷新函数。');
+    const selected=selectableStocks(stocks);
+    const results=[];
+    const delayMs=Math.max(0,Number(options.delayMs)||0);
+    for(let index=0;index<selected.length;index+=1){
+      const stock=selected[index];
+      let result;
+      try{
+        const raw=await refreshOne(stock);
+        result={
+          id:String(stock.id||''),symbol:symbolOf(stock),name:text(stock.name),
+          ok:Boolean(raw&&raw.ok),price:raw&&Number.isFinite(Number(raw.price))?Number(raw.price):null,
+          source:text(raw&&raw.source),errors:arr(raw&&raw.errors).map(text).filter(Boolean)
+        };
+        if(!result.ok&&!result.errors.length)result.errors=['刷新失败，已保留原数据'];
+      }catch(error){
+        result={id:String(stock.id||''),symbol:symbolOf(stock),name:text(stock.name),ok:false,price:null,source:'',errors:[text(error&&error.message)||String(error)]};
+      }
+      results.push(result);
+      if(typeof options.onProgress==='function')options.onProgress({index:index+1,total:selected.length,result,results:results.slice()});
+      if(delayMs&&index<selected.length-1)await new Promise(resolve=>setTimeout(resolve,delayMs));
+    }
+    return {
+      total:results.length,
+      successCount:results.filter(item=>item.ok).length,
+      failureCount:results.filter(item=>!item.ok).length,
+      results
+    };
+  }
+
+  return {OUTPUT_EXAMPLE,selectableStocks,recentPriceHistory,stockContext,buildRequest,refreshSelectedStocks};
 });
 
 (function(root){
@@ -115,10 +146,11 @@
     modal=document.createElement('div');
     modal.className='modal-bg import-layer';
     modal.id='multiStockAnalysisModal';
-    modal.innerHTML=`<div class="modal"><h2>多股 AI 技术分析</h2><div class="modal-sub">一次选择多只股票，生成一个请求；AI 返回一个 Batch JSON 后一次预览和保存。</div><div id="multiStockSelection"></div><div class="form-row"><label>统一分析请求</label><textarea id="multiStockRequestText" readonly style="min-height:220px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px"></textarea></div><div class="modal-actions" style="justify-content:flex-start;flex-wrap:wrap"><button class="btn ghost" id="multiStockCloseBtn" type="button">关闭</button><button class="btn ghost" id="multiStockGenerateBtn" type="button">生成请求</button><button class="btn" id="multiStockCopyBtn" type="button">复制统一请求</button></div><div class="form-row" style="margin-top:16px"><label>AI 返回的 Batch JSON</label><textarea id="multiStockResultText" style="min-height:180px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{"technicalReviews":[...]}'></textarea></div><div class="modal-actions"><button class="btn" id="multiStockPreviewBtn" type="button">预览 AI 结果</button></div><div class="card-note" id="multiStockStatus" style="white-space:pre-line;margin-top:10px"></div></div>`;
+    modal.innerHTML=`<div class="modal"><h2>多股 AI 技术分析</h2><div class="modal-sub">一次选择多只股票，生成一个请求；AI 返回一个 Batch JSON 后一次预览和保存。</div><div id="multiStockSelection"></div><div class="form-row"><label>统一分析请求</label><textarea id="multiStockRequestText" readonly style="min-height:220px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px"></textarea></div><div class="modal-actions" style="justify-content:flex-start;flex-wrap:wrap"><button class="btn ghost" id="multiStockCloseBtn" type="button">关闭</button><button class="btn ghost" id="multiStockRefreshBtn" type="button">刷新所选行情 / K 线</button><button class="btn ghost" id="multiStockGenerateBtn" type="button">生成请求</button><button class="btn" id="multiStockCopyBtn" type="button">复制统一请求</button></div><div class="form-row" style="margin-top:16px"><label>AI 返回的 Batch JSON</label><textarea id="multiStockResultText" style="min-height:180px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{"technicalReviews":[...]}'></textarea></div><div class="modal-actions"><button class="btn" id="multiStockPreviewBtn" type="button">预览 AI 结果</button></div><div class="card-note" id="multiStockStatus" style="white-space:pre-line;margin-top:10px"></div></div>`;
     document.body.appendChild(modal);
     modal.addEventListener('click',event=>{if(event.target===modal)closeModal()});
     document.getElementById('multiStockCloseBtn').addEventListener('click',closeModal);
+    document.getElementById('multiStockRefreshBtn').addEventListener('click',refreshSelectedData);
     document.getElementById('multiStockGenerateBtn').addEventListener('click',generateRequest);
     document.getElementById('multiStockCopyBtn').addEventListener('click',copyRequest);
     document.getElementById('multiStockPreviewBtn').addEventListener('click',previewResult);
@@ -145,6 +177,34 @@
   }}
 
   function setStatus(message){document.getElementById('multiStockStatus').textContent=message||''}
+  async function refreshSelectedData(){
+    const stocks=selectedStocks();
+    if(!stocks.length){setStatus('请至少选择一只可刷新的股票。');return null}
+    if(typeof refreshOnePrice!=='function'){setStatus('现有行情刷新功能不可用。');return null}
+    const button=document.getElementById('multiStockRefreshBtn');
+    const controls=['multiStockRefreshBtn','multiStockGenerateBtn','multiStockCopyBtn','multiStockPreviewBtn'].map(id=>document.getElementById(id)).filter(Boolean);
+    controls.forEach(control=>{control.disabled=true});
+    if(button)button.textContent='刷新中 0 / '+stocks.length;
+    try{
+      const summary=await root.MultiStockAnalysis.refreshSelectedStocks(
+        stocks,
+        stock=>refreshOnePrice(stock.id,{silent:true}),
+        {delayMs:350,onProgress:progress=>{
+          if(button)button.textContent=`刷新中 ${progress.index} / ${progress.total}`;
+          const mark=progress.result.ok?'成功':'失败（保留旧数据）';
+          setStatus(`${progress.result.name||progress.result.symbol}：${mark}`);
+        }}
+      );
+      generateRequest();
+      const failures=summary.results.filter(item=>!item.ok);
+      const details=failures.map(item=>`- ${item.name||item.symbol}：${item.errors.join('；')||'刷新失败，已保留旧数据'}`).join('\n');
+      setStatus(`批量刷新完成：成功 ${summary.successCount}，失败 ${summary.failureCount}。${details?'\n失败项未覆盖原数据：\n'+details:''}\n统一请求已按最新可用数据重新生成。`);
+      return summary;
+    }finally{
+      controls.forEach(control=>{control.disabled=false});
+      if(button)button.textContent='刷新所选行情 / K 线';
+    }
+  }
   function generateRequest(){
     try{
       const request=root.MultiStockAnalysis.buildRequest(selectedStocks(),helpers());
@@ -194,5 +254,5 @@
   function closeModal(){const modal=document.getElementById('multiStockAnalysisModal');if(modal)modal.classList.remove('show')}
 
   ensureButton();
-  root.MultiStockAnalysisUI=Object.freeze({open:openModal,close:closeModal,generateRequest,previewResult});
+  root.MultiStockAnalysisUI=Object.freeze({open:openModal,close:closeModal,generateRequest,refreshSelectedData,previewResult});
 })(typeof globalThis!=='undefined'?globalThis:this);

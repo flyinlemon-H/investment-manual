@@ -59,3 +59,30 @@ test('browser integration exposes one-copy and one-paste path into batch preview
   assert.match(batch,/openWithInput/);
   assert.match(html,/src\/multi-stock-analysis\.js/);
 });
+
+test('selected refresh continues after partial failures and reports exact symbols',async()=>{
+  const calls=[];
+  const progress=[];
+  const summary=await Multi.refreshSelectedStocks(stocks,async stock=>{
+    calls.push(stock.id);
+    if(stock.id==='b')throw new Error('source unavailable');
+    return {ok:true,price:56,source:'fixture'};
+  },{onProgress:item=>progress.push(item.result.symbol)});
+  assert.deepEqual(calls,['a','b']);
+  assert.deepEqual(progress,['601138.SS','2899.HK']);
+  assert.equal(summary.successCount,1);
+  assert.equal(summary.failureCount,1);
+  assert.match(summary.results[1].errors[0],/source unavailable/);
+});
+
+test('failed refresh orchestration leaves existing market data untouched',async()=>{
+  const target={id:'x',code:'000001.SZ',name:'测试股',currentPrice:12,priceHistory:[{date:'2026-08-13',close:12}]};
+  const before=structuredClone(target);
+  const summary=await Multi.refreshSelectedStocks([target],async()=>({ok:false,errors:['offline']}));
+  assert.equal(summary.failureCount,1);
+  assert.deepEqual(target,before);
+});
+
+test('selected refresh requires the existing refresh callback',async()=>{
+  await assert.rejects(()=>Multi.refreshSelectedStocks(stocks),/缺少行情刷新函数/);
+});
