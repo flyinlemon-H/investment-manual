@@ -135,7 +135,7 @@
     button.className='btn small';
     button.id='multiStockAnalysisBtn';
     button.type='button';
-    button.textContent='多股 AI 分析';
+    button.textContent='今日分析';
     actions.insertBefore(button,actions.firstChild);
     button.addEventListener('click',openModal);
   }
@@ -146,12 +146,11 @@
     modal=document.createElement('div');
     modal.className='modal-bg import-layer';
     modal.id='multiStockAnalysisModal';
-    modal.innerHTML=`<div class="modal"><h2>多股 AI 技术分析</h2><div class="modal-sub">一次选择多只股票，生成一个请求；AI 返回一个 Batch JSON 后一次预览和保存。</div><div id="multiStockSelection"></div><div class="form-row"><label>统一分析请求</label><textarea id="multiStockRequestText" readonly style="min-height:220px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px"></textarea></div><div class="modal-actions" style="justify-content:flex-start;flex-wrap:wrap"><button class="btn ghost" id="multiStockCloseBtn" type="button">关闭</button><button class="btn ghost" id="multiStockRefreshBtn" type="button">刷新所选行情 / K 线</button><button class="btn ghost" id="multiStockGenerateBtn" type="button">生成请求</button><button class="btn" id="multiStockCopyBtn" type="button">复制统一请求</button></div><div class="form-row" style="margin-top:16px"><label>AI 返回的 Batch JSON</label><textarea id="multiStockResultText" style="min-height:180px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{"technicalReviews":[...]}'></textarea></div><div class="modal-actions"><button class="btn" id="multiStockPreviewBtn" type="button">预览 AI 结果</button></div><div class="card-note" id="multiStockStatus" style="white-space:pre-line;margin-top:10px"></div></div>`;
+    modal.innerHTML=`<div class="modal"><h2>今日多股分析</h2><div class="modal-sub">1 选择股票 · 2 刷新并生成 · 3 一次复制 / 粘贴 · 4 预览并一次保存</div><div id="multiStockSelection"></div><div class="form-row"><label>统一分析请求</label><textarea id="multiStockRequestText" readonly style="min-height:220px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px"></textarea></div><div class="modal-actions" style="justify-content:flex-start;flex-wrap:wrap"><button class="btn ghost" id="multiStockCloseBtn" type="button">关闭</button><button class="btn ghost" id="multiStockRefreshBtn" type="button">刷新并生成请求</button><button class="btn" id="multiStockCopyBtn" type="button">复制统一请求</button></div><div class="form-row" style="margin-top:16px"><label>粘贴 AI 返回的统一 Batch JSON</label><textarea id="multiStockResultText" style="min-height:180px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px" placeholder='{"technicalReviews":[...]}'></textarea></div><div class="modal-actions"><button class="btn" id="multiStockPreviewBtn" type="button">查看统一结果</button></div><div class="card-note" id="multiStockStatus" style="white-space:pre-line;margin-top:10px"></div></div>`;
     document.body.appendChild(modal);
     modal.addEventListener('click',event=>{if(event.target===modal)closeModal()});
     document.getElementById('multiStockCloseBtn').addEventListener('click',closeModal);
     document.getElementById('multiStockRefreshBtn').addEventListener('click',refreshSelectedData);
-    document.getElementById('multiStockGenerateBtn').addEventListener('click',generateRequest);
     document.getElementById('multiStockCopyBtn').addEventListener('click',copyRequest);
     document.getElementById('multiStockPreviewBtn').addEventListener('click',previewResult);
     return modal;
@@ -182,7 +181,7 @@
     if(!stocks.length){setStatus('请至少选择一只可刷新的股票。');return null}
     if(typeof refreshOnePrice!=='function'){setStatus('现有行情刷新功能不可用。');return null}
     const button=document.getElementById('multiStockRefreshBtn');
-    const controls=['multiStockRefreshBtn','multiStockGenerateBtn','multiStockCopyBtn','multiStockPreviewBtn'].map(id=>document.getElementById(id)).filter(Boolean);
+    const controls=['multiStockRefreshBtn','multiStockCopyBtn','multiStockPreviewBtn'].map(id=>document.getElementById(id)).filter(Boolean);
     controls.forEach(control=>{control.disabled=true});
     if(button)button.textContent='刷新中 0 / '+stocks.length;
     try{
@@ -202,7 +201,7 @@
       return summary;
     }finally{
       controls.forEach(control=>{control.disabled=false});
-      if(button)button.textContent='刷新所选行情 / K 线';
+      if(button)button.textContent='刷新并生成请求';
     }
   }
   function generateRequest(){
